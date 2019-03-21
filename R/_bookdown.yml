@@ -1,0 +1,9 @@
+book_filename: "thesis"
+language:
+  ui:
+    chapter_name: "Chapter "
+rmd_files: ["index.Rmd",
+  "01-chap1.Rmd",
+  "02-chap2.Rmd",
+  "A-appA.Rmd"]
+delete_merged_file: TRUE
