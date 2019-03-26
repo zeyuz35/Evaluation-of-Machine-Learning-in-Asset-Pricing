@@ -81,13 +81,34 @@ Both the rolling window and recursive schemes are very computationally intensive
 
 \subsection{Simple Linear Model}
 
-The least complex model considered is the simple linear regression model, otherwise known by its estimation method ordinary least squares (OLS). OLS struggles with high-dimensionality, in addition to producing poor predictions if its strict assumptions are violated. Nevertheless, despite being expected to perform poorly it was implemented as a "control."
+The least complex model considered is the simple linear regression model, otherwise known by its estimation method ordinary least squares (OLS). OLS struggles with high-dimensionality. Nevertheless, despite being expected to perform poorly it was implemented as a "control."
 
 Model: The simple linear model assumes that the underlying 
 
 \subsection{Penalized Linear}
 
+Penalized linear models have the same underlying statistical model as simple linear models, only considering baseline untransformed predictors. They differ in their addition of a new penalty term in the loss function:
 
+\begin{equation}
+	\mathcal{L(\theta;.)} = 
+	\underset{\text{Loss Function}}{\underbrace{\mathcal{L(\theta)}}} + 
+	\underset{\text{Penalty Term}}{\underbrace{\phi(\theta;.)}}
+\end{equation}
+
+Several choices exist for the choice of the penalty function $\phi(\theta;.)$. This focus of this paper is the popular "elastic net" penalty, which takes the form:
+
+\begin{equation}
+	\phi(\theta;\lambda,\rho) = 
+	\lambda(1-\rho) \sum_{j = 1}^{P}|\theta_j| +
+	\frac{1}{2} \lambda \rho \sum_{j = 1}^{P}\theta_j^2
+\end{equation}
+
+The elastic net has two hyperparameters: $\lambda$, which controls the overall magnitude of the loss, and $\rho$, which controls the shape of the penalization. The $\rho = 0$ case corresponds to the popular LASSO and uses absolute ($l_1$) parameter penalization, which geometrically allows the coefficients to be shrunk to 0. This allows it to impose sparsity, and can be thought of as a variable selection tool.
+The $\rho = 1$ case corresponds to ridge regression, which uses $l_2$ that shrinks all coefficients closer to 0, but not actually to 0. Ridge regression is therefore a shrinkage method which prevents coefficients from becoming too large and overpowering. For $0 < \rho < 1$, the elastic net aims to produce parsimonious models through both shrinkage and selection.
+
+The hyperparameters $\lambda$ and $\rho$ are both tuned using the validation sample. See appendix for algorithm
+
+\todo{update when algorithm is written}
 
 \subsection{Classification and Regression Trees}
 
