@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.6960 64-bit) (preloaded format=pdflatex 2019.3.13)  26 MAR 2019 10:28
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.6960 64-bit) (preloaded format=pdflatex 2019.3.13)  28 MAR 2019 12:26
 entering extended mode
 **"./Econometrics Honours Project.tex"
 ("Econometrics Honours Project.tex"
@@ -1484,21 +1484,21 @@ LaTeX Font Info:    Try loading font information for U+msb on input line 46.
 ("C:\Program Files\MiKTeX 2.9\tex/latex/amsfonts\umsb.fd"
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) [3] [4] [5] [6]
-[7] [8] [9]
-Overfull \hbox (59.8731pt too wide) detected at line 197
+[7] [8] [9] [10]
+Overfull \hbox (59.8731pt too wide) detected at line 219
 []
  []
 
-[10] [11]
+[11] [12]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [12
+ [13
 
 ]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [13]
-AED endfloat: Processing end Figures and Tables [14] [15]
+ [14]
+AED endfloat: Processing end Figures and Tables [15] [16]
 ("Econometrics Honours Project.aux")
 Package logreq Info: Writing requests to '"Econometrics Honours Project".run.xm
 l'.
@@ -1506,10 +1506,10 @@ l'.
 
  ) 
 Here is how much of TeX's memory you used:
- 44175 strings out of 492946
- 945590 string characters out of 3135510
- 1400242 words of memory out of 3000000
- 47512 multiletter control sequences out of 15000+200000
+ 44183 strings out of 492946
+ 945775 string characters out of 3135510
+ 1403381 words of memory out of 3000000
+ 47520 multiletter control sequences out of 15000+200000
  578687 words of font info for 58 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
  69i,15n,107p,1646b,3994s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -1528,9 +1528,9 @@ les/MiKTeX 2.9/fonts/type1/public/lm/lmsy10.pfb><C:/Program Files/MiKTeX 2.9/fo
 nts/type1/public/lm/lmsy6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/l
 m/lmsy8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/symbols/ms
 bm10.pfb>
-Output written on "Econometrics Honours Project.pdf" (15 pages, 219781 bytes).
+Output written on "Econometrics Honours Project.pdf" (16 pages, 222516 bytes).
 PDF statistics:
- 139 PDF objects out of 1000 (max. 8388607)
+ 142 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  109 words of extra memory for PDF output out of 10000 (max. 10000000)
 

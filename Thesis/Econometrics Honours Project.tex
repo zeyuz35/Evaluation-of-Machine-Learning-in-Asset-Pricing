@@ -43,7 +43,7 @@ See how it performs on real data
 
 \subsection{Limitations of Machine Learning}
 
-Machine learning excels at prediction problems, namely estimating $E(r_{i, t+1}|\mathcal{F}_t)$, where $r_{i, t+1}$ is an asset's excess return over the risk free rate, and $\mathcal{F}_t$ is the set of all information (including unobservable) available to market participants in this context.
+Machine learning excels at prediction problems, namely estimating \( E(r_{i, t+1}|\mathcal{F}_t) \), where \( r_{i, t+1} \) is an asset's excess return over the risk free rate, and \( \mathcal{F}_t \) is the set of all information (including unobservable) available to market participants in this context.
 
 This means that machine learning algorithms do not, nor do they aim to, explain how the market works in terms of underlying dynamics and equilibria. Though a machine learning algorithm may be able to identify patterns that otherwise cannot be easily found, an economist is still required to analyse these patterns to construct and hypothesize economic theory.
 
@@ -62,7 +62,7 @@ All asset excess returns are modelled as an additive prediction error model:
 where 
 
 \begin{equation}
-	E_t(r_{i, t+1}) = g*(z_{i,t})
+	E_t(r_{i, t+1}) = g^*(z_{i,t})
 \end{equation}
 
 \subsection{Sample Splitting}
@@ -83,7 +83,19 @@ Both the rolling window and recursive schemes are very computationally intensive
 
 The least complex model considered is the simple linear regression model, otherwise known by its estimation method ordinary least squares (OLS). OLS struggles with high-dimensionality. Nevertheless, despite being expected to perform poorly it was implemented as a "control."
 
-Model: The simple linear model assumes that the underlying 
+The simple linear model assumes that the underlying conditional expectation \( g^*(z_{i, t}) \) can be modelled as a linear function of the predictors and the parameter vector \( \theta \):
+
+\begin{equation}
+	g(z_{i, t};\theta) = z_{i, t}' \theta
+\end{equation}
+
+This model can capture non-linearities only if a new predictor set \(z^*_{i, t}\) containing specified non-linear transformations or interaction terms. It is quite common to consider at least second order terms and two way interactions. 
+
+The baseline computational algorithm for this model is to minimize the standard least squares function:
+
+\begin{equation}
+	content...
+\end{equation}
 
 \subsection{Penalized Linear}
 
@@ -106,7 +118,7 @@ Several choices exist for the choice of the penalty function $\phi(\theta;.)$. T
 The elastic net has two hyperparameters: $\lambda$, which controls the overall magnitude of the loss, and $\rho$, which controls the shape of the penalization. The $\rho = 0$ case corresponds to the popular LASSO and uses absolute ($l_1$) parameter penalization, which geometrically allows the coefficients to be shrunk to 0. This allows it to impose sparsity, and can be thought of as a variable selection tool.
 The $\rho = 1$ case corresponds to ridge regression, which uses $l_2$ that shrinks all coefficients closer to 0, but not actually to 0. Ridge regression is therefore a shrinkage method which prevents coefficients from becoming too large and overpowering. For $0 < \rho < 1$, the elastic net aims to produce parsimonious models through both shrinkage and selection.
 
-The hyperparameters $\lambda$ and $\rho$ are both tuned using the validation sample. See appendix for algorithm
+The hyperparameters $\lambda$ and $\rho$ are both tuned using the validation sample. See appendix for algorithm.
 
 \todo{update when algorithm is written}
 
@@ -186,7 +198,10 @@ One of my key concerns with the Gu et al. (2019) design is that the factors are 
 Instead, we will choose a simulation mechanism for $C_t$ that gives some correlation across the factors and across time. To that end, first consider drawing normal random numbers for each $1\leq i\leq N$ and $1\leq j\leq P_{c}$, according to 
 $$\overline{c}_{i j, t}=\rho_{j} \overline{c}_{i j, t-1}+\epsilon_{i j, t}, \;\rho_{j}\mathcal{U}[1/2,1].$$Then, define the matrix $$
 B:=\Lambda\Lambda'+\frac{1}{10}\mathbb{I}_{n},\;\Lambda_i=(\lambda_{i1},\dots,\lambda_{i4})',\;\lambda_{ik}\sim N(0,1),\; k=1,\dots,4, $$ which we transform into a correlation matrix $W$ via $$W=\text{diag}^{-1/2}(W)W\text{diag}^{-1/2}(W).$$
-To build in cross-sectional correlation, from the $N\times P_{c}$ matrix $\bar{C}_t$, we simulate characteristics according to $$\widehat{C}_{t}=W\overline{C}_{t}.$$
+To build in cross-sectional correlation, from the $N\times P_{c}$ matrix $\bar{C}_t$, we simulate characteristics according to
+ 
+ $$\widehat{C}_{t}=W\overline{C}_{t}.$$
+ 
 Finally, we can construct the ``observed'' characteristics for each $1\leq i\leq N$ and for $j=1,\dots,P_{c}$ according to  $$c_{i j, t}=\frac{2}{n+1} \operatorname{rank}\left(\overline{c}_{i j, t}\right)-1.$$
 
 For simulation of $x_{t}$ we consider a VAR model
@@ -229,13 +244,13 @@ where $\mathcal{T}_3$ indicates that the fits are only assessed on the test subs
 
 \subsection{Model}
 
-All machine learning methods are designed to approximate the empirical model $E_t(r_{i, t+1}) = g*(z_{i,t})$ defined in equation (2). The baseline set of stock-level covariates $z_{i,t}$ as:
+All machine learning methods are designed to approximate the empirical model \( E_t(r_{i, t+1}) = g*(z_{i,t}) \) defined in equation (2). The baseline set of stock-level covariates \( z_{i,t} \) as:
 
 \begin{equation}
 	z_{i,t} = x_t \otimes c_{i,t}
 \end{equation}
 
-where $c_{i,t}$ is a $P_c \times 1$ matrix of characteristics for each stock $i$, and $x_t$ is a $P_x \times 1$ vector of macroeconomic predictors (and are this common to all stocks, including a constant). $z_{i,t}$ is a $P \times 1$ vector of features for predicting individual stock returns ($P = P_cP_x$) and includes interactions between individual characteristics and macroeconomic characteristics. 
+where \( c_{i,t} \) is a \( P_c \times 1 \) matrix of characteristics for each stock \(i\), and \(x_t\) is a $P_x \times 1$ vector of macroeconomic predictors (and are this common to all stocks, including a constant). $z_{i,t}$ is a $P \times 1$ vector of features for predicting individual stock returns ($P = P_cP_x$) and includes interactions between individual characteristics and macroeconomic characteristics. 
 
 \cite{TESL}
 
@@ -316,32 +331,32 @@ There are numerous stochastic gradient descent algorithms available.
 	
 	\While{j < p}{
 		Update $\theta$ using the training algorithm\
-		Calculate the prediction error from the validation sample, denoted as $\epsilon'$\
+		Calculate the prediction error from the validation sample, denoted as \(\epsilon'\)\
 		
-		\eIf{$\epsilon' < \epsilon$}
-			{$j \leftarrow 0$\
+		\eIf{\(\epsilon' < \epsilon\)}
+			{\(j \leftarrow 0\)\
 				
-			 $\epsilon \leftarrow \epsilon'$\
+			 \(\epsilon \leftarrow \epsilon'\)\
 			 
-		     $\theta' \leftarrow \theta$}
-	     	{$j \leftarrow j+1$}
+		     \(\theta' \leftarrow \theta\)}
+	     	{\(j \leftarrow j+1\)}
 	}
 	\KwResult{$\theta'$ is the final parameter estimate}
 	\caption{Early stopping via validation}
 \end{algorithm}
 
 \begin{algorithm}
-	Input: Values of $x$ for each activation over a batch $\mathcal{B} = {x_1, x_2, \dots, x_N}$
+	Input: Values of \(x\) for each activation over a batch \(\mathcal{B} = {x_1, x_2, \dots, x_N}\)
 	
-	$\mu_\mathcal{B} \leftarrow \frac{1}{N} \sum_{i = 1}^{N}x_i$
+	\(\mu_\mathcal{B} \leftarrow \frac{1}{N} \sum_{i = 1}^{N}x_i\)
 	
-	$\sigma_\mathcal{B}^2 \leftarrow \frac{1}{N} \sum_{i = 1}^{N}(x_i - \mu_\mathcal{B})^2$
+	\(\sigma_\mathcal{B}^2 \leftarrow \frac{1}{N} \sum_{i = 1}^{N}(x_i - \mu_\mathcal{B})^2\)
 	
-	$\hat{x_i} \leftarrow \frac{x_i - \mu_\mathcal{B}}{\sqrt{\sigma_\mathcal{B}^2 + \epsilon}}$
+	\(\hat{x_i} \leftarrow \frac{x_i - \mu_\mathcal{B}}{\sqrt{\sigma_\mathcal{B}^2 + \epsilon}}\)
 	
-	$y_i \leftarrow \gamma\hat{x_i} + \beta := BN_{\gamma, \beta}(x_i)$
+	\(y_i \leftarrow \gamma\hat{x_i} + \beta := BN_{\gamma, \beta}(x_i)\)
 	
-	\KwResult{$y_i = BN_{\gamma, \beta}(x_i) : i = 1, 2, ..., N$}
+	\KwResult{\(y_i = BN_{\gamma, \beta}(x_i) : i = 1, 2, ..., N\)}
 	\caption{Batch Normalization for one activation over one batch}
 \end{algorithm}
 
