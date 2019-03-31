@@ -107,7 +107,7 @@ Penalized linear models have the same underlying statistical model as simple lin
 	\underset{\text{Penalty Term}}{\underbrace{\phi(\theta;.)}}
 \end{equation}
 
-Several choices exist for the choice of the penalty function $\phi(\theta;.)$. This focus of this paper is the popular "elastic net" penalty, which takes the form:
+Several choices exist for the choice of the penalty function \( \phi(\theta;.) \). This focus of this paper is the popular "elastic net" penalty, which takes the form:
 
 \begin{equation}
 	\phi(\theta;\lambda,\rho) = 
@@ -116,7 +116,7 @@ Several choices exist for the choice of the penalty function $\phi(\theta;.)$. T
 \end{equation}
 
 The elastic net has two hyperparameters: $\lambda$, which controls the overall magnitude of the loss, and $\rho$, which controls the shape of the penalization. The $\rho = 0$ case corresponds to the popular LASSO and uses absolute ($l_1$) parameter penalization, which geometrically allows the coefficients to be shrunk to 0. This allows it to impose sparsity, and can be thought of as a variable selection tool.
-The $\rho = 1$ case corresponds to ridge regression, which uses $l_2$ that shrinks all coefficients closer to 0, but not actually to 0. Ridge regression is therefore a shrinkage method which prevents coefficients from becoming too large and overpowering. For $0 < \rho < 1$, the elastic net aims to produce parsimonious models through both shrinkage and selection.
+The $\rho = 1$ case corresponds to ridge regression, which uses $l_2$ that shrinks all coefficients closer to 0, but not actually to 0. Ridge regression is therefore a shrinkage method which prevents coefficients from becoming too large and overpowering. For \(0 < \rho < 1\), the elastic net aims to produce parsimonious models through both shrinkage and selection.
 
 The hyperparameters $\lambda$ and $\rho$ are both tuned using the validation sample. See appendix for algorithm.
 
@@ -126,7 +126,7 @@ The hyperparameters $\lambda$ and $\rho$ are both tuned using the validation sam
 
 Classification and regression trees are fully non-parametric models that can capture complex multi-way interactions. A tree "grows" in a series of iterations. With each iteration, a split ("branch") is made along one predictor such that it is the best split available at that stage (in terms of lowering the loss function). These steps are continued until either the stopping criterion is met (such as via regularization) or each observation is its own node. The eventual model slices the predictor space into rectagular partitions, and predicts the unknown function $g^*(.)$ with the average value of the outcome variable in each partition.
 
-The prediction of a tree, $\mathcal{T}$, with $K$ "leaves" (terminal nodes), and depth $L$ is
+The prediction of a tree, $\mathcal{T}$, with \(K\) "leaves" (terminal nodes), and depth $L$ is
 
 \begin{equation}
 	g(z_{i,t};\theta,K,L) = \sum_{k=1}^{K}\theta_k\textbf{1}_{z_{i,t}\in C_k(L)}
@@ -196,13 +196,29 @@ Let $v_{t+1}$ be a $3\times 1$ vector of errors, and $w_{i,t+1},\varepsilon_{i,t
 One of my key concerns with the Gu et al. (2019) design is that the factors are uncorrelated across $i$, and, in particular, that the factors which do not matter in the return equation are uncorrelated with those that matter. This is not what is observed in practice. 
 
 Instead, we will choose a simulation mechanism for $C_t$ that gives some correlation across the factors and across time. To that end, first consider drawing normal random numbers for each $1\leq i\leq N$ and $1\leq j\leq P_{c}$, according to 
-$$\overline{c}_{i j, t}=\rho_{j} \overline{c}_{i j, t-1}+\epsilon_{i j, t}, \;\rho_{j}\mathcal{U}[1/2,1].$$Then, define the matrix $$
-B:=\Lambda\Lambda'+\frac{1}{10}\mathbb{I}_{n},\;\Lambda_i=(\lambda_{i1},\dots,\lambda_{i4})',\;\lambda_{ik}\sim N(0,1),\; k=1,\dots,4, $$ which we transform into a correlation matrix $W$ via $$W=\text{diag}^{-1/2}(W)W\text{diag}^{-1/2}(W).$$
+
+\begin{equation}
+	\overline{c}_{i j, t}=\rho_{j} \overline{c}_{i j, t-1}+\epsilon_{i j, t}, \;\rho_{j}\mathcal{U}[1/2,1]
+\end{equation}
+
+Then, define the matrix 
+
+\begin{equation}
+	B:=\Lambda\Lambda'+\frac{1}{10}\mathbb{I}_{n},\;\Lambda_i=(\lambda_{i1},\dots,\lambda_{i4})',\;\lambda_{ik}\sim N(0,1),\; k=1,\dots,4
+\end{equation}
+
+which we transform into a correlation matrix $W$ via $$W=\text{diag}^{-1/2}(W)W\text{diag}^{-1/2}(W).$$
 To build in cross-sectional correlation, from the $N\times P_{c}$ matrix $\bar{C}_t$, we simulate characteristics according to
  
- $$\widehat{C}_{t}=W\overline{C}_{t}.$$
+\begin{equation}
+	\widehat{C}_{t}=W\overline{C}_{t}
+\end{equation}
  
-Finally, we can construct the ``observed'' characteristics for each $1\leq i\leq N$ and for $j=1,\dots,P_{c}$ according to  $$c_{i j, t}=\frac{2}{n+1} \operatorname{rank}\left(\overline{c}_{i j, t}\right)-1.$$
+Finally, we can construct the ``observed'' characteristics for each $1\leq i\leq N$ and for $j=1,\dots,P_{c}$ according to 
+
+\begin{equation}
+	c_{i j, t}=\frac{2}{n+1} \operatorname{rank}\left(\overline{c}_{i j, t}\right)-1.
+\end{equation}
 
 For simulation of $x_{t}$ we consider a VAR model
 \begin{flalign*}

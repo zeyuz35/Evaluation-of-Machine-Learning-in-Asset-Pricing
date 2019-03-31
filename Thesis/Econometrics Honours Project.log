@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.6960 64-bit) (preloaded format=pdflatex 2019.3.13)  28 MAR 2019 12:26
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.6960 64-bit) (preloaded format=pdflatex 2019.3.13)  31 MAR 2019 12:24
 entering extended mode
 **"./Econometrics Honours Project.tex"
 ("Econometrics Honours Project.tex"
@@ -1485,7 +1485,7 @@ LaTeX Font Info:    Try loading font information for U+msb on input line 46.
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) [3] [4] [5] [6]
 [7] [8] [9] [10]
-Overfull \hbox (59.8731pt too wide) detected at line 219
+Overfull \hbox (59.8731pt too wide) detected at line 235
 []
  []
 
@@ -1508,7 +1508,7 @@ l'.
 Here is how much of TeX's memory you used:
  44183 strings out of 492946
  945775 string characters out of 3135510
- 1403381 words of memory out of 3000000
+ 1403375 words of memory out of 3000000
  47520 multiletter control sequences out of 15000+200000
  578687 words of font info for 58 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -1528,7 +1528,7 @@ les/MiKTeX 2.9/fonts/type1/public/lm/lmsy10.pfb><C:/Program Files/MiKTeX 2.9/fo
 nts/type1/public/lm/lmsy6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/l
 m/lmsy8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/symbols/ms
 bm10.pfb>
-Output written on "Econometrics Honours Project.pdf" (16 pages, 222516 bytes).
+Output written on "Econometrics Honours Project.pdf" (16 pages, 222615 bytes).
 PDF statistics:
  142 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
