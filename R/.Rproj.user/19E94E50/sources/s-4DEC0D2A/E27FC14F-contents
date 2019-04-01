@@ -1,0 +1,354 @@
+---
+title: "Simulation"
+author: "Ze Yu Zhong"
+date: "21 March 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(glmnet)
+library(tidyverse)
+library(keras)
+library(ggplot2)
+```
+
+```{r}
+#Simulation
+N <- 200
+P_c <- 100
+```
+
+
+
+```{r}
+#characteristics C
+
+elm <- matrix(
+  data = 0, nrow = N, ncol = P_c
+)
+
+C_bar <- rep(list(elm), 181)
+
+for (t in 1:180) {
+  for (j in 1:P_c) {
+    rho <- runif(1, 1/2, 1)
+    for (i in 1:N) {
+      C_bar[[t+1]][i, j] <- C_bar[[t]][i, j]*rho + rnorm(1, 0, 1)
+    }
+  }  
+}
+
+#Remove initial
+
+C_bar[[1]] <- NULL
+
+#B and lambda matrix
+Lambda <- matrix(
+  data = rnorm(N*4, 0, 1),
+  nrow = N, ncol = 4
+)
+
+B <- (Lambda)%*%t(Lambda)
+B <- B + 1/10*diag(nrow = nrow(B))
+
+#Transform into correlation matrix W
+W <- diag(B)^(-1/2)*B*diag(B)^(-1/2)
+
+C_hat <- rep(list(elm), 180)
+
+for (t in 1:180) {
+  C_hat[[t]] <- W %*% C_bar[[t]]
+}
+
+#Generate final "observed" C
+
+C <- rep(list(elm), 180)
+
+for (t in 1:180) {
+  C[[t]] <- (2/(N*P_c+1))*(
+    rank(C_bar[[t]])
+    ) - matrix(
+      data = 1, nrow = N, ncol = P_c
+      )
+}
+
+```
+
+```{r}
+#xt
+A1 <- matrix(c(
+  0.95, 0, 0,
+  0, 0.95, 0,
+  0, 0, 0.95),
+  nrow = 3, ncol = 3
+)
+
+A2 <- matrix(c(
+  1, 0, 0.25,
+  0, 0.95, 0,
+  0.25, 0, 0.95),
+  nrow = 3, ncol = 3
+)
+
+A3 <- matrix(c(
+  0.99, 0.2, 0.1,
+  0.2, 0.90, -0.3,
+  0.1, -0.3, -0.99),
+  nrow = 3, ncol = 3
+)
+
+xt <- data.frame(x1 = c(0:179),
+                 x2 = c(0:179),
+                 x3 = c(0:179)
+)
+
+gen_xt <- function(A, xt){
+  Axt <- xt
+  for (i in 1:179) {
+    ut <- rnorm(3, mean = 0, sd = 1)
+    Axt[1+i,] <- Axt[i,] + ut
+  }
+  return(Axt)
+}
+
+plot_xt <- function(xt){
+  xt_tidy <- cbind(t = c(1:180), xt)
+
+  xt_tidy <- xt_tidy %>%
+    gather(series, value, -t)
+  
+  ggplot(data = xt_tidy) +
+    geom_line(aes(x = t, y = value, colour = series))
+}
+
+
+```
+
+
+```{r}
+#Different g() functions
+
+logit <- function(x){
+  (1 + exp(-x))^(-1)
+}
+
+##############################
+#g1
+##############################
+
+g1 <- function(C, x, i, t){
+  theta <- matrix(c(0.02, 0.02, 0.02), ncol = 1)
+  matrix(c(
+    C[[t]][i,1], C[[t]][i,2], C[[t]][i,3] * t(x[t, 3])
+    ), nrow = 1) %*% theta
+}
+
+#test if working
+g1(C, xt, 1, 1)
+
+#############################
+#g2
+##############################
+
+g2 <- function(C, x, i, t){
+  theta <- matrix(c(0.04, 0.035, 0.01), ncol = 1)
+  matrix(c(
+    C[[t]][i, 1]^2, 
+    C[[t]][i, 1]*C[[t]][i, 2],
+    sign(
+      C[[t]][i, 3] * t(x[t, 3])
+      )
+  ), nrow = 1) %*% theta
+}
+
+#test if working
+g2(C, xt, 1, 1)
+
+#############################
+#g3
+#############################
+
+g3 <- function(C, x, i, t){
+  #Need 4 elements for theta
+  theta <- matrix(c(0.04, 0.035, 0.01, 0.01), ncol = 1)
+  matrix(
+    c(
+      (C[[t]][i, 1] > 0), 
+      C[[t]][i, 2]^3,
+      C[[t]][i, 1] * C[[t]][i, 2] * (C[[t]][i, 3] > 0),
+      logit(C[[t]][i, 3])
+      ),
+    nrow = 1) %*% theta
+}
+
+#test if working
+g3(C, xt, 1, 1)
+
+
+#################################
+#g4
+#Remember that we are supposed to pass C hat through to g4
+#################################
+
+g4 <- function(C, x, i, t){
+  theta <- matrix(c(0.02, 0.02, 0.02), ncol = 1)
+  matrix(c(
+    C[[t]][i, 1],
+    C[[t]][i, 2],
+    C[[t]][i, 3]*t(x[t, 3])
+    ), nrow = 1
+  ) %*% theta
+}
+
+#test if working
+g4(C_hat, xt, 1, 1)
+
+#################################
+#Function to generate entire set of C()
+
+```
+
+```{r}
+##Generate Datasets
+##With 3 specifications of A and 4 specifications of g(), there should be 3*4 = 12 different sets of data in total
+
+##Beta, i,t
+eln <- matrix(0, nrow = N, ncol = 3)
+
+Beta <- rep(list(eln), 180)
+
+for (t in 1:180) {
+  Beta[[t]] <- C[[t]][, 1:3]
+}
+
+
+##v vector of errors
+elo <- matrix(0, nrow = 3, ncol = 1)
+
+v <- rep(list(elo), 180)
+
+for (t in 1:180) {
+  v[[t]] <- matrix(
+    data = rnorm(3, 0, 1),
+    nrow = 3, ncol = 1
+  )
+}
+
+##Error Structure
+
+omega <- -0.736
+gamma <- 0.90
+w <- sqrt(0.363)
+
+
+#sigma
+sigma2 <- rep(list(0), 181)
+
+sigma2[[1]] <- omega + w
+
+for (t in 1:180) {
+  sigma2[[t+1]] <- omega + gamma*sigma2[[t]] + w
+}
+
+sigma2[[1]] <- NULL
+
+#error
+
+error <- rep(
+  list(
+    matrix(
+      0, nrow = N, ncol = 1
+    )
+  ), 180
+)
+
+for (t in 1:180){
+  for (i in 1:200) {
+    error[[t]][i] <- exp(sqrt(sigma2[[t]])/2)*rnorm(1, 0, 1)
+  }
+}
+
+##############################
+##A1
+##############################
+A1xt <- gen_xt(A1, xt)
+
+#g1
+for (t in 1:180) {
+  for (i in 1:N){
+    g1(C, A1xt, i, t) + Beta[[t]] %*% v[[t]] + 
+  }
+}
+
+#g2
+
+
+#g3
+
+
+#g4
+
+
+
+##############################
+##A2
+##############################
+
+A2xt <- gen_xt(A2, xt)
+
+#g1
+
+
+#g2
+
+
+#g3
+
+
+#g4
+
+
+
+##############################
+##A3
+##############################
+
+A3xt <- gen_xt(A3, xt)
+
+#g1
+
+
+#g2
+
+
+#g3
+
+
+#g4
+
+
+```
+
+
+```{r}
+#OLS
+
+```
+
+```{r}
+#Elasticnet
+
+
+```
+
+```{r}
+#Random Forest
+
+```
+
+```{r}
+#Neural Network
+
+```
+
