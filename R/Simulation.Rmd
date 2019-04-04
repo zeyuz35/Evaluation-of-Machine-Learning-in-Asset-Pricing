@@ -377,9 +377,9 @@ gen_error <- function(){
 ```
 
 ```{r}
-##############################
+############################################################################
 ##Function to generate return series given specification of A and g function
-##############################
+############################################################################
 
 gen_rt <- function(A, g){
   elp <- matrix(0, nrow = N, ncol = 1)
@@ -443,9 +443,18 @@ rt_A3_g4 <- gen_rt(A3, g4)
 ```
 
 ```{r}
-###############################
+##############################################################################
 ##Function to build predictor set for each i individual stock, and each time t
-###############################
+##############################################################################
+
+###Note that the format of the list/matrix is different from previously so that it can be fed into algorithms more easily
+###Instead of t denoting the list, it is now the row number of the matrix containing all predictors
+###This should make it very easy to reconcile with the true return series
+
+gen_z <- function(){
+  
+}
+
 null_matrix <- matrix(0, nrow = Time+1, ncol = 4*P_c)
 
 z <- rep(list(null_matrix), N)
