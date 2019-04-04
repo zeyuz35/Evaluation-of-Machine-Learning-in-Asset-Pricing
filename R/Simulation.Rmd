@@ -159,21 +159,23 @@ A3 <- matrix(c(
   nrow = 3, ncol = 3
 )
 
-xt <- data.frame(x1 = c(0:179),
-                 x2 = c(0:179),
-                 x3 = c(0:179)
-)
-
 ###################################
 ###Function to Generate xt series
 ###################################
 
-gen_xt <- function(A, xt){
+gen_xt <- function(A){
+  
+  xt <- data.frame(x1 = c(0:Time),
+                   x2 = c(0:Time),
+                   x3 = c(0:Time)
+  )
+  
   Axt <- xt
-  for (i in 1:Time+1 - 1) {
+  for (i in 1:(Time+1)) {
     ut <- rnorm(3, mean = 0, sd = 1)
     Axt[1+i,] <- Axt[i,] + ut
   }
+  Axt <- Axt[-1,]
   return(Axt)
 }
 
@@ -182,7 +184,7 @@ gen_xt <- function(A, xt){
 #########################################
 
 plot_xt <- function(xt){
-  xt_tidy <- cbind(t = c(1:Time+1), xt)
+  xt_tidy <- cbind(t = c(1:(Time+1)), xt)
 
   xt_tidy <- xt_tidy %>%
     gather(series, value, -t)
@@ -190,6 +192,7 @@ plot_xt <- function(xt){
   ggplot(data = xt_tidy) +
     geom_line(aes(x = t, y = value, colour = series))
 }
+
 ```
 
 
@@ -384,7 +387,7 @@ gen_rt <- function(A, g){
   rt <- rep(list(elp), Time+1)
   
   #########################
-  Axt <- gen_xt(A, xt)
+  Axt <- gen_xt(A)
   Beta <- gen_Beta()
   v <- gen_v()
   error <- gen_error()
@@ -401,6 +404,9 @@ gen_rt <- function(A, g){
 ```
 
 ```{r}
+##############################
+##Generate Return Series
+##############################
 
 ##############################
 ##g1
@@ -440,13 +446,16 @@ rt_A3_g4 <- gen_rt(A3, g4)
 ###############################
 ##Function to build predictor set for each i individual stock, and each time t
 ###############################
+null_matrix <- matrix(0, nrow = Time+1, ncol = 4*P_c)
 
-z <- matrix(0, nrow = 400, ncol = Time)
+z <- rep(list(null_matrix), N)
 
-for (i in 1:Time) {
-  for (i in 1:N){
-    z[[t]][i] <- t(
-      kronecker(t(cbind(c(rep(1, 180)), xt)[t, ]), C[[t]][i, ])
+xt <- gen_xt(A1)
+
+for (i in 1:N) {
+  for (t in 1:(Time+1)){
+    z[[i]][t, ] <- t(
+      kronecker(t(cbind(c(rep(1, Time+1)), xt)[t, ]), C[[t]][i, ])
       )
   }
 }
