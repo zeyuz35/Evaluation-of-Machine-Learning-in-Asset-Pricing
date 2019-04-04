@@ -436,6 +436,24 @@ rt_A2_g4 <- gen_rt(A2, g4)
 rt_A3_g4 <- gen_rt(A3, g4)
 ```
 
+```{r}
+###############################
+##Function to build predictor set for each i individual stock, and each time t
+###############################
+
+z <- matrix(0, nrow = 400, ncol = Time)
+
+for (i in 1:Time) {
+  for (i in 1:N){
+    z[[t]][i] <- t(
+      kronecker(t(cbind(c(rep(1, 180)), xt)[t, ]), C[[t]][i, ])
+      )
+  }
+}
+
+```
+
+
 
 ```{r}
 #OLS
