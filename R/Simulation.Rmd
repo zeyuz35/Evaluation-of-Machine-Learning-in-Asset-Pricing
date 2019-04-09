@@ -21,7 +21,6 @@ library(ggplot2)
 #####################################
 ##Simulation
 #####################################
-
 #Number of stocks
 N <- 200
 #Number of characteristics that underly true model
@@ -124,10 +123,14 @@ gen_C <- function(){
   
   return(C)
 }
-
-
-
 ```
+
+```{r}
+C_bar <- gen_C_bar()
+C_hat <- gen_C_hat()
+C <- gen_C()
+```
+
 
 ```{r}
 ########################
@@ -162,6 +165,8 @@ A3 <- matrix(c(
 ###################################
 ###Function to Generate xt series
 ###################################
+#xt is a multivariate time series with 3 different series
+#Generates xt series, gien A matrix specification
 
 gen_xt <- function(A){
   
@@ -183,6 +188,8 @@ gen_xt <- function(A){
 ##Function to plot xt
 #########################################
 
+#Transforms xt series to wide format to plot it
+
 plot_xt <- function(xt){
   xt_tidy <- cbind(t = c(1:(Time+1)), xt)
 
@@ -201,49 +208,59 @@ plot_xt <- function(xt){
 ##Different g() functions
 ############################
 
+#Logit function, used in some specified structures
+
 logit <- function(x){
   (1 + exp(-x))^(-1)
 }
+
+#Remmeber that theta needs to be tuned later. Set up all of the functions as functions of theta
 
 ##############################
 #g1
 ##############################
 
-g1 <- function(C, x, i, t){
-  theta <- matrix(c(0.02, 0.02, 0.02), ncol = 1)
+#Default theta, 1x3 dimensions
+theta <- matrix(c(0.02, 0.02, 0.02), nrow = 1)
+
+g1 <- function(C, x, i, t, theta){
+  
   matrix(c(
     C[[t]][i,1], C[[t]][i,2], C[[t]][i,3] * t(x[t, 3])
-    ), nrow = 1) %*% theta
+    ), nrow = 1) %*% t(theta)
 }
 
 #test if working
-g1(C, xt, 1, 1)
+g1(C, xt, 1, 1, theta)
 
 ##############################
 #g2
 ##############################
 
-g2 <- function(C, x, i, t){
-  theta <- matrix(c(0.04, 0.035, 0.01), ncol = 1)
+#Default theta, 1x3 dimensions
+theta <- matrix(c(0.04, 0.035, 0.01), nrow = 1)
+
+g2 <- function(C, x, i, t, theta){
   matrix(c(
     C[[t]][i, 1]^2, 
     C[[t]][i, 1]*C[[t]][i, 2],
     sign(
       C[[t]][i, 3] * t(x[t, 3])
       )
-  ), nrow = 1) %*% theta
+  ), nrow = 1) %*% t(theta)
 }
 
 #test if working
-g2(C, xt, 1, 1)
+g2(C, xt, 1, 1, theta)
 
 #############################
 #g3
 #############################
 
-g3 <- function(C, x, i, t){
-  #Need 4 elements for theta
-  theta <- matrix(c(0.04, 0.035, 0.01, 0.01), ncol = 1)
+#Default theta, 1x4 dimensions
+theta <- matrix(c(0.04, 0.035, 0.01, 0.01), nrow = 1)
+
+g3 <- function(C, x, i, t, theta){
   matrix(
     c(
       (C[[t]][i, 1] > 0), 
@@ -251,11 +268,11 @@ g3 <- function(C, x, i, t){
       C[[t]][i, 1] * C[[t]][i, 2] * (C[[t]][i, 3] > 0),
       logit(C[[t]][i, 3])
       ),
-    nrow = 1) %*% theta
+    nrow = 1) %*% t(theta)
 }
 
 #test if working
-g3(C, xt, 1, 1)
+g3(C, xt, 1, 1, theta)
 
 
 #################################
@@ -263,18 +280,20 @@ g3(C, xt, 1, 1)
 #Remember that we are supposed to pass C hat through to g4
 #################################
 
-g4 <- function(C, x, i, t){
-  theta <- matrix(c(0.02, 0.02, 0.02), ncol = 1)
+#Default theta, 1x3 dimensions
+theta <- matrix(c(0.02, 0.02, 0.02), nrow = 1)
+
+g4 <- function(C, x, i, t, theta){
   matrix(c(
     C[[t]][i, 1],
     C[[t]][i, 2],
     C[[t]][i, 3]*t(x[t, 3])
     ), nrow = 1
-  ) %*% theta
+  ) %*% t(theta)
 }
 
 #test if working
-g4(C_hat, xt, 1, 1)
+g4(C_hat, xt, 1, 1, theta)
 
 #################################
 
@@ -282,8 +301,7 @@ g4(C_hat, xt, 1, 1)
 
 ```{r}
 ##########################
-##Generate Datasets
-##With 3 specifications of A and 4 specifications of g(), there should be 3*4 = 12 different sets of data in total
+##Functions to elements in return equation
 ##########################
 
 ###########
@@ -304,7 +322,7 @@ gen_Beta <- function(){
 }
 
 #Check
-gen_Beta()
+#gen_Beta()
 
 ###
 ##Function to generate v vector of errors
@@ -344,6 +362,7 @@ gen_error <- function(){
   
   ##Generate Sigma first
   ##Sigma2 can be negative, check with David
+  ##Needs to be fixed up, works anyway for now
   
   sigma2 <- rep(list(0), Time+1)
   
@@ -395,7 +414,7 @@ gen_rt <- function(A, g){
   
   for (t in 1:(Time)) {
     for (i in 1:N){
-      rt[[t+1]][i] <- g(C, Axt, i, t) + Beta[[t+1]][i, ] %*% v[[t+1]] + error[[t+1]][i]
+      rt[[t+1]][i] <- g(C, Axt, i, t, theta) + Beta[[t+1]][i, ] %*% v[[t+1]] + error[[t+1]][i]
     }
   }
   
@@ -449,26 +468,75 @@ rt_A3_g4 <- gen_rt(A3, g4)
 
 ###Note that the format of the list/matrix is different from previously so that it can be fed into algorithms more easily
 ###Instead of t denoting the list, it is now the row number of the matrix containing all predictors
-###This should make it very easy to reconcile with the true return series
+###This should make it very easy to reconcile with the return series
+
+#Our P_x is 1 constant + 3 multivariate time series = 4
+#Hence, ncol = 4*P_c
 
 gen_z <- function(){
+  null_matrix <- matrix(0, nrow = Time+1, ncol = 4*P_c)
+
+  z <- rep(list(null_matrix), N)
   
-}
-
-null_matrix <- matrix(0, nrow = Time+1, ncol = 4*P_c)
-
-z <- rep(list(null_matrix), N)
-
-xt <- gen_xt(A1)
-
-for (i in 1:N) {
-  for (t in 1:(Time+1)){
-    z[[i]][t, ] <- t(
-      kronecker(t(cbind(c(rep(1, Time+1)), xt)[t, ]), C[[t]][i, ])
-      )
+  xt <- gen_xt(A1)
+  
+  for (i in 1:N) {
+    for (t in 1:(Time+1)){
+      z[[i]][t, ] <- t(
+        kronecker(t(cbind(c(rep(1, Time+1)), xt)[t, ]), C[[t]][i, ])
+        )
+    }
   }
+  return(z)
 }
 
+############################################################################
+##Function to cbind the corresponding return series and the predictor set together, and return it in dataframe form
+############################################################################
+
+gen_pooled_panel <- function(){
+  
+  #Initialize entire dataset dimensions
+  #There should be 181*200 = 36,200 rows
+  #There should be 1 return column + 1 id column + 1 time column + 400 predictors = 403 columns
+  
+  pooled_panel <- matrix(data = 0, nrow = (181*200), ncol = (1+1+1+400))
+  
+  for (i in 1:N){
+    #Extract return series for ith stock from the return series list first
+    #Initialize empty matrix
+    r <- matrix(0, nrow = Time+1, ncol = 1)
+    for (t in 1:(Time)){
+        r[t] <- rt_A1_g1[[t]][i]
+    }
+    #Cbind returns, id, time and predictors
+    panel <- cbind(r, c(rep(i, (Time+1))), c(1:(Time+1)), z[[i]])
+    pooled_panel[((i-1)*(Time+1)+1):(i*(Time+1)), ] <- panel
+  }
+  return(pooled_panel)
+}
+
+
+
+
+```
+
+```{r}
+pooled_panel <- matrix(data = 0, nrow = (181*200), ncol = (1+1+1+400))
+  
+  for (i in 1:N){
+    #Extract return series for ith stock from the return series list first
+    #Initialize empty matrix
+    r <- matrix(0, nrow = Time+1, ncol = 1)
+    for (t in 1:(Time)){
+        r[t] <- rt_A1_g1[[t]][i]
+    }
+    #Cbind returns, id, time and predictors
+    panel <- cbind(r, c(rep(i, (Time+1))), c(1:(Time+1)), z[[i]])
+    pooled_panel[((i-1)*(Time+1)+1):(i*(Time+1)), ] <- panel
+  }
+
+pooled_panel <- data.frame(return = pooled_panel[, 1], stock = pooled_panel[, 2], time = pooled_panel[, 3], pooled_panel[, 4:403])
 ```
 
 
