@@ -539,10 +539,18 @@ pooled_panel <- matrix(data = 0, nrow = (181*200), ncol = (1+1+1+400))
 pooled_panel <- data.frame(return = pooled_panel[, 1], stock = pooled_panel[, 2], time = pooled_panel[, 3], pooled_panel[, 4:403])
 ```
 
+```{r}
+#Tune theta to achieve desired cross sectional r squared
+```
 
 
 ```{r}
-#OLS
+#Create Training + Test Sets
+```
+
+
+```{r}
+#Pooled OLS w/ Huber Loss
 
 ```
 
