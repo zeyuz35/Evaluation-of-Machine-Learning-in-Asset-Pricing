@@ -1,30 +1,37 @@
 %Preamble
-\documentclass[man, a4paper, biblatex]{apa6}
+\documentclass[man, a4paper, biblatex]{article}
 \usepackage[english]{babel}
-\usepackage{amsmath}
+\usepackage[margin=1in]{geometry}
 \usepackage{neuralnetwork}
 \usepackage{forest}
 \usepackage[ruled,vlined]{algorithm2e}
 \usepackage[colorinlistoftodos]{todonotes}
 \usepackage{amsfonts}
+\usepackage{setspace,graphicx,epstopdf,amsmath}
+\usepackage{marginnote,datetime,url,enumitem,subfigure}
 
-\addbibresource{Econometrics Honours Project.bib}
+\newcommand{\smalltodo}[2][] {\todo[caption={#2}, size=\scriptsize,%
+	fancyline,#1]{\begin{spacing}{.5}#2\end{spacing}}}
+	
+\newcommand{\rhs}[2][]{\smalltodo[color=green!30,#1]{{\bf RS:} #2}}
 
 \title{Evaluation of Machine Learning in Empirical Asset Pricing}
-\shorttitle{Evaluation of Machine Learning in Asset Pricing}
 \author{Ze Yu Zhong}
-\abstract{Empirical Asset Pricing via Machine Learning}
-\affiliation{Monash University}
+
 
 \begin{document}
 
 \maketitle
 
+\listoftodos
+
+\tableofcontents
+
 \section{Introduction}
 
 \subsection{Motivations}
 
-\todo{
+\rhs{
 Data skepticism (have you set up the data properly?)
 Show/highlight non-robustness of ML methods
 Skepticism of validity of methods that include non-stationary factors (like dividend yield)
@@ -35,11 +42,11 @@ See how it performs on real data
 
 \subsection{Literature}
 
-\todo{pending Literature Review}
+\rhs{pending Literature Review}
 
 \subsection{Main Findings}
 
-\todo{Pending}
+\rhs{Pending}
 
 \subsection{Limitations of Machine Learning}
 
@@ -49,7 +56,7 @@ This means that machine learning algorithms do not, nor do they aim to, explain 
 
 \section{Methodology}
 
-\subsection{Overall Design}
+\subsection{Overall Model Design}
 
 Each model will be presented and explained so that a reader without any machine learning background can understand the basic idea behind the model. Computational methods such as algorithms however, will only have their general principles and background explained in the appendix. This is because there are many variations of algorithms available, and more importantly, specific understanding of how the algorithm works is not necessary. 
 
@@ -77,9 +84,11 @@ The second method is a "rolling window" method, where a fixed size or "window" f
 
 The third is a "recursive" method, which is the same as the rolling window method, but different in that the training set always contains previous data, with only the validation set staying fixed in size and "rolling" forwards. Hence, it is like a rolling window approach that has a growing training sample.
 
-Both the rolling window and recursive schemes are very computationally intensive. Therefore, a hybrid of the methods where the training, validation and test samples are split, and hence models refit once each year. The training set is increased by one year each year, the validation set remains one year in length but moves forward by one year, and forecasts are only made using that model for the subsequent year. Cross validation was crucially not done to maintain the temporal ordering of the data.
+Both the rolling window and recursive schemes are very computationally intensive. Therefore, a hybrid of the methods where the training, validation and test samples are split, and hence models refit once each year. The training set is increased by one year each year, the validation set remains one year in length but moves forward by one year, and forecasts are only made using that model for the subsequent year. Cross validation was not done to maintain the temporal ordering of the data.
 
-\subsection{Simple Linear Model}
+\rhs{insert a picture of how the windows work from say caret documentation, would be great}
+
+\subsection{Linear Model}
 
 The least complex model considered is the simple linear regression model, otherwise known by its estimation method ordinary least squares (OLS). OLS struggles with high-dimensionality. Nevertheless, despite being expected to perform poorly it was implemented as a "control."
 
@@ -97,7 +106,7 @@ The baseline computational algorithm for this model is to minimize the standard 
 	content...
 \end{equation}
 
-\subsection{Penalized Linear}
+\subsection{Penalized Linear Model}
 
 Penalized linear models have the same underlying statistical model as simple linear models, only considering baseline untransformed predictors. They differ in their addition of a new penalty term in the loss function:
 
@@ -120,7 +129,7 @@ The $\rho = 1$ case corresponds to ridge regression, which uses $l_2$ that shrin
 
 The hyperparameters $\lambda$ and $\rho$ are both tuned using the validation sample. See appendix for algorithm.
 
-\todo{update when algorithm is written}
+\rhs{update when algorithm is written}
 
 \subsection{Classification and Regression Trees}
 
@@ -153,6 +162,8 @@ The scope of this paper is limited to traditional "feed-forward" networks. The f
 
 Neural networks with up to 5 hidden layers were considered, each named NNX where X represents the number of hidden layers. The number of neurons is each layer was chosen according to the geometric pyramid rule, i.e. NN1 has 32 neurons, NN2 has 32 and 16 neurons in the first and second hidden layers respectively, NN3 has 32, 16, and 8 neurons, NN4 has 32, 16, 8, and 4 neurons, and NN5 has 32, 16, 8, 4, 2 neurons respectively. All units are fully connected; that is, each neurons receives input from all neurons the layer before it.
 
+\subsubsection{Activation Function}
+
 The ReLU activation function was used for all hidden layers owing to its high computational speed, and hence popularity within recent literature. Other potential choices for activation functions such as sigmoid, softmax, tanh etc. were not used due to computational cost.
 
 \begin{equation}
@@ -162,7 +173,7 @@ The ReLU activation function was used for all hidden layers owing to its high co
 The neural networks detailed in this paper have the following general formula. Let $K^(l)$ denote the number of neurons in each layer $l = 1, \dots, L$. Define the output of neuron $k$ in layer $l$ as $x_k^(l)$. Next, define the vector of outputs for this layer as $x^(l) = (1, x_1^(l), \dots, x_{K^(l)}^(l))'$. The input layer is defined using predictors, $x^(0) = (1, z_1, \dots, z_N)'$. The recursive output formula for the neural network at each neuron in layer $l > 0$ is then:
 
 \begin{equation}
-	x_k^(l) = ReLU(x^(l-1)'\theta_k^{l-1}),
+	x_k^{(l)} = ReLU(x^{(l-1)'}\theta_k^{l-1}),
 \end{equation}
 
 with the final output
@@ -190,8 +201,6 @@ r_{i, t+1}&=g\left(z_{i, t}\right)+\beta_{i,t+1}v_{t+1}+e_{i, t+1}, \quad z_{i, 
 \end{flalign*}
 
 Let $v_{t+1}$ be a $3\times 1$ vector of errors, and $w_{i,t+1},\varepsilon_{i,t+1}$ scalar error terms. The matrix $C_t$ is an $N\times P_c$ vector of latent factors, where the first three columns correspond to $\beta_{i,t}$, across the $1\leq i\leq N$ dimensions, while the remaining $P_c-3$ factors do not enter the return equation. The $P_x\times1$ vector $x_t$ is a multivariate time series, and $\varepsilon_{t+1}$ is a $N\times 1$ vector of idiosyncratic errors. 
-
-
 
 One of my key concerns with the Gu et al. (2019) design is that the factors are uncorrelated across $i$, and, in particular, that the factors which do not matter in the return equation are uncorrelated with those that matter. This is not what is observed in practice. 
 
@@ -238,9 +247,11 @@ Need to work out the corresponding cr0ss-sectional $R^2$ in this case. We can th
 
 Follow Gu et al. (2019) in regards to the choice of $N,T,P_{c}$
 
-\subsection{Performance Evaluation}
+\subsection{Model Evaluation}
 
-Predictive performance for individual excess stock returns were assessed using the out of sample $R^2$:
+\subsubsection{Overall Performance}
+
+Overall predictive performance for individual excess stock returns were assessed using the out of sample $R^2$:
 
 \begin{equation}
 	R^2_{OOS} = 1 - \frac{\sum_{(i, t)\in\mathcal{T}_3}(r_{i, t+1}-\widehat{r}_{i, t+1})}{\sum_{(i, t)\in\mathcal{T}_3}r_{i, t+1}^2}
@@ -248,15 +259,19 @@ Predictive performance for individual excess stock returns were assessed using t
 
 where $\mathcal{T}_3$ indicates that the fits are only assessed on the test subsample, which is never used for training or tuning. 
 
+\subsubsection{Diebold Mariano Test}
+
+The Diebold-Mariano test is a procedure which tests whether or not the forecasts between two different models are significantly different.  
+
 \subsection{Variable Importance}
 
-\todo{Pending}
+\rhs{Pending}
 
 \section{Study}
 
 \subsection{Data}
 
-\todo{Pending}
+\rhs{Pending}
 
 \subsection{Model}
 
@@ -269,8 +284,6 @@ All machine learning methods are designed to approximate the empirical model \( 
 where \( c_{i,t} \) is a \( P_c \times 1 \) matrix of characteristics for each stock \(i\), and \(x_t\) is a $P_x \times 1$ vector of macroeconomic predictors (and are this common to all stocks, including a constant). $z_{i,t}$ is a $P \times 1$ vector of features for predicting individual stock returns ($P = P_cP_x$) and includes interactions between individual characteristics and macroeconomic characteristics. 
 
 \cite{TESL}
-
-\printbibliography
 
 \section{Appendix}
 
@@ -339,7 +352,7 @@ where \( c_{i,t} \) is a \( P_c \times 1 \) matrix of characteristics for each s
 \subsubsection{Neural Networks}
 
 There are numerous stochastic gradient descent algorithms available.
-\todo{research different types of algorithms. Paper used ADAM}
+\rhs{research different types of algorithms. Paper used ADAM}
 
 \begin{algorithm}
 	\SetAlgoLined
