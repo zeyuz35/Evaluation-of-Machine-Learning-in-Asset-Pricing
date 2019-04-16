@@ -2,7 +2,7 @@
 \documentclass[man, a4paper, biblatex]{article}
 \usepackage[english]{babel}
 \usepackage[margin=1in]{geometry}
-\usepackage{neuralnetwork}
+
 \usepackage{forest}
 \usepackage[ruled,vlined]{algorithm2e}
 \usepackage[colorinlistoftodos]{todonotes}
@@ -13,6 +13,16 @@
 \usepackage{natbib}
 
 \linespread{1.3}
+
+%Neural Network Packages
+\usepackage{neuralnetwork}
+\usepackage{xpatch}
+\makeatletter
+% \linklayers have \nn@lastnode instead of \lastnode,
+% patch it to replace the former with the latter, and similar for thisnode
+\xpatchcmd{\linklayers}{\nn@lastnode}{\lastnode}{}{}
+\xpatchcmd{\linklayers}{\nn@thisnode}{\thisnode}{}{}
+\makeatother
 
 %%TODONOTE commands
 \newcommand{\smalltodo}[2][] {\todo[caption={#2}, size=\scriptsize,%
@@ -182,16 +192,48 @@ The scope of this paper is limited to traditional "feed-forward" networks. The f
 
 Neural networks with up to 5 hidden layers were considered, each named NNX where X represents the number of hidden layers. The number of neurons is each layer was chosen according to the geometric pyramid rule: NN1 has 32 neurons, NN2 has 32 and 16 neurons in the first and second hidden layers respectively, NN3 has 32, 16, and 8 neurons, NN4 has 32, 16, 8, and 4 neurons, and NN5 has 32, 16, 8, 4, 2 neurons respectively. All units are fully connected; that is, each neurons receives input from all neurons the layer before it.
 
-\begin{center}
-	\begin{neuralnetwork}[height=4]
-		\newcommand{\nodetextclear}[2]{}
-		\newcommand{\nodetextx}[2]{$x_#2$}
-		\newcommand{\nodetexty}[2]{$y_#2$}
-		\inputlayer[count=4, bias=false, title=Input\\layer, text=\nodetextx]
-		\hiddenlayer[count=5, bias=false, title=Hidden\\layer, text=\nodetextclear] \linklayers
-		\outputlayer[count=3, title=Output\\layer, text=\nodetexty] \linklayers
-	\end{neuralnetwork}
-\end{center}
+\rhs{would be best to customize neuron text}
+
+\begin{figure}
+	\begin{center}
+		\begin{neuralnetwork}
+			%Options
+			[nodespacing=10mm, layerspacing=20mm,
+			maintitleheight=2.5em, layertitleheight=2.5em,
+			height=5, toprow=false, nodesize=17pt, style={},
+			title={}, titlestyle={}]
+			\newcommand{\nodetextclear}[2]{}
+		    %use \ifnum to get different labels, such as x_n on the last neuron
+			\newcommand{\nodetextx}[2]{\ifnum #2=5 $x_n$ \else $x_#2$ \fi}
+			\newcommand{\nodetexty}[2]{$y_#2$}
+			%Input Layer
+			\inputlayer[count=5, bias=false, exclude = {4}, title=Input Layer, text=\nodetextx]
+			%Hidden Layer 1
+			\hiddenlayer[count=5, bias=false, exclude = {4}, title=Hidden Layer 1, text=\nodetextclear] 
+				\linklayers[not from = {4}, not to = {4}]
+			%Hidden Layer 2
+			\hiddenlayer[count=5, bias=false, exclude = {4}, title=Hidden Layer 2, text=\nodetextclear] 
+				\linklayers[not from = {4}, not to = {4}]
+			%Hidden Layer 3
+			\hiddenlayer[count=5, bias=false, exclude = {4}, title=Hidden Layer 3, text=\nodetextclear] 
+				\linklayers[not from = {4}, not to = {4}]
+			%Hidden Layer 4
+			\hiddenlayer[count=4, bias=false, title=Hidden Layer 4, text=\nodetextclear] 
+				\linklayers[not from = {4}]
+			%Hidden Layer 5
+			\hiddenlayer[count=2, bias=false, title=Hidden Layer 5, text=\nodetextclear] \linklayers
+			%Final Layer
+			\outputlayer[count=1, title=Output Layer, text=\nodetexty] \linklayers
+			% draw dots
+			\path (L0-3) -- node{$\vdots$} (L0-5);
+			\path (L1-3) -- node{$\vdots$} (L1-5);
+			\path (L2-3) -- node{$\vdots$} (L2-5);
+			\path (L3-3) -- node{$\vdots$} (L3-5);
+		\end{neuralnetwork}
+	\end{center}
+\caption{Example Neural Network}
+\end{figure}
+
 
 \subsubsection{Activation Function}
 
