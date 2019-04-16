@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.6960 64-bit) (preloaded format=pdflatex 2019.3.13)  16 APR 2019 22:28
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.6960 64-bit) (preloaded format=pdflatex 2019.3.13)  16 APR 2019 23:58
 entering extended mode
 **"./Econometrics Honours Project.tex"
 ("Econometrics Honours Project.tex"
@@ -1060,18 +1060,18 @@ LaTeX Warning: Unused global option(s):
 ("Econometrics Honours Project.aux")
 \openout1 = `"Econometrics Honours Project.aux"'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 40.
+LaTeX Font Info:    ... okay on input line 40.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 40.
+LaTeX Font Info:    ... okay on input line 40.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 40.
+LaTeX Font Info:    ... okay on input line 40.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 40.
+LaTeX Font Info:    ... okay on input line 40.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 40.
+LaTeX Font Info:    ... okay on input line 40.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 40.
+LaTeX Font Info:    ... okay on input line 40.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -1122,11 +1122,11 @@ ABD: EveryShipout initializing macros
 \makeMPintoPDFobject=\count366
 \everyMPtoPDFconversion=\toks55
 )
-LaTeX Font Info:    Try loading font information for U+msa on input line 39.
+LaTeX Font Info:    Try loading font information for U+msa on input line 42.
  ("C:\Program Files\MiKTeX 2.9\tex/latex/amsfonts\umsa.fd"
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 39.
+LaTeX Font Info:    Try loading font information for U+msb on input line 42.
 
 ("C:\Program Files\MiKTeX 2.9\tex/latex/amsfonts\umsb.fd"
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
@@ -1143,12 +1143,12 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 \openout6 = `"Econometrics Honours Project.toc"'.
 
 
-Overfull \hbox (4.11134pt too wide) in paragraph at lines 56--56
+Overfull \hbox (4.11134pt too wide) in paragraph at lines 59--59
 \OT1/cmr/m/n/7 Show/highlight 
  []
 
 
-Overfull \hbox (4.11134pt too wide) in paragraph at lines 56--56
+Overfull \hbox (4.11134pt too wide) in paragraph at lines 59--59
 \OT1/cmr/m/n/7 Show/highlight 
  []
 
@@ -1441,19 +1441,19 @@ Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
  [5] [6] [7]
-Overfull \hbox (23.92381pt too wide) detected at line 382
+Overfull \hbox (23.92381pt too wide) detected at line 396
 []
  []
 
 [8] [9] [10] [11] ("Econometrics Honours Project.aux") ) 
 Here is how much of TeX's memory you used:
- 37447 strings out of 492946
- 816030 string characters out of 3135510
- 967783 words of memory out of 3000000
- 40850 multiletter control sequences out of 15000+200000
+ 37451 strings out of 492946
+ 816047 string characters out of 3135510
+ 970686 words of memory out of 3000000
+ 40854 multiletter control sequences out of 15000+200000
  541166 words of font info for 58 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 61i,16n,81p,1646b,1329s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 61i,16n,81p,1646b,1334s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Files/MiKTe
 X 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Program Files/MiKTeX 2.9/fo
 nts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type
@@ -1471,7 +1471,7 @@ cmsy10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy5.pf
 b><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Pro
 gram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/Program Fil
 es/MiKTeX 2.9/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on "Econometrics Honours Project.pdf" (11 pages, 274246 bytes).
+Output written on "Econometrics Honours Project.pdf" (11 pages, 277639 bytes).
 PDF statistics:
  137 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
