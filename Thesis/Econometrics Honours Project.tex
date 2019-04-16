@@ -182,6 +182,17 @@ The scope of this paper is limited to traditional "feed-forward" networks. The f
 
 Neural networks with up to 5 hidden layers were considered, each named NNX where X represents the number of hidden layers. The number of neurons is each layer was chosen according to the geometric pyramid rule: NN1 has 32 neurons, NN2 has 32 and 16 neurons in the first and second hidden layers respectively, NN3 has 32, 16, and 8 neurons, NN4 has 32, 16, 8, and 4 neurons, and NN5 has 32, 16, 8, 4, 2 neurons respectively. All units are fully connected; that is, each neurons receives input from all neurons the layer before it.
 
+\begin{center}
+	\begin{neuralnetwork}[height=4]
+		\newcommand{\nodetextclear}[2]{}
+		\newcommand{\nodetextx}[2]{$x_#2$}
+		\newcommand{\nodetexty}[2]{$y_#2$}
+		\inputlayer[count=4, bias=false, title=Input\\layer, text=\nodetextx]
+		\hiddenlayer[count=5, bias=false, title=Hidden\\layer, text=\nodetextclear] \linklayers
+		\outputlayer[count=3, title=Output\\layer, text=\nodetexty] \linklayers
+	\end{neuralnetwork}
+\end{center}
+
 \subsubsection{Activation Function}
 
 The ReLU activation function was used for all hidden layers owing to its high computational speed, and hence popularity within recent literature. Other potential choices for activation functions such as sigmoid, softmax, tanh etc. were not used due to computational cost.
