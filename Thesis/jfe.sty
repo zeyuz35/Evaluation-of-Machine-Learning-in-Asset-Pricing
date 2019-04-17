@@ -1,0 +1,54 @@
+% Formatting for Journal of Financial Economics papers
+
+% Hack to get around issues with \makeatletter in appendix definitions.
+% One day I'll really work out what's going on...
+\newif\ifrhsapp
+\rhsappfalse
+
+% Section title format
+% Put dots after numbers in section headers.
+\newcommand{\@seccntformat@section}[1]{%
+  \ifrhsapp 
+  Appendix 
+  \else
+  \fi
+  \csname the#1\endcsname.\quad
+}
+
+\newcommand*{\@seccntformat@subsection}[1]{%
+  \csname the#1\endcsname.\quad
+}
+
+\newcommand*{\@seccntformat@subsubsection}[1]{%
+  \csname the#1\endcsname.\quad
+}
+
+\let\@@seccntformat\@seccntformat
+\renewcommand*{\@seccntformat}[1]{%
+  \expandafter\ifx\csname @seccntformat@#1\endcsname\relax
+    \expandafter\@@seccntformat
+  \else
+    \expandafter
+      \csname @seccntformat@#1\expandafter\endcsname
+  \fi
+    {#1}%
+}
+
+\renewcommand{\subsection}{\@startsection
+  {subsection}{2}{0mm}{-3.25ex \@plus -1ex \@minus -.2ex}{1.5ex \@plus.2ex}{\normalfont\large\itshape}}
+
+\renewcommand{\subsubsection}{\@startsection
+  {subsubsection}{2}{0mm}{-3.25ex \@plus -1ex \@minus -.2ex}{1.5ex \@plus.2ex}{\normalfont\itshape}}
+
+\makeatletter
+\renewcommand{\figurename}{Fig.}
+\renewcommand{\fnum@figure}[1]{\normalfont\figurename~\thefigure.}
+\makeatother
+
+% Put word "Appendix" before appendix number
+\def\appendix{\par
+  \setcounter{section}{0}%
+  \setcounter{subsection}{0}%
+  \rhsapptrue
+  \renewcommand\thesection{\Alph{section}}%
+}

@@ -1,16 +1,24 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Preamble
-\documentclass[man, a4paper, biblatex]{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[a4paper]{article}
 \usepackage[english]{babel}
 \usepackage[margin=1in]{geometry}
+\usepackage[ruled, vlined]{algorithm2e}
 
-\usepackage[ruled,vlined]{algorithm2e}
-\usepackage[colorinlistoftodos]{todonotes}
 \usepackage{amsfonts}
 \usepackage{setspace,graphicx,epstopdf,amsmath}
-\usepackage{marginnote,datetime,url,enumitem,subfigure}
+\usepackage{marginnote, datetime, url, enumitem, subfigure}
+
+%Journal Style
+%JFE looks nice, JF looks awful
+	\usepackage{amsthm}
+	\usepackage{jfe}
 
 %Bibliography Stuff
 	%Use natbib even though it's old because it's compliant with journal styles
+	%Actual bibliography style etc are specified where you actually want it
 	\usepackage{natbib}
 
 %Fluff
@@ -56,14 +64,25 @@
 	}
 
 %%TODONOTE commands
+\usepackage[colorinlistoftodos]{todonotes}
 \newcommand{\smalltodo}[2][] {\todo[caption={#2}, size=\scriptsize,%
 	fancyline,#1]{\begin{spacing}{.5}#2\end{spacing}}}
 \newcommand{\rhs}[2][]{\smalltodo[color=green!30,#1]{{\bf RS:} #2}}
 %%
 
+%Graphs
+\usepackage{pgfplots}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%Title and other fluff, just before document start
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \title{Evaluation of Machine Learning in Empirical Asset Pricing}
 \author{Ze Yu Zhong}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%BEGIN DOCUMENT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
 
@@ -86,9 +105,23 @@ Methods to consider: OLS, Elasticnet, RF, NN
 See how it performs on real data
 }
 
+The non-robustness has been
+
+The inclusion of non-stationary factors such as dividend yield into more recent models is also of concern, as non-stationary factors by definition do not contain any information regarding the future.
+
+To achieve this
+
+Linear models, penalized linear models, random forests and neural networks were the machine learning algorithms considered.
+
 \subsection{Literature}
 
 \rhs{pending Literature Review}
+
+Dramatic increase in financial factors, skepticism as to whether or not they are actually significant (factor zoo)
+Failure of traditional methods to perform in high dimensionality
+Difficulty of humans to interpret and find complex, non-linear interactions
+Machine learning, geared towards prediction
+Literature has shown that a lot of these techniques show promise, and in some papers, outperform consistently
 
 \subsection{Main Findings}
 
@@ -132,7 +165,7 @@ The second method is a "rolling window" method, where a fixed size or "window" f
 
 The third is a "recursive" method, which is the same as the rolling window method, but different in that the training set always contains previous data, with only the validation set staying fixed in size and "rolling" forwards. Hence, it is also referred to as a "growing window."
 
-Both the rolling window and recursive schemes are very computationally intensive. Therefore, a hybrid of the rolling and recursive schemes was considered: the training set is increased by one year with each refit, the validation set remains one year in length but moves forward by one year, and forecasts are only made using that model for the subsequent year. Cross validation was not done to maintain the temporal ordering of the data.
+Both the rolling window and recursive schemes are very computationally intensive. Therefore, a hybrid of the rolling and recursive schemes was considered: the training set is increased by one year with each refit, the validation set remains one year in length but moves forward by one year, and forecasts are made using that model for the subsequent year. Cross validation was not done to maintain the temporal ordering of the data.
 
 \rhs{insert a picture of how the windows work from say caret documentation, would be great}
 
@@ -146,7 +179,7 @@ The simple linear model assumes that the underlying conditional expectation \( g
 	g(z_{i, t};\theta) = z_{i, t}' \theta
 \end{equation}
 
-This model can capture non-linearities only if a new predictor set \(z^*_{i, t}\) containing specified non-linear transformations or interaction terms. It is quite common to consider at least second order terms and two way interactions. 
+This model can capture non-linearities only if the predictor set \(z^*_{i, t}\) contains specified non-linear transformations or interaction terms. It is quite common to consider at least second order terms and two way interactions. 
 
 The baseline computational algorithm for this model is to minimize the standard least squares function:
 
@@ -159,12 +192,18 @@ The baseline computational algorithm for this model is to minimize the standard 
 \begin{align}
 	H(x;\xi) = 
 	\begin{cases}
-	x^2, 
-	\quad &\text{if} \quad |x| \leq \xi ; \\
-	2 \xi  |x| - \xi^2, 
-	\quad &\text{if} \quad |x| > \xi
+		x^2, 
+		\quad &\text{if} \quad |x| \leq \xi ; \\
+		2 \xi  |x| - \xi^2, 
+		\quad &\text{if} \quad |x| > \xi
 	\end{cases}
 \end{align}
+
+The Huber Loss metric offers a combination of mean squared error and mean absolute error, with errors smaller than the threshold $\xi$ being mean squared error and errors larger than the threshold $\xi$ being absolute error. This allows for the model fit to be less sensitive to outliers which are quite common in financial data. 
+
+\rhs{cite Huber loss}
+\rhs{cite something about outliers in financial data}
+\rhs{diagram representing huber loss would be great}
 
 \subsection{Penalized Linear Model}
 
@@ -212,7 +251,7 @@ where $|C|$ denotes the number of observations in set C (partition). Given $C$, 
 
 Trees, grown to a deep enough level, are highly unbiased and flexible. The tradeoff of course, is their high variance and instability. Thus, an ensemble method called "Random Forest" was proposed to regularize trees by combining many different trees into a single prediction.
 
-
+\rhs{this diagram needs work}
 
 \begin{figure}
 	\begin{center}
@@ -241,13 +280,15 @@ Random Forests are an extension of trees that attempt to address some of their p
 
 \subsubsection{Introduction}
 
-Neural networks are arguably the most complex type of model available, able to capture several non-linear interactions through many layers, hence its other name "deep learning." On the flipside, their high flexibility often means that they are among the most parameterized and least interpretable models, earning them the reputation as a black box model.
+Neural networks are arguably the most complex type of model available, able to capture several non-linear interactions through many layers, hence its other name ``deep learning." On the flipside, their high flexibility often means that they are among the most parameterized and least interpretable models, earning them the reputation as a black box model.
 
-The scope of this paper is limited to traditional "feed-forward" networks. The feed forward network consists of an "input layer" of scaled data inputs, one or more "hidden layers" which interact and non-linearly transform the inputs, and finally an output layer that aggregates the hidden layers and transform them a final time for the final output. 
+The scope of this paper is limited to traditional ``feed-forward" networks. The feed forward network consists of an ``input layer" of scaled data inputs, one or more ``hidden layers" which interact and non-linearly transform the inputs, and finally an output layer that aggregates the hidden layers and transform them a final time for the final output. 
 
 Neural networks with up to 5 hidden layers were considered, each named NNX where X represents the number of hidden layers. The number of neurons is each layer was chosen according to the geometric pyramid rule: NN1 has 32 neurons, NN2 has 32 and 16 neurons in the first and second hidden layers respectively, NN3 has 32, 16, and 8 neurons, NN4 has 32, 16, 8, and 4 neurons, and NN5 has 32, 16, 8, 4, 2 neurons respectively. All units are fully connected; that is, each neurons receives input from all neurons the layer before it.
 
 \rhs{would be best to customize neuron text}
+
+%Neural Network Figure
 
 \begin{figure}
 	\begin{center}
@@ -255,32 +296,32 @@ Neural networks with up to 5 hidden layers were considered, each named NNX where
 			%Options
 			[nodespacing=12mm, layerspacing=20mm,
 			maintitleheight=2.5em, layertitleheight=2.5em,
-			height=5, toprow=false, nodesize=20pt, style={},
+			height=9, toprow=false, nodesize=20pt, style={},
 			title={}, titlestyle={}]
 			\newcommand{\nodetextclear}[2]{}
 		    %use \ifnum to get different labels, such as x_n on the last neuron
-			\newcommand{\nodetextx}[2]{\ifnum #2=5 $x_n^{(0)}$ \else $x_#2^{(0)}$ \fi}
+			\newcommand{\nodetextx}[2]{\ifnum #2=8 $x_n^{(0)}$ \else $x_#2^{(0)}$ \fi}
 			\newcommand{\nodetexty}[2]{$y_#2$}
 			%Hidden layer textcommands
 				%32 neurons
-				\newcommand{\nodetextxa}[2]{\ifnum #2=5 $x_{32}^{(1)}$ \else $x_#2^{(1)}$ \fi}
+				\newcommand{\nodetextxa}[2]{\ifnum #2=7 $x_{32}^{(1)}$ \else $x_#2^{(1)}$ \fi}
 				%16 neurons
-				\newcommand{\nodetextxb}[2]{\ifnum #2=5 $x_{16}^{(2)}$ \else $x_#2^{(2)}$ \fi}
+				\newcommand{\nodetextxb}[2]{\ifnum #2=6 $x_{16}^{(2)}$ \else $x_#2^{(2)}$ \fi}
 				%8 neurons
 				\newcommand{\nodetextxc}[2]{\ifnum #2=5 $x_{8}^{(3)}$ \else $x_#2^{(3)}$ \fi}
 				\newcommand{\nodetextxd}[2]{$x_#2^{(4)}$}
 				\newcommand{\nodetextxe}[2]{$x_#2^{(5)}$}
 			%Input Layer
-			\inputlayer[count=5, bias=false, exclude = {4}, title=Input Layer, text=\nodetextx]
+			\inputlayer[count=8, bias=false, exclude = {7}, title=Input Layer, text=\nodetextx]
 			%Hidden Layer 1
-			\hiddenlayer[count=5, bias=false, exclude = {4}, title=Hidden Layer 1, text=\nodetextxa] 
-				\linklayers[not from = {4}, not to = {4}]
+			\hiddenlayer[count=7, bias=false, exclude = {6}, title=Hidden Layer 1, text=\nodetextxa] 
+				\linklayers[not from = {7}, not to = {6}]
 			%Hidden Layer 2
-			\hiddenlayer[count=5, bias=false, exclude = {4}, title=Hidden Layer 2, text=\nodetextxb] 
-				\linklayers[not from = {4}, not to = {4}]
+			\hiddenlayer[count=6, bias=false, exclude = {5}, title=Hidden Layer 2, text=\nodetextxb] 
+				\linklayers[not from = {6}, not to = {5}]
 			%Hidden Layer 3
 			\hiddenlayer[count=5, bias=false, exclude = {4}, title=Hidden Layer 3, text=\nodetextxc] 
-				\linklayers[not from = {4}, not to = {4}]
+				\linklayers[not from = {5}, not to = {4}]
 			%Hidden Layer 4
 			\hiddenlayer[count=4, bias=false, title=Hidden Layer 4, text=\nodetextxd] 
 				\linklayers[not from = {4}]
@@ -289,9 +330,9 @@ Neural networks with up to 5 hidden layers were considered, each named NNX where
 			%Final Layer
 			\outputlayer[count=1, title=Output Layer, text=\nodetexty] \linklayers
 			% draw dots
-			\path (L0-3) -- node{$\vdots$} (L0-5);
-			\path (L1-3) -- node{$\vdots$} (L1-5);
-			\path (L2-3) -- node{$\vdots$} (L2-5);
+			\path (L0-6) -- node{$\vdots$} (L0-8);
+			\path (L1-5) -- node{$\vdots$} (L1-7);
+			\path (L2-4) -- node{$\vdots$} (L2-6);
 			\path (L3-3) -- node{$\vdots$} (L3-5);
 		\end{neuralnetwork}
 	\end{center}
@@ -301,13 +342,15 @@ Neural networks with up to 5 hidden layers were considered, each named NNX where
 
 \subsubsection{Activation Function}
 
-The ReLU activation function was used for all hidden layers owing to its high computational speed, and hence popularity within recent literature. Other potential choices for activation functions such as sigmoid, softmax, tanh etc. were not used due to computational cost.
+The ReLU activation function:
 
 \begin{equation}
 	\operatorname{ReLU}(x) = max(0, x)
 \end{equation}
 
-The neural networks detailed in this paper have the following general formula. Let $K^{(l)}$ denote the number of neurons in each hidden layer $l = 1, \dots, L$. Define the output of neuron $k$ in layer $l$ as $x_k^{(l)}$. Next, define the vector of outputs for this layer as $x^{(l)} = (1, x_1^{(l)}, \dots, x_{K^(l)}^{(l)})'$. The input layer is defined using predictors, $x^{(0)} = (1, z_1, \dots, z_N)'$. The recursive output formula for the neural network at each neuron in layer $l > 0$ is then:
+was used for all hidden layers owing to its high computational speed, and hence popularity within recent literature. Other potential choices for activation functions such as sigmoid, softmax, tanh etc. were not used due to computational cost.
+
+The neural networks detailed in this paper have the following general formula. Let $K^{(l)}$ denote the number of neurons in each hidden layer $l = 0, 1, \dots, L$, with $l = 0$ denoting the input layer and $l = L$ denoting the output layer. Define the output of neuron $k$ in layer $l$ as $x_k^{(l)}$. Next, define the vector of outputs for this layer as $x^{(l)} = (1, x_1^{(l)}, \dots, x_{K^(l)}^{(l)})'$. The input layer is defined using predictors, $x^{(0)} = (1, z_1, \dots, z_N)'$. The recursive output formula for the neural network at each neuron in layer $l > 0$ is then:
 
 \begin{equation}
 	x_k^{(l)} = \operatorname{ReLU}(x^{(l-1)'}\theta_k^{l-1}),
@@ -327,9 +370,9 @@ Due the noisiness (randomness) introduced by SGD, the learning rate (step size o
 
 \subsubsection{Batch Normalization}
 
-"Batch normalization" is a technique for addressing a phenomenon known as internal covariate shift, a particularly prevalent problem in training deep, complex neural networks. Internal covariate shift is where the distributions of each layer's inputs change as the parameters of the previous layer change, resulting in the need for much slower learning rates and more careful initialization of parameters. By normalizing (de-meaning and variance standardizing) each training step (batch) input, the representation power of each unit is restored. Additionally, significant gains in computational speeds may also be achieved.
+"Batch normalization" is a technique for addressing a phenomenon known as internal covariate shift, a particularly prevalent problem in training deep, complex neural networks. Internal covariate shift occurs when the distributions of each layers' inputs change as the parameters of the previous layer change, resulting in the need for much slower learning rates and more careful initialization of parameters. By normalizing (de-meaning and variance standardizing) each training step (batch) input, the representation power of each neuron (unit) is restored. Additionally, significant gains in computational speed may also be achieved.
 
-Finally, multiple random seeds (initializations) were used in training neural networks and the resulting predictions were averaged in an ensemble like fashion. This allows for regularization for the variance associated with the initial random seed.
+Finally, multiple random starting values for the weights and biases (seeds) were used in training neural networks, with the resulting predictions averaged in an ensemble model. This regularizes the variance associated with the initial starting values for the weights and biases. 
 
 \subsection{Simulation Design}
 
@@ -615,5 +658,11 @@ Batch Normalization
 	\KwResult{\(y_i = BN_{\gamma, \beta}(x_i) : i = 1, 2, ..., N\)}
 	\caption{Batch Normalization for one activation over one batch}
 \end{algorithm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%BIBLIOGRAPHY
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\bibliographystyle{jfe}
+\bibliography{Bibliography.bib}
 
 \end{document}

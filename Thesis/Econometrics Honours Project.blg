@@ -1,15 +1,26 @@
-[0] Config.pm:304> INFO - This is Biber 2.12
-[0] Config.pm:307> INFO - Logfile is 'Econometrics Honours Project.blg'
-[27] biber-MSWIN64:315> INFO - === 
-[51] Biber.pm:371> INFO - Reading 'Econometrics Honours Project.bcf'
-[122] Biber.pm:889> INFO - Found 1 citekeys in bib section 0
-[133] Biber.pm:4093> INFO - Processing section 0
-[153] Biber.pm:4254> INFO - Looking for bibtex format file 'Econometrics Honours Project.bib' for section 0
-[158] bibtex.pm:1523> INFO - LaTeX decoding ...
-[164] bibtex.pm:1340> INFO - Found BibTeX data source 'Econometrics Honours Project.bib'
-[180] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[180] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
-[180] Biber.pm:3921> INFO - Sorting list 'nyt/global//global/global' of type 'entry' with template 'nyt' and locale 'en-US'
-[180] Biber.pm:3927> INFO - No sort tailoring available for locale 'en-US'
-[182] bbl.pm:636> INFO - Writing 'Econometrics Honours Project.bbl' with encoding 'UTF-8'
-[183] bbl.pm:739> INFO - Output to Econometrics Honours Project.bbl
+This is 8-bit Big BibTeX version 0.99d
+Implementation:  Microsoft(R) C/C++ for Win32
+Release version: 3.71 (18 mar 2013)
+
+The 8-bit codepage and sorting file: 88591lat.csf
+The top-level auxiliary file: Econometrics Honours Project.aux
+The style file: jf.bst
+I couldn't open database file Bibliography.bib.bib
+---line 84 of file Econometrics Honours Project.aux
+ : \bibdata{Bibliography.bib
+ :                          }
+I'm skipping whatever remains of this command
+I found no \citation commands---while reading file Econometrics Honours Project.aux
+I found no database files---while reading file Econometrics Honours Project.aux
+Reallocated glb_str_ptr (elt_size=4) to 10 items from 0.
+Reallocated global_strs (elt_size=1001) to 10 items from 0.
+Reallocated glb_str_end (elt_size=4) to 10 items from 0.
+
+Here's how much of BibTeX's memory you used:
+ Cites:                 0 out of 750
+ Fields:             5000 out of 5000
+ Hash table:         4799 out of 5000
+ Strings:             603 out of 4000
+ Free string pool:   4610 out of 65000
+ Wizard functions:   2716 out of 3000
+(There were 3 error messages)
