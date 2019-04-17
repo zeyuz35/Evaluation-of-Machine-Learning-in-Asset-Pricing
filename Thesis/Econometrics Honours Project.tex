@@ -3,7 +3,6 @@
 \usepackage[english]{babel}
 \usepackage[margin=1in]{geometry}
 
-\usepackage{forest}
 \usepackage[ruled,vlined]{algorithm2e}
 \usepackage[colorinlistoftodos]{todonotes}
 \usepackage{amsfonts}
@@ -26,6 +25,35 @@
 	\xpatchcmd{\linklayers}{\nn@lastnode}{\lastnode}{}{}
 	\xpatchcmd{\linklayers}{\nn@thisnode}{\thisnode}{}{}
 	\makeatother
+	
+%Regression Tree
+	\usepackage{tikz,forest}
+	\usetikzlibrary{arrows.meta}
+	
+	\forestset{
+		.style={
+			for tree={
+				base=bottom,
+				child anchor=north,
+				align=center,
+				s sep+=1cm,
+				straight edge/.style={
+					edge path={\noexpand\path[\forestoption{edge},thick,-{Latex}] 
+						(!u.parent anchor) -- (.child anchor);}
+				},
+				if n children={0}
+				{tier=word, draw, thick, rectangle}
+				{draw, diamond, thick, aspect=2},
+				if n=1{%
+					edge path={\noexpand\path[\forestoption{edge},thick,-{Latex}] 
+						(!u.parent anchor) -| (.child anchor) node[pos=.2, above] {Y};}
+				}{
+					edge path={\noexpand\path[\forestoption{edge},thick,-{Latex}] 
+						(!u.parent anchor) -| (.child anchor) node[pos=.2, above] {N};}
+				}
+			}
+		}
+	}
 
 %%TODONOTE commands
 \newcommand{\smalltodo}[2][] {\todo[caption={#2}, size=\scriptsize,%
@@ -183,6 +211,28 @@ For this study, only recursive binary trees (the most common and easy to impleme
 where $|C|$ denotes the number of observations in set C (partition). Given $C$, it is clear that the optimal choice for minimising the loss function is simply $\theta = \frac{1}{|C|} \sum_{z_{io,t}\in C}^{ }r_{i,t+1}$ i.e. the average of the partition.
 
 Trees, grown to a deep enough level, are highly unbiased and flexible. The tradeoff of course, is their high variance and instability. Thus, an ensemble method called "Random Forest" was proposed to regularize trees by combining many different trees into a single prediction.
+
+
+
+\begin{figure}
+	\begin{center}
+		\begin{forest} 
+			[$x_2$, tikz={\draw[{Latex}-, thick] (.north) --++ (0,1);}
+			[$x_1$
+			[1] 
+			[0] 
+			]   
+			[$x_3$
+			[$x_1$
+			[1] 
+			[0] 
+			]   
+			[0] 
+			]   
+			] 
+		\end{forest}
+	\end{center}
+\end{figure}
 
 \subsection{Random Forests}
 Random Forests are an extension of trees that attempt to address some of their problems. A random forest algorithm creates $B$ different bootstrap samples from the training dataset, fits an overfit (and hence low bias) regression tree to each using only a random subset $m$ size from all available predictors (also known as dropout), and then averages their forecasts. The overfit trees means that the underlying trees has low bias, and the dropout procedure means that they have low correlation. Thus, averaging these low bias, uncorrelated trees results in a low bias, yet stable model. Specific details of the random forest algorithm used are detailed in the appendix.
