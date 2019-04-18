@@ -121,7 +121,9 @@ Dramatic increase in financial factors, skepticism as to whether or not they are
 Failure of traditional methods to perform in high dimensionality
 Difficulty of humans to interpret and find complex, non-linear interactions
 Machine learning, geared towards prediction
-Literature has shown that a lot of these techniques show promise, and in some papers, outperform consistently
+Literature has shown that a lot of these techniques show promise, and in some papers, outperform quite consistently
+
+
 
 \subsection{Main Findings}
 
@@ -155,7 +157,7 @@ with $g^*(z_{i,t})$ representing the model approximation using the predictor set
 
 \subsection{Sample Splitting}
 
-Imperative to any machine learning technique is the establishment of how the dataset is to be split into training, validation and test sets. The training set is used to initially build the model and provide initial estimates of parameters, whereas the validation set is used to tune model parameters to optimise out of sample performance, thus preventing overfitting. Essentially, the validation set acts as a simulation of out of sample testing. The test set is used only for evaluation, and is thus truly out of sample.
+Imperative to any machine learning technique is the establishment of how the dataset is to be split into training, validation and test sets. The training set is used to initially build the model and provide initial estimates of parameters, whereas the validation set is used to tune model parameters to optimise out of sample performance, thus preventing overfitting. The validation set acts as a simulation of out of sample testing, whereas the test set is used only for evaluation, and is thus truly out of sample.
 
 There are three main approaches to splitting temporal data (such as financial data). 
 
@@ -201,13 +203,27 @@ The baseline computational algorithm for this model is to minimize the standard 
 
 The Huber Loss metric offers a combination of mean squared error and mean absolute error, with errors smaller than the threshold $\xi$ being mean squared error and errors larger than the threshold $\xi$ being absolute error. This allows for the model fit to be less sensitive to outliers which are quite common in financial data. 
 
+\begin{figure}
+	\begin{center}
+		\begin{tikzpicture}
+		\begin{axis}[ xlabel={$x$}, ylabel={$y$}, axis lines=middle, samples=41, grid, thick, domain=-4:4, legend pos=outer north east]
+		\addplot+[no marks] {x^2};
+		\addlegendentry{Mean Squared Error}
+		\addplot+[no marks] {(2 * abs(x) - 1)*(abs(x) > 1) +
+			(x^2)*(abs(x) <= 1 )};
+		\addlegendentry{Huber Loss}
+		\end{axis}
+		\end{tikzpicture}
+	\end{center}
+\end{figure}
+
 \rhs{cite Huber loss}
 \rhs{cite something about outliers in financial data}
 \rhs{diagram representing huber loss would be great}
 
 \subsection{Penalized Linear Model}
 
-Penalized linear models have the same underlying statistical model as simple linear models, only considering baseline untransformed predictors. They differ in their addition of a new penalty term in the loss function:
+Penalized linear models have the same underlying statistical model as simple linear models, but differ in their addition of a new penalty term in the loss function:
 
 \begin{equation}
 	\mathcal{L(\theta;.)} = 
@@ -233,7 +249,7 @@ The hyperparameters $\lambda$ and $\rho$ are both tuned using the validation sam
 
 \subsection{Classification and Regression Trees}
 
-Classification and regression trees are fully non-parametric models that can capture complex multi-way interactions. A tree "grows" in a series of iterations. With each iteration, a split ("branch") is made along one predictor such that it is the best split available at that stage (in terms of lowering the loss function). These steps are continued until either the stopping criterion is met (such as via regularization) or each observation is its own node. The eventual model slices the predictor space into rectangular partitions, and predicts the unknown function $g^*(.)$ with the average value of the outcome variable in each partition.
+Classification and regression trees are fully non-parametric models that can capture complex multi-way interactions. A tree "grows" in a series of iterations. With each iteration, a split ("branch") is made along one predictor such that it is the best split available at that stage (in terms of lowering the loss function). These steps are continued until each observation is its own node, or more commonly until the stopping criterion is met (such as via regularization). The eventual model slices the predictor space into rectangular partitions, and predicts the unknown function $g^*(.)$ with the average value of the outcome variable in each partition.
 
 The prediction of a tree, $\mathcal{T}$, with \(K\) "leaves" (terminal nodes), and depth $L$ is
 
@@ -274,7 +290,7 @@ Trees, grown to a deep enough level, are highly unbiased and flexible. The trade
 \end{figure}
 
 \subsection{Random Forests}
-Random Forests are an extension of trees that attempt to address some of their problems. A random forest algorithm creates $B$ different bootstrap samples from the training dataset, fits an overfit (and hence low bias) regression tree to each using only a random subset $m$ size from all available predictors (also known as dropout), and then averages their forecasts. The overfit trees means that the underlying trees has low bias, and the dropout procedure means that they have low correlation. Thus, averaging these low bias, uncorrelated trees results in a low bias, yet stable model. Specific details of the random forest algorithm used are detailed in the appendix.
+Random Forests are an extension of trees that attempt to address some of their problems. A random forest algorithm creates $B$ different bootstrap samples from the training dataset, fits an overfit (and hence low bias) regression tree to each using only a random subset $m$ size from all available predictors (also known as dropout), and then averages their forecasts. The overfit trees means that the underlying trees has low bias, and the dropout procedure means that they have low correlation. Thus, averaging these low bias, uncorrelated trees results in a low bias, yet stable model. Specific details of the random forest algorithm are detailed in the appendix.
 
 \subsection{Neural Networks}
 
@@ -284,7 +300,7 @@ Neural networks are arguably the most complex type of model available, able to c
 
 The scope of this paper is limited to traditional ``feed-forward" networks. The feed forward network consists of an ``input layer" of scaled data inputs, one or more ``hidden layers" which interact and non-linearly transform the inputs, and finally an output layer that aggregates the hidden layers and transform them a final time for the final output. 
 
-Neural networks with up to 5 hidden layers were considered, each named NNX where X represents the number of hidden layers. The number of neurons is each layer was chosen according to the geometric pyramid rule: NN1 has 32 neurons, NN2 has 32 and 16 neurons in the first and second hidden layers respectively, NN3 has 32, 16, and 8 neurons, NN4 has 32, 16, 8, and 4 neurons, and NN5 has 32, 16, 8, 4, 2 neurons respectively. All units are fully connected; that is, each neurons receives input from all neurons the layer before it.
+Neural networks with up to 5 hidden layers were considered, each named NNX where X represents the number of hidden layers. The number of neurons is each layer was chosen according to the geometric pyramid rule \citep{masters_practical_1993}: NN1 has 32 neurons, NN2 has 32 and 16 neurons in the first and second hidden layers respectively, NN3 has 32, 16, and 8 neurons, NN4 has 32, 16, 8, and 4 neurons, and NN5 has 32, 16, 8, 4, 2 neurons respectively. All units are fully connected; that is, each neurons receives input from all neurons the layer before it.
 
 \rhs{would be best to customize neuron text}
 
@@ -348,7 +364,7 @@ The ReLU activation function:
 	\operatorname{ReLU}(x) = max(0, x)
 \end{equation}
 
-was used for all hidden layers owing to its high computational speed, and hence popularity within recent literature. Other potential choices for activation functions such as sigmoid, softmax, tanh etc. were not used due to computational cost.
+was used for all hidden layers owing to its high computational speed, and hence popularity within recent literature  (see \cite{lecun_deep_2015} and \cite{ramachandran_searching_2017}). Other potential choices for activation functions such as sigmoid, softmax, tanh etc. were not used due to computational cost.
 
 The neural networks detailed in this paper have the following general formula. Let $K^{(l)}$ denote the number of neurons in each hidden layer $l = 0, 1, \dots, L$, with $l = 0$ denoting the input layer and $l = L$ denoting the output layer. Define the output of neuron $k$ in layer $l$ as $x_k^{(l)}$. Next, define the vector of outputs for this layer as $x^{(l)} = (1, x_1^{(l)}, \dots, x_{K^(l)}^{(l)})'$. The input layer is defined using predictors, $x^{(0)} = (1, z_1, \dots, z_N)'$. The recursive output formula for the neural network at each neuron in layer $l > 0$ is then:
 
@@ -364,21 +380,39 @@ with the final output
 
 The neural network's weight and bias parameters are estimated by minimizing the penalized $l_2$ objective function of prediction errors.
 
-Due to the highly complex nature of the loss function, and the high dimensionality caused by the large number of parameters, this optimisation problem is very computationally intensive to solve, generally done via algorithms such as Gauss-Newton steps and is called "gradient descent." A common solution is to use "stochastic gradient descent" (SGD) where instead optimising the loss function with respect to the entire training sample, only a small, random subset of the data (mini batches)is used at each optimisation step. This sacrifices some accuracy for a dramatic improvement in computational speed.
+\subsubsection{Computation}
+
+
+
+The solution to finding the optimal weights and biases for the neural network is therefore found via the following chain rule:
+
+\begin{equation}
+	content...
+\end{equation}
+
+The solution to this is typically found via backpropagation, an iterative procedure similar to Gauss-Newton steps. Note that the lack of a global minimum is actually desirable, as global minimums tend to be overfit solutions to the problem, \citep{choromanska_loss_2014}.
+
+This is to be calculated and averaged across all training observations, and is thus extremely computationally intensive. A common solution is to use "stochastic gradient descent" (SGD) where instead optimising the loss function with respect to the entire training sample, only a small, random subset of the data (mini batches)is used at each optimisation step. This sacrifices some accuracy for a dramatic improvement in computational speed.
 
 Due the noisiness (randomness) introduced by SGD, the learning rate (step size of each descent) needs to be shrunk towards zero as the gradient approaches zero to avoid the noisiness of the mini batch causing an "overshoot" of the optimum. A learning rate shrinkage algorithm was therefore employed.
 
 \subsubsection{Batch Normalization}
 
-"Batch normalization" is a technique for addressing a phenomenon known as internal covariate shift, a particularly prevalent problem in training deep, complex neural networks. Internal covariate shift occurs when the distributions of each layers' inputs change as the parameters of the previous layer change, resulting in the need for much slower learning rates and more careful initialization of parameters. By normalizing (de-meaning and variance standardizing) each training step (batch) input, the representation power of each neuron (unit) is restored. Additionally, significant gains in computational speed may also be achieved.
+"Batch normalization" is a technique for addressing a phenomenon known as internal covariate shift, a particularly prevalent problem in training deep, complex neural networks, \citep{ioffe_batch_2015}. Internal covariate shift occurs when the distributions of each layers' inputs change as the parameters of the previous layer change, resulting in the need for much slower learning rates and more careful initialization of parameters. By normalizing (de-meaning and variance standardizing) each training step (batch) input, the representation power of each neuron (unit) is restored. Additionally, significant gains in computational speed may also be achieved.
 
-Finally, multiple random starting values for the weights and biases (seeds) were used in training neural networks, with the resulting predictions averaged in an ensemble model. This regularizes the variance associated with the initial starting values for the weights and biases. 
+Finally, multiple random starting values for the weights and biases (seeds) were used in training neural networks, with the resulting predictions averaged in an ensemble model, \cite{hansen_neural_1990}. This regularizes the variance associated with the initial starting values for the weights and biases. 
 
 \subsection{Simulation Design}
 
 \subsubsection{Overall Design}
 
-Simulate a latent factor model with stochastic volatility for excess return, $r_{t+1}$, for $t=1,\dots,T$:
+\rhs{justify properly}
+
+One of my key concerns with the Gu et al. (2019) design is that the factors are uncorrelated across $i$, and, in particular, that the factors which do not matter in the return equation are uncorrelated with those that matter. This is not what is observed in practice. 
+
+\cite{gu_empirical_2018}
+
+Therefore, we simulate an extension: a latent factor model with stochastic volatility for excess return, $r_{t+1}$, for $t=1,\dots,T$:
 
 \begin{flalign}
 r_{i, t+1} &= 
@@ -393,10 +427,6 @@ e_{i, t+1} &=
 \end{flalign}
 
 Let $v_{t+1}$ be a $3\times 1$ vector of errors, and $w_{i,t+1},\varepsilon_{i,t+1}$ scalar error terms. The matrix $C_t$ is an $N\times P_c$ vector of latent factors, where the first three columns correspond to $\beta_{i,t}$, across the $1\leq i\leq N$ dimensions, while the remaining $P_c-3$ factors do not enter the return equation. The $P_x\times1$ vector $x_t$ is a $3 \times 1$ multivariate time series, and $\varepsilon_{t+1}$ is a $N\times 1$ vector of idiosyncratic errors. 
-
-\rhs{justify properly}
-
-One of my key concerns with the Gu et al. (2019) design is that the factors are uncorrelated across $i$, and, in particular, that the factors which do not matter in the return equation are uncorrelated with those that matter. This is not what is observed in practice. 
 
 \subsubsection{Simulating Characteristics}
 
@@ -432,6 +462,8 @@ Finally, we can construct the "observed" characteristics for each $1\leq i\leq N
 \begin{equation}
 	c_{i j, t} = \frac{2}{n+1} \operatorname{rank}\left(\overline{c}_{i j, t}\right)-1.
 \end{equation}
+
+with the rank transformation normalizing all predictors to be within $[-1, 1]$. 
 
 \subsubsection{Simulating Macroeconomic Series}
 
@@ -496,6 +528,10 @@ Follow Gu et al. (2019) in regards to the choice of $N,T,P_{c}$
 
 The simulation design results in $3 \times 4 = 12$ different simulated datasets, each with $N = 200$ stocks, $T = 180$ periods and $P_c = 100$ characteristics.
 
+\subsubsection{Sample Splitting}
+
+$T = 180$ monthly periods corresponds to 15 years. The training sample was set to start from $T = 108$ or 9 years, a validation set 1 year in length. The last 3 years were reserved as a test set never to be use for validation or training.
+
 \subsection{Model Evaluation}
 
 \subsubsection{R Squared}
@@ -558,6 +594,8 @@ where \( c_{i,t} \) is a \( P_c \times 1 \) matrix of characteristics for each s
 
 \subsubsection{Classification and Regression Trees}
 
+\cite{breiman_classification_2017}
+
 \begin{algorithm}[H]
 	\SetAlgoLined
 	Initialize \;
@@ -598,6 +636,8 @@ where \( c_{i,t} \) is a \( P_c \times 1 \) matrix of characteristics for each s
 
 \subsubsection{Random Forest}
 
+\cite{breiman_random_2001}
+
 \begin{algorithm}[H]
 	\SetAlgoLined
 	\For{$b$ from $1$ to $B$}{
@@ -621,6 +661,8 @@ where \( c_{i,t} \) is a \( P_c \times 1 \) matrix of characteristics for each s
 There are numerous stochastic gradient descent algorithms available.
 
 \rhs{research different types of algorithms. Paper used ADAM}
+
+\cite{kingma_adam:_2014}
 
 \begin{algorithm}
 	\SetAlgoLined
@@ -663,6 +705,6 @@ Batch Normalization
 %%BIBLIOGRAPHY
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \bibliographystyle{jfe}
-\bibliography{Bibliography.bib}
+\bibliography{Bibliography}
 
 \end{document}

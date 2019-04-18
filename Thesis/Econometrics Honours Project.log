@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.6960 64-bit) (preloaded format=pdflatex 2019.3.13)  17 APR 2019 22:30
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.6960 64-bit) (preloaded format=pdflatex 2019.3.13)  18 APR 2019 13:26
 entering extended mode
 **"./Econometrics Honours Project.tex"
 ("Econometrics Honours Project.tex"
@@ -1187,18 +1187,18 @@ File: pgflibraryplotmarks.code.tex 2019/02/02 v3.1.1 (3.1.1)
 ))) ("Econometrics Honours Project.aux")
 \openout1 = `"Econometrics Honours Project.aux"'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 86.
-LaTeX Font Info:    ... okay on input line 86.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 86.
-LaTeX Font Info:    ... okay on input line 86.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 86.
-LaTeX Font Info:    ... okay on input line 86.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 86.
-LaTeX Font Info:    ... okay on input line 86.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 86.
-LaTeX Font Info:    ... okay on input line 86.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 86.
-LaTeX Font Info:    ... okay on input line 86.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 87.
+LaTeX Font Info:    ... okay on input line 87.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 87.
+LaTeX Font Info:    ... okay on input line 87.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 87.
+LaTeX Font Info:    ... okay on input line 87.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 87.
+LaTeX Font Info:    ... okay on input line 87.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 87.
+LaTeX Font Info:    ... okay on input line 87.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 87.
+LaTeX Font Info:    ... okay on input line 87.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -1252,13 +1252,13 @@ LaTeX Font Info:    ... okay on input line 86.
 Package pgfplots Warning: running in backwards compatibility mode (unsuitable t
 ick labels; missing features). Consider writing \pgfplotsset{compat=1.16} into 
 your preamble.
- on input line 86.
+ on input line 87.
 
-LaTeX Font Info:    Try loading font information for U+msa on input line 88.
+LaTeX Font Info:    Try loading font information for U+msa on input line 89.
 ("C:\Program Files\MiKTeX 2.9\tex/latex/amsfonts\umsa.fd"
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 88.
+LaTeX Font Info:    Try loading font information for U+msb on input line 89.
 
 ("C:\Program Files\MiKTeX 2.9\tex/latex/amsfonts\umsb.fd"
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
@@ -1275,12 +1275,12 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 \openout6 = `"Econometrics Honours Project.toc"'.
 
 
-Overfull \hbox (4.11134pt too wide) in paragraph at lines 105--105
+Overfull \hbox (4.11134pt too wide) in paragraph at lines 106--106
 \OT1/cmr/m/n/7 Show/highlight 
  []
 
 
-Overfull \hbox (4.11134pt too wide) in paragraph at lines 105--105
+Overfull \hbox (4.11134pt too wide) in paragraph at lines 106--106
 \OT1/cmr/m/n/7 Show/highlight 
  []
 
@@ -1736,23 +1736,25 @@ Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
  [6] [7] [8]
-Overfull \hbox (23.92381pt too wide) detected at line 488
+Overfull \hbox (23.92381pt too wide) detected at line 521
 []
  []
 
-[9] [10] [11] ("Econometrics Honours Project.bbl"
+[9] [10] [11] [12] ("Econometrics Honours Project.bbl" [13]
+Underfull \hbox (badness 1303) in paragraph at lines 30--32
+[]\OT1/cmr/m/n/10 Kingma, D. P., Ba, J., 2014. Adam: A method for stochas-tic o
+p-ti-miza-tion. arXiv preprint
+ []
 
-Package natbib Warning: Empty `thebibliography' environment on input line 4.
-
-) [12] ("Econometrics Honours Project.aux") ) 
+) [14] ("Econometrics Honours Project.aux") ) 
 Here is how much of TeX's memory you used:
- 48729 strings out of 492946
- 1173040 string characters out of 3135510
- 1440212 words of memory out of 3000000
- 51985 multiletter control sequences out of 15000+200000
+ 49169 strings out of 492946
+ 1185834 string characters out of 3135510
+ 1443396 words of memory out of 3000000
+ 52425 multiletter control sequences out of 15000+200000
  541206 words of font info for 58 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 133i,16n,160p,1637b,1761s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 133i,19n,160p,1637b,2290s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Files/MiKTeX 2.9/fonts
 /type1/public/amsfonts/cm/cmbx10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/p
 ublic/amsfonts/cm/cmbx12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/am
@@ -1771,9 +1773,9 @@ am Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Program Files/
 MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/Program Files/MiKTeX 2
 .9/fonts/type1/public/amsfonts/cm/cmti12.pfb><C:/Program Files/MiKTeX 2.9/fonts
 /type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on "Econometrics Honours Project.pdf" (12 pages, 302952 bytes).
+Output written on "Econometrics Honours Project.pdf" (14 pages, 308939 bytes).
 PDF statistics:
- 144 PDF objects out of 1000 (max. 8388607)
+ 151 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  109 words of extra memory for PDF output out of 10000 (max. 10000000)
 

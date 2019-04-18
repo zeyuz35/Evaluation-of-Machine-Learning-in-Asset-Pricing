@@ -4,23 +4,16 @@ Release version: 3.71 (18 mar 2013)
 
 The 8-bit codepage and sorting file: 88591lat.csf
 The top-level auxiliary file: Econometrics Honours Project.aux
-The style file: jf.bst
-I couldn't open database file Bibliography.bib.bib
----line 84 of file Econometrics Honours Project.aux
- : \bibdata{Bibliography.bib
- :                          }
-I'm skipping whatever remains of this command
-I found no \citation commands---while reading file Econometrics Honours Project.aux
-I found no database files---while reading file Econometrics Honours Project.aux
+The style file: jfe.bst
 Reallocated glb_str_ptr (elt_size=4) to 10 items from 0.
 Reallocated global_strs (elt_size=1001) to 10 items from 0.
 Reallocated glb_str_end (elt_size=4) to 10 items from 0.
+Database file #1: Bibliography.bib
 
 Here's how much of BibTeX's memory you used:
- Cites:                 0 out of 750
- Fields:             5000 out of 5000
- Hash table:         4799 out of 5000
- Strings:             603 out of 4000
- Free string pool:   4610 out of 65000
- Wizard functions:   2716 out of 3000
-(There were 3 error messages)
+ Cites:                10 out of 750
+ Fields:               58 out of 5000
+ Hash table:         4789 out of 5000
+ Strings:             665 out of 4000
+ Free string pool:   5931 out of 65000
+ Wizard functions:   2708 out of 3000
