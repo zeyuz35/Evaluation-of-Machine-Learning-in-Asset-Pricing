@@ -123,7 +123,11 @@ Difficulty of humans to interpret and find complex, non-linear interactions
 Machine learning, geared towards prediction
 Literature has shown that a lot of these techniques show promise, and in some papers, outperform quite consistently
 
+\cite{hsu_finding_2014}
 
+
+
+\cite{gu_empirical_2018}
 
 \subsection{Main Findings}
 
@@ -206,7 +210,7 @@ The Huber Loss metric offers a combination of mean squared error and mean absolu
 \begin{figure}
 	\begin{center}
 		\begin{tikzpicture}
-		\begin{axis}[ xlabel={$x$}, ylabel={$y$}, axis lines=middle, samples=41, grid, thick, domain=-4:4, legend pos=outer north east]
+		\begin{axis}[ xlabel={$x$}, ylabel={$y$}, axis lines=middle, samples=41, grid, thick, domain=-4:4]
 		\addplot+[no marks] {x^2};
 		\addlegendentry{Mean Squared Error}
 		\addplot+[no marks] {(2 * abs(x) - 1)*(abs(x) > 1) +
@@ -215,6 +219,7 @@ The Huber Loss metric offers a combination of mean squared error and mean absolu
 		\end{axis}
 		\end{tikzpicture}
 	\end{center}
+	\caption{Illustration of MSE and Huber Loss when $\xi = 1$}
 \end{figure}
 
 \rhs{cite Huber loss}
@@ -231,7 +236,7 @@ Penalized linear models have the same underlying statistical model as simple lin
 	\underset{\text{Penalty Term}}{\underbrace{\phi(\theta;.)}}
 \end{equation}
 
-Several choices exist for the choice of the penalty function \( \phi(\theta;.) \). This focus of this paper is the popular "elastic net" penalty, which takes the form:
+Several choices exist for the choice of the penalty function \( \phi(\theta;.) \). This focus of this paper is the popular "elastic net" penalty  \citep{zou_regularization_2005}, which takes the form:
 
 \begin{equation}
 	\phi(\theta;\lambda,\rho) = 
@@ -457,7 +462,7 @@ To build in cross-sectional correlation, from the $N\times P_{c}$ matrix $\bar{C
 	\widehat{C}_{t}=W\overline{C}_{t}
 \end{equation}
  
-Finally, we can construct the "observed" characteristics for each $1\leq i\leq N$ and for $j=1, \dots, P_{c}$ according to 
+Finally, the "observed" characteristics for each $1\leq i\leq N$ and for $j=1, \dots, P_{c}$ are constructed according to:
 
 \begin{equation}
 	c_{i j, t} = \frac{2}{n+1} \operatorname{rank}\left(\overline{c}_{i j, t}\right)-1.
@@ -704,6 +709,7 @@ Batch Normalization
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%BIBLIOGRAPHY
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \bibliographystyle{jfe}
 \bibliography{Bibliography}
 

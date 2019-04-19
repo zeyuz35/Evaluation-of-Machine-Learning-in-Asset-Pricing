@@ -1,4 +1,4 @@
-\begin{thebibliography}{10}
+\begin{thebibliography}{12}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
 
 \bibitem[{Breiman(2001)}]{breiman_random_2001}
@@ -21,6 +21,10 @@ Gu, S., Kelly, B., Xiu, D., 2018. Empirical asset pricing via machine learning.
 Hansen, L.~K., Salamon, P., 1990. Neural network ensembles. IEEE Transactions
   on Pattern Analysis \& Machine Intelligence pp. 993--1001.
 
+\bibitem[{Hsu and Kalesnik(2014)}]{hsu_finding_2014}
+Hsu, J., Kalesnik, V., 2014. Finding smart beta in the factor zoo. Research
+  Affiliates (July) .
+
 \bibitem[{Ioffe and Szegedy(2015)}]{ioffe_batch_2015}
 Ioffe, S., Szegedy, C., 2015. Batch normalization: {Accelerating} deep network
   training by reducing internal covariate shift. arXiv preprint
@@ -41,5 +45,10 @@ Masters, T., 1993. Practical {Neural} {Network} {Recipes} in {C}++. Morgan
   Le}]{ramachandran_searching_2017}
 Ramachandran, P., Zoph, B., Le, Q.~V., 2017. Searching for {Activation}
   {Functions}. arXiv:1710.05941 [cs] ArXiv: 1710.05941.
+
+\bibitem[{Zou and Hastie(2005)}]{zou_regularization_2005}
+Zou, H., Hastie, T., 2005. Regularization and variable selection via the
+  {Elastic} {Net}. Journal of the Royal Statistical Society, Series B 67,
+  301--320.
 
 \end{thebibliography}

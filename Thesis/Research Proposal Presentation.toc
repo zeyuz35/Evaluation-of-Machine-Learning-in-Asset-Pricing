@@ -1,0 +1,10 @@
+\babel@toc {english}{}
+\beamer@sectionintoc {1}{Problems in Empirical Finance}{4}{0}{1}
+\beamer@sectionintoc {2}{What is Machine Learning?}{5}{0}{2}
+\beamer@sectionintoc {3}{Model Specification}{6}{0}{3}
+\beamer@sectionintoc {4}{Simulation}{7}{0}{4}
+\beamer@subsectionintoc {4}{1}{Real World Observations}{7}{0}{4}
+\beamer@subsectionintoc {4}{2}{Simulation Design}{8}{0}{4}
+\beamer@sectionintoc {5}{Real Data}{9}{0}{5}
+\beamer@sectionintoc {6}{Results}{10}{0}{6}
+\beamer@sectionintoc {7}{Questions and Answers}{11}{0}{7}

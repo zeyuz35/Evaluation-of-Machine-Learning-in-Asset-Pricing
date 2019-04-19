@@ -1,0 +1,154 @@
+\documentclass{beamer}
+
+\usepackage[english]{babel}
+\usepackage[ruled, vlined]{algorithm2e}
+
+\usepackage{amsfonts}
+\usepackage{setspace,graphicx,epstopdf,amsmath}
+\usepackage{marginnote, datetime, url, enumitem, subfigure}
+
+%Journal Style
+%JFE looks nice, JF looks awful
+\usepackage{amsthm}
+
+%Bibliography Stuff
+%Use natbib even though it's old because it's compliant with journal styles
+%Actual bibliography style etc are specified where you actually want it
+\usepackage{natbib}
+
+%Fluff
+\linespread{1.3}
+
+%Neural Network Packages
+\usepackage{neuralnetwork}
+\usepackage{xpatch}
+\makeatletter
+% \linklayers have \nn@lastnode instead of \lastnode,
+% patch it to replace the former with the latter, and similar for thisnode
+\xpatchcmd{\linklayers}{\nn@lastnode}{\lastnode}{}{}
+\xpatchcmd{\linklayers}{\nn@thisnode}{\thisnode}{}{}
+\makeatother
+
+%Regression Tree
+\usepackage{tikz,forest}
+\usetikzlibrary{arrows.meta}
+
+\forestset{
+	.style={
+		for tree={
+			base=bottom,
+			child anchor=north,
+			align=center,
+			s sep+=1cm,
+			straight edge/.style={
+				edge path={\noexpand\path[\forestoption{edge},thick,-{Latex}] 
+					(!u.parent anchor) -- (.child anchor);}
+			},
+			if n children={0}
+			{tier=word, draw, thick, rectangle}
+			{draw, diamond, thick, aspect=2},
+			if n=1{%
+				edge path={\noexpand\path[\forestoption{edge},thick,-{Latex}] 
+					(!u.parent anchor) -| (.child anchor) node[pos=.2, above] {Y};}
+			}{
+				edge path={\noexpand\path[\forestoption{edge},thick,-{Latex}] 
+					(!u.parent anchor) -| (.child anchor) node[pos=.2, above] {N};}
+			}
+		}
+	}
+}
+
+%%TODONOTE commands
+\usepackage[colorinlistoftodos]{todonotes}
+\newcommand{\smalltodo}[2][] {\todo[caption={#2}, size=\scriptsize,%
+	fancyline,#1]{\begin{spacing}{.5}#2\end{spacing}}}
+\newcommand{\rhs}[2][]{\smalltodo[color=green!30,#1]{{\bf RS:} #2}}
+%%
+
+%Graphs
+\usepackage{pgfplots}
+
+\title{Evaluation of Machine Learning in Finance}
+\author{Ze Yu Zhong}
+
+
+\begin{document}
+	
+\todo{Remember that this is meant to be no more than 15 minutes, hard limit}
+
+\begin{frame}[plain]
+    \maketitle
+\end{frame}
+
+\begin{frame}
+	\tableofcontents
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Problems in Empirical Finance}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Problems in Empirical Finance}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{What is Machine Learning?}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{What is Machine Learning?}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Model Specification}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+	content...
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Simulation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Real World Observations}
+\begin{frame}
+\frametitle{Real World Observations}
+	content...
+\end{frame}
+
+\subsection{Simulation Design}
+\begin{frame}
+\frametitle{Simulation Design}
+content...
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Real Data}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Data Source}
+	content...
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Results}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Results}
+	content...
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Questions and Answers}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Questions and Answers}
+	content...
+\end{frame}
+
+\end{document}

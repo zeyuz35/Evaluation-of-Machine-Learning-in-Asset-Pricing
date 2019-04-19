@@ -1,16 +1,24 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Preamble
-\documentclass[man, a4paper, biblatex]{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[a4paper]{article}
 \usepackage[english]{babel}
 \usepackage[margin=1in]{geometry}
+\usepackage[ruled, vlined]{algorithm2e}
 
-\usepackage[ruled,vlined]{algorithm2e}
-\usepackage[colorinlistoftodos]{todonotes}
 \usepackage{amsfonts}
 \usepackage{setspace,graphicx,epstopdf,amsmath}
-\usepackage{marginnote,datetime,url,enumitem,subfigure}
+\usepackage{marginnote, datetime, url, enumitem, subfigure}
+
+%Journal Style
+%JFE looks nice, JF looks awful
+\usepackage{amsthm}
+\usepackage{jfe}
 
 %Bibliography Stuff
 %Use natbib even though it's old because it's compliant with journal styles
+%Actual bibliography style etc are specified where you actually want it
 \usepackage{natbib}
 
 %Fluff
@@ -56,10 +64,14 @@
 }
 
 %%TODONOTE commands
+\usepackage[colorinlistoftodos]{todonotes}
 \newcommand{\smalltodo}[2][] {\todo[caption={#2}, size=\scriptsize,%
 	fancyline,#1]{\begin{spacing}{.5}#2\end{spacing}}}
 \newcommand{\rhs}[2][]{\smalltodo[color=green!30,#1]{{\bf RS:} #2}}
 %%
+
+%Graphs
+\usepackage{pgfplots}
 
 %opening
 \title{Evaluation of Machine Learning in Empirical Asset Pricing Proposal}
