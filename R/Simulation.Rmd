@@ -15,6 +15,10 @@ library(glmnet)
 library(tidyverse)
 library(keras)
 library(ggplot2)
+library(caret)
+library(forecast)
+library(rlist)
+library(plm)
 ```
 
 ```{r}
@@ -447,18 +451,18 @@ rt_A3_g2 <- gen_rt(A3, g2)
 ##g3
 ##############################
 
-rt_A1_g3 <- gen_rt(A1, g3)
-rt_A2_g3 <- gen_rt(A2, g3)
-rt_A3_g3 <- gen_rt(A3, g3)
+#rt_A1_g3 <- gen_rt(A1, g3)
+#rt_A2_g3 <- gen_rt(A2, g3)
+#rt_A3_g3 <- gen_rt(A3, g3)
 
 
 ##############################
 ##g4
 ##############################
 
-rt_A1_g4 <- gen_rt(A1, g4)
-rt_A2_g4 <- gen_rt(A2, g4)
-rt_A3_g4 <- gen_rt(A3, g4)
+#rt_A1_g4 <- gen_rt(A1, g4)
+#rt_A2_g4 <- gen_rt(A2, g4)
+#rt_A3_g4 <- gen_rt(A3, g4)
 ```
 
 ```{r}
@@ -490,6 +494,8 @@ gen_z <- function(){
   return(z)
 }
 
+z <- gen_z()
+
 ############################################################################
 ##Function to cbind the corresponding return series and the predictor set together, and return it in dataframe form
 ############################################################################
@@ -506,51 +512,85 @@ gen_pooled_panel <- function(){
     #Extract return series for ith stock from the return series list first
     #Initialize empty matrix
     r <- matrix(0, nrow = Time+1, ncol = 1)
-    for (t in 1:(Time)){
+    
+    for (t in 1:(Time+1)){
         r[t] <- rt_A1_g1[[t]][i]
     }
+    
     #Cbind returns, id, time and predictors
     panel <- cbind(r, c(rep(i, (Time+1))), c(1:(Time+1)), z[[i]])
     pooled_panel[((i-1)*(Time+1)+1):(i*(Time+1)), ] <- panel
   }
+  
+  #Pass this through to data frame format with column titles so you know which column is which
+  pooled_panel <- data.frame(return = pooled_panel[, 1], stock = pooled_panel[, 2], time = pooled_panel[, 3], pooled_panel[, 4:403])
+  
+  #Sort by time
+  pooled_panel <- pooled_panel %>%
+  arrange(time)
+  
+  #Return
   return(pooled_panel)
+  
 }
 
-
-
+pooled_panel <- gen_pooled_panel()
 
 ```
 
 ```{r}
-pooled_panel <- matrix(data = 0, nrow = (181*200), ncol = (1+1+1+400))
-  
-  for (i in 1:N){
-    #Extract return series for ith stock from the return series list first
-    #Initialize empty matrix
-    r <- matrix(0, nrow = Time+1, ncol = 1)
-    for (t in 1:(Time)){
-        r[t] <- rt_A1_g1[[t]][i]
-    }
-    #Cbind returns, id, time and predictors
-    panel <- cbind(r, c(rep(i, (Time+1))), c(1:(Time+1)), z[[i]])
-    pooled_panel[((i-1)*(Time+1)+1):(i*(Time+1)), ] <- panel
-  }
 
-pooled_panel <- data.frame(return = pooled_panel[, 1], stock = pooled_panel[, 2], time = pooled_panel[, 3], pooled_panel[, 4:403])
 ```
 
 ```{r}
 #Tune theta to achieve desired cross sectional r squared
+
+#R squared = 1 - (SSE)/(SST)
+#SSE = E(yi - yhati)/E(yi - ybari)
+#yhati = g(zi, t)
+#ybari = gbar(zi, t)
+
 ```
 
 
 ```{r}
 #Create Training + Test Sets
+
+#$T = 180$ monthly periods corresponds to 15 years. The training sample was set to start from $T = 108$ or 9 years, a validation set 1 year in length. The last 3 years were reserved as a test set never to be used for validation or training.
+
+#This means that there are only 3 sample periods to train on, yay
+
+time_slices <- createTimeSlices(1:(Time-36), initialWindow = 108, horizon = 12, fixedWindow = FALSE, skip = 11)
+
+true_test <- list(c(121:180), c(133:180), c(145:180))
+
+time_slices <- list.append(time_slices, true_test)
+
+names(time_slices) <- c("train", "validation", "test")
+
+train <- pooled_panel %>%
+  filter(time %in% unlist(time_slices$train[1]))
+validation <- pooled_panel %>%
+  filter(time %in% unlist(time_slices$validation[1]))
+test <- pooled_panel %>%
+  filter(time %in% unlist(time_slices$test[1]))
+
+```
+
+
+```{r}
+#Expand formula manually this way because PLM is dumb and gets confused by y ~ .
+colnames <- colnames(pooled_panel)
+colnames <- colnames[-c(1:3)]
+f <- as.formula(c("return ~ ", paste(colnames, collapse = "+")))
 ```
 
 
 ```{r}
 #Pooled OLS w/ Huber Loss
+
+pols <- plm(f, data = train, model = "pooling", index = c("stock", "time"))
+summary(pols)
 
 ```
 
