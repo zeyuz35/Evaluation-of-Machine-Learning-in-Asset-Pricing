@@ -19,6 +19,7 @@ library(caret)
 library(forecast)
 library(rlist)
 library(plm)
+library(Metrics)
 ```
 
 ```{r}
@@ -592,11 +593,27 @@ f <- as.formula(c("return ~ ", paste(colnames, collapse = "+")))
 pols <- plm(f, data = train, model = "pooling", index = c("stock", "time"))
 summary(pols)
 
+for (i in 1:3) {
+  train <- pooled_panel %>%
+    filter(time %in% unlist(time_slices$train[i]))
+  validation <- pooled_panel %>%
+    filter(time %in% unlist(time_slices$validation[i]))
+  test <- pooled_panel %>%
+    filter(time %in% unlist(time_slices$test[i]))
+  
+  pols <- plm(f, data = train, model = "pooling", index = c("stock", "time"))
+  print(mse(validation$return, predict(pols, newdata = validation)))
+  print(mse(test$return, predict(pols, newdata = test)))
+}
+
+#Comments
+#More data = better (lower mse)
 ```
 
 ```{r}
 #Elasticnet
 
+elasticnet <- cv.glmnet()
 
 ```
 
