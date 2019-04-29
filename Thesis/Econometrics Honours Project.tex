@@ -94,7 +94,11 @@
 
 \section{Introduction}
 
-\subsection{Motivations}
+\subsection{Topic}
+
+This thesis aims to evaluate the application of machine learning algorithms in empirical asset pricing. While there has been a significant recent interest in applying machine learning to the problem of predicting asset returns, there is little literature that focuses on how well these algorithms are at capturing true underlying mechanisms of stock returns. 12 different simulated datasets ranging from simple linear data generating processes, to highly non-linear data generating processes incorporating observed phenomena of cross sectional correlation, in addition to real world data will be used to assess the performance of linear models, elastic net models, random forests and neural networks.
+
+\subsection{Background Literature and Motivations}
 
 \rhs{
 Data skepticism (have you set up the data properly?)
@@ -105,29 +109,25 @@ Methods to consider: OLS, Elasticnet, RF, NN
 See how it performs on real data
 }
 
+This paper is motivated by evaluating the performance of machine learning algorithms in empirical asset pricing, focusing on how well they deal with the many unique problems in returns data.
+
+Earlier literature 
+
+Though work has been done in addressing these problems, Many issues with predicting stock returns have been documented 
+
 The non-robustness has been
 
-The inclusion of non-stationary factors such as dividend yield into more recent models is also of concern, as non-stationary factors by definition do not contain any information regarding the future.
+For example, valuation ratios such as dividend yield remain popular, despite being contingent on being stationary, for which there was mixed evidence even when initially introduced, \citep{vuolteenaho_understanding_1999}, and were later shown to seemingly break down, (\cite{lettau_consumption_2001}, \cite{schwert_anomalies_2003} and others). This has not stopped the literature searching for more factors: many quantitative trading firms were using 81 factor models as the norm \citep{hsu_finding_2014} by 2014, and as of the time of writing well over 400 as documented by \cite{harvey_census_nodate}, despite 
 
-To achieve this
+The aforementioned problems has posed immense problems, with much of the literature developing models to try to deal with this. To this end, machine learning algorithms have emerged and been recognised as well suited: 
 
-Linear models, penalized linear models, random forests and neural networks were the machine learning algorithms considered.
+More recently, machine learning has been recognised to be well suited to the problem of predicting stock returns: authors such as \cite{hsu_finding_2014} and \cite{gu_empirical_2018} demonstrate that machine learning outperforms significantly. 
 
-\subsection{Literature}
+However, though machine learning shows great promise in solving some problems in empirical finance such as factor selection (sources), there still has been no work done as to how well machine learning performs in lieu of other problems such as persistent regressors, cross sectional correlation, etc.
 
-\rhs{pending Literature Review}
+Prior work been done by \cite{gu_empirical_2018}, however; only basic simulation designs which did not fully explore the characteristic problems present in financial datasets were used. 
 
-Dramatic increase in financial factors, skepticism as to whether or not they are actually significant (factor zoo)
-Failure of traditional methods to perform in high dimensionality
-Difficulty of humans to interpret and find complex, non-linear interactions
-Machine learning, geared towards prediction
-Literature has shown that a lot of these techniques show promise, and in some papers, outperform quite consistently
-
-\cite{hsu_finding_2014}
-
-
-
-\cite{gu_empirical_2018}
+This paper will be the first in focusing on how machine learning algorithms perform in environments with problems exhibited by financial returns data through extensive simulations. In addition, these algorithms will once again be evaluated on real world data, but with only more recent and representative data included in order to test their short term robustness in predicting stock returns. These two aspects of the study together are able to offer a better glimpse as to how ``black box" machine learning algorithms deal with these sorts of problems, if at all.
 
 \subsection{Main Findings}
 
@@ -549,7 +549,7 @@ where $\mathcal{T}_3$ indicates that the fits are only assessed on the test subs
 
 \subsubsection{Diebold-Mariano Test}
 
-The Diebold-Mariano test is a procedure which compares the forecast accuracy of two forecast methods. It is different to the overall R squared metric because it tests whether or not the models' forecast accuracy is significantly different. 
+The Diebold-Mariano test (\cite{diebold_comparing_2002}, and \cite{harvey_testing_1997}) is a procedure which compares the forecast accuracy of two forecast methods. It is different to the overall R squared metric because it tests whether or not the models' forecast accuracy is significantly different. 
 
 Under the null hypothesis:
 

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.6960 64-bit) (preloaded format=pdflatex 2019.3.13)  18 APR 2019 17:20
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.6960 64-bit) (preloaded format=pdflatex 2019.3.13)  28 APR 2019 23:19
 entering extended mode
 **"./Econometrics Honours Project.tex"
 ("Econometrics Honours Project.tex"
@@ -1275,26 +1275,23 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 \openout6 = `"Econometrics Honours Project.toc"'.
 
 
-Overfull \hbox (4.11134pt too wide) in paragraph at lines 106--106
+Overfull \hbox (4.11134pt too wide) in paragraph at lines 110--110
 \OT1/cmr/m/n/7 Show/highlight 
  []
 
 
-Overfull \hbox (4.11134pt too wide) in paragraph at lines 106--106
+Overfull \hbox (4.11134pt too wide) in paragraph at lines 110--110
 \OT1/cmr/m/n/7 Show/highlight 
  []
 
+[2] [3] [4]
 
-LaTeX Warning: Marginpar on page 2 moved.
-
-[2] [3]
-
-LaTeX Warning: Marginpar on page 4 moved.
+LaTeX Warning: Marginpar on page 5 moved.
 
 
-LaTeX Warning: Marginpar on page 4 moved.
+LaTeX Warning: Marginpar on page 5 moved.
 
-[4] [5]
+[5] [6]
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
@@ -1732,23 +1729,23 @@ Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
- [6] [7] [8] [9]
+ [7] [8] [9]
 Overfull \hbox (23.92381pt too wide) detected at line 526
 []
  []
 
-[10] [11] [12] ("Econometrics Honours Project.bbl" [13]
-Underfull \hbox (badness 1303) in paragraph at lines 34--36
+[10] [11] [12] [13] ("Econometrics Honours Project.bbl" [14]
+Underfull \hbox (badness 1303) in paragraph at lines 47--49
 []\OT1/cmr/m/n/10 Kingma, D. P., Ba, J., 2014. Adam: A method for stochas-tic o
 p-ti-miza-tion. arXiv preprint
  []
 
-) [14] ("Econometrics Honours Project.aux") ) 
+) [15] ("Econometrics Honours Project.aux") ) 
 Here is how much of TeX's memory you used:
- 49175 strings out of 492946
- 1185999 string characters out of 3135510
- 1443735 words of memory out of 3000000
- 52431 multiletter control sequences out of 15000+200000
+ 49185 strings out of 492946
+ 1186361 string characters out of 3135510
+ 1438212 words of memory out of 3000000
+ 52441 multiletter control sequences out of 15000+200000
  541206 words of font info for 58 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
  133i,19n,160p,1637b,2290s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -1770,9 +1767,9 @@ am Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Program Files/
 MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/Program Files/MiKTeX 2
 .9/fonts/type1/public/amsfonts/cm/cmti12.pfb><C:/Program Files/MiKTeX 2.9/fonts
 /type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on "Econometrics Honours Project.pdf" (14 pages, 309874 bytes).
+Output written on "Econometrics Honours Project.pdf" (15 pages, 313126 bytes).
 PDF statistics:
- 151 PDF objects out of 1000 (max. 8388607)
+ 154 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  109 words of extra memory for PDF output out of 10000 (max. 10000000)
 

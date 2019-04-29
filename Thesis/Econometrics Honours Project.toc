@@ -1,38 +1,38 @@
 \babel@toc {english}{}
 \contentsline {section}{\numberline {1}Introduction}{2}% 
-\contentsline {subsection}{\numberline {1.1}Motivations}{2}% 
-\contentsline {subsection}{\numberline {1.2}Literature}{2}% 
+\contentsline {subsection}{\numberline {1.1}Topic}{2}% 
+\contentsline {subsection}{\numberline {1.2}Background Literature and Motivations}{2}% 
 \contentsline {subsection}{\numberline {1.3}Main Findings}{3}% 
 \contentsline {subsection}{\numberline {1.4}Limitations of Machine Learning}{3}% 
 \contentsline {section}{\numberline {2}Methodology}{3}% 
 \contentsline {subsection}{\numberline {2.1}Overall Model Design}{3}% 
-\contentsline {subsection}{\numberline {2.2}Sample Splitting}{3}% 
+\contentsline {subsection}{\numberline {2.2}Sample Splitting}{4}% 
 \contentsline {subsection}{\numberline {2.3}Linear Model}{4}% 
-\contentsline {subsubsection}{\numberline {2.3.1}Huber Loss}{4}% 
-\contentsline {subsection}{\numberline {2.4}Penalized Linear Model}{4}% 
-\contentsline {subsection}{\numberline {2.5}Classification and Regression Trees}{5}% 
+\contentsline {subsubsection}{\numberline {2.3.1}Huber Loss}{5}% 
+\contentsline {subsection}{\numberline {2.4}Penalized Linear Model}{5}% 
+\contentsline {subsection}{\numberline {2.5}Classification and Regression Trees}{6}% 
 \contentsline {subsection}{\numberline {2.6}Random Forests}{6}% 
-\contentsline {subsection}{\numberline {2.7}Neural Networks}{6}% 
-\contentsline {subsubsection}{\numberline {2.7.1}Introduction}{6}% 
+\contentsline {subsection}{\numberline {2.7}Neural Networks}{7}% 
+\contentsline {subsubsection}{\numberline {2.7.1}Introduction}{7}% 
 \contentsline {subsubsection}{\numberline {2.7.2}Activation Function}{7}% 
 \contentsline {subsubsection}{\numberline {2.7.3}Computation}{8}% 
-\contentsline {subsubsection}{\numberline {2.7.4}Batch Normalization}{8}% 
-\contentsline {subsection}{\numberline {2.8}Simulation Design}{8}% 
-\contentsline {subsubsection}{\numberline {2.8.1}Overall Design}{8}% 
+\contentsline {subsubsection}{\numberline {2.7.4}Batch Normalization}{9}% 
+\contentsline {subsection}{\numberline {2.8}Simulation Design}{9}% 
+\contentsline {subsubsection}{\numberline {2.8.1}Overall Design}{9}% 
 \contentsline {subsubsection}{\numberline {2.8.2}Simulating Characteristics}{9}% 
-\contentsline {subsubsection}{\numberline {2.8.3}Simulating Macroeconomic Series}{9}% 
+\contentsline {subsubsection}{\numberline {2.8.3}Simulating Macroeconomic Series}{10}% 
 \contentsline {subsubsection}{\numberline {2.8.4}Simulating Return Series}{10}% 
-\contentsline {subsubsection}{\numberline {2.8.5}Sample Splitting}{10}% 
-\contentsline {subsection}{\numberline {2.9}Model Evaluation}{10}% 
-\contentsline {subsubsection}{\numberline {2.9.1}R Squared}{10}% 
-\contentsline {subsubsection}{\numberline {2.9.2}Diebold-Mariano Test}{10}% 
+\contentsline {subsubsection}{\numberline {2.8.5}Sample Splitting}{11}% 
+\contentsline {subsection}{\numberline {2.9}Model Evaluation}{11}% 
+\contentsline {subsubsection}{\numberline {2.9.1}R Squared}{11}% 
+\contentsline {subsubsection}{\numberline {2.9.2}Diebold-Mariano Test}{11}% 
 \contentsline {subsection}{\numberline {2.10}Variable Importance}{11}% 
 \contentsline {section}{\numberline {3}Study}{11}% 
 \contentsline {subsection}{\numberline {3.1}Data}{11}% 
 \contentsline {subsection}{\numberline {3.2}Model}{11}% 
-\contentsline {section}{\numberline {4}Appendix}{11}% 
-\contentsline {subsection}{\numberline {4.1}Algorithms}{11}% 
-\contentsline {subsubsection}{\numberline {4.1.1}Penalized Linear}{11}% 
-\contentsline {subsubsection}{\numberline {4.1.2}Classification and Regression Trees}{11}% 
-\contentsline {subsubsection}{\numberline {4.1.3}Random Forest}{12}% 
-\contentsline {subsubsection}{\numberline {4.1.4}Neural Networks}{13}% 
+\contentsline {section}{\numberline {4}Appendix}{12}% 
+\contentsline {subsection}{\numberline {4.1}Algorithms}{12}% 
+\contentsline {subsubsection}{\numberline {4.1.1}Penalized Linear}{12}% 
+\contentsline {subsubsection}{\numberline {4.1.2}Classification and Regression Trees}{12}% 
+\contentsline {subsubsection}{\numberline {4.1.3}Random Forest}{13}% 
+\contentsline {subsubsection}{\numberline {4.1.4}Neural Networks}{14}% 

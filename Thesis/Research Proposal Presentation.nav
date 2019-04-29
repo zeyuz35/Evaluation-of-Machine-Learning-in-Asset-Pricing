@@ -14,37 +14,42 @@
 \headcommand {\beamer@framepages {5}{5}}
 \headcommand {\beamer@sectionpages {5}{5}}
 \headcommand {\beamer@subsectionpages {5}{5}}
-\headcommand {\sectionentry {3}{Model Specification}{6}{Model Specification}{0}}
+\headcommand {\sectionentry {3}{Why apply Machine Learning in Finance?}{6}{Why apply Machine Learning in Finance?}{0}}
 \headcommand {\slideentry {3}{0}{1}{6/6}{}{0}}
 \headcommand {\beamer@framepages {6}{6}}
 \headcommand {\beamer@sectionpages {6}{6}}
 \headcommand {\beamer@subsectionpages {6}{6}}
-\headcommand {\sectionentry {4}{Simulation}{7}{Simulation}{0}}
-\headcommand {\beamer@subsectionpages {7}{6}}
-\headcommand {\beamer@subsectionentry {0}{4}{1}{7}{Real World Observations}}
-\headcommand {\slideentry {4}{1}{1}{7/7}{Real World Observations}{0}}
+\headcommand {\sectionentry {4}{Model Specification}{7}{Model Specification}{0}}
+\headcommand {\slideentry {4}{0}{1}{7/7}{}{0}}
 \headcommand {\beamer@framepages {7}{7}}
+\headcommand {\beamer@sectionpages {7}{7}}
 \headcommand {\beamer@subsectionpages {7}{7}}
-\headcommand {\beamer@subsectionentry {0}{4}{2}{8}{Simulation Design}}
-\headcommand {\slideentry {4}{2}{1}{8/8}{Simulation Design}{0}}
+\headcommand {\sectionentry {5}{Simulation}{8}{Simulation}{0}}
+\headcommand {\beamer@subsectionpages {8}{7}}
+\headcommand {\beamer@subsectionentry {0}{5}{1}{8}{Real World Observations}}
+\headcommand {\slideentry {5}{1}{1}{8/8}{Real World Observations}{0}}
 \headcommand {\beamer@framepages {8}{8}}
-\headcommand {\beamer@sectionpages {7}{8}}
 \headcommand {\beamer@subsectionpages {8}{8}}
-\headcommand {\sectionentry {5}{Real Data}{9}{Real Data}{0}}
-\headcommand {\slideentry {5}{0}{1}{9/9}{}{0}}
+\headcommand {\beamer@subsectionentry {0}{5}{2}{9}{Simulation Design}}
+\headcommand {\slideentry {5}{2}{1}{9/9}{Simulation Design}{0}}
 \headcommand {\beamer@framepages {9}{9}}
-\headcommand {\beamer@sectionpages {9}{9}}
+\headcommand {\beamer@sectionpages {8}{9}}
 \headcommand {\beamer@subsectionpages {9}{9}}
-\headcommand {\sectionentry {6}{Results}{10}{Results}{0}}
+\headcommand {\sectionentry {6}{Real Data}{10}{Real Data}{0}}
 \headcommand {\slideentry {6}{0}{1}{10/10}{}{0}}
 \headcommand {\beamer@framepages {10}{10}}
 \headcommand {\beamer@sectionpages {10}{10}}
 \headcommand {\beamer@subsectionpages {10}{10}}
-\headcommand {\sectionentry {7}{Questions and Answers}{11}{Questions and Answers}{0}}
+\headcommand {\sectionentry {7}{Results}{11}{Results}{0}}
 \headcommand {\slideentry {7}{0}{1}{11/11}{}{0}}
 \headcommand {\beamer@framepages {11}{11}}
-\headcommand {\beamer@partpages {1}{11}}
-\headcommand {\beamer@subsectionpages {11}{11}}
 \headcommand {\beamer@sectionpages {11}{11}}
-\headcommand {\beamer@documentpages {11}}
-\headcommand {\gdef \inserttotalframenumber {10}}
+\headcommand {\beamer@subsectionpages {11}{11}}
+\headcommand {\sectionentry {8}{Questions and Answers}{12}{Questions and Answers}{0}}
+\headcommand {\slideentry {8}{0}{1}{12/12}{}{0}}
+\headcommand {\beamer@framepages {12}{12}}
+\headcommand {\beamer@partpages {1}{12}}
+\headcommand {\beamer@subsectionpages {12}{12}}
+\headcommand {\beamer@sectionpages {12}{12}}
+\headcommand {\beamer@documentpages {12}}
+\headcommand {\gdef \inserttotalframenumber {11}}

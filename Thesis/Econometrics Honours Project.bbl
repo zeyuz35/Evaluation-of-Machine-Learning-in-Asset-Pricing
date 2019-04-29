@@ -1,4 +1,4 @@
-\begin{thebibliography}{12}
+\begin{thebibliography}{18}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
 
 \bibitem[{Breiman(2001)}]{breiman_random_2001}
@@ -13,6 +13,10 @@ Choromanska, A., Henaff, M., Mathieu, M., Arous, G.~B., LeCun, Y., 2014. The
   {Loss} {Surfaces} of {Multilayer} {Networks}. arXiv:1412.0233 [cs] ArXiv:
   1412.0233.
 
+\bibitem[{Diebold and Mariano(2002)}]{diebold_comparing_2002}
+Diebold, F.~X., Mariano, R.~S., 2002. Comparing predictive accuracy. Journal of
+  Business \& economic statistics 20, 134--144.
+
 \bibitem[{Gu et~al.(2018)Gu, Kelly, and Xiu}]{gu_empirical_2018}
 Gu, S., Kelly, B., Xiu, D., 2018. Empirical asset pricing via machine learning.
   Tech. rep., National Bureau of Economic Research.
@@ -20,6 +24,15 @@ Gu, S., Kelly, B., Xiu, D., 2018. Empirical asset pricing via machine learning.
 \bibitem[{Hansen and Salamon(1990)}]{hansen_neural_1990}
 Hansen, L.~K., Salamon, P., 1990. Neural network ensembles. IEEE Transactions
   on Pattern Analysis \& Machine Intelligence pp. 993--1001.
+
+\bibitem[{Harvey and Liu(????)}]{harvey_census_nodate}
+Harvey, C.~R., Liu, Y., ???? A {Census} of the {Factor} {Zoo} p.~7.
+
+\bibitem[{Harvey et~al.(1997)Harvey, Leybourne, and
+  Newbold}]{harvey_testing_1997}
+Harvey, D., Leybourne, S., Newbold, P., 1997. Testing the equality of
+  prediction mean squared errors. International Journal of Forecasting 13,
+  281--291.
 
 \bibitem[{Hsu and Kalesnik(2014)}]{hsu_finding_2014}
 Hsu, J., Kalesnik, V., 2014. Finding smart beta in the factor zoo. Research
@@ -37,6 +50,10 @@ Kingma, D.~P., Ba, J., 2014. Adam: {A} method for stochastic optimization.
 \bibitem[{Lecun et~al.(2015)Lecun, Bengio, and Hinton}]{lecun_deep_2015}
 Lecun, Y., Bengio, Y., Hinton, G., 2015. Deep learning. Nature 521, 436--444.
 
+\bibitem[{Lettau and Ludvigson(2001)}]{lettau_consumption_2001}
+Lettau, M., Ludvigson, S., 2001. Consumption, {Aggregate} {Wealth}, and
+  {Expected} {Stock} {Returns}. The Journal of Finance 56, 815--849.
+
 \bibitem[{Masters(1993)}]{masters_practical_1993}
 Masters, T., 1993. Practical {Neural} {Network} {Recipes} in {C}++. Morgan
   Kaufmann, google-Books-ID: 7Ez\_Pq0sp2EC.
@@ -45,6 +62,15 @@ Masters, T., 1993. Practical {Neural} {Network} {Recipes} in {C}++. Morgan
   Le}]{ramachandran_searching_2017}
 Ramachandran, P., Zoph, B., Le, Q.~V., 2017. Searching for {Activation}
   {Functions}. arXiv:1710.05941 [cs] ArXiv: 1710.05941.
+
+\bibitem[{Schwert(2003)}]{schwert_anomalies_2003}
+Schwert, G.~W., 2003. Anomalies and market efficiency. Handbook of the
+  Economics of Finance 1, 939--974.
+
+\bibitem[{Vuolteenaho(1999)}]{vuolteenaho_understanding_1999}
+Vuolteenaho, T., 1999. Understanding the {Aggregate} {Book}-to-{Market}
+  {Ratio}. {SSRN} {Scholarly} {Paper} ID 161911, Social Science Research
+  Network, Rochester, NY.
 
 \bibitem[{Zou and Hastie(2005)}]{zou_regularization_2005}
 Zou, H., Hastie, T., 2005. Regularization and variable selection via the
