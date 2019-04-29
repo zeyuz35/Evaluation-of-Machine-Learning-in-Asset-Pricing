@@ -9,7 +9,7 @@
 
 \usepackage{amsfonts}
 \usepackage{setspace,graphicx,epstopdf,amsmath}
-\usepackage{marginnote, datetime, url, enumitem, subfigure}
+\usepackage{marginnote, datetime, url, enumitem, subfigure
 
 %Journal Style
 %JFE looks nice, JF looks awful
@@ -77,6 +77,9 @@
 %%Title and other fluff, just before document start
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%Hyperref apparently is a big package and causes a lot of issues, so it's recommended to load this last
+\usepackage{hyperref}
+
 \title{Evaluation of Machine Learning in Empirical Asset Pricing}
 \author{Ze Yu Zhong}
 
@@ -117,15 +120,11 @@ Though work has been done in addressing these problems, Many issues with predict
 
 The non-robustness has been
 
-For example, valuation ratios such as dividend yield remain popular, despite being contingent on being stationary, for which there was mixed evidence even when initially introduced, \citep{vuolteenaho_understanding_1999}, and were later shown to seemingly break down, (\cite{lettau_consumption_2001}, \cite{schwert_anomalies_2003} and others). This has not stopped the literature searching for more factors: many quantitative trading firms were using 81 factor models as the norm \citep{hsu_finding_2014} by 2014, and as of the time of writing well over 400 as documented by \cite{harvey_census_nodate}, despite 
+For example, valuation ratios such as dividend yield remain popular, despite being contingent on being stationary, for which there was mixed evidence even when initially introduced, \citep{vuolteenaho_understanding_1999}, and were later shown to seemingly break down, (\cite{lettau_consumption_2001}, \cite{schwert_anomalies_2003} and others). This has not stopped the literature searching for more factors: quantitative trading firms were using 81 factor models as the norm \citep{hsu_finding_2014} by 2014, and the literature has begun evaluating 400 or even 600 factors (\cite{harvey__2016}, \cite{harvey_census_2019}, among others).
 
-The aforementioned problems has posed immense problems, with much of the literature developing models to try to deal with this. To this end, machine learning algorithms have emerged and been recognised as well suited: 
+The aforementioned problems has posed immense problems, with much of the literature developing models to try to deal with this. To this end, machine learning algorithms have emerged and been recognised as well suited: algorithms such as shrinkage and selection methods have been utilised in factor selection (\cite{kozak_shrinking_2017}, \cite{rapach_forecasting_2013}, \cite{freyberger_dissecting_2017}), and machine learning portfolios have been demonstrated to outperform traditional models in predicting stock returns (\cite{gu_empirical_2018}, \cite{hsu_finding_2014}, \cite{feng_deep_2018}). 
 
-More recently, machine learning has been recognised to be well suited to the problem of predicting stock returns: authors such as \cite{hsu_finding_2014} and \cite{gu_empirical_2018} demonstrate that machine learning outperforms significantly. 
-
-However, though machine learning shows great promise in solving some problems in empirical finance such as factor selection (sources), there still has been no work done as to how well machine learning performs in lieu of other problems such as persistent regressors, cross sectional correlation, etc.
-
-Prior work been done by \cite{gu_empirical_2018}, however; only basic simulation designs which did not fully explore the characteristic problems present in financial datasets were used. 
+However, though machine learning has shown great promise is these areas, there still little work done on how well machine learning performs in lieu of other problems that have plagued financial returns data, such as persistent regressors, endogeneous regressors, non-stationary regressors, cross sectional correlation, low signal to noise ratio, etc. Prior work been done by \cite{gu_empirical_2018}, however; only basic simulation designs were used which did not fully explore these problems.
 
 This paper will be the first in focusing on how machine learning algorithms perform in environments with problems exhibited by financial returns data through extensive simulations. In addition, these algorithms will once again be evaluated on real world data, but with only more recent and representative data included in order to test their short term robustness in predicting stock returns. These two aspects of the study together are able to offer a better glimpse as to how ``black box" machine learning algorithms deal with these sorts of problems, if at all.
 
@@ -143,7 +142,7 @@ This means that machine learning algorithms do not, nor do they aim to, explain 
 
 \subsection{Overall Model Design}
 
-Each model will be presented and explained so that a reader without any machine learning background can understand the basic idea behind the model. Computational methods such as algorithms however, will only have their general principles and background explained in the appendix. This is because there are many variations of algorithms available, and more importantly, specific understanding of how the algorithm works is not necessary. 
+Each model will be presented and explained so that a reader without any machine learning background can understand the basic idea behind each model. Details such as the computational and specific algorithm used for each model are included in the Appendix (\ref{Algorithms}). This is because there are many variations of algorithms available, and more importantly, specific understanding of how the algorithm works is not necessary. 
 
 All asset excess returns are modelled as an additive prediction error model:
 
@@ -175,6 +174,61 @@ Both the rolling window and recursive schemes are very computationally intensive
 
 \rhs{insert a picture of how the windows work from say caret documentation, would be great}
 
+\subsection{Loss Function}
+
+The choice of the loss function used in models is imperative to machine learning. The loss functions considered are Mean Absolute Error (MAE), Mean Squared Error and Root Mean Squared Error (MSE, and RMSE) and Huber Loss.
+
+\subsubsection{Mean Absolute Error}
+
+The mean absolute error (MAE) is simply the average magnitude of errors. Because of this, it places equal weighting to all magnitudes of errors and is more robust to outliers. Limitations of this metric are its non-differentiability when the error is 0 (see Figure \ref{fig:loss_functions}).
+
+\begin{equation}
+	\text{MAE} = \frac{1}{n} \sum_{j = i}^{n} |y_j - \hat{y_j}|
+\end{equation}
+
+\subsubsection{Mean Squared Error and Root Mean Squared Error}
+
+The mean squared error (MSE) and root mean squared error (RMSE) are quadratic scoring methods. This means that they place higher weight on large errors. Models that minimize this metric are therefore more sensitive to outliers. 
+
+\begin{align}
+	\text{MSE} &= \frac{1}{n} \sum_{j = i}^{n} \left( y_j - \hat{y_j}\right) ^2 \\
+	\text{RMSE} &= \sqrt{ \frac{1}{n} \sum_{j = i}^{n} \left( y_j - \hat{y_j}\right) ^2}
+\end{align}
+
+\subsubsection{Huber Loss}
+
+The Huber Loss metric \citep{huber_robust_1992} offers a combination of mean squared error and mean absolute error, with errors smaller than the threshold $\xi$ being mean squared error and errors larger than the threshold $\xi$ being absolute error. This allows for the model fit to be less sensitive to outliers which are quite common in financial data. 
+
+\begin{align}
+	H(x;\xi) = 
+		\begin{cases}
+		x^2, 
+		\quad &\text{if} \quad |x| \leq \xi ; \\
+		2 \xi  |x| - \xi^2, 
+		\quad &\text{if} \quad |x| > \xi
+	\end{cases}
+\end{align}
+
+\begin{figure}
+	\begin{center}
+		\begin{tikzpicture}
+		\begin{axis}[ xlabel={$\epsilon$}, ylabel={Loss}, axis lines=middle, samples=41, grid, thick, domain=-2:2]
+		\addplot+[no marks] {abs(x)};
+		\addlegendentry{MAE}
+		\addplot+[no marks] {x^2};
+		\addlegendentry{MSE}
+		\addplot+[no marks] {(2 * abs(x) - 1)*(abs(x) > 1) +
+			(x^2)*(abs(x) <= 1 )};
+		\addlegendentry{Huber Loss}
+		\end{axis}
+		\end{tikzpicture}
+	\end{center}
+	\caption{Illustration of MAE, MSE and Huber Loss when $\xi = 1$}
+	\label{fig:loss_functions}
+\end{figure}
+
+\rhs{cite something about outliers in financial data}
+
 \subsection{Linear Model}
 
 The least complex model considered is the simple linear regression model, otherwise known by its estimation method ordinary least squares (OLS). OLS struggles with high-dimensionality. Nevertheless, despite being expected to perform poorly it was implemented as a "control."
@@ -185,46 +239,9 @@ The simple linear model assumes that the underlying conditional expectation \( g
 	g(z_{i, t};\theta) = z_{i, t}' \theta
 \end{equation}
 
-This model can capture non-linearities only if the predictor set \(z^*_{i, t}\) contains specified non-linear transformations or interaction terms. It is quite common to consider at least second order terms and two way interactions. 
+This model can capture non-linearities only if the predictor set \(z^*_{i, t}\) contains specified non-linear transformations or interaction terms. 
 
-The baseline computational algorithm for this model is to minimize the standard least squares function:
-
-\begin{equation}
-	content...
-\end{equation}
-
-\subsubsection{Huber Loss}
-
-\begin{align}
-	H(x;\xi) = 
-	\begin{cases}
-		x^2, 
-		\quad &\text{if} \quad |x| \leq \xi ; \\
-		2 \xi  |x| - \xi^2, 
-		\quad &\text{if} \quad |x| > \xi
-	\end{cases}
-\end{align}
-
-The Huber Loss metric offers a combination of mean squared error and mean absolute error, with errors smaller than the threshold $\xi$ being mean squared error and errors larger than the threshold $\xi$ being absolute error. This allows for the model fit to be less sensitive to outliers which are quite common in financial data. 
-
-\begin{figure}
-	\begin{center}
-		\begin{tikzpicture}
-		\begin{axis}[ xlabel={$x$}, ylabel={$y$}, axis lines=middle, samples=41, grid, thick, domain=-4:4]
-		\addplot+[no marks] {x^2};
-		\addlegendentry{Mean Squared Error}
-		\addplot+[no marks] {(2 * abs(x) - 1)*(abs(x) > 1) +
-			(x^2)*(abs(x) <= 1 )};
-		\addlegendentry{Huber Loss}
-		\end{axis}
-		\end{tikzpicture}
-	\end{center}
-	\caption{Illustration of MSE and Huber Loss when $\xi = 1$}
-\end{figure}
-
-\rhs{cite Huber loss}
-\rhs{cite something about outliers in financial data}
-\rhs{diagram representing huber loss would be great}
+Computing this model with respect to minimizing the mean squared error yields the pooled ordinary least squares estimator (POLS).
 
 \subsection{Penalized Linear Model}
 
@@ -369,7 +386,7 @@ The ReLU activation function:
 	\operatorname{ReLU}(x) = max(0, x)
 \end{equation}
 
-was used for all hidden layers owing to its high computational speed, and hence popularity within recent literature  (see \cite{lecun_deep_2015} and \cite{ramachandran_searching_2017}). Other potential choices for activation functions such as sigmoid, softmax, tanh etc. were not used due to computational cost.
+was used for all hidden layers owing to its high computational speed, and hence popularity within recent literature  (see \cite{lecun_deep_2015} and \cite{ramachandran_searching_2017}). Other potential choices for activation functions such as sigmoid, softmax, tanh etc. were not used due to the additional complexities and computational costs involved with validating the choice of activation function.
 
 The neural networks detailed in this paper have the following general formula. Let $K^{(l)}$ denote the number of neurons in each hidden layer $l = 0, 1, \dots, L$, with $l = 0$ denoting the input layer and $l = L$ denoting the output layer. Define the output of neuron $k$ in layer $l$ as $x_k^{(l)}$. Next, define the vector of outputs for this layer as $x^{(l)} = (1, x_1^{(l)}, \dots, x_{K^(l)}^{(l)})'$. The input layer is defined using predictors, $x^{(0)} = (1, z_1, \dots, z_N)'$. The recursive output formula for the neural network at each neuron in layer $l > 0$ is then:
 
@@ -397,9 +414,9 @@ The solution to finding the optimal weights and biases for the neural network is
 
 The solution to this is typically found via backpropagation, an iterative procedure similar to Gauss-Newton steps. Note that the lack of a global minimum is actually desirable, as global minimums tend to be overfit solutions to the problem, \citep{choromanska_loss_2014}.
 
-This is to be calculated and averaged across all training observations, and is thus extremely computationally intensive. A common solution is to use "stochastic gradient descent" (SGD) where instead optimising the loss function with respect to the entire training sample, only a small, random subset of the data (mini batches)is used at each optimisation step. This sacrifices some accuracy for a dramatic improvement in computational speed.
+This is to be calculated and averaged across all training observations, and is thus extremely computationally intensive. A common solution is to use "stochastic gradient descent" (SGD) where instead of optimising the loss function with respect to the entire training sample, only a small, random subset of the data (mini batch) is used at each optimisation step. This sacrifices some accuracy for a dramatic improvement in computational speed.
 
-Due the noisiness (randomness) introduced by SGD, the learning rate (step size of each descent) needs to be shrunk towards zero as the gradient approaches zero to avoid the noisiness of the mini batch causing an "overshoot" of the optimum. A learning rate shrinkage algorithm was therefore employed.
+Due the noisiness (randomness) introduced by SGD, the learning rate (step size of each descent) needs to be shrunk towards zero as the gradient approaches zero to avoid the noisiness of the mini batch causing an "overshoot" of the optimum. A learning rate shrinkage algorithm which adaptively shrinks the learning rate was therefore employed.
 
 \subsubsection{Batch Normalization}
 
@@ -516,18 +533,18 @@ We will consider four different functions $g(\cdot)$
 
 \begin{flalign*}
 (1)\; & g_1 \left(z_{i, t}\right)=\left(c_{i 1, t}, c_{i 2, t}, c_{i 3, t} \times x_{t}'\right) \theta_{0};
-	\quad \text { where } \theta_{0} = (0.02, 0.02, 0.02)^{\prime} \\
+	\quad \theta_{0} = (0.02, 0.02, 0.02)^{\prime} \\
 (2)\; & g_2 \left(z_{i, t}\right)=\left(c_{i 1, t}^{2}, c_{i 1, t} \times c_{i 2, t}, \operatorname{sgn}\left(c_{i 3, t} \times  x_{t}'\right)\right) \theta_{0}; 
-	\quad \text { where } \; \theta_{0} = (0.04, 0.035, 0.01)^{\prime} \\
+	\quad \theta_{0} = (0.04, 0.035, 0.01)^{\prime} \\
 (3)\; & g_3 \left(z_{i, t}\right) = \left(1[c_{i3,t}>0],c_{i 2, t}^{3}, c_{i 1, t} \times c_{i 2, t}\times 1[c_{i3,t}>0], \text{logit}\left({c}_{i 3, t} \right)\right) \theta_{0};
-	\quad \text { where } \theta_{0} = (0.04, 0.035, 0.01, 0.01)^{\prime}  \\
+	\quad \theta_{0} = (0.04, 0.035, 0.01, 0.01)^{\prime}  \\
 (4)\; & g_4 \left(z_{i, t}\right)=\left(\hat{c}_{i 1, t}, \hat{c}_{i 2, t}, \hat{c}_{i 3, t} \times x_{t}'\right) \theta_{0};
-	\quad \text { where } \theta_{0} = (0.02 ,0.02 ,0.02)^{\prime}
+	\quad \theta_{0} = (0.02 ,0.02 ,0.02)^{\prime}
 \end{flalign*}
 
 $g_1 \left(z_{i, t}\right)$ allows the ch and $g_2 \left(z_{i, t}\right)$
 
-Need to work out the corresponding cr0ss-sectional $R^2$ in this case. We can then tune $\theta^0$ to be this close to Gu et al. (2019), as well as the predictive $R^2$. This will require some work. 
+Need to work out the corresponding cross-sectional $R^2$ in this case. We can then tune $\theta^0$ to be this close to Gu et al. (2019), as well as the predictive $R^2$. This will require some work. 
 
 The simulation design results in $3 \times 4 = 12$ different simulated datasets, each with $N = 200$ stocks, $T = 180$ periods and $P_c = 100$ characteristics.
 
@@ -592,12 +609,13 @@ where \( c_{i,t} \) is a \( P_c \times 1 \) matrix of characteristics for each s
 \section{Appendix}
 
 \subsection{Algorithms}
+\label{Algorithms}
 
 \subsubsection{Penalized Linear}
 
 \subsubsection{Classification and Regression Trees}
 
-\cite{breiman_classification_2017}
+For full details of the Classification and Regression Tree algorithm see \cite{breiman_classification_2017}. 
 
 \begin{algorithm}[H]
 	\SetAlgoLined
@@ -639,7 +657,7 @@ where \( c_{i,t} \) is a \( P_c \times 1 \) matrix of characteristics for each s
 
 \subsubsection{Random Forest}
 
-\cite{breiman_random_2001}
+For full details of the Random Forest algorithm see \cite{breiman_random_2001}. 
 
 \begin{algorithm}[H]
 	\SetAlgoLined

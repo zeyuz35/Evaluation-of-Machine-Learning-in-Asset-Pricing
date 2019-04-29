@@ -1,4 +1,4 @@
-\begin{thebibliography}{18}
+\begin{thebibliography}{24}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
 
 \bibitem[{Breiman(2001)}]{breiman_random_2001}
@@ -17,6 +17,15 @@ Choromanska, A., Henaff, M., Mathieu, M., Arous, G.~B., LeCun, Y., 2014. The
 Diebold, F.~X., Mariano, R.~S., 2002. Comparing predictive accuracy. Journal of
   Business \& economic statistics 20, 134--144.
 
+\bibitem[{Feng et~al.(2018)Feng, He, and Polson}]{feng_deep_2018}
+Feng, G., He, J., Polson, N.~G., 2018. Deep {Learning} for {Predicting} {Asset}
+  {Returns}. arXiv:1804.09314 [cs, econ, stat] ArXiv: 1804.09314.
+
+\bibitem[{Freyberger et~al.(2017)Freyberger, Neuhierl, and
+  Weber}]{freyberger_dissecting_2017}
+Freyberger, J., Neuhierl, A., Weber, M., 2017. Dissecting characteristics
+  nonparametrically. Tech. rep., National Bureau of Economic Research.
+
 \bibitem[{Gu et~al.(2018)Gu, Kelly, and Xiu}]{gu_empirical_2018}
 Gu, S., Kelly, B., Xiu, D., 2018. Empirical asset pricing via machine learning.
   Tech. rep., National Bureau of Economic Research.
@@ -25,8 +34,12 @@ Gu, S., Kelly, B., Xiu, D., 2018. Empirical asset pricing via machine learning.
 Hansen, L.~K., Salamon, P., 1990. Neural network ensembles. IEEE Transactions
   on Pattern Analysis \& Machine Intelligence pp. 993--1001.
 
-\bibitem[{Harvey and Liu(????)}]{harvey_census_nodate}
-Harvey, C.~R., Liu, Y., ???? A {Census} of the {Factor} {Zoo} p.~7.
+\bibitem[{Harvey and Liu(2019)}]{harvey_census_2019}
+Harvey, C.~R., Liu, Y., 2019. A {Census} of the {Factor} {Zoo} p.~7.
+
+\bibitem[{Harvey et~al.(2016)Harvey, Liu, and Zhu}]{harvey__2016}
+Harvey, C.~R., Liu, Y., Zhu, H., 2016. … and the {Cross}-{Section} of
+  {Expected} {Returns}. The Review of Financial Studies 29, 5--68.
 
 \bibitem[{Harvey et~al.(1997)Harvey, Leybourne, and
   Newbold}]{harvey_testing_1997}
@@ -38,6 +51,12 @@ Harvey, D., Leybourne, S., Newbold, P., 1997. Testing the equality of
 Hsu, J., Kalesnik, V., 2014. Finding smart beta in the factor zoo. Research
   Affiliates (July) .
 
+\bibitem[{Huber(1992)}]{huber_robust_1992}
+Huber, P.~J., 1992. Robust {Estimation} of a {Location} {Parameter}. In: Kotz,
+  S., Johnson, N.~L. (eds.), {\em Breakthroughs in {Statistics}: {Methodology}
+  and {Distribution}\/}, Springer New York, New York, NY, Springer {Series} in
+  {Statistics}, pp. 492--518.
+
 \bibitem[{Ioffe and Szegedy(2015)}]{ioffe_batch_2015}
 Ioffe, S., Szegedy, C., 2015. Batch normalization: {Accelerating} deep network
   training by reducing internal covariate shift. arXiv preprint
@@ -46,6 +65,10 @@ Ioffe, S., Szegedy, C., 2015. Batch normalization: {Accelerating} deep network
 \bibitem[{Kingma and Ba(2014)}]{kingma_adam:_2014}
 Kingma, D.~P., Ba, J., 2014. Adam: {A} method for stochastic optimization.
   arXiv preprint arXiv:1412.6980 .
+
+\bibitem[{Kozak et~al.(2017)Kozak, Nagel, and Santosh}]{kozak_shrinking_2017}
+Kozak, S., Nagel, S., Santosh, S., 2017. Shrinking the cross section. Tech.
+  rep., National Bureau of Economic Research.
 
 \bibitem[{Lecun et~al.(2015)Lecun, Bengio, and Hinton}]{lecun_deep_2015}
 Lecun, Y., Bengio, Y., Hinton, G., 2015. Deep learning. Nature 521, 436--444.
@@ -62,6 +85,10 @@ Masters, T., 1993. Practical {Neural} {Network} {Recipes} in {C}++. Morgan
   Le}]{ramachandran_searching_2017}
 Ramachandran, P., Zoph, B., Le, Q.~V., 2017. Searching for {Activation}
   {Functions}. arXiv:1710.05941 [cs] ArXiv: 1710.05941.
+
+\bibitem[{Rapach and Zhou(2013)}]{rapach_forecasting_2013}
+Rapach, D., Zhou, G., 2013. Forecasting {Stock} {Returns}. In: {\em Handbook of
+  {Economic} {Forecasting}\/}, Elsevier, vol.~2, pp. 328--383.
 
 \bibitem[{Schwert(2003)}]{schwert_anomalies_2003}
 Schwert, G.~W., 2003. Anomalies and market efficiency. Handbook of the
