@@ -1,0 +1,5 @@
+"0","z <- gen_z()"
+"0","pooled_panel <- gen_pooled_panel()"
+"0","pooled_panel_y <- pooled_panel$return"
+"0","pooled_panel_x <- pooled_panel %>%"
+"0","  select(-return, -stock, -time)"

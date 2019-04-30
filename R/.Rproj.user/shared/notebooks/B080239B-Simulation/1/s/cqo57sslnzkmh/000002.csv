@@ -1,7 +1,0 @@
-"0","#Simulation"
-"0","N <- 200"
-"0","P_c <- 100"
-"0","#Errors"
-"0","epsilon <- c(rnorm(N, 0, 1))"
-"0","w <- c(rnorm(N, 0, 1))"
-"0","#sigma2 <- "

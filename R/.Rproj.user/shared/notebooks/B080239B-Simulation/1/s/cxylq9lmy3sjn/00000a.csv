@@ -1,0 +1,6 @@
+"0","rf <- randomForest(x = pooled_panel_x, y = pooled_panel_y,
+                   ntree = 100, mtry = 100)
+"
+"2","Error in randomForest(x = pooled_panel_x, y = pooled_panel_y, ntree = 100,  : 
+  could not find function ""randomForest""
+"

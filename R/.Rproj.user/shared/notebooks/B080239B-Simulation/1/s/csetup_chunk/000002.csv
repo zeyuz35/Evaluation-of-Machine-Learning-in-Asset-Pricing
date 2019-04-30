@@ -1,4 +1,7 @@
 "0","knitr::opts_chunk$set(echo = TRUE)"
+"0","################"
+"0","##Load Libraries"
+"0","################"
 "0","library(glmnet)"
 "2","Loading required package: Matrix
 "
@@ -25,3 +28,51 @@
 "0","library(keras)"
 "2","package ‘keras’ was built under R version 3.5.3"
 "0","library(ggplot2)"
+"0","library(caret)"
+"2","Loading required package: lattice
+"
+"2","
+Attaching package: ‘caret’
+
+"
+"2","The following object is masked from ‘package:purrr’:
+
+    lift
+
+"
+"0","library(forecast)"
+"0","library(rlist)"
+"2","package ‘rlist’ was built under R version 3.5.3"
+"0","library(plm)"
+"2","Loading required package: Formula
+"
+"2","
+Attaching package: ‘plm’
+
+"
+"2","The following objects are masked from ‘package:dplyr’:
+
+    between, lag, lead
+
+"
+"0","library(Metrics)"
+"2","package ‘Metrics’ was built under R version 3.5.3"
+"2","
+Attaching package: ‘Metrics’
+
+"
+"2","The following object is masked from ‘package:forecast’:
+
+    accuracy
+
+"
+"2","The following objects are masked from ‘package:caret’:
+
+    precision, recall
+
+"
+"2","The following object is masked from ‘package:glmnet’:
+
+    auc
+
+"

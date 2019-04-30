@@ -391,7 +391,7 @@ gen_error <- function(){
   
   for (t in 1:Time+1){
     for (i in 1:N) {
-      error[[t]][i] <- exp(sqrt(abs(sigma2[[t]]))/2)*rnorm(1, 0, 1)
+      error[[t]][i] <- exp(sigma2[[t]])*rnorm(1, 0, 1)
     }
   }
   
@@ -495,8 +495,6 @@ gen_z <- function(){
   return(z)
 }
 
-z <- gen_z()
-
 ############################################################################
 ##Function to cbind the corresponding return series and the predictor set together, and return it in dataframe form
 ############################################################################
@@ -530,12 +528,26 @@ gen_pooled_panel <- function(){
   pooled_panel <- pooled_panel %>%
   arrange(time)
   
+  #Remove 1st row because returns data only starts from t = 2
+  pooled_panel <- pooled_panel %>%
+    filter(time != 1)
+  
   #Return
   return(pooled_panel)
   
 }
+```
+
+```{r}
+z <- gen_z()
 
 pooled_panel <- gen_pooled_panel()
+
+pooled_panel_y <- pooled_panel$return
+
+pooled_panel_x <- pooled_panel %>%
+  select(-return, -stock, -time)
+
 
 ```
 
@@ -560,6 +572,37 @@ pooled_panel <- gen_pooled_panel()
 #$T = 180$ monthly periods corresponds to 15 years. The training sample was set to start from $T = 108$ or 9 years, a validation set 1 year in length. The last 3 years were reserved as a test set never to be used for validation or training.
 
 #This means that there are only 3 sample periods to train on, yay
+
+time_slices <- createTimeSlices(1:(Time-36), initialWindow = 108, horizon = 12, fixedWindow = FALSE, skip = 11)
+```
+
+```{r}
+#POLS
+
+pols_control <- trainControl(method = "timeslice",
+                             initialWindow = 108, horizon = 12, fixedWindow = FALSE, skip = 11)
+
+pols <- train(f, data = pooled_panel,
+              method = "lm",
+              trControl = pols_control)
+
+rf.grid <- expand.grid(mtry = seq(20, 400, 20))
+
+rf_control <- trainControl(method = "timeslice",
+                             initialWindow = 108, horizon = 12, fixedWindow = FALSE, skip = 11)
+
+rf <- train(f, data = pooled_panel,
+            method = "rf",
+            trControl = rf_control,
+            tuneGrid = rf.grid)
+
+rf <- randomForest(x = pooled_panel_x, y = pooled_panel_y,
+                   ntree = 100, mtry = 10)
+```
+
+
+
+```{r}
 
 time_slices <- createTimeSlices(1:(Time-36), initialWindow = 108, horizon = 12, fixedWindow = FALSE, skip = 11)
 

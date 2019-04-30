@@ -1,0 +1,29 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1556609370748.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "BADBB6A2",
+    "lastKnownWriteTime" : 7586084270250026349,
+    "last_content_update" : 1556609370748,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "cacheKey" : "F9D7501A",
+        "caption" : "pooled_panel",
+        "contentUrl" : "grid_resource/gridviewer.html?env=&obj=pooled_panel&cache_key=F9D7501A",
+        "displayedObservations" : 36200,
+        "environment" : "",
+        "object" : "pooled_panel",
+        "preview" : 0,
+        "totalObservations" : 36200,
+        "variables" : 403
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_dataframe"
+}
