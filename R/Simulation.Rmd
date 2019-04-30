@@ -598,6 +598,10 @@ rf <- train(f, data = pooled_panel,
 
 rf <- randomForest(x = pooled_panel_x, y = pooled_panel_y,
                    ntree = 100, mtry = 10)
+
+rf$mse
+rf$importance
+rf$rsq
 ```
 
 
