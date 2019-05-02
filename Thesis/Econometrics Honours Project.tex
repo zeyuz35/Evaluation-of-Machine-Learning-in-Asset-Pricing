@@ -9,7 +9,7 @@
 
 \usepackage{amsfonts}
 \usepackage{setspace,graphicx,epstopdf,amsmath}
-\usepackage{marginnote, datetime, url, enumitem, subfigure
+\usepackage{marginnote, datetime, url, enumitem, subfigure}
 
 %Journal Style
 %JFE looks nice, JF looks awful
@@ -78,7 +78,18 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %Hyperref apparently is a big package and causes a lot of issues, so it's recommended to load this last
+
 \usepackage{hyperref}
+
+%Gets rid of the neon green boxes around boxes
+
+\usepackage{xcolor}
+\hypersetup{
+	colorlinks,
+	linkcolor = {red!50!black},
+	citecolor = {blue!50!black},
+	urlcolor = {blue!80!black}
+}
 
 \title{Evaluation of Machine Learning in Empirical Asset Pricing}
 \author{Ze Yu Zhong}
@@ -408,6 +419,8 @@ The neural network's weight and bias parameters are estimated by minimizing the 
 
 The solution to finding the optimal weights and biases for the neural network is therefore found via the following chain rule:
 
+\rhs{Backpropagation}
+
 \begin{equation}
 	content...
 \end{equation}
@@ -429,6 +442,7 @@ Finally, multiple random starting values for the weights and biases (seeds) were
 \subsubsection{Overall Design}
 
 \rhs{justify properly}
+\rhs{double check conformability of everything, make sure that the errors are corrected}
 
 One of my key concerns with the Gu et al. (2019) design is that the factors are uncorrelated across $i$, and, in particular, that the factors which do not matter in the return equation are uncorrelated with those that matter. This is not what is observed in practice. 
 
