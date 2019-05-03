@@ -364,11 +364,9 @@ w <- sqrt(0.363)
 ##Function to generate errors
 #############################
 
-gen_error <- function(){
+gen_error <- function(omega, gamma, w){
   
   ##Generate Sigma first
-  ##Sigma2 can be negative, check with David
-  ##Needs to be fixed up, works anyway for now
   
   sigma2 <- rep(list(0), Time+1)
   
@@ -403,29 +401,95 @@ gen_error <- function(){
 
 ```{r}
 ############################################################################
-##Function to generate return series given specification of A and g function
+##Function to generate return series + its residuals given specification of A and g function
 ############################################################################
 
-gen_rt <- function(A, g){
+gen_rt_resid <- function(omega, gamma, w){
+  elp <- matrix(0, nrow = N, ncol = 1)
+  
+  resid <- rep(list(elp), Time+1)
+  
+  ##############################
+  Beta <- gen_Beta()
+  v <- gen_v()
+  error <- gen_error(omega, gamma, w)
+  ##############################
+  
+  for (t in 1:(Time)) {
+    for (i in 1:N){
+      resid[[t+1]][i] <- Beta[[t+1]][i, ] %*% v[[t+1]] + error[[t+1]][i]
+    }
+  }
+  
+  return(resid)
+}
+
+gen_rt <- function(A, g, resid){
   elp <- matrix(0, nrow = N, ncol = 1)
   
   rt <- rep(list(elp), Time+1)
   
   #########################
   Axt <- gen_xt(A)
-  Beta <- gen_Beta()
-  v <- gen_v()
-  error <- gen_error()
   #########################
   
   for (t in 1:(Time)) {
     for (i in 1:N){
-      rt[[t+1]][i] <- g(C, Axt, i, t, theta) + Beta[[t+1]][i, ] %*% v[[t+1]] + error[[t+1]][i]
+      rt[[t+1]][i] <- g(C, Axt, i, t, theta) + resid[[t+1]][i]
     }
   }
   
   return(rt)
 }
+
+```
+
+```{r}
+#Tuning
+
+resid <- gen_rt_resid(omega, gamma, w)
+
+rt <- gen_rt(A1, g1, resid)
+
+
+rt_tune_panel <- data.frame(
+  return = rep(0, 36000),
+  resid = rep(0, 36000),
+  time = rep(0, 36000)
+)
+
+for (i in 1:N){
+  #Extract return series for ith stock from the return series list first
+  rt_tune_df <- data.frame(
+    return = rep(0, Time+1),
+    resid = rep(0, Time+1)
+  )
+  
+  for (t in 1:(Time+1)){
+    rt_tune_df$return[t] <- rt[[t]][i]
+    rt_tune_df$resid[t] <- resid[[t]][i]
+  }
+  
+  #Cbind returns, id, time and predictors
+  panel <- cbind(rt_tune_df$return, rt_tune_df$resid, c(1:(Time+1)))
+  rt_tune_panel[((i-1)*(Time+1)+1):(i*(Time+1)), ] <- panel
+  
+}
+  
+#Sort by time
+rt_tune_panel <- rt_tune_panel %>%
+  arrange(time)
+  
+#Remove 1st row because returns data only starts from t = 2
+rt_tune_panel <- rt_tune_panel %>%
+  filter(time != 1) %>%
+  select(-time)
+
+SSR <- t(rt_tune_panel$resid) %*% (rt_tune_panel$resid)
+SST <- t(rt_tune_panel$return - mean(rt_tune_panel$return)) %*% (rt_tune_panel$return - mean(rt_tune_panel$return))
+
+1 - SSR/SST
+
 ```
 
 ```{r}
@@ -564,7 +628,7 @@ pooled_panel_x <- pooled_panel %>%
 #yhati = g(zi, t)
 #ybari = gbar(zi, t)
 
-grid <- expand.grid(mtry = seq(10, 100, 10), ntree = seq(10, 100, 10))
+
 
 ```
 
