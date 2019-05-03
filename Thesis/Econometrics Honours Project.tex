@@ -444,11 +444,12 @@ Finally, multiple random starting values for the weights and biases (seeds) were
 \rhs{justify properly}
 \rhs{double check conformability of everything, make sure that the errors are corrected}
 
-One of my key concerns with the Gu et al. (2019) design is that the factors are uncorrelated across $i$, and, in particular, that the factors which do not matter in the return equation are uncorrelated with those that matter. This is not what is observed in practice. 
-
-\cite{gu_empirical_2018}
+Though \cite{gu_empirical_2018} explore the performance of machine learning on simulated returns series, their design used factors are uncorrelated across $i$, and, in particular, that the factors which do not matter in the return equation are uncorrelated with those that matter. This is not what is observed in practice. 
 
 Therefore, we simulate an extension: a latent factor model with stochastic volatility for excess return, $r_{t+1}$, for $t=1,\dots,T$:
+
+\rhs{still not too sure with possible sigma squared term, double check}
+\rhs{double check SV parameters and cite them}
 
 \begin{flalign}
 r_{i, t+1} &= 
@@ -456,7 +457,7 @@ g\left(z_{i, t}\right) + \beta_{i,t+1}v_{t+1} + e_{i, t+1};
 \quad z_{i, t}=\left(1, x_{t}\right)^{\prime} \otimes c_{i, t}, 
 \quad \beta_{i, t}=\left(c_{i 1, t}, c_{i 2, t}, c_{i 3, t}\right) \\ 
 e_{i, t+1} &= 
-\exp\left( \frac{\sigma_{i, t+1}}{2} \right) \varepsilon_{i, t+1}, \\
+\exp\left( \frac{\sigma_{i, t+1}^2}{2} \right) \varepsilon_{i, t+1}, \\
 \sigma^2_{i,t+1} &= 
 \omega + \gamma_i\sigma^2_{t,i}+w_{i,t+1};
 \quad (\omega, \gamma, \omega) = (-0.736, 0.90, \sqrt{0.363}) \forall i
@@ -466,7 +467,7 @@ Let $v_{t+1}$ be a $3\times 1$ vector of errors, and $w_{i,t+1},\varepsilon_{i,t
 
 \subsubsection{Simulating Characteristics}
 
-A simulation mechanism for $C_t$ that gives some correlation across the factors and across time was used. To that end, first consider drawing normal random numbers for each $1\leq i\leq N$ and $1\leq j\leq P_{c}$, according to 
+A simulation mechanism for $C_t$ that gives some correlation across the factors and across time was used. First consider drawing normal random numbers for each $1\leq i\leq N$ and $1\leq j\leq P_{c}$, according to 
 
 \begin{equation}
 	\overline{c}_{i j, t} = \rho_{j} \overline{c}_{i j, t-1}+\epsilon_{i j, t} ;
@@ -496,7 +497,7 @@ To build in cross-sectional correlation, from the $N\times P_{c}$ matrix $\bar{C
 Finally, the "observed" characteristics for each $1\leq i\leq N$ and for $j=1, \dots, P_{c}$ are constructed according to:
 
 \begin{equation}
-	c_{i j, t} = \frac{2}{n+1} \operatorname{rank}\left(\overline{c}_{i j, t}\right)-1.
+	c_{i j, t} = \frac{2}{n+1} \operatorname{rank}\left(\hat{c}_{i j, t}\right)-1.
 \end{equation}
 
 with the rank transformation normalizing all predictors to be within $[-1, 1]$. 
@@ -557,9 +558,13 @@ We will consider four different functions $g(\cdot)$
 \end{flalign*}
 
 \rhs{explain what each function is doing}
-\rhs{these thetas are not tuned yet, update them after tuning}
+\rhs{these thetas are not tuned yet, update them }
 
-$g_1 \left(z_{i, t}\right)$ allows the ch and $g_2 \left(z_{i, t}\right)$
+$g_1 \left(z_{i, t}\right)$ allows the characteristics to enter the return equation linearly, and $g_2 \left(z_{i, t}\right)$ allows the characteristics to enter the return equation interactively and non-linearly.
+
+$g_3 \left(z_{i, t}\right)$ allows the characteristics to enter in a highly complex and non-linear fashion.
+
+$g_4 \left(z_{i, t}\right)$ builds returns using $\hat{c}$, which are the unobserved characteristics which ahve not been normalized.
 
 Need to work out the corresponding cross-sectional $R^2$ in this case. We can then tune $\theta^0$ to be this close to Gu et al. (2019), as well as the predictive $R^2$. This will require some work. 
 

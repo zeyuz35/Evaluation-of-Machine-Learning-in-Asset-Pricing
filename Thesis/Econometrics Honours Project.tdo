@@ -1,11 +1,17 @@
-\contentsline {todo}{\color@fb@x {}{black}{}{green!30}{\leavevmode {\color {green!30}o}}\ {\bf RS:} Data skepticism (have you set up the data properly?) Show/highlight non-robustness of ML methods Skepticism of validity of methods that include non-stationary factors (like dividend yield) Check validity via simulation methods Methods to consider: OLS, Elasticnet, RF, NN See how it performs on real data}{2}{section*.3}% 
+\contentsline {todo}{\color@fb@x {}{black}{}{green!30}{\leavevmode {\color {green!30}o}}\ {\bf RS:} Data skepticism (have you set up the data properly?) Show/highlight non-robustness of ML methods Skepticism of validity of methods that include non-stationary factors (like dividend yield) Check validity via simulation methods Methods to consider: OLS, Elasticnet, RF, NN See how it performs on real data}{3}{section*.3}% 
 \contentsline {todo}{\color@fb@x {}{black}{}{green!30}{\leavevmode {\color {green!30}o}}\ {\bf RS:} Pending}{3}{section*.4}% 
 \contentsline {todo}{\color@fb@x {}{black}{}{green!30}{\leavevmode {\color {green!30}o}}\ {\bf RS:} insert a picture of how the windows work from say caret documentation, would be great}{4}{section*.5}% 
 \contentsline {todo}{\color@fb@x {}{black}{}{green!30}{\leavevmode {\color {green!30}o}}\ {\bf RS:} cite something about outliers in financial data}{5}{section*.6}% 
 \contentsline {todo}{\color@fb@x {}{black}{}{green!30}{\leavevmode {\color {green!30}o}}\ {\bf RS:} update when algorithm is written}{6}{section*.7}% 
 \contentsline {todo}{\color@fb@x {}{black}{}{green!30}{\leavevmode {\color {green!30}o}}\ {\bf RS:} this diagram needs work}{7}{section*.8}% 
 \contentsline {todo}{\color@fb@x {}{black}{}{green!30}{\leavevmode {\color {green!30}o}}\ {\bf RS:} would be best to customize neuron text}{8}{section*.9}% 
-\contentsline {todo}{\color@fb@x {}{black}{}{green!30}{\leavevmode {\color {green!30}o}}\ {\bf RS:} justify properly}{9}{section*.10}% 
-\contentsline {todo}{\color@fb@x {}{black}{}{green!30}{\leavevmode {\color {green!30}o}}\ {\bf RS:} Pending}{12}{section*.11}% 
-\contentsline {todo}{\color@fb@x {}{black}{}{green!30}{\leavevmode {\color {green!30}o}}\ {\bf RS:} Pending}{12}{section*.12}% 
-\contentsline {todo}{\color@fb@x {}{black}{}{green!30}{\leavevmode {\color {green!30}o}}\ {\bf RS:} research different types of algorithms. Paper used ADAM}{14}{section*.13}% 
+\contentsline {todo}{\color@fb@x {}{black}{}{green!30}{\leavevmode {\color {green!30}o}}\ {\bf RS:} Backpropagation}{9}{section*.10}% 
+\contentsline {todo}{\color@fb@x {}{black}{}{green!30}{\leavevmode {\color {green!30}o}}\ {\bf RS:} justify properly}{9}{section*.11}% 
+\contentsline {todo}{\color@fb@x {}{black}{}{green!30}{\leavevmode {\color {green!30}o}}\ {\bf RS:} double check conformability of everything, make sure that the errors are corrected}{9}{section*.12}% 
+\contentsline {todo}{\color@fb@x {}{black}{}{green!30}{\leavevmode {\color {green!30}o}}\ {\bf RS:} still not too sure with possible sigma squared term, double check}{10}{section*.13}% 
+\contentsline {todo}{\color@fb@x {}{black}{}{green!30}{\leavevmode {\color {green!30}o}}\ {\bf RS:} double check SV parameters and cite them}{10}{section*.14}% 
+\contentsline {todo}{\color@fb@x {}{black}{}{green!30}{\leavevmode {\color {green!30}o}}\ {\bf RS:} explain what each function is doing}{11}{section*.15}% 
+\contentsline {todo}{\color@fb@x {}{black}{}{green!30}{\leavevmode {\color {green!30}o}}\ {\bf RS:} these thetas are not tuned yet, update them}{11}{section*.16}% 
+\contentsline {todo}{\color@fb@x {}{black}{}{green!30}{\leavevmode {\color {green!30}o}}\ {\bf RS:} Pending}{12}{section*.17}% 
+\contentsline {todo}{\color@fb@x {}{black}{}{green!30}{\leavevmode {\color {green!30}o}}\ {\bf RS:} Pending}{12}{section*.18}% 
+\contentsline {todo}{\color@fb@x {}{black}{}{green!30}{\leavevmode {\color {green!30}o}}\ {\bf RS:} research different types of algorithms. Paper used ADAM}{14}{section*.19}% 

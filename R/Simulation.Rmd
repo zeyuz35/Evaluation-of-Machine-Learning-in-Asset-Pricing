@@ -115,14 +115,14 @@ gen_C_hat <- function(){
 ##Generate final "observed" C
 ##################################
 
-#Remember you need to generate C_bar first
+#Remember you need to generate C_bar and C_hat first
 
 gen_C <- function(){
   C <- rep(list(elm), Time+1)
 
   for (t in 1:(Time+1)) {
     C[[t]] <- (2/(N*P_c+1))*
-      matrix(rank(C_bar[[t]]), nrow = N, ncol = P_c) - matrix(
+      matrix(rank(C_hat[[t]]), nrow = N, ncol = P_c) - matrix(
         data = 1, nrow = N, ncol = P_c
         )
   }
@@ -501,7 +501,7 @@ SST <- t(rt_tune_panel$return - mean(rt_tune_panel$return)) %*% (rt_tune_panel$r
 ##g1
 ##############################
 
-rt_A1_g1 <- gen_rt(A1, g1)
+rt_A1_g1 <- gen_rt(A1, g1, gen_rt_resid(omega, gamma, w))
 rt_A2_g1 <- gen_rt(A2, g1)
 rt_A3_g1 <- gen_rt(A3, g1)
 
