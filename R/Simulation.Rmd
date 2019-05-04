@@ -391,7 +391,9 @@ gen_error <- function(omega, gamma, w){
   
   for (t in 1:Time+1){
     for (i in 1:N) {
-      error[[t]][i] <- exp(sigma2[[t]])*rnorm(1, 0, 1)
+      error[[t]][i] <- exp(
+        sqrt(abs(sigma2[[t]])/2)
+        )*rnorm(1, 0, 1)
     }
   }
   
@@ -405,32 +407,52 @@ gen_error <- function(omega, gamma, w){
 #Tuning v vector + error variance
 #Want average time series for each characterisics r squared to be 50%, average annual volatility to be 30%
 
+#Generate paramaters first
+
 beta <- gen_Beta()
 
-v <- gen_v(0.05)
+#variance of the errors is what we want to grid search
+#Gu et al had 0.05 for their v variance, that does not work at all here
+v <- gen_v(5)
+
+#Not too sure about stochastic volatility parameters
+
+  #Defaults
+  omega <- -0.736
+  gamma <- 0.90
+  w <- sqrt(0.363)
+  
+  #Custom
+  omega <- -0.736
+  gamma <- 0.90
+  w <- sqrt(0.363)
 
 error <- gen_error(omega, gamma, w)
 
-rt_tune_panel <- data.frame(
-  return = rep(0, 36000),
-  resid = rep(0, 36000),
-  time = rep(0, 36000)
+#Initialize tuning panel
+
+char_tune_panel <- data.frame(
+  beta_v = rep(0, 36000),
+  error = rep(0, 36000),
+  time = rep(0, 36000),
+  stock = rep(0, 36000)
 )
 
 for (i in 1:N){
   #Initialize
   char_tune_df <- data.frame(
     beta_v = rep(0, Time+1),
-    error = rep(0, Time+1)
+    error = rep(0, Time+1),
+    stock = rep(0, Time+1)
   )
   
   for (t in 1:(Time+1)){
-    char_tune_df$beta_v[t] <- beta[[t]][i, ] %*% v
-  char_tune_df$error[t] <- error[[t]]
+    char_tune_df$beta_v[t] <- beta[[t]][i, ] %*% v[[t]]
+    char_tune_df$error[t] <- error[[t]][i]
   }
   
   #Cbind returns, id, time and predictors
-  panel <- cbind(char_tune_df$beta_v, char_tune_df$error, c(1:(Time+1)))
+  panel <- cbind(char_tune_df$beta_v, char_tune_df$error, c(1:(Time+1)), c(rep(i, (Time+1))))
   char_tune_panel[((i-1)*(Time+1)+1):(i*(Time+1)), ] <- panel
   
 }
@@ -449,6 +471,21 @@ SST <- t(char_tune_panel$beta_v - mean(char_tune_panel$beta_v)) %*% (char_tune_p
 
 1 - SSR/SST
 
+#Calculate Annualized Volatility
+#Annualized volatility = calculate volatility (via standard deviation) for the monthly returns, then annualize it by multiplying it by sqrt(12) for 12 months in a year
+
+vol_tune_df <- data.frame(
+  stock = c(1:200),
+  annual_vol = c(1:200)
+)
+
+for (i in 1:200) {
+  vol_tune_panel <- char_tune_panel %>%
+    filter(stock == i)
+  vol_tune_df$annual_vol[i] <- sd(vol_tune_panel$beta_v) * sqrt(12)
+}
+
+mean(vol_tune_df$annual_vol)
 
 ```
 
