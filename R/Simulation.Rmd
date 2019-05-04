@@ -402,93 +402,6 @@ gen_error <- function(omega, gamma, w){
 
 ```
 
-```{r tune_characteristics_rqsuared}
-#Tuning time series R Squared
-#Tuning v vector + error variance
-#Want average time series for each characterisics r squared to be 50%, average annual volatility to be 30%
-
-#Generate paramaters first
-
-beta <- gen_Beta()
-
-#variance of the errors is what we want to grid search
-#Gu et al had 0.05 for their v variance, that does not work at all here
-v <- gen_v(5)
-
-#Not too sure about stochastic volatility parameters
-
-  #Defaults
-  omega <- -0.736
-  gamma <- 0.90
-  w <- sqrt(0.363)
-  
-  #Custom
-  omega <- -0.736
-  gamma <- 0.90
-  w <- sqrt(0.363)
-
-error <- gen_error(omega, gamma, w)
-
-#Initialize tuning panel
-
-char_tune_panel <- data.frame(
-  beta_v = rep(0, 36000),
-  error = rep(0, 36000),
-  time = rep(0, 36000),
-  stock = rep(0, 36000)
-)
-
-for (i in 1:N){
-  #Initialize
-  char_tune_df <- data.frame(
-    beta_v = rep(0, Time+1),
-    error = rep(0, Time+1),
-    stock = rep(0, Time+1)
-  )
-  
-  for (t in 1:(Time+1)){
-    char_tune_df$beta_v[t] <- beta[[t]][i, ] %*% v[[t]]
-    char_tune_df$error[t] <- error[[t]][i]
-  }
-  
-  #Cbind returns, id, time and predictors
-  panel <- cbind(char_tune_df$beta_v, char_tune_df$error, c(1:(Time+1)), c(rep(i, (Time+1))))
-  char_tune_panel[((i-1)*(Time+1)+1):(i*(Time+1)), ] <- panel
-  
-}
-  
-#Sort by time
-char_tune_panel <- char_tune_panel %>%
-  arrange(time)
-  
-#Remove 1st row because returns data only starts from t = 2
-char_tune_panel <- char_tune_panel %>%
-  filter(time != 1) %>%
-  select(-time)
-
-SSR <- t(char_tune_panel$error) %*% (char_tune_panel$error)
-SST <- t(char_tune_panel$beta_v - mean(char_tune_panel$beta_v)) %*% (char_tune_panel$beta_v - mean(char_tune_panel$beta_v))
-
-1 - SSR/SST
-
-#Calculate Annualized Volatility
-#Annualized volatility = calculate volatility (via standard deviation) for the monthly returns, then annualize it by multiplying it by sqrt(12) for 12 months in a year
-
-vol_tune_df <- data.frame(
-  stock = c(1:200),
-  annual_vol = c(1:200)
-)
-
-for (i in 1:200) {
-  vol_tune_panel <- char_tune_panel %>%
-    filter(stock == i)
-  vol_tune_df$annual_vol[i] <- sd(vol_tune_panel$beta_v) * sqrt(12)
-}
-
-mean(vol_tune_df$annual_vol)
-
-```
-
 ```{r function_generate_return}
 ############################################################################
 ##Function to generate return series + its residuals given specification of A and g function
@@ -537,54 +450,117 @@ gen_rt <- function(A, g, resid){
 
 
 
-```{r tune_cross_sectional_rsquared}
+```{r tune_rsquared}
 #Tuning Cross Sectional R Squared
 
+#We want inidividual r squared for each stock to be 50%
+#We want inidividual annualized volatility to be 30%
 #We want to cross sectional R squared to be 25%
 #We want the predictive R squared to be 5%
 
-theta <- matrix(c(0.1, 0.1, 0.1), nrow = 1)
+#Generate paramaters first
 
-resid <- gen_rt_resid(omega, gamma, w)
+#Tune v_sd for inidividual r square first
+#Gu et al had 0.05 for their v variance
+v_sd <- 10
+
+#Tune SV parameters for individual r square first
+#Not too sure about stochastic volatility parameters
+
+  #Defaults
+  omega <- -0.736
+  gamma <- 0.90
+  w <- sqrt(0.363)
+  
+  #Custom
+  omega <- -0.736
+  gamma <- 0.90
+  w <- sqrt(0.363)
+  
+resid <- gen_rt_resid(omega, gamma, w, v_sd)
+
+#Tune theta for cross sectional r square
+#theta
+
+theta <- matrix(c(0.02, 0.02, 0.02), nrow = 1)
 
 rt <- gen_rt(A1, g1, resid)
 
-
-rt_tune_panel <- data.frame(
+rt_cross_tune_panel <- data.frame(
   return = rep(0, 36000),
   resid = rep(0, 36000),
-  time = rep(0, 36000)
+  time = rep(0, 36000),
+  stock = rep(0, 36000)
 )
 
 for (i in 1:N){
-  #Extract return series for ith stock from the return series list first
-  rt_tune_df <- data.frame(
+
+  rt_cross_tune_df <- data.frame(
     return = rep(0, Time+1),
-    resid = rep(0, Time+1)
+    resid = rep(0, Time+1),
+    time = rep(0, Time+1)
   )
   
   for (t in 1:(Time+1)){
-    rt_tune_df$return[t] <- rt[[t]][i]
-    rt_tune_df$resid[t] <- resid[[t]][i]
+    rt_cross_tune_df$return[t] <- rt[[t]][i]
+    rt_cross_tune_df$resid[t] <- resid[[t]][i]
   }
   
   #Cbind returns, id, time and predictors
-  panel <- cbind(rt_tune_df$return, rt_tune_df$resid, c(1:(Time+1)))
-  rt_tune_panel[((i-1)*(Time+1)+1):(i*(Time+1)), ] <- panel
+  panel <- cbind(rt_cross_tune_df$return, rt_cross_tune_df$resid, c(1:(Time+1)), c(rep(i, (Time+1))))
+  rt_cross_tune_panel[((i-1)*(Time+1)+1):(i*(Time+1)), ] <- panel
   
 }
   
 #Sort by time
-rt_tune_panel <- rt_tune_panel %>%
+rt_cross_tune_panel <- rt_cross_tune_panel %>%
   arrange(time)
   
 #Remove 1st row because returns data only starts from t = 2
-rt_tune_panel <- rt_tune_panel %>%
+rt_cross_tune_panel <- rt_cross_tune_panel %>%
   filter(time != 1) %>%
   select(-time)
 
-SSR <- t(rt_tune_panel$resid) %*% (rt_tune_panel$resid)
-SST <- t(rt_tune_panel$return - mean(rt_tune_panel$return)) %*% (rt_tune_panel$return - mean(rt_tune_panel$return))
+#Individual return R squared
+
+rt_id_tune_df <- data.frame(
+  stock = c(1:200),
+  rsquare = c(1:200)
+)
+
+for (i in 1:200) {
+  rt_id_tune_panel <- rt_cross_tune_panel %>%
+    filter(stock == i)
+  SSR <- t(rt_id_tune_panel$resid) %*% rt_id_tune_panel$resid
+  SST <- t(rt_id_tune_panel$return - mean(rt_id_tune_panel$return)) %*% (rt_id_tune_panel$return - mean(rt_id_tune_panel$return))
+  rt_id_tune_df$rsquare[i] <- 1 - SSR/SST
+}
+
+#Return mean of each individual rsquared
+mean(rt_id_tune_df$rsquare)
+
+#Calculate Annualized Volatility
+#Annualized volatility = calculate volatility (via standard deviation) for the monthly returns, then annualize it by multiplying it by sqrt(12) for 12 months in a year
+
+vol_tune_df <- data.frame(
+  stock = c(1:200),
+  annual_vol = c(1:200)
+)
+
+for (i in 1:200) {
+  vol_tune_panel <- rt_cross_tune_panel %>%
+    filter(stock == i)
+  vol_tune_df$annual_vol[i] <- sd(vol_tune_panel$return) * sqrt(12)
+}
+
+#Return the mean annualized volatility
+#Want this aorund 30%
+mean(vol_tune_df$annual_vol)
+
+#Cross sectional r squared
+
+SSR <- t(rt_cross_tune_panel$resid) %*% (rt_cross_tune_panel$resid)
+SST <- t(rt_cross_tune_panel$return - mean(rt_cross_tune_panel$return)) %*% (rt_cross_tune_panel$return - mean(rt_tune_panel$return))
 
 1 - SSR/SST
 
