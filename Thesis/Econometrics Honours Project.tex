@@ -497,7 +497,7 @@ To build in cross-sectional correlation, from the $N\times P_{c}$ matrix $\bar{C
 Finally, the "observed" characteristics for each $1\leq i\leq N$ and for $j=1, \dots, P_{c}$ are constructed according to:
 
 \begin{equation}
-	c_{i j, t} = \frac{2}{n+1} \operatorname{rank}\left(\hat{c}_{i j, t}\right)-1.
+	c_{i j, t} = \frac{2}{n+1} \operatorname{rank}\left(\hat{c}_{i j, t}\right) - 1.
 \end{equation}
 
 with the rank transformation normalizing all predictors to be within $[-1, 1]$. 
@@ -519,8 +519,8 @@ x_{t}=Ax_{t-1}+u_t,
 
 where we have three separate specifications for the matrix $A$:
 
-\begin{flalign*}
-(1)&\; A=
+\begin{align}
+(1)\; A =
 	\begin{pmatrix}
 		.95 & 0 & 0 \\
 		0 & .95 & 0 \\
@@ -540,7 +540,7 @@ where we have three separate specifications for the matrix $A$:
 		.2 & .90 & -.3 \\
 		.1 & -.3 & -.99
 	\end{pmatrix}
-\end{flalign*}
+\end{align}
 
 \subsubsection{Simulating Return Series}
 
@@ -564,9 +564,9 @@ $g_1 \left(z_{i, t}\right)$ allows the characteristics to enter the return equat
 
 $g_3 \left(z_{i, t}\right)$ allows the characteristics to enter in a highly complex and non-linear fashion.
 
-$g_4 \left(z_{i, t}\right)$ builds returns using $\hat{c}$, which are the unobserved characteristics which ahve not been normalized.
+$g_4 \left(z_{i, t}\right)$ builds returns using $\hat{c}$, which are the unobserved characteristics which have not been normalized.
 
-Need to work out the corresponding cross-sectional $R^2$ in this case. We can then tune $\theta^0$ to be this close to Gu et al. (2019), as well as the predictive $R^2$. This will require some work. 
+$\theta^0$ was tuned such that the cross sectional $R^2$ was around 25\%, and the predictive $R^2$ 5\%. 
 
 The simulation design results in $3 \times 4 = 12$ different simulated datasets, each with $N = 200$ stocks, $T = 180$ periods and $P_c = 100$ characteristics.
 

@@ -23,10 +23,11 @@ library(Metrics)
 library(ranger)
 ```
 
-```{r}
+```{r global_options}
 #####################################
 ##Simulation
 #####################################
+
 #Number of stocks
 N <- 200
 #Number of characteristics that underly true model
@@ -38,7 +39,7 @@ Time <- 180
 
 
 
-```{r}
+```{r function_simulate_characteristics}
 ###################
 ##characteristics C_bar
 ###################
@@ -131,14 +132,14 @@ gen_C <- function(){
 }
 ```
 
-```{r}
+```{r generate_characteristics}
 C_bar <- gen_C_bar()
 C_hat <- gen_C_hat()
 C <- gen_C()
 ```
 
 
-```{r}
+```{r function_generate_xt}
 ########################
 ##xt set up
 ########################
@@ -209,7 +210,7 @@ plot_xt <- function(xt){
 ```
 
 
-```{r}
+```{r function_g}
 ############################
 ##Different g() functions
 ############################
@@ -305,9 +306,9 @@ g4(C_hat, xt, 1, 1, theta)
 
 ```
 
-```{r}
+```{r function_return_equation}
 ##########################
-##Functions to elements in return equation
+##Functions for elements in return equation
 ##########################
 
 ###########
@@ -334,7 +335,7 @@ gen_Beta <- function(){
 ##Function to generate v vector of errors
 ###
 
-gen_v <- function(){
+gen_v <- function(v_sd){
   
   #Empty Matrix Init
   elo <- matrix(0, nrow = 3, ncol = 1)
@@ -343,7 +344,7 @@ gen_v <- function(){
   
   for (t in 1:(Time+1)) {
     v[[t]] <- matrix(
-      data = rnorm(3, 0, 1),
+      data = rnorm(3, 0, v_sd),
       nrow = 3, ncol = 1
     )
   }
@@ -399,19 +400,71 @@ gen_error <- function(omega, gamma, w){
 
 ```
 
-```{r}
+```{r tune_characteristics_rqsuared}
+#Tuning time series R Squared
+#Tuning v vector + error variance
+#Want average time series for each characterisics r squared to be 50%, average annual volatility to be 30%
+
+beta <- gen_Beta()
+
+v <- gen_v(0.05)
+
+error <- gen_error(omega, gamma, w)
+
+rt_tune_panel <- data.frame(
+  return = rep(0, 36000),
+  resid = rep(0, 36000),
+  time = rep(0, 36000)
+)
+
+for (i in 1:N){
+  #Initialize
+  char_tune_df <- data.frame(
+    beta_v = rep(0, Time+1),
+    error = rep(0, Time+1)
+  )
+  
+  for (t in 1:(Time+1)){
+    char_tune_df$beta_v[t] <- beta[[t]][i, ] %*% v
+  char_tune_df$error[t] <- error[[t]]
+  }
+  
+  #Cbind returns, id, time and predictors
+  panel <- cbind(char_tune_df$beta_v, char_tune_df$error, c(1:(Time+1)))
+  char_tune_panel[((i-1)*(Time+1)+1):(i*(Time+1)), ] <- panel
+  
+}
+  
+#Sort by time
+char_tune_panel <- char_tune_panel %>%
+  arrange(time)
+  
+#Remove 1st row because returns data only starts from t = 2
+char_tune_panel <- char_tune_panel %>%
+  filter(time != 1) %>%
+  select(-time)
+
+SSR <- t(char_tune_panel$error) %*% (char_tune_panel$error)
+SST <- t(char_tune_panel$beta_v - mean(char_tune_panel$beta_v)) %*% (char_tune_panel$beta_v - mean(char_tune_panel$beta_v))
+
+1 - SSR/SST
+
+
+```
+
+```{r function_generate_return}
 ############################################################################
 ##Function to generate return series + its residuals given specification of A and g function
 ############################################################################
 
-gen_rt_resid <- function(omega, gamma, w){
+gen_rt_resid <- function(omega, gamma, w, v_sd){
   elp <- matrix(0, nrow = N, ncol = 1)
   
   resid <- rep(list(elp), Time+1)
   
   ##############################
   Beta <- gen_Beta()
-  v <- gen_v()
+  v <- gen_v(v_sd)
   error <- gen_error(omega, gamma, w)
   ##############################
   
@@ -444,8 +497,16 @@ gen_rt <- function(A, g, resid){
 
 ```
 
-```{r}
-#Tuning
+
+
+
+```{r tune_cross_sectional_rsquared}
+#Tuning Cross Sectional R Squared
+
+#We want to cross sectional R squared to be 25%
+#We want the predictive R squared to be 5%
+
+theta <- matrix(c(0.1, 0.1, 0.1), nrow = 1)
 
 resid <- gen_rt_resid(omega, gamma, w)
 
@@ -492,7 +553,7 @@ SST <- t(rt_tune_panel$return - mean(rt_tune_panel$return)) %*% (rt_tune_panel$r
 
 ```
 
-```{r}
+```{r generate_returns}
 ##############################
 ##Generate Return Series
 ##############################
@@ -502,16 +563,16 @@ SST <- t(rt_tune_panel$return - mean(rt_tune_panel$return)) %*% (rt_tune_panel$r
 ##############################
 
 rt_A1_g1 <- gen_rt(A1, g1, gen_rt_resid(omega, gamma, w))
-rt_A2_g1 <- gen_rt(A2, g1)
-rt_A3_g1 <- gen_rt(A3, g1)
+#rt_A2_g1 <- gen_rt(A2, g1)
+#rt_A3_g1 <- gen_rt(A3, g1)
 
 ##############################
 ##g2
 ##############################
 
-rt_A1_g2 <- gen_rt(A1, g2)
-rt_A2_g2 <- gen_rt(A2, g2)
-rt_A3_g2 <- gen_rt(A3, g2)
+#rt_A1_g2 <- gen_rt(A1, g2)
+#rt_A2_g2 <- gen_rt(A2, g2)
+#rt_A3_g2 <- gen_rt(A3, g2)
 
 ##############################
 ##g3
@@ -531,7 +592,7 @@ rt_A3_g2 <- gen_rt(A3, g2)
 #rt_A3_g4 <- gen_rt(A3, g4)
 ```
 
-```{r}
+```{r function_build_predictor}
 ##############################################################################
 ##Function to build predictor set for each i individual stock, and each time t
 ##############################################################################
@@ -603,7 +664,7 @@ gen_pooled_panel <- function(){
 }
 ```
 
-```{r}
+```{r egenrate_panel_dataset}
 z <- gen_z()
 
 pooled_panel <- gen_pooled_panel()
@@ -616,24 +677,7 @@ pooled_panel_x <- pooled_panel %>%
 
 ```
 
-```{r}
-
-```
-
-```{r}
-#Tune theta to achieve desired cross sectional r squared
-
-#R squared = 1 - (SSE)/(SST)
-#SSE = E(yi - yhati)/E(yi - ybari)
-#yhati = g(zi, t)
-#ybari = gbar(zi, t)
-
-
-
-```
-
-
-```{r}
+```{r train_valid_test}
 #Create Training + Test Sets
 
 #$T = 180$ monthly periods corresponds to 15 years. The training sample was set to start from $T = 108$ or 9 years, a validation set 1 year in length. The last 3 years were reserved as a test set never to be used for validation or training.
@@ -652,7 +696,7 @@ names(time_slices) <- c("train", "validation", "test")
 
 ```
 
-```{r}
+```{r pooled_ols}
 #POLS
 
 #Pooled OLS does not have anything hyperparameters to tune, easy example to start off with
@@ -715,7 +759,7 @@ for (set in 1:3) {
 
   #Train model on training set
   
-    pols <- plm(f, data = train, model = "pooling", index = c("stock", "time"))
+    pols <- plm(f, data = train, model = "pooling", index = c("time", "stock"))
     POLS_models[[set]] <- pols
     
   #Usually Tuning via Validation set would be here, but POLS does not need tuning
@@ -724,19 +768,30 @@ for (set in 1:3) {
     POLS_stats$train_MAE[set] <- mae(train$return, predict(pols))
     POLS_stats$train_MSE[set] <- mse(train$return, predict(pols))
     POLS_stats$train_RMSE[set] <- rmse(train$return, predict(pols))
-    #R squared still pending, haven't figured out how to do it yet fully
+    error <- (train$return - predict(pols))
+    SSR <- t(error) %*% (error)
+    SST <- t(train$return - mean(train$return)) %*% (train$return - mean(train$return))
+    POLS_stats$train_R2[set] <- (1 - SSR/SST)
     
   #Validation Set Statistics
     POLS_stats$valid_MAE[set] <- mae(validation$return, predict(pols, newdata = validation))
     POLS_stats$valid_MSE[set] <- mse(validation$return, predict(pols, newdata = validation))
     POLS_stats$valid_RMSE[set] <- rmse(validation$return, predict(pols, newdata = validation))
-    #R squared still pending, haven't figured out how to do it yet fully
+    
+    error <- (validation$return - predict(pols, newdata = validation))
+    SSR <- t(error) %*% (error)
+    SST <- t(validation$return - mean(validation$return)) %*% (validation$return - mean(validation$return))
+    POLS_stats$valid_R2[set] <- (1 - SSR/SST)
   
   #Test Set Statistics
     POLS_stats$test_MAE[set] <- mae(test$return, predict(pols, newdata = test))
     POLS_stats$test_MSE[set] <- mse(test$return, predict(pols, newdata = test))
     POLS_stats$test_RMSE[set] <- rmse(test$return, predict(pols, newdata = test))
-    #R squared still pending, haven't figured out how to do it yet fully
+    
+    error <- (test$return - predict(pols, newdata = test))
+    SSR <- t(error) %*% (error)
+    SST <- t(test$return - mean(test$return)) %*% (test$return - mean(test$return))
+    POLS_stats$test_R2[set] <- (1 - SSR/SST)
     
   #Forecasts
     POLS_forecasts[[set]]$forecast <- predict(pols, newdata = test)
@@ -745,24 +800,19 @@ for (set in 1:3) {
 
 POLS_stats
 
-summary(POLS_models[[1]])
+summary(POLS_models[[3]])
 
 
 ```
 
-```{r}
-
-```
-
-
-```{r}
+```{r elastic_net}
 #Elasticnet
 
 elasticnet <- cv.glmnet()
 
 ```
 
-```{r}
+```{r random_forest}
 #Random Forest
 
 #Random Forest should also be fairly straightforward, only two tuning parameters mtry and ntree (usually)
@@ -893,7 +943,7 @@ importance(rf)
 ```
 
 
-```{r}
+```{r neural_networks}
 #Neural Network
 
 ```
