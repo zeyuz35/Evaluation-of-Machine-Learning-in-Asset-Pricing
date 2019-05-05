@@ -71,7 +71,11 @@
 %%
 
 %Graphs
+\usepackage{tikz}
 \usepackage{pgfplots}
+
+%Coloured Tables
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%Title and other fluff, just before document start
@@ -110,7 +114,7 @@
 
 \subsection{Topic}
 
-This thesis aims to evaluate the application of machine learning algorithms in empirical asset pricing. While there has been a significant recent interest in applying machine learning to the problem of predicting asset returns, there is little literature that focuses on how well these algorithms are at capturing true underlying mechanisms of stock returns. 12 different simulated datasets ranging from simple linear data generating processes, to highly non-linear data generating processes incorporating observed phenomena of cross sectional correlation, in addition to real world data will be used to assess the performance of linear models, elastic net models, random forests and neural networks.
+This thesis aims to evaluate the application of machine learning algorithms in empirical asset pricing. While there has been a significant recent interest in applying machine learning to the problem of predicting asset returns, there is little literature that focuses on how well these algorithms are at capturing true underlying mechanisms of stock returns. 12 different simulated datasets ranging from linear to highly non-linear data generating processes incorporating observed phenomena of cross sectional correlation, persistence, endogeneity, stochastic volatility, and real world data will be used to assess the performance of linear models, elastic net models, random forests and neural networks.
 
 \subsection{Background Literature and Motivations}
 
@@ -123,31 +127,29 @@ Methods to consider: OLS, Elasticnet, RF, NN
 See how it performs on real data
 }
 
-This paper is motivated by evaluating the performance of machine learning algorithms in empirical asset pricing, focusing on how well they deal with the many unique problems in returns data.
+This paper is motivated by evaluating the performance of machine learning algorithms in empirical asset pricing, focusing on how well they deal with the many unique problems in financial returns data.
 
-Earlier literature 
+Financial returns data exhibits many problems for statistical analysis: regressors are numerous and display persistence, non-stationarity, cross sectional correlation and endogeneity, in addition to the overall high noise (randomness) in financial returns data. Furthermore, the characteristics of financial data has not remained similar over time, presenting a non-robustness problem. For example, valuation ratios such as dividend yield remain popular, despite being contingent on being stationary, for which there was mixed evidence even when initially introduced, \citep{vuolteenaho_understanding_1999}, and though initially performed well, were later shown to seemingly break down, (\cite{lettau_consumption_2001}, \cite{schwert_anomalies_2003} and others).
 
-Though work has been done in addressing these problems, Many issues with predicting stock returns have been documented 
+This has not stopped the literature searching for more factors: quantitative trading firms were using 81 factor models as the norm \citep{hsu_finding_2014} by 2014, and literature has emerged in trying to evaluate the "factor zoo" consisting of well over 600 factors, (\cite{harvey__2016}, \cite{harvey_census_2019}, among others).
 
-The non-robustness has been
+The aforementioned problems has posed significant problems, with much of the literature developing models to try to deal with them. To this end, machine learning algorithms have emerged and been recognised as well suited: algorithms such as shrinkage and selection methods have been utilised in factor selection (\cite{kozak_shrinking_2017}, \cite{rapach_forecasting_2013}, \cite{freyberger_dissecting_2017}). 
 
-For example, valuation ratios such as dividend yield remain popular, despite being contingent on being stationary, for which there was mixed evidence even when initially introduced, \citep{vuolteenaho_understanding_1999}, and were later shown to seemingly break down, (\cite{lettau_consumption_2001}, \cite{schwert_anomalies_2003} and others). This has not stopped the literature searching for more factors: quantitative trading firms were using 81 factor models as the norm \citep{hsu_finding_2014} by 2014, and the literature has begun evaluating 400 or even 600 factors (\cite{harvey__2016}, \cite{harvey_census_2019}, among others).
+Most importantly, portfolios constructed using machine learning have been demonstrated to outperform traditional models in predicting stock returns (\cite{gu_empirical_2018}, \cite{hsu_finding_2014}, \cite{feng_deep_2018}). 
 
-The aforementioned problems has posed immense problems, with much of the literature developing models to try to deal with this. To this end, machine learning algorithms have emerged and been recognised as well suited: algorithms such as shrinkage and selection methods have been utilised in factor selection (\cite{kozak_shrinking_2017}, \cite{rapach_forecasting_2013}, \cite{freyberger_dissecting_2017}), and machine learning portfolios have been demonstrated to outperform traditional models in predicting stock returns (\cite{gu_empirical_2018}, \cite{hsu_finding_2014}, \cite{feng_deep_2018}). 
+However, though machine learning has shown great promise in these areas, little work done on how machine learning performs. Prior work been done by \cite{gu_empirical_2018}, however; only basic simulation designs were used which did not fully explore these problems.
 
-However, though machine learning has shown great promise is these areas, there still little work done on how well machine learning performs in lieu of other problems that have plagued financial returns data, such as persistent regressors, endogeneous regressors, non-stationary regressors, cross sectional correlation, low signal to noise ratio, etc. Prior work been done by \cite{gu_empirical_2018}, however; only basic simulation designs were used which did not fully explore these problems.
-
-This paper will be the first in focusing on how machine learning algorithms perform in environments with problems exhibited by financial returns data through extensive simulations. In addition, these algorithms will once again be evaluated on real world data, but with only more recent and representative data included in order to test their short term robustness in predicting stock returns. These two aspects of the study together are able to offer a better glimpse as to how ``black box" machine learning algorithms deal with these sorts of problems, if at all.
+This paper will be the first in focusing on how machine learning algorithms perform in environments with problems exhibited by financial returns data through extensive simulations. In addition, these algorithms will once again be evaluated on real world data, but with only more recent and representative data included in order to test their short term robustness in predicting stock returns. These two aspects of the study together are able to offer a better glimpse as to how ``black box" machine learning algorithms deal with the challenges present in asset pricing, if at all.
 
 \subsection{Main Findings}
 
 \rhs{Pending}
 
-\subsection{Limitations of Machine Learning}
+%\subsection{Limitations of Machine Learning}
 
-Machine learning excels at prediction problems, namely estimating \( E(r_{i, t+1}|\mathcal{F}_t) \), where \( r_{i, t+1} \) is an asset's excess return over the risk free rate, and \( \mathcal{F}_t \) is the set of all information (including unobservable) available to market participants in this context.
+%Machine learning excels at prediction problems, namely estimating \( E(r_{i, t+1}|\mathcal{F}_t) \), where \( r_{i, t+1} \) is an asset's excess return over the risk free rate, and \( \mathcal{F}_t \) is the set of all information (including unobservable) available to market participants in this context.
 
-This means that machine learning algorithms do not, nor do they aim to, explain how the market works in terms of underlying dynamics and equilibria. Though a machine learning algorithm may be able to identify patterns that otherwise cannot be easily found, an economist is still required to analyse these patterns to construct and hypothesize economic theory.
+%This means that machine learning algorithms do not, nor do they aim to, explain how the market works in terms of underlying dynamics and equilibria. Though a machine learning algorithm may be able to identify patterns that otherwise cannot be easily found, an economist is still required to analyse these patterns to construct and hypothesize economic theory.
 
 \section{Methodology}
 
@@ -183,8 +185,6 @@ The third is a "recursive" method, which is the same as the rolling window metho
 
 Both the rolling window and recursive schemes are very computationally intensive. Therefore, a hybrid of the rolling and recursive schemes was considered: the training set is increased by one year with each refit, the validation set remains one year in length but moves forward by one year, and forecasts are made using that model for the subsequent year. Cross validation was not done to maintain the temporal ordering of the data.
 
-\rhs{insert a picture of how the windows work from say caret documentation, would be great}
-
 \subsection{Loss Function}
 
 The choice of the loss function used in models is imperative to machine learning. The loss functions considered are Mean Absolute Error (MAE), Mean Squared Error and Root Mean Squared Error (MSE, and RMSE) and Huber Loss.
@@ -211,12 +211,12 @@ The mean squared error (MSE) and root mean squared error (RMSE) are quadratic sc
 The Huber Loss metric \citep{huber_robust_1992} offers a combination of mean squared error and mean absolute error, with errors smaller than the threshold $\xi$ being mean squared error and errors larger than the threshold $\xi$ being absolute error. This allows for the model fit to be less sensitive to outliers which are quite common in financial data. 
 
 \begin{align}
-	H(x;\xi) = 
+	H(\epsilon_j = y_j - \hat{y_j};\xi) = 
 		\begin{cases}
-		x^2, 
-		\quad &\text{if} \quad |x| \leq \xi ; \\
-		2 \xi  |x| - \xi^2, 
-		\quad &\text{if} \quad |x| > \xi
+		\left( y_j - \hat{y_j}\right) ^2, 
+		\quad &\text{if} \quad |y_j - \hat{y_j}| \leq \xi ; \\
+		2 \xi  |y_j - \hat{y_j}| - \xi^2, 
+		\quad &\text{if} \quad |y_j - \hat{y_j}| > \xi
 	\end{cases}
 \end{align}
 
@@ -238,11 +238,9 @@ The Huber Loss metric \citep{huber_robust_1992} offers a combination of mean squ
 	\label{fig:loss_functions}
 \end{figure}
 
-\rhs{cite something about outliers in financial data}
-
 \subsection{Linear Model}
 
-The least complex model considered is the simple linear regression model, otherwise known by its estimation method ordinary least squares (OLS). OLS struggles with high-dimensionality. Nevertheless, despite being expected to perform poorly it was implemented as a "control."
+The least complex model considered is the simple linear regression model, also known that ordinary least squares in the case of the using mean squared error as the loss function. Linear models struggle with high-dimensionality. Nevertheless, despite being expected to perform poorly it was implemented as a ``control."
 
 The simple linear model assumes that the underlying conditional expectation \( g^*(z_{i, t}) \) can be modelled as a linear function of the predictors and the parameter vector \( \theta \):
 
@@ -274,15 +272,15 @@ Several choices exist for the choice of the penalty function \( \phi(\theta;.) \
 
 The elastic net has two hyperparameters: $\lambda$, which controls the overall magnitude of the loss, and $\rho$, which controls the shape of the penalization. The $\rho = 0$ case corresponds to the popular LASSO and uses absolute ($l_1$) parameter penalization, which geometrically allows the coefficients to be shrunk to 0. This allows it to impose sparsity, and can be thought of as a variable selection tool.
 
-The $\rho = 1$ case corresponds to ridge regression, which uses $l_2$ that shrinks all coefficients closer to 0, but not actually to 0. Ridge regression is therefore a shrinkage method which prevents coefficients from becoming too large and overpowering. For \(0 < \rho < 1\), the elastic net aims to produce parsimonious models through both shrinkage and selection.
+The $\rho = 1$ case corresponds to ridge regression, which uses $l_2$ that shrinks all coefficients closer to 0, but not to 0. Ridge regression is therefore a shrinkage method which prevents coefficients from becoming too large and overpowering. For \(0 < \rho < 1\), the elastic net aims to produce parsimonious models through both shrinkage and selection.
 
-The hyperparameters $\lambda$ and $\rho$ are both tuned using the validation sample. See appendix for algorithm.
+The hyperparameters $\lambda$ and $\rho$ are both tuned using the validation sample (see \ref{Algorithms})
 
-\rhs{update when algorithm is written}
+\pagebreak
 
 \subsection{Classification and Regression Trees}
 
-Classification and regression trees are fully non-parametric models that can capture complex multi-way interactions. A tree "grows" in a series of iterations. With each iteration, a split ("branch") is made along one predictor such that it is the best split available at that stage (in terms of lowering the loss function). These steps are continued until each observation is its own node, or more commonly until the stopping criterion is met (such as via regularization). The eventual model slices the predictor space into rectangular partitions, and predicts the unknown function $g^*(.)$ with the average value of the outcome variable in each partition.
+Classification and regression trees are fully non-parametric models that can capture complex multi-way interactions. A tree "grows" in a series of iterations. With each iteration, a split ("branch") is made along one predictor such that it is the best split available at that stage with respect to minimizing the loss function. These steps are continued until each observation is its own node, or more commonly until the stopping criterion is met. The eventual model slices the predictor space into rectangular partitions, and predicts the unknown function $g^*(z_{i,t})$ with the average value of the outcome variable in each partition.
 
 The prediction of a tree, $\mathcal{T}$, with \(K\) "leaves" (terminal nodes), and depth $L$ is
 
@@ -290,10 +288,12 @@ The prediction of a tree, $\mathcal{T}$, with \(K\) "leaves" (terminal nodes), a
 	g(z_{i,t};\theta,K,L) = \sum_{k=1}^{K}\theta_k\textbf{1}_{z_{i,t}\in C_k(L)}
 \end{equation}
 
-For this study, only recursive binary trees (the most common and easy to implement ) are considered. The popular $l_2$ impurity was also chosen as the loss function (conceptually similar to mean squared error):
+where $C_k(L)$ one of the $K$ partitions in the model.
+
+For this study, only recursive binary trees (the most common and easy to implement ) are considered. Though trees were originally proposed and fit with respect to minimizing mean squared error, they can be grown with respect to a variety of loss functions, including mean absolute error, mean squared error and Huber Loss:
 
 \begin{equation}
-	H(\theta, C) = \frac{1}{|C|} \sum_{z_{i,t} \in C} (r_{i,t+1} - \theta)^2
+	H(\theta, C) = \frac{1}{|C|} \sum_{z_{i,t} \in C} L(r_{i,t+1} - \theta)
 \end{equation}
 
 where $|C|$ denotes the number of observations in set C (partition). Given $C$, it is clear that the optimal choice for minimising the loss function is simply $\theta = \frac{1}{|C|} \sum_{z_{io,t}\in C}^{ }r_{i,t+1}$ i.e. the average of the partition.
@@ -325,6 +325,8 @@ Trees, grown to a deep enough level, are highly unbiased and flexible. The trade
 \subsection{Random Forests}
 Random Forests are an extension of trees that attempt to address some of their problems. A random forest algorithm creates $B$ different bootstrap samples from the training dataset, fits an overfit (and hence low bias) regression tree to each using only a random subset $m$ size from all available predictors (also known as dropout), and then averages their forecasts. The overfit trees means that the underlying trees has low bias, and the dropout procedure means that they have low correlation. Thus, averaging these low bias, uncorrelated trees results in a low bias, yet stable model. Specific details of the random forest algorithm are detailed in the appendix.
 
+\pagebreak
+
 \subsection{Neural Networks}
 
 \subsubsection{Introduction}
@@ -333,7 +335,7 @@ Neural networks are arguably the most complex type of model available, able to c
 
 The scope of this paper is limited to traditional ``feed-forward" networks. The feed forward network consists of an ``input layer" of scaled data inputs, one or more ``hidden layers" which interact and non-linearly transform the inputs, and finally an output layer that aggregates the hidden layers and transform them a final time for the final output. 
 
-Neural networks with up to 5 hidden layers were considered, each named NNX where X represents the number of hidden layers. The number of neurons is each layer was chosen according to the geometric pyramid rule \citep{masters_practical_1993}: NN1 has 32 neurons, NN2 has 32 and 16 neurons in the first and second hidden layers respectively, NN3 has 32, 16, and 8 neurons, NN4 has 32, 16, 8, and 4 neurons, and NN5 has 32, 16, 8, 4, 2 neurons respectively. All units are fully connected; that is, each neurons receives input from all neurons the layer before it.
+Neural networks with up to 5 hidden layers were considered, each named NNX where X represents the number of hidden layers. The number of neurons is each layer was chosen according to the geometric pyramid rule \citep{masters_practical_1993}: NN1 has 32 neurons, NN2 has 32 and 16 neurons in the first and second hidden layers respectively, NN3 has 32, 16, and 8 neurons, NN4 has 32, 16, 8, and 4 neurons, and NN5 has 32, 16, 8, 4, 2 neurons respectively. All units are fully connected; that is, each neurons receives input from all neurons the layer before it (see Figure \ref{Neural_Network}).
 
 \rhs{would be best to customize neuron text}
 
@@ -386,12 +388,13 @@ Neural networks with up to 5 hidden layers were considered, each named NNX where
 		\end{neuralnetwork}
 	\end{center}
 \caption{Neural Network 5 (most complex considered)}
+\label{Neural_Network}
 \end{figure}
 
 
 \subsubsection{Activation Function}
 
-The ReLU activation function:
+The ReLU activation function
 
 \begin{equation}
 	\operatorname{ReLU}(x) = max(0, x)
@@ -411,7 +414,7 @@ with the final output
 	g(z;\theta) = x^{(L-1)'}\theta^{L-1}
 \end{equation}
 
-The neural network's weight and bias parameters are estimated by minimizing the penalized $l_2$ objective function of prediction errors.
+The neural network's weight and bias parameters are estimated by minimizing the loss function with respect to the parameters.
 
 \subsubsection{Computation}
 
@@ -425,11 +428,11 @@ The solution to finding the optimal weights and biases for the neural network is
 	content...
 \end{equation}
 
-The solution to this is typically found via backpropagation, an iterative procedure similar to Gauss-Newton steps. Note that the lack of a global minimum is actually desirable, as global minimums tend to be overfit solutions to the problem, \citep{choromanska_loss_2014}.
+The solution to this is typically found via backpropagation, an iterative procedure similar to Gauss-Newton steps and produces a local minimum. These steps can be visualized as a descent towards the local minimum of the loss function; it is thus also known as "gradient descent." Note that the lack of a global minimum is actually desirable, as global minimums tend to be overfit solutions to the problem, \citep{choromanska_loss_2014}.
 
 This is to be calculated and averaged across all training observations, and is thus extremely computationally intensive. A common solution is to use "stochastic gradient descent" (SGD) where instead of optimising the loss function with respect to the entire training sample, only a small, random subset of the data (mini batch) is used at each optimisation step. This sacrifices some accuracy for a dramatic improvement in computational speed.
 
-Due the noisiness (randomness) introduced by SGD, the learning rate (step size of each descent) needs to be shrunk towards zero as the gradient approaches zero to avoid the noisiness of the mini batch causing an "overshoot" of the optimum. A learning rate shrinkage algorithm which adaptively shrinks the learning rate was therefore employed.
+Due the noisiness (randomness) introduced by SGD, the path towards the local minimum is more of a quick ``zig zag" and has the potential to ``overshoot" the local minimum. A learning rate shrinkage algorithm which adaptively shrinks the learning rate was therefore employed (see \cite{kingma_adam:_2014}).
 
 \subsubsection{Batch Normalization}
 
@@ -463,7 +466,9 @@ e_{i, t+1} &=
 \quad (\omega, \gamma, \omega) = (-0.736, 0.90, \sqrt{0.363}) \forall i
 \end{flalign}
 
-Let $v_{t+1}$ be a $3\times 1$ vector of errors, and $w_{i,t+1},\varepsilon_{i,t+1}$ scalar error terms. The matrix $C_t$ is an $N\times P_c$ vector of latent factors, where the first three columns correspond to $\beta_{i,t}$, across the $1\leq i\leq N$ dimensions, while the remaining $P_c-3$ factors do not enter the return equation. The $P_x\times1$ vector $x_t$ is a $3 \times 1$ multivariate time series, and $\varepsilon_{t+1}$ is a $N\times 1$ vector of idiosyncratic errors. 
+Let $v_{t+1}$ be a $3\times 1$ vector of errors, and $w_{i,t+1},\varepsilon_{i,t+1}$ scalar error terms. The parameters of these were tuned such that the R squared for each individual return series was 50\% and annualized volatility 30\%.
+
+The matrix $C_t$ is an $N\times P_c$ vector of latent factors, where the first three columns correspond to $\beta_{i,t}$, across the $1\leq i\leq N$ dimensions, while the remaining $P_c-3$ factors do not enter the return equation. The $P_x\times1$ vector $x_t$ is a $3 \times 1$ multivariate time series, and $\varepsilon_{t+1}$ is a $N\times 1$ vector of idiosyncratic errors. 
 
 \subsubsection{Simulating Characteristics}
 
@@ -471,21 +476,23 @@ A simulation mechanism for $C_t$ that gives some correlation across the factors 
 
 \begin{equation}
 	\overline{c}_{i j, t} = \rho_{j} \overline{c}_{i j, t-1}+\epsilon_{i j, t} ;
-	\quad \rho_{j} \sim \mathcal{U}[1/2,1]
+	\quad \rho_{j} \sim \mathcal{U} \left( \frac{1}{2},1 \right) 
 \end{equation}
 
 Then, define the matrix 
 
 \begin{equation}
-	B:=\Lambda\Lambda' + \frac{1}{10}\mathbb{I}_{n}, \;
-	\Lambda_i = (\lambda_{i1},\dots,\lambda_{i4}), \;
+	B:=\Lambda\Lambda' + \frac{1}{10}\mathbb{I}_{n}, \quad
+	\Lambda_i = (\lambda_{i1},\dots,\lambda_{i4}), \quad
 	\lambda_{ik}\sim N(0,1), \; k=1,\dots,4
 \end{equation}
 
 which we transform into a correlation matrix $W$ via
 
 \begin{equation}
-	W = \text{diag}^{\dfrac{-1}{2}}(B)B\text{diag}^{\dfrac{-1}{2}}(B)
+	W = \left( \operatorname{diag}(B) \right) ^{\frac{-1}{2}}
+	(B)
+	\left( \operatorname{diag}(B) \right) ^{\frac{-1}{2}}
 \end{equation}
 
 To build in cross-sectional correlation, from the $N\times P_{c}$ matrix $\bar{C}_t$, we simulate characteristics according to
@@ -568,7 +575,7 @@ $g_4 \left(z_{i, t}\right)$ builds returns using $\hat{c}$, which are the unobse
 
 $\theta^0$ was tuned such that the cross sectional $R^2$ was around 25\%, and the predictive $R^2$ 5\%. 
 
-The simulation design results in $3 \times 4 = 12$ different simulated datasets, each with $N = 200$ stocks, $T = 180$ periods and $P_c = 100$ characteristics.
+The simulation design results in $3 \times 4 = 12$ different simulated datasets, each with $N = 200$ stocks, $T = 180$ periods and $P_c = 100$ characteristics. Each design was simulated 50 times to assess the robustness of machine learning algorithms.
 
 \subsubsection{Sample Splitting}
 
