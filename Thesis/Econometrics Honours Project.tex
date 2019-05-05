@@ -118,26 +118,15 @@ This thesis aims to evaluate the application of machine learning algorithms in e
 
 \subsection{Background Literature and Motivations}
 
-\rhs{
-Data skepticism (have you set up the data properly?)
-Show/highlight non-robustness of ML methods
-Skepticism of validity of methods that include non-stationary factors (like dividend yield)
-Check validity via simulation methods
-Methods to consider: OLS, Elasticnet, RF, NN
-See how it performs on real data
-}
-
 This paper is motivated by evaluating the performance of machine learning algorithms in empirical asset pricing, focusing on how well they deal with the many unique problems in financial returns data.
 
-Financial returns data exhibits many problems for statistical analysis: regressors are numerous and display persistence, non-stationarity, cross sectional correlation and endogeneity, in addition to the overall high noise (randomness) in financial returns data. Furthermore, the characteristics of financial data has not remained similar over time, presenting a non-robustness problem. For example, valuation ratios such as dividend yield remain popular, despite being contingent on being stationary, for which there was mixed evidence even when initially introduced, \citep{vuolteenaho_understanding_1999}, and though initially performed well, were later shown to seemingly break down, (\cite{lettau_consumption_2001}, \cite{schwert_anomalies_2003} and others).
+Financial returns data exhibits many problems for statistical analysis: regressors are numerous and display persistence, non-stationarity, cross sectional correlation and endogeneity, in addition to the overall high noise (randomness) in financial returns data. Furthermore, the characteristics of financial data has not remained similar over time, presenting an additional non-robustness problem. Numerous examples of these  controversies surrounding factors have plagued the literature. For example, company valuation ratios such as dividend yield were introduced despite their validity being contingent on being a stationary time series, for which there was mixed evidence even when introduced, \citep{vuolteenaho_understanding_1999}. Though models incorporating dividend yield initially performed well, they were later shown to seemingly break down in a changing economic environment, (\cite{lettau_consumption_2001}, \cite{schwert_anomalies_2003} and others).
 
 This has not stopped the literature searching for more factors: quantitative trading firms were using 81 factor models as the norm \citep{hsu_finding_2014} by 2014, and literature has emerged in trying to evaluate the "factor zoo" consisting of well over 600 factors, (\cite{harvey__2016}, \cite{harvey_census_2019}, among others).
 
-The aforementioned problems has posed significant problems, with much of the literature developing models to try to deal with them. To this end, machine learning algorithms have emerged and been recognised as well suited: algorithms such as shrinkage and selection methods have been utilised in factor selection (\cite{kozak_shrinking_2017}, \cite{rapach_forecasting_2013}, \cite{freyberger_dissecting_2017}). 
+Much of the literature developing models to try to deal with problematic regressors. To this end, machine learning algorithms have emerged and been recognised as well suited: algorithms such as shrinkage and selection methods have been utilised in factor selection (\cite{kozak_shrinking_2017}, \cite{rapach_forecasting_2013}, \cite{freyberger_dissecting_2017}), and most importantly, portfolios constructed using machine learning have been demonstrated to outperform traditional models in predicting stock returns (\cite{gu_empirical_2018}, \cite{hsu_finding_2014}, \cite{feng_deep_2018}). 
 
-Most importantly, portfolios constructed using machine learning have been demonstrated to outperform traditional models in predicting stock returns (\cite{gu_empirical_2018}, \cite{hsu_finding_2014}, \cite{feng_deep_2018}). 
-
-However, though machine learning has shown great promise in these areas, little work done on how machine learning performs. Prior work been done by \cite{gu_empirical_2018}, however; only basic simulation designs were used which did not fully explore these problems.
+However, though machine learning has shown great promise in these areas, little work done on how machine learning actually recognises and deals with the aforementioned problems in returns data. Prior work been done by \cite{gu_empirical_2018}, however; only basic simulation designs which did not fully explore these problems were used.
 
 This paper will be the first in focusing on how machine learning algorithms perform in environments with problems exhibited by financial returns data through extensive simulations. In addition, these algorithms will once again be evaluated on real world data, but with only more recent and representative data included in order to test their short term robustness in predicting stock returns. These two aspects of the study together are able to offer a better glimpse as to how ``black box" machine learning algorithms deal with the challenges present in asset pricing, if at all.
 
@@ -288,7 +277,7 @@ The prediction of a tree, $\mathcal{T}$, with \(K\) "leaves" (terminal nodes), a
 	g(z_{i,t};\theta,K,L) = \sum_{k=1}^{K}\theta_k\textbf{1}_{z_{i,t}\in C_k(L)}
 \end{equation}
 
-where $C_k(L)$ one of the $K$ partitions in the model.
+where $C_k(L)$ is one of the $K$ partitions in the model.
 
 For this study, only recursive binary trees (the most common and easy to implement ) are considered. Though trees were originally proposed and fit with respect to minimizing mean squared error, they can be grown with respect to a variety of loss functions, including mean absolute error, mean squared error and Huber Loss:
 
@@ -296,34 +285,12 @@ For this study, only recursive binary trees (the most common and easy to impleme
 	H(\theta, C) = \frac{1}{|C|} \sum_{z_{i,t} \in C} L(r_{i,t+1} - \theta)
 \end{equation}
 
-where $|C|$ denotes the number of observations in set C (partition). Given $C$, it is clear that the optimal choice for minimising the loss function is simply $\theta = \frac{1}{|C|} \sum_{z_{io,t}\in C}^{ }r_{i,t+1}$ i.e. the average of the partition.
+where $|C|$ denotes the number of observations in set C (partition). Given $C$, it is clear that the optimal choice for minimising the loss function when it is mean squared error is simply $\theta = \frac{1}{|C|} \sum_{z_{io,t}\in C}^{ }r_{i,t+1}$ i.e. the average of the partition, and the median of the partition when the loss function is mean absolute error.
 
 Trees, grown to a deep enough level, are highly unbiased and flexible. The tradeoff of course, is their high variance and instability. Thus, an ensemble method called "Random Forest" was proposed to regularize trees by combining many different trees into a single prediction.
 
-\rhs{this diagram needs work}
-
-\begin{figure}
-	\begin{center}
-		\begin{forest} 
-			[$x_2$, tikz={\draw[{Latex}-, thick] (.north) --++ (0,1);}
-			[$x_1$
-			[1] 
-			[0] 
-			]   
-			[$x_3$
-			[$x_1$
-			[1] 
-			[0] 
-			]   
-			[0] 
-			]   
-			] 
-		\end{forest}
-	\end{center}
-\end{figure}
-
 \subsection{Random Forests}
-Random Forests are an extension of trees that attempt to address some of their problems. A random forest algorithm creates $B$ different bootstrap samples from the training dataset, fits an overfit (and hence low bias) regression tree to each using only a random subset $m$ size from all available predictors (also known as dropout), and then averages their forecasts. The overfit trees means that the underlying trees has low bias, and the dropout procedure means that they have low correlation. Thus, averaging these low bias, uncorrelated trees results in a low bias, yet stable model. Specific details of the random forest algorithm are detailed in the appendix.
+Random Forests are an extension of trees that attempt to address some of their problems. A random forest algorithm creates $B$ different bootstrap samples from the training dataset, fits an overfit (and hence low bias) regression tree to each using only a random subset $m$ size from all available predictors (also known as dropout), and then averages their forecasts as the final output. The overfit trees means that the underlying trees has low bias, and the dropout procedure means that they have low correlation. Thus, averaging these low bias, uncorrelated trees results in a low bias, yet stable model. Specific details of the random forest algorithm are detailed in the appendix.
 
 \pagebreak
 
@@ -336,10 +303,6 @@ Neural networks are arguably the most complex type of model available, able to c
 The scope of this paper is limited to traditional ``feed-forward" networks. The feed forward network consists of an ``input layer" of scaled data inputs, one or more ``hidden layers" which interact and non-linearly transform the inputs, and finally an output layer that aggregates the hidden layers and transform them a final time for the final output. 
 
 Neural networks with up to 5 hidden layers were considered, each named NNX where X represents the number of hidden layers. The number of neurons is each layer was chosen according to the geometric pyramid rule \citep{masters_practical_1993}: NN1 has 32 neurons, NN2 has 32 and 16 neurons in the first and second hidden layers respectively, NN3 has 32, 16, and 8 neurons, NN4 has 32, 16, 8, and 4 neurons, and NN5 has 32, 16, 8, 4, 2 neurons respectively. All units are fully connected; that is, each neurons receives input from all neurons the layer before it (see Figure \ref{Neural_Network}).
-
-\rhs{would be best to customize neuron text}
-
-%Neural Network Figure
 
 \begin{figure}
 	\begin{center}
@@ -391,6 +354,21 @@ Neural networks with up to 5 hidden layers were considered, each named NNX where
 \label{Neural_Network}
 \end{figure}
 
+\subsubsection{Notation}
+
+The neural networks detailed in this paper have the following general formula. Let $K^{(l)}$ denote the number of neurons in each hidden layer $l = 0, 1, \dots, L$, with $l = 0$ denoting the input layer and $l = L$ denoting the output layer. Define the output of neuron $k$ in layer $l$ as $x_k^{(l)}$. Next, define the vector of outputs for this layer as $x^{(l)} = (1, x_1^{(l)}, \dots, x_{K^(l)}^{(l)})'$. The input layer is defined using predictors, $x^{(0)} = (1, z_1, \dots, z_N)'$. The recursive output formula for the neural network at each neuron in layer $l > 0$ is then:
+
+\begin{equation}
+	x_k^{(l)} = \sigma(x^{(l-1)'}\theta_k^{l-1}),
+\end{equation}
+
+where $\sigma()$ represents the activation function for that layer (see next section) with the final output
+
+\begin{equation}
+	g(z;\theta) = x^{(L-1)'}\theta^{L-1}
+\end{equation}
+
+The neural network's weight and bias parameters are estimated by minimizing the loss function with respect to the parameters.
 
 \subsubsection{Activation Function}
 
@@ -402,43 +380,21 @@ The ReLU activation function
 
 was used for all hidden layers owing to its high computational speed, and hence popularity within recent literature  (see \cite{lecun_deep_2015} and \cite{ramachandran_searching_2017}). Other potential choices for activation functions such as sigmoid, softmax, tanh etc. were not used due to the additional complexities and computational costs involved with validating the choice of activation function.
 
-The neural networks detailed in this paper have the following general formula. Let $K^{(l)}$ denote the number of neurons in each hidden layer $l = 0, 1, \dots, L$, with $l = 0$ denoting the input layer and $l = L$ denoting the output layer. Define the output of neuron $k$ in layer $l$ as $x_k^{(l)}$. Next, define the vector of outputs for this layer as $x^{(l)} = (1, x_1^{(l)}, \dots, x_{K^(l)}^{(l)})'$. The input layer is defined using predictors, $x^{(0)} = (1, z_1, \dots, z_N)'$. The recursive output formula for the neural network at each neuron in layer $l > 0$ is then:
-
-\begin{equation}
-	x_k^{(l)} = \operatorname{ReLU}(x^{(l-1)'}\theta_k^{l-1}),
-\end{equation}
-
-with the final output
-
-\begin{equation}
-	g(z;\theta) = x^{(L-1)'}\theta^{L-1}
-\end{equation}
-
-The neural network's weight and bias parameters are estimated by minimizing the loss function with respect to the parameters.
-
 \subsubsection{Computation}
-
-
-
-The solution to finding the optimal weights and biases for the neural network is therefore found via the following chain rule:
-
-\rhs{Backpropagation}
-
-\begin{equation}
-	content...
-\end{equation}
 
 The solution to this is typically found via backpropagation, an iterative procedure similar to Gauss-Newton steps and produces a local minimum. These steps can be visualized as a descent towards the local minimum of the loss function; it is thus also known as "gradient descent." Note that the lack of a global minimum is actually desirable, as global minimums tend to be overfit solutions to the problem, \citep{choromanska_loss_2014}.
 
 This is to be calculated and averaged across all training observations, and is thus extremely computationally intensive. A common solution is to use "stochastic gradient descent" (SGD) where instead of optimising the loss function with respect to the entire training sample, only a small, random subset of the data (mini batch) is used at each optimisation step. This sacrifices some accuracy for a dramatic improvement in computational speed.
 
-Due the noisiness (randomness) introduced by SGD, the path towards the local minimum is more of a quick ``zig zag" and has the potential to ``overshoot" the local minimum. A learning rate shrinkage algorithm which adaptively shrinks the learning rate was therefore employed (see \cite{kingma_adam:_2014}).
+Due the noisiness (randomness) introduced by SGD, the path towards the local minimum is more of a quick ``zig zag" and has the potential to ``overshoot" the local minimum and not converge to a solution. This is typically controlled via a hyperparameter known as the learning rate, which controls the step size of each gradient descent iteration. The learning rate meant to be tuned so that the solution path descends quickly enough, but slow enough so that it does not overshoot the local minimum. In this paper, a learning rate shrinkage algorithm which adaptively shrinks the learning rate as convergence occurs was employed (see \cite{kingma_adam:_2014}).
 
 \subsubsection{Batch Normalization}
 
 "Batch normalization" is a technique for addressing a phenomenon known as internal covariate shift, a particularly prevalent problem in training deep, complex neural networks, \citep{ioffe_batch_2015}. Internal covariate shift occurs when the distributions of each layers' inputs change as the parameters of the previous layer change, resulting in the need for much slower learning rates and more careful initialization of parameters. By normalizing (de-meaning and variance standardizing) each training step (batch) input, the representation power of each neuron (unit) is restored. Additionally, significant gains in computational speed may also be achieved.
 
-Finally, multiple random starting values for the weights and biases (seeds) were used in training neural networks, with the resulting predictions averaged in an ensemble model, \cite{hansen_neural_1990}. This regularizes the variance associated with the initial starting values for the weights and biases. 
+\subsubsection{Initialization}
+
+Finally, multiple random starting values for the weights and biases (seeds) were used in training neural networks, with the resulting predictions averaged in an ensemble model, \cite{hansen_neural_1990}. This regularizes the variance associated with the initial starting values for the weights and biases. It should be noted however, that contemporary literature suggests that all local solutions are of similar quality and thus this is not strictly necessary, \citep{choromanska_loss_2014}.
 
 \subsection{Simulation Design}
 
@@ -593,6 +549,8 @@ Overall predictive performance for individual excess stock returns were assessed
 
 where $\mathcal{T}_3$ indicates that the fits are only assessed on the test subsample, which is never used for training or tuning. 
 
+
+
 \subsubsection{Diebold-Mariano Test}
 
 The Diebold-Mariano test (\cite{diebold_comparing_2002}, and \cite{harvey_testing_1997}) is a procedure which compares the forecast accuracy of two forecast methods. It is different to the overall R squared metric because it tests whether or not the models' forecast accuracy is significantly different. 
@@ -602,8 +560,8 @@ Under the null hypothesis:
 \begin{align}
 	S_1^* &= \left[ 
 		\frac{n + 1 - 2h + n^{-1}h(h-1)}
-			{n}
-	\right]^{1/2}S_1 \\
+			{n} 
+	\right]^{1/2}S_1 \sim N(0,1) \\
 	S_1 &= \left[ 
 		\hat{V}(\bar{d})
 	\right] ^{-1/2}\bar{d} \\
@@ -613,11 +571,17 @@ Under the null hypothesis:
 	\right] 
 \end{align}
 
+where $d_t$ represents the difference series between the forecast errors of the two models $e_1t - e_2t$, $\hat{\gamma}_k$ represents the sample $k$th autocovariance for $d_t$, and $S_1$ represents the original unmodified Diebold Mariano test statistic.
+
+As all models in this paper will be producing forecasts for an entire cross section of stocks, $e_1t$ and $e_2t$ will instead represent the average forecast errors for each model.
+
 \subsection{Variable Importance}
 
 \rhs{Pending}
 
 The importance of each predictor $j$ is denoted as $VI_j$, and is defined as the reduction in predictive R-Squared from setting all values of predictor $j$ to 0, while holding the remaining model estimates fixed. 
+
+Despite obvious limitations, this allows us to visualize which factors machine learning algorithms have determined to be important.
 
 \section{Study}
 
@@ -634,6 +598,8 @@ All machine learning methods are designed to approximate the empirical model \( 
 \end{equation}
 
 where \( c_{i,t} \) is a \( P_c \times 1 \) matrix of characteristics for each stock \(i\), and \(x_t\) is a $P_x \times 1$ vector of macroeconomic predictors (and are this common to all stocks, including a constant). $z_{i,t}$ is a $P \times 1$ vector of features for predicting individual stock returns ($P = P_cP_x$) and includes interactions between individual characteristics and macroeconomic characteristics. 
+
+The dataset will be provided by the CRSP/Compustat database and include only more recent returns data, specifically before and after the global financial crisis. All stocks were included in order to alleviate any biases associated with small firms or survivorship.
 
 \section{Appendix}
 
@@ -708,11 +674,7 @@ For full details of the Random Forest algorithm see \cite{breiman_random_2001}.
 
 \subsubsection{Neural Networks}
 
-There are numerous stochastic gradient descent algorithms available.
-
-\rhs{research different types of algorithms. Paper used ADAM}
-
-\cite{kingma_adam:_2014}
+ADAM algorithm for stochastic gradient descent and learning rate shrinkage as detailed by \cite{kingma_adam:_2014}.
 
 \begin{algorithm}
 	\SetAlgoLined
@@ -734,7 +696,7 @@ There are numerous stochastic gradient descent algorithms available.
 	\caption{Early stopping via validation}
 \end{algorithm}
 
-Batch Normalization
+Batch Normalization as detailed by \cite{ioffe_batch_2015}.
 
 \begin{algorithm}
 	Input: Values of \(x\) for each activation over a batch \(\mathcal{B} = {x_1, x_2, \dots, x_N}\)

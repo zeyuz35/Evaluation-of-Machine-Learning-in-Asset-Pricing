@@ -1,3 +1,6 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Preamble
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \documentclass{beamer}
 
 \usepackage[english]{babel}
@@ -6,10 +9,6 @@
 \usepackage{amsfonts}
 \usepackage{setspace,graphicx,epstopdf,amsmath}
 \usepackage{marginnote, datetime, url, enumitem, subfigure}
-
-%Journal Style
-%JFE looks nice, JF looks awful
-\usepackage{amsthm}
 
 %Bibliography Stuff
 %Use natbib even though it's old because it's compliant with journal styles
@@ -66,7 +65,29 @@
 %%
 
 %Graphs
+\usepackage{tikz}
 \usepackage{pgfplots}
+
+%Coloured Tables
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%Title and other fluff, just before document start
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%Hyperref apparently is a big package and causes a lot of issues, so it's recommended to load this last
+
+\usepackage{hyperref}
+
+%Gets rid of the neon green boxes around boxes
+
+\usepackage{xcolor}
+\hypersetup{
+	colorlinks,
+	linkcolor = {red!50!black},
+	citecolor = {blue!50!black},
+	urlcolor = {blue!80!black}
+}
 
 \title{Evaluation of Machine Learning in Finance}
 \author{Ze Yu Zhong}
@@ -177,7 +198,6 @@ content...
 
 \begin{frame}
 \frametitle{Questions and Answers}
-	content...
 \end{frame}
 
 \end{document}
