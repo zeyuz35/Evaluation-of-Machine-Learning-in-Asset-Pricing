@@ -374,7 +374,7 @@ gen_error <- function(omega, gamma, w){
   sigma2[[1]] <- omega + w
   
   for (t in 1:Time+1) {
-    sigma2[[t+1]] <- omega + gamma*sigma2[[t]] + w
+    sigma2[[t+1]] <- omega + gamma*sigma2[[t]] + rnorm(1, 0, w)
   }
   
   sigma2[[1]] <- NULL
@@ -391,9 +391,7 @@ gen_error <- function(omega, gamma, w){
   
   for (t in 1:Time+1){
     for (i in 1:N) {
-      error[[t]][i] <- exp(
-        sqrt(abs(sigma2[[t]])/2)
-        )*rnorm(1, 0, 1)
+      error[[t]][i] <- exp(sigma2[[t]]/2)*rnorm(1, 0, 1)
     }
   }
   
