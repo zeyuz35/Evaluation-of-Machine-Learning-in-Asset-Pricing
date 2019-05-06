@@ -21,6 +21,8 @@ library(rlist)
 library(plm)
 library(Metrics)
 library(ranger)
+
+set.seed(27935248)
 ```
 
 ```{r global_options}
@@ -448,8 +450,8 @@ gen_rt <- function(A, g, resid){
 
 
 
-```{r tune_rsquared}
-#Tuning Cross Sectional R Squared
+```{r tune_rsquared_skeleton, eval = FALSE}
+#Tuning Cross Sectional R Squared SKELETON CODE
 
 #We want inidividual r squared for each stock to be 50%
 #We want inidividual annualized volatility to be 30%
@@ -460,7 +462,7 @@ gen_rt <- function(A, g, resid){
 
 #Tune v_sd for inidividual r square first
 #Gu et al had 0.05 for their v variance
-v_sd <- 10
+v_sd <- 0.05
 
 #Tune SV parameters for individual r square first
 #Not too sure about stochastic volatility parameters
@@ -558,11 +560,141 @@ mean(vol_tune_df$annual_vol)
 #Cross sectional r squared
 
 SSR <- t(rt_cross_tune_panel$resid) %*% (rt_cross_tune_panel$resid)
-SST <- t(rt_cross_tune_panel$return - mean(rt_cross_tune_panel$return)) %*% (rt_cross_tune_panel$return - mean(rt_tune_panel$return))
+SST <- t(rt_cross_tune_panel$return - mean(rt_cross_tune_panel$return)) %*% (rt_cross_tune_panel$return - mean(rt_cross_tune_panel$return))
 
 1 - SSR/SST
+```
+
+```{r tune_rsquared_skeleton}
+#Same as before, but now with grid set up
+
+#Tuning Cross Sectional R Squared SKELETON CODE
+
+#We want inidividual r squared for each stock to be 50%
+#We want inidividual annualized volatility to be 30%
+#We want to cross sectional R squared to be 25%
+#We want the predictive R squared to be 5%
+
+#Set up Grids
+
+individual_rsquare_grid <- expand.grid(
+  v_sd = seq(0.2, 1, 0.2),
+  omega = -1,
+  gamma = seq(0.2, 1, 0.2),
+  w = seq(0.2, 1, 0.2)
+)
+
+individual_rsquare_grid <- cbind(individual_rsquare_grid, rsquare = rep(0, nrow(individual_rsquare_grid)), vol = rep(0, nrow(individual_rsquare_grid)))
+
+#Generate paramaters first
+
+###START ACTUAL CACULATIONS
+
+for (grid in 1:nrow(individual_rsquare_grid)) {
+  
+resid <- gen_rt_resid(
+  omega = individual_rsquare_grid$omega[grid], 
+  gamma = individual_rsquare_grid$gamma[grid], 
+  w = individual_rsquare_grid$w[grid], 
+  v_sd = individual_rsquare_grid$v_sd[grid]
+)
+
+#Tune theta for cross sectional r square
+#theta
+
+theta <- matrix(c(0.02, 0.02, 0.02), nrow = 1)
+
+rt <- gen_rt(A1, g1, resid)
+
+rt_cross_tune_panel <- data.frame(
+  return = rep(0, 36000),
+  resid = rep(0, 36000),
+  time = rep(0, 36000),
+  stock = rep(0, 36000)
+)
+
+for (i in 1:N){
+
+  rt_cross_tune_df <- data.frame(
+    return = rep(0, Time+1),
+    resid = rep(0, Time+1),
+    time = rep(0, Time+1)
+  )
+  
+  for (t in 1:(Time+1)){
+    rt_cross_tune_df$return[t] <- rt[[t]][i]
+    rt_cross_tune_df$resid[t] <- resid[[t]][i]
+  }
+  
+  #Cbind returns, id, time and predictors
+  panel <- cbind(rt_cross_tune_df$return, rt_cross_tune_df$resid, c(1:(Time+1)), c(rep(i, (Time+1))))
+  rt_cross_tune_panel[((i-1)*(Time+1)+1):(i*(Time+1)), ] <- panel
+  
+}
+  
+#Sort by time
+rt_cross_tune_panel <- rt_cross_tune_panel %>%
+  arrange(time)
+  
+#Remove 1st row because returns data only starts from t = 2
+rt_cross_tune_panel <- rt_cross_tune_panel %>%
+  filter(time != 1) %>%
+  select(-time)
+
+#Individual return R squared
+
+rt_id_tune_df <- data.frame(
+  stock = c(1:200),
+  rsquare = c(1:200)
+)
+
+for (i in 1:200) {
+  rt_id_tune_panel <- rt_cross_tune_panel %>%
+    filter(stock == i)
+  SSR <- t(rt_id_tune_panel$resid) %*% rt_id_tune_panel$resid
+  SST <- t(rt_id_tune_panel$return - mean(rt_id_tune_panel$return)) %*% (rt_id_tune_panel$return - mean(rt_id_tune_panel$return))
+  rt_id_tune_df$rsquare[i] <- 1 - SSR/SST
+}
+
+#Return mean of each individual rsquared
+#individual_rsquare_grid$rsquare[grid] <- 
+  
+  mean(rt_id_tune_df$rsquare)
+
+#Calculate Annualized Volatility
+#Annualized volatility = calculate volatility (via standard deviation) for the monthly returns, then annualize it by multiplying it by sqrt(12) for 12 months in a year
+
+vol_tune_df <- data.frame(
+  stock = c(1:200),
+  annual_vol = c(1:200)
+)
+
+for (i in 1:200) {
+  vol_tune_panel <- rt_cross_tune_panel %>%
+    filter(stock == i)
+  vol_tune_df$annual_vol[i] <- sd(vol_tune_panel$return) * sqrt(12)
+}
+
+#Return the mean annualized volatility
+#Want this aorund 30%
+
+#individual_rsquare_grid$vol[grid] <- 
+  
+  mean(vol_tune_df$annual_vol)
+
+#Cross sectional r squared
+
+SSR <- t(rt_cross_tune_panel$resid) %*% (rt_cross_tune_panel$resid)
+SST <- t(rt_cross_tune_panel$return - mean(rt_cross_tune_panel$return)) %*% (rt_cross_tune_panel$return - mean(rt_cross_tune_panel$return))
+
+1 - SSR/SST
+  
+}
+
+
 
 ```
+
 
 ```{r generate_returns}
 ##############################

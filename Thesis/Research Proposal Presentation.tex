@@ -2,6 +2,7 @@
 %Preamble
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \documentclass{beamer}
+\usetheme{Boadilla}
 
 \usepackage[english]{babel}
 \usepackage[ruled, vlined]{algorithm2e}
@@ -95,8 +96,6 @@
 
 \begin{document}
 	
-\todo{Remember that this is meant to be no more than 15 minutes, hard limit}
-
 \begin{frame}[plain]
     \maketitle
 \end{frame}
@@ -112,9 +111,22 @@
 \begin{frame}
 \frametitle{Problems in Empirical Finance}
 \begin{itemize}
-	\item Large collection of potential factors - curse of dimensionality
-	\item Time series
-	\item 
+	\item Regressors can be:
+		\begin{itemize}
+			\item Non-stationary - information now does not contain information about the future
+			\item Persistent - shocks in a series have effects that last for a long time
+			\item Cross sectionally correlated - regressors may seem important but are actually the result of a different underlying regressor
+			\item Endogeneous - omitted variable bias, etc
+		\end{itemize}
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Problems in Empirical Finance}
+\begin{itemize}
+	\item Data is not robust - structural breaks are evident in returns data, and many regressors that once performed well do not anymore
+	\item Extremely large number of potential factors (regressors) that is still increasing: over 600 documented in the literature
 \end{itemize}
 \end{frame}
 
@@ -142,7 +154,6 @@
 	\item Well suited for prediction
 	\item Better equipped to deal with large dimensionality
 	\item Capable of capturing non-linear transformations humans cannot realistically find
-	\item Already shown to have results in literature
 \end{itemize}
 \end{frame}
 
