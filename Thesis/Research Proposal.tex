@@ -242,17 +242,17 @@
 	Penalized linear models have the same underlying statistical model as simple linear models, but differ in their addition of a new penalty term in the loss function:
 	
 	\begin{equation}
-	\mathcal{L(\theta;.)} = 
-	\underset{\text{Loss Function}}{\underbrace{\mathcal{L(\theta)}}} + 
-	\underset{\text{Penalty Term}}{\underbrace{\phi(\theta;.)}}
+		\mathcal{L(\theta;.)} = 
+		\underset{\text{Loss Function}}{\underbrace{\mathcal{L(\theta)}}} + 
+		\underset{\text{Penalty Term}}{\underbrace{\phi(\theta;.)}}
 	\end{equation}
 	
 	Several choices exist for the choice of the penalty function \( \phi(\theta;.) \). This focus of this paper is the popular "elastic net" penalty  \citep{zou_regularization_2005}, which takes the form:
 	
 	\begin{equation}
-	\phi(\theta;\lambda,\rho) = 
-	\lambda(1-\rho) \sum_{j = 1}^{P}|\theta_j| +
-	\frac{1}{2} \lambda \rho \sum_{j = 1}^{P}\theta_j^2
+		\phi(\theta;\lambda,\rho) = 
+		\lambda(1-\rho) \sum_{j = 1}^{P}|\theta_j| +
+		\frac{1}{2} \lambda \rho \sum_{j = 1}^{P}\theta_j^2
 	\end{equation}
 	
 	The elastic net has two hyperparameters: $\lambda$, which controls the overall magnitude of the loss, and $\rho$, which controls the shape of the penalization. The $\rho = 0$ case corresponds to the popular LASSO and uses absolute ($l_1$) parameter penalization, which geometrically allows the coefficients to be shrunk to 0. This allows it to impose sparsity, and can be thought of as a variable selection tool.

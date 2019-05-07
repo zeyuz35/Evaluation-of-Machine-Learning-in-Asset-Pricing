@@ -320,16 +320,14 @@
 \end{frame}
 
 \begin{frame}
-\frametitle{Neural Networks}
 %Beamer hack snad uses # in a loop
 %Therefore, we need to replace all # with ####
-\rhs{change sizing so that it fits}
 \begin{figure}
 	\begin{neuralnetwork}
 		%Options
-		[nodespacing=12mm, layerspacing=20mm,
-		maintitleheight=2.5em, layertitleheight=2.5em,
-		height=8, toprow=false, nodesize=20pt, style={},
+		[nodespacing=10mm, layerspacing=18mm,
+		maintitleheight=1em, layertitleheight=2em,
+		height=7, toprow=false, nodesize=15pt, style={},
 		title={}, titlestyle={}]
 		\newcommand{\nodetextclear}[2]{}
 		%use \ifnum to get different labels, such as x_n on the last neuron
@@ -380,13 +378,146 @@
 \subsection{Real World Observations}
 \begin{frame}
 \frametitle{Real World Observations}
-	content...
+\begin{itemize}
+	\item Though \cite{gu_empirical_2018} explore the performance of machine learning on simulated returns series, their design used factors are uncorrelated across $i$, and, in particular, that the factors which do not matter in the return equation are uncorrelated with those that matter. This is not what is observed in practice. 
+	\item In particular, their specification lacks:
+	\begin{itemize}
+		\item Cross Sectional correlation among factors
+		\item Stochastic Volatility in errors
+		\item 
+	\end{itemize}
+\end{itemize}
 \end{frame}
 
 \subsection{Simulation Design}
 \begin{frame}
-\frametitle{Simulation Design}
-content...
+\frametitle{Overall Simulation Design}
+Therefore, we simulate an extension: a latent factor model with stochastic volatility for excess return, $r_{t+1}$, for $t=1,\dots,T$:
+
+\begin{flalign}
+r_{i, t+1} &= 
+g\left(z_{i, t}\right) + \beta_{i,t+1}v_{t+1} + e_{i, t+1}; 
+\quad z_{i, t}=\left(1, x_{t}\right)^{\prime} \otimes c_{i, t}, 
+\quad \beta_{i, t}=\left(c_{i 1, t}, c_{i 2, t}, c_{i 3, t}\right) \\ 
+e_{i, t+1} &= 
+\exp\left( \frac{\sigma_{i, t+1}^2}{2} \right) \varepsilon_{i, t+1}; \\
+\sigma^2_{i,t+1} &= 
+\omega + \gamma_i\sigma^2_{t,i}+w_{i,t+1}
+\end{flalign}
+
+$v_{t+1}$ is a $3\times 1$ vector of errors, $w_{i,t+1},\varepsilon_{i,t+1}$ are scalar error terms. The parameters of these were tuned such that the R squared for each individual return series was 50\% and annualized volatility 30\%.
+
+The matrix $C_t$ is an $N\times P_c$ vector of latent factors, where the first three columns correspond to $\beta_{i,t}$, across the $1\leq i\leq N$ dimensions, while the remaining $P_c-3$ factors do not enter the return equation. The $P_x\times1$ vector $x_t$ is a $3 \times 1$ multivariate time series, and $\varepsilon_{t+1}$ is a $N\times 1$ vector of idiosyncratic errors. 
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Simulating Characteristics}
+A simulation mechanism for $C_t$ that gives some correlation across the factors and across time was used. First consider drawing normal random numbers for each $1\leq i\leq N$ and $1\leq j\leq P_{c}$, according to 
+
+\begin{equation}
+\overline{c}_{i j, t} = \rho_{j} \overline{c}_{i j, t-1}+\epsilon_{i j, t} ;
+\quad \rho_{j} \sim \mathcal{U} \left( \frac{1}{2},1 \right) 
+\end{equation}
+
+Then, define the matrix 
+
+\begin{equation}
+B:=\Lambda\Lambda' + \frac{1}{10}\mathbb{I}_{n}, \quad
+\Lambda_i = (\lambda_{i1},\dots,\lambda_{i4}), \quad
+\lambda_{ik}\sim N(0,1), \; k=1,\dots,4
+\end{equation}
+
+which we transform into a correlation matrix $W$ via
+
+\begin{equation}
+W = \left( \operatorname{diag}(B) \right) ^{\frac{-1}{2}}
+(B)
+\left( \operatorname{diag}(B) \right) ^{\frac{-1}{2}}
+\end{equation}
+
+To build in cross-sectional correlation, from the $N\times P_{c}$ matrix $\bar{C}_t$, we simulate characteristics according to
+
+\begin{equation}
+\widehat{C}_{t}=W\overline{C}_{t}
+\end{equation}
+
+Finally, the "observed" characteristics for each $1\leq i\leq N$ and for $j=1, \dots, P_{c}$ are constructed according to:
+
+\begin{equation}
+c_{i j, t} = \frac{2}{n+1} \operatorname{rank}\left(\hat{c}_{i j, t}\right) - 1.
+\end{equation}
+
+with the rank transformation normalizing all predictors to be within $[-1, 1]$. 
+\end{frame}
+
+\begin{frame}
+\frametitle{Simulating Macroeconomic Time Series}
+For simulation of $x_{t}$, a $3 \times 1$ multivariate time series, we consider a VAR model
+
+\begin{flalign*}
+x_{t}=Ax_{t-1}+u_t, 
+\quad u_t \sim N\left( \mu = (0, 0, 0)' , \Sigma = 
+\begin{pmatrix}
+1 & 0 & 0 \\
+0 & 1 & 0 \\
+0 & 0 & 1
+\end{pmatrix}\
+\right) 
+\end{flalign*}
+
+where we have three separate specifications for the matrix $A$:
+
+\begin{align}
+(1)\; A =
+\begin{pmatrix}
+.95 & 0 & 0 \\
+0 & .95 & 0 \\
+0 & 0 & .95
+\end{pmatrix}\;
+\;
+(2)\; A=
+\begin{pmatrix}
+1 & 0 & .25 \\
+0 & .95 & 0 \\
+.25 & 0 &.95
+\end{pmatrix}\;
+\;
+(3)\; A=
+\begin{pmatrix}
+.99 & .2 & .1 \\
+.2 & .90 & -.3 \\
+.1 & -.3 & -.99
+\end{pmatrix}
+\end{align}
+\end{frame}
+
+\begin{frame}
+\frametitle{Simulating Return Series}
+We will consider four different functions $g(\cdot)$
+\begin{flalign*}
+(1)\; & g_1 \left(z_{i, t}\right)=\left(c_{i 1, t}, c_{i 2, t}, c_{i 3, t} \times x_{t}'\right) \theta_{0} \\
+(2)\; & g_2 \left(z_{i, t}\right)=\left(c_{i 1, t}^{2}, c_{i 1, t} \times c_{i 2, t}, \operatorname{sgn}\left(c_{i 3, t} \times  x_{t}'\right)\right) \theta_{0} \\
+(3)\; & g_3 \left(z_{i, t}\right) = \left(1[c_{i3,t}>0],c_{i 2, t}^{3}, c_{i 1, t} \times c_{i 2, t}\times 1[c_{i3,t}>0], \text{logit}\left({c}_{i 3, t} \right)\right) \theta_{0} \\
+(4)\; & g_4 \left(z_{i, t}\right)=\left(\hat{c}_{i 1, t}, \hat{c}_{i 2, t}, \hat{c}_{i 3, t} \times x_{t}'\right) \theta_{0}
+\end{flalign*}
+
+$g_1 \left(z_{i, t}\right)$ allows the characteristics to enter the return equation linearly
+
+$g_2 \left(z_{i, t}\right)$ allows the characteristics to enter the return equation interactively and non-linearly.
+
+$g_3 \left(z_{i, t}\right)$ allows the characteristics to enter in a highly complex and non-linear fashion.
+
+$g_4 \left(z_{i, t}\right)$ builds returns using $\hat{c}$, which are the unobserved characteristics which have not been normalized.
+
+$\theta^0$ was tuned such that the cross sectional $R^2$ was around 25\%, and the predictive $R^2$ 5\%. 
+
+The simulation design results in $3 \times 4 = 12$ different simulated datasets, each with $N = 200$ stocks, $T = 180$ periods and $P_c = 100$ characteristics. Each design was simulated 50 times to assess the robustness of machine learning algorithms.
+\end{frame}
+
+\begin{frame}
+\frametitle{Sample Splitting}
+$T = 180$ monthly periods corresponds to 15 years. The training sample was set to start from $T = 108$ or 9 years, a validation set 1 year in length. The last 3 years were reserved as a test set never to be used for validation or training.
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -395,7 +526,57 @@ content...
 
 \begin{frame}
 \frametitle{Data Source}
-	content...
+CRSP/Compustat database for stock returns with stock level characteristics such as accounting ratios and macroeconomic factors will be queried.
+
+Most previous studies have included decades of data in their training sample - this does not make much sense as several factors are different now
+
+Only more recent data will be used, such as period before and after 2008 GFC
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Model Evaluation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Out of Sample R Squared}
+Overall predictive performance for individual excess stock returns were assessed using the out of sample $R^2$:
+\begin{equation}
+R^2_{OOS} = 1 - \frac{\sum_{(i, t)\in\mathcal{T}_3}(r_{i, t+1} - \widehat{r}_{i, t+1})}{\sum_{(i, t)\in\mathcal{T}_3}r_{i, t+1}^2}
+\end{equation}
+
+where $\mathcal{T}_3$ indicates that the fits are only assessed on the test subsample, which is never used for training or tuning. 
+\end{frame}
+
+\begin{frame}
+\frametitle{Diebold Mariano Tests for Predictive Accuracy}
+The Diebold-Mariano test (\cite{diebold_comparing_2002} and \cite{harvey_testing_1997}) compares the forecast accuracy of two forecast methods. Different to the overall R squared metric because it tests whether or not the models' forecast accuracy is significantly different
+
+Under the null hypothesis:
+
+\begin{align}
+	S_1^* &= \left[ 
+	\frac{n + 1 - 2h + n^{-1}h(h-1)}
+	{n} 
+	\right]^{1/2}S_1 \sim N(0,1) \\
+	S_1 &= \left[ 
+	\hat{V}(\bar{d})
+	\right] ^{-1/2}\bar{d} \\
+	\hat{\gamma}_k &= n^{-1} \sum_{t = k + 1}^{n}(d_t - \bar{d})(d_{t-k} - \bar{d}) \\
+	V(\bar{d}) &\approx n^{-1}\left[ 
+	\gamma_0 + 2 \sum_{k = 1}^{h - 1}\gamma_k
+	\right] 
+\end{align}
+
+where $d_t$ represents the difference series between the forecast errors of the two models $e_{1t} - e_{2t}$, $\hat{\gamma}_k$ represents the sample $k$th autocovariance for $d_t$, and $S_1$ represents the original unmodified Diebold Mariano test statistic.
+
+As all models in this paper will be producing forecasts for an entire cross section of stocks, $e_1t$ and $e_2t$ will instead represent the average forecast errors for each model.
+\end{frame}
+
+\begin{frame}
+\frametitle{Variable Importance}
+The importance of each predictor $j$ is denoted as $VI_j$, and is defined as the reduction in predictive R-Squared from setting all values of predictor $j$ to 0, while holding the remaining model estimates fixed. 
+
+Despite obvious limitations, this allows us to visualize which factors machine learning algorithms have determined to be important.
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -405,6 +586,16 @@ content...
 \begin{frame}
 \frametitle{Results}
 	content...
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{References}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{References}
+	\bibliographystyle{jfe}
+	\bibliography{Bibliography}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
