@@ -21,6 +21,8 @@ library(rlist)
 library(plm)
 library(Metrics)
 library(ranger)
+
+set.seed(27935248)
 ```
 
 ```{r global_options}
@@ -448,8 +450,8 @@ gen_rt <- function(A, g, resid){
 
 
 
-```{r tune_rsquared}
-#Tuning Cross Sectional R Squared
+```{r tune_rsquared_skeleton, eval = FALSE}
+#Tuning Cross Sectional R Squared SKELETON CODE
 
 #We want inidividual r squared for each stock to be 50%
 #We want inidividual annualized volatility to be 30%
@@ -460,7 +462,7 @@ gen_rt <- function(A, g, resid){
 
 #Tune v_sd for inidividual r square first
 #Gu et al had 0.05 for their v variance
-v_sd <- 10
+v_sd <- 0.05
 
 #Tune SV parameters for individual r square first
 #Not too sure about stochastic volatility parameters
@@ -558,11 +560,141 @@ mean(vol_tune_df$annual_vol)
 #Cross sectional r squared
 
 SSR <- t(rt_cross_tune_panel$resid) %*% (rt_cross_tune_panel$resid)
-SST <- t(rt_cross_tune_panel$return - mean(rt_cross_tune_panel$return)) %*% (rt_cross_tune_panel$return - mean(rt_tune_panel$return))
+SST <- t(rt_cross_tune_panel$return - mean(rt_cross_tune_panel$return)) %*% (rt_cross_tune_panel$return - mean(rt_cross_tune_panel$return))
 
 1 - SSR/SST
+```
+
+```{r tune_rsquared_skeleton}
+#Same as before, but now with grid set up
+
+#Tuning Cross Sectional R Squared SKELETON CODE
+
+#We want inidividual r squared for each stock to be 50%
+#We want inidividual annualized volatility to be 30%
+#We want to cross sectional R squared to be 25%
+#We want the predictive R squared to be 5%
+
+#Set up Grids
+
+individual_rsquare_grid <- expand.grid(
+  v_sd = seq(0.2, 1, 0.2),
+  omega = -1,
+  gamma = seq(0.2, 1, 0.2),
+  w = seq(0.2, 1, 0.2)
+)
+
+individual_rsquare_grid <- cbind(individual_rsquare_grid, rsquare = rep(0, nrow(individual_rsquare_grid)), vol = rep(0, nrow(individual_rsquare_grid)))
+
+#Generate paramaters first
+
+###START ACTUAL CACULATIONS
+
+for (grid in 1:nrow(individual_rsquare_grid)) {
+  
+resid <- gen_rt_resid(
+  omega = individual_rsquare_grid$omega[grid], 
+  gamma = individual_rsquare_grid$gamma[grid], 
+  w = individual_rsquare_grid$w[grid], 
+  v_sd = individual_rsquare_grid$v_sd[grid]
+)
+
+#Tune theta for cross sectional r square
+#theta
+
+theta <- matrix(c(0.02, 0.02, 0.02), nrow = 1)
+
+rt <- gen_rt(A1, g1, resid)
+
+rt_cross_tune_panel <- data.frame(
+  return = rep(0, 36000),
+  resid = rep(0, 36000),
+  time = rep(0, 36000),
+  stock = rep(0, 36000)
+)
+
+for (i in 1:N){
+
+  rt_cross_tune_df <- data.frame(
+    return = rep(0, Time+1),
+    resid = rep(0, Time+1),
+    time = rep(0, Time+1)
+  )
+  
+  for (t in 1:(Time+1)){
+    rt_cross_tune_df$return[t] <- rt[[t]][i]
+    rt_cross_tune_df$resid[t] <- resid[[t]][i]
+  }
+  
+  #Cbind returns, id, time and predictors
+  panel <- cbind(rt_cross_tune_df$return, rt_cross_tune_df$resid, c(1:(Time+1)), c(rep(i, (Time+1))))
+  rt_cross_tune_panel[((i-1)*(Time+1)+1):(i*(Time+1)), ] <- panel
+  
+}
+  
+#Sort by time
+rt_cross_tune_panel <- rt_cross_tune_panel %>%
+  arrange(time)
+  
+#Remove 1st row because returns data only starts from t = 2
+rt_cross_tune_panel <- rt_cross_tune_panel %>%
+  filter(time != 1) %>%
+  select(-time)
+
+#Individual return R squared
+
+rt_id_tune_df <- data.frame(
+  stock = c(1:200),
+  rsquare = c(1:200)
+)
+
+for (i in 1:200) {
+  rt_id_tune_panel <- rt_cross_tune_panel %>%
+    filter(stock == i)
+  SSR <- t(rt_id_tune_panel$resid) %*% rt_id_tune_panel$resid
+  SST <- t(rt_id_tune_panel$return - mean(rt_id_tune_panel$return)) %*% (rt_id_tune_panel$return - mean(rt_id_tune_panel$return))
+  rt_id_tune_df$rsquare[i] <- 1 - SSR/SST
+}
+
+#Return mean of each individual rsquared
+#individual_rsquare_grid$rsquare[grid] <- 
+  
+  mean(rt_id_tune_df$rsquare)
+
+#Calculate Annualized Volatility
+#Annualized volatility = calculate volatility (via standard deviation) for the monthly returns, then annualize it by multiplying it by sqrt(12) for 12 months in a year
+
+vol_tune_df <- data.frame(
+  stock = c(1:200),
+  annual_vol = c(1:200)
+)
+
+for (i in 1:200) {
+  vol_tune_panel <- rt_cross_tune_panel %>%
+    filter(stock == i)
+  vol_tune_df$annual_vol[i] <- sd(vol_tune_panel$return) * sqrt(12)
+}
+
+#Return the mean annualized volatility
+#Want this aorund 30%
+
+#individual_rsquare_grid$vol[grid] <- 
+  
+  mean(vol_tune_df$annual_vol)
+
+#Cross sectional r squared
+
+SSR <- t(rt_cross_tune_panel$resid) %*% (rt_cross_tune_panel$resid)
+SST <- t(rt_cross_tune_panel$return - mean(rt_cross_tune_panel$return)) %*% (rt_cross_tune_panel$return - mean(rt_cross_tune_panel$return))
+
+1 - SSR/SST
+  
+}
+
+
 
 ```
+
 
 ```{r generate_returns}
 ##############################
@@ -819,7 +951,111 @@ summary(POLS_models[[3]])
 ```{r elastic_net}
 #Elasticnet
 
-elasticnet <- cv.glmnet()
+#Elasticnet only has alpha to tune, thank god
+
+elasticnet_grid <- expand.grid(
+  alpha = seq(0, 1, 0.01)
+)
+
+#Initialize Loss Function Statistics
+
+elasticnet_stats <- data.frame(
+  set = c(1:3),
+  #Training
+  train_MAE = c(1:3),
+  train_MSE = c(1:3),
+  train_RMSE = c(1:3),
+  train_R2 = c(1:3),
+  #Validation
+  valid_MAE = c(1:3),
+  valid_MSE = c(1:3),
+  valid_RMSE = c(1:3),
+  valid_R2 = c(1:3),
+  #Test
+  test_MAE = c(1:3),
+  test_MSE = c(1:3),
+  test_RMSE = c(1:3),
+  test_R2 = c(1:3)
+)
+
+#Initialize Forecasts
+
+elasticnet_forecasts <- rep(list(0), 3)
+
+#Initialize Models
+
+elasticnet_models <- rep(list(0), 3)
+
+for (set in 1:3) {
+  #Load training, validation and test sets
+    train <- pooled_panel %>%
+      filter(time %in% unlist(time_slices$train[set]))
+    train_x <- train %>%
+      select(-return, -time, -stock)
+    train_y <- train %>%
+      select(return)
+    
+    validation <- pooled_panel %>%
+      filter(time %in% unlist(time_slices$validation[set]))
+    validation_x <- validation %>%
+      select(-return, -time, -stock)
+    validation_y <- validation %>%
+      select(return)
+    
+    test <- pooled_panel %>%
+      filter(time %in% unlist(time_slices$test[set]))
+    test_x <- test %>%
+      select(-return, -time, -stock)
+    test_y <- test %>%
+      select(return)
+    
+  #Initialize forecasts
+    elasticnet_forecasts[[set]] <- data.frame(
+      time = test$time,
+      forecast = rep(0, length(test$time)),
+      forecast_error = rep(0, length(test$time))
+    )
+
+  #Train model on training set
+  
+    elasticnet <- glmnet(x = train_x, y = train_y)
+    POLS_models[[set]] <- pols
+    
+  #Usually Tuning via Validation set would be here, but POLS does not need tuning
+  
+  #Training Set Statistics
+    POLS_stats$train_MAE[set] <- mae(train$return, predict(pols))
+    POLS_stats$train_MSE[set] <- mse(train$return, predict(pols))
+    POLS_stats$train_RMSE[set] <- rmse(train$return, predict(pols))
+    error <- (train$return - predict(pols))
+    SSR <- t(error) %*% (error)
+    SST <- t(train$return - mean(train$return)) %*% (train$return - mean(train$return))
+    POLS_stats$train_R2[set] <- (1 - SSR/SST)
+    
+  #Validation Set Statistics
+    POLS_stats$valid_MAE[set] <- mae(validation$return, predict(pols, newdata = validation))
+    POLS_stats$valid_MSE[set] <- mse(validation$return, predict(pols, newdata = validation))
+    POLS_stats$valid_RMSE[set] <- rmse(validation$return, predict(pols, newdata = validation))
+    
+    error <- (validation$return - predict(pols, newdata = validation))
+    SSR <- t(error) %*% (error)
+    SST <- t(validation$return - mean(validation$return)) %*% (validation$return - mean(validation$return))
+    POLS_stats$valid_R2[set] <- (1 - SSR/SST)
+  
+  #Test Set Statistics
+    POLS_stats$test_MAE[set] <- mae(test$return, predict(pols, newdata = test))
+    POLS_stats$test_MSE[set] <- mse(test$return, predict(pols, newdata = test))
+    POLS_stats$test_RMSE[set] <- rmse(test$return, predict(pols, newdata = test))
+    
+    error <- (test$return - predict(pols, newdata = test))
+    SSR <- t(error) %*% (error)
+    SST <- t(test$return - mean(test$return)) %*% (test$return - mean(test$return))
+    POLS_stats$test_R2[set] <- (1 - SSR/SST)
+    
+  #Forecasts
+    POLS_forecasts[[set]]$forecast <- predict(pols, newdata = test)
+    POLS_forecasts[[set]]$forecast_error <- test$return - predict(pols, newdata = test)
+}
 
 ```
 

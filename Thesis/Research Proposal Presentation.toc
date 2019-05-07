@@ -1,5 +1,6 @@
-\babel@toc {english}{}
-\beamer@sectionintoc {1}{Problems in Empirical Finance}{4}{0}{1}
+\beamer@endinputifotherversion {3.33pt}
+\select@language {english}
+\beamer@sectionintoc {1}{Problems in Empirical Finance}{3}{0}{1}
 \beamer@sectionintoc {2}{What is Machine Learning?}{5}{0}{2}
 \beamer@sectionintoc {3}{Why apply Machine Learning in Finance?}{6}{0}{3}
 \beamer@sectionintoc {4}{Model Specification}{7}{0}{4}
