@@ -165,8 +165,212 @@
 \frametitle{Model Overview}
 \begin{itemize}
 	\item Returns are modelled as an additive error model
-	
+	\item
+		\begin{equation}
+		r_{i, t+1} = E(r_{i, t+1} | \mathcal{F}_t) + \epsilon_{i, t+1}
+		\end{equation}
+		
+		where 
+		
+		\begin{equation}
+		E(r_{i, t+1} | \mathcal{F}_t) = g^*(z_{i,t})
+		\end{equation}
+		
+		with $g^*(z_{i,t})$ representing the model approximation using the predictor set $z_{i,t}$
 \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Sample Splitting}
+\begin{itemize}
+	\item Two main approaches to dealing with temporal data
+	\begin{itemize}
+		\item Rolling window - training, validation, and test set lengths are fixed and move forwards in time
+		\item Growing window - training set grows in size, but validation and test set lengths are fixed and move forwards in time
+	\end{itemize}
+	\item Hybrid approach was chosen for feasibility
+	\item Define a training set, validate on the next year, forecast for the next year
+	\item Increase training set by one more year and move the validation and test sets forward one year
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Loss Functions}
+\begin{itemize}
+	\item Mean Absolute Error (MAE)
+		\begin{equation}
+		\text{MAE} = \frac{1}{n} \sum_{j = i}^{n} |y_j - \hat{y_j}|
+		\end{equation}
+	\item Mean Squared Error (MSE)
+		\begin{align}
+		\text{MSE} &= \frac{1}{n} \sum_{j = i}^{n} \left( y_j - \hat{y_j}\right) ^2
+		\end{align}
+	\item Huber Loss
+		\begin{align}
+		H(\epsilon_j = y_j - \hat{y_j};\xi) = 
+		\begin{cases}
+		\left( y_j - \hat{y_j}\right) ^2, 
+		\quad &\text{if} \quad |y_j - \hat{y_j}| \leq \xi ; \\
+		2 \xi  |y_j - \hat{y_j}| - \xi^2, 
+		\quad &\text{if} \quad |y_j - \hat{y_j}| > \xi
+		\end{cases}
+		\end{align}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Loss Functions}
+\begin{figure}
+	\begin{center}
+		\begin{tikzpicture}
+		\begin{axis}[ xlabel={$\epsilon$}, ylabel={Loss}, axis lines=middle, samples=41, grid, thick, domain=-2:2]
+		\addplot+[no marks] {abs(x)};
+		\addlegendentry{MAE}
+		\addplot+[no marks] {x^2};
+		\addlegendentry{MSE}
+		\addplot+[no marks] {(2 * abs(x) - 1)*(abs(x) > 1) +
+			(x^2)*(abs(x) <= 1 )};
+		\addlegendentry{Huber Loss}
+		\end{axis}
+		\end{tikzpicture}
+	\end{center}
+	\caption{Illustration of MAE, MSE and Huber Loss when $\xi = 1$}
+	\label{fig:loss_functions}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{Models Considered}
+\begin{itemize}
+	\item Linear Models
+	\item Penalized Linear Models (Elastic Net)
+	\item Random Forests
+	\item Neural Networks
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Linear Models}
+\begin{itemize}
+	\item Linear Models assume that the underlying conditional expectation \( g^*(z_{i, t}) \) can be modelled as a linear function of the predictors and the parameter vector \( \theta \):
+	\begin{equation}
+	g(z_{i, t};\theta) = z_{i, t}' \theta
+	\end{equation}
+	\item Optimizing this with respect to minimizing MSE yields the Pooled OLS estimator
+	\item Limitations:
+	\begin{itemize}
+		\item Need to manually consider and specify non-linear interactions
+		\item Struggles with high dimensionality
+	\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Penalized Linear Models}
+\begin{itemize}
+	\item Penalized linear models have the same underlying statistical model as simple linear models, add a new penalty term in the loss function:
+	\begin{equation}
+	\mathcal{L(\theta;.)} = 
+	\underset{\text{Loss Function}}{\underbrace{\mathcal{L(\theta)}}} + 
+	\underset{\text{Penalty Term}}{\underbrace{\phi(\theta;.)}}
+	\end{equation}
+	\item Focus on the popular "elastic net" penalty  \citep{zou_regularization_2005}, which takes the form for the penalty function \( \phi(\theta;.) \):
+	\begin{equation}
+	\phi(\theta;\lambda,\rho) = 
+	\lambda(1-\rho) \sum_{j = 1}^{P}|\theta_j| +
+	\frac{1}{2} \lambda \rho \sum_{j = 1}^{P}\theta_j^2
+	\end{equation}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Regression Trees and Random Forests}
+\begin{itemize}
+	\item Classification and regression trees are fully non-parametric models that can capture complex multi-way interactions. A tree "grows" in a series of iterations. With each iteration, a split ("branch") is made along one predictor such that it is the best split available at that stage with respect to minimizing the loss function. These steps are continued until each observation is its own node, or more commonly until the stopping criterion is met. The eventual model slices the predictor space into rectangular partitions, and predicts the unknown function $g^*(z_{i,t})$ with the average value of the outcome variable in each partition.
+	
+	The prediction of a tree, $\mathcal{T}$, with \(K\) "leaves" (terminal nodes), and depth $L$ is
+	
+	\begin{equation}
+	g(z_{i,t};\theta,K,L) = \sum_{k=1}^{K}\theta_k\textbf{1}_{z_{i,t}\in C_k(L)}
+	\end{equation}
+	
+	where $C_k(L)$ is one of the $K$ partitions in the model.
+	
+	For this study, only recursive binary trees (the most common and easy to implement ) are considered. Though trees were originally proposed and fit with respect to minimizing mean squared error, they can be grown with respect to a variety of loss functions, including mean absolute error, mean squared error and Huber Loss:
+	
+	\begin{equation}
+	H(\theta, C) = \frac{1}{|C|} \sum_{z_{i,t} \in C} L(r_{i,t+1} - \theta)
+	\end{equation}
+	
+	where $|C|$ denotes the number of observations in set C (partition). Given $C$, it is clear that the optimal choice for minimising the loss function when it is mean squared error is simply $\theta = \frac{1}{|C|} \sum_{z_{io,t}\in C}^{ }r_{i,t+1}$ i.e. the average of the partition, and the median of the partition when the loss function is mean absolute error.
+	
+	Trees, grown to a deep enough level, are highly unbiased and flexible. The tradeoff of course, is their high variance and instability. Thus, an ensemble method called "Random Forest" was proposed to regularize trees by combining many different trees into a single prediction.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Neural Networks}
+\begin{itemize}
+\item Neural networks are arguably the most complex type of model available, able to capture several non-linear interactions through their many layers, hence its other name ``deep learning." On the flipside, their high flexibility often means that they are among the most parameterized and least interpretable models, earning them the reputation as a black box model.
+
+\item The scope of this paper is limited to traditional ``feed-forward" networks. The feed forward network consists of an ``input layer" of scaled data inputs, one or more ``hidden layers" which interact and non-linearly transform the inputs, and finally an output layer that aggregates the hidden layers and transform them a final time for the final output. 
+
+\item Neural networks with up to 5 hidden layers were considered, each named NNX where X represents the number of hidden layers. The number of neurons is each layer was chosen according to the geometric pyramid rule \citep{masters_practical_1993}: NN1 has 32 neurons, NN2 has 32 and 16 neurons in the first and second hidden layers respectively, NN3 has 32, 16, and 8 neurons, NN4 has 32, 16, 8, and 4 neurons, and NN5 has 32, 16, 8, 4, 2 neurons respectively. All units are fully connected; that is, each neurons receives input from all neurons the layer before it (see Figure \ref{Neural_Network}).
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Neural Networks}
+%Beamer hack snad uses # in a loop
+%Therefore, we need to replace all # with ####
+\rhs{change sizing so that it fits}
+\begin{figure}
+	\begin{neuralnetwork}
+		%Options
+		[nodespacing=12mm, layerspacing=20mm,
+		maintitleheight=2.5em, layertitleheight=2.5em,
+		height=8, toprow=false, nodesize=20pt, style={},
+		title={}, titlestyle={}]
+		\newcommand{\nodetextclear}[2]{}
+		%use \ifnum to get different labels, such as x_n on the last neuron
+		\newcommand{\nodetextx}[2]{\ifnum ####2=8 $x_n^{(0)}$ \else $x_####2^{(0)}$ \fi}
+		\newcommand{\nodetexty}[2]{$y_####2$}
+		%Hidden layer textcommands
+		%32 neurons
+		\newcommand{\nodetextxa}[2]{\ifnum ####2=7 $x_{32}^{(1)}$ \else $x_####2^{(1)}$ \fi}
+		%16 neurons
+		\newcommand{\nodetextxb}[2]{\ifnum ####2=6 $x_{16}^{(2)}$ \else $x_####2^{(2)}$ \fi}
+		%8 neurons
+		\newcommand{\nodetextxc}[2]{\ifnum ####2=5 $x_{8}^{(3)}$ \else $x_####2^{(3)}$ \fi}
+		\newcommand{\nodetextxd}[2]{$x_####2^{(4)}$}
+		\newcommand{\nodetextxe}[2]{$x_####2^{(5)}$}
+		%Input Layer
+		\inputlayer[count=8, bias=false, exclude = {7}, title=Input Layer, text=\nodetextx]
+		%Hidden Layer 1
+		\hiddenlayer[count=7, bias=false, exclude = {6}, title=Hidden Layer 1, text=\nodetextxa] 
+		\linklayers[not from = {7}, not to = {6}]
+		%Hidden Layer 2
+		\hiddenlayer[count=6, bias=false, exclude = {5}, title=Hidden Layer 2, text=\nodetextxb] 
+		\linklayers[not from = {6}, not to = {5}]
+		%Hidden Layer 3
+		\hiddenlayer[count=5, bias=false, exclude = {4}, title=Hidden Layer 3, text=\nodetextxc] 
+		\linklayers[not from = {5}, not to = {4}]
+		%Hidden Layer 4
+		\hiddenlayer[count=4, bias=false, title=Hidden Layer 4, text=\nodetextxd] 
+		\linklayers[not from = {4}]
+		%Hidden Layer 5
+		\hiddenlayer[count=2, bias=false, title=Hidden Layer 5, text=\nodetextxe] \linklayers
+		%Final Layer
+		\outputlayer[count=1, title=Output Layer, text=\nodetexty] \linklayers
+		% draw dots
+		\path (L0-6) -- node{$\vdots$} (L0-8);
+		\path (L1-5) -- node{$\vdots$} (L1-7);
+		\path (L2-4) -- node{$\vdots$} (L2-6);
+		\path (L3-3) -- node{$\vdots$} (L3-5);
+	\end{neuralnetwork}
+	\caption{Neural Network 5 (most complex considered)}
+	\label{Neural_Network}
+\end{figure}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
