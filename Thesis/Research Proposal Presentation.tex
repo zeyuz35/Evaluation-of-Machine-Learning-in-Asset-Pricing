@@ -1,7 +1,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Preamble
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\documentclass{beamer}
+
+\PassOptionsToPackage{usenames, dvipsnames, table}{xcolor}
+
+\documentclass[]{beamer}
 \usetheme{Boadilla}
 
 \usepackage[english]{babel}
@@ -82,7 +85,8 @@
 
 %Gets rid of the neon green boxes around boxes
 
-\usepackage{xcolor}
+\usepackage[]{xcolor}
+
 \hypersetup{
 	colorlinks,
 	linkcolor = {red!50!black},
@@ -453,64 +457,55 @@ with the rank transformation normalizing all predictors to be within $[-1, 1]$.
 
 \begin{frame}
 \frametitle{Simulating Macroeconomic Time Series}
-For simulation of $x_{t}$, a $3 \times 1$ multivariate time series, we consider a VAR model
-
-\begin{flalign*}
+For simulation of $x_{t}$, a $3 \times 1$ multivariate time series, we consider a VAR model:
+\begin{equation}
 x_{t}=Ax_{t-1}+u_t, 
-\quad u_t \sim N\left( \mu = (0, 0, 0)' , \Sigma = 
-\begin{pmatrix}
-1 & 0 & 0 \\
-0 & 1 & 0 \\
-0 & 0 & 1
-\end{pmatrix}\
-\right) 
-\end{flalign*}
+\quad u_t \sim N\left( \mu = (0, 0, 0)' , \Sigma = \mathbb{I}_{3}
+\right)
+\end{equation}
+\end{frame}
 
-where we have three separate specifications for the matrix $A$:
-
+\begin{frame}
+\frametitle{Simulating Macroeconomic Time Series}
+Consider 3 different specifications for matrix $A$:
 \begin{align}
-(1)\; A =
-\begin{pmatrix}
-.95 & 0 & 0 \\
-0 & .95 & 0 \\
-0 & 0 & .95
-\end{pmatrix}\;
-\;
-(2)\; A=
-\begin{pmatrix}
-1 & 0 & .25 \\
-0 & .95 & 0 \\
-.25 & 0 &.95
-\end{pmatrix}\;
-\;
-(3)\; A=
-\begin{pmatrix}
-.99 & .2 & .1 \\
-.2 & .90 & -.3 \\
-.1 & -.3 & -.99
-\end{pmatrix}
+A_1 &=
+	\begin{pmatrix}
+	.95 & 0 & 0 \\
+	0 & .95 & 0 \\
+	0 & 0 & .95
+	\end{pmatrix} \\
+A_2 &=
+	\begin{pmatrix}
+	1 & 0 & .25 \\
+	0 & .95 & 0 \\
+	.25 & 0 &.95
+	\end{pmatrix} \\
+A_3 &=
+	\begin{pmatrix}
+	.99 & .2 & .1 \\
+	.2 & .9 & -.3 \\
+	.1 & -.3 & -.99
+	\end{pmatrix}
 \end{align}
 \end{frame}
 
 \begin{frame}
 \frametitle{Simulating Return Series}
-We will consider four different functions $g(\cdot)$
+We will consider four different functions $g(\cdot)$:
 \begin{flalign*}
 (1)\; & g_1 \left(z_{i, t}\right)=\left(c_{i 1, t}, c_{i 2, t}, c_{i 3, t} \times x_{t}'\right) \theta_{0} \\
 (2)\; & g_2 \left(z_{i, t}\right)=\left(c_{i 1, t}^{2}, c_{i 1, t} \times c_{i 2, t}, \operatorname{sgn}\left(c_{i 3, t} \times  x_{t}'\right)\right) \theta_{0} \\
 (3)\; & g_3 \left(z_{i, t}\right) = \left(1[c_{i3,t}>0],c_{i 2, t}^{3}, c_{i 1, t} \times c_{i 2, t}\times 1[c_{i3,t}>0], \text{logit}\left({c}_{i 3, t} \right)\right) \theta_{0} \\
 (4)\; & g_4 \left(z_{i, t}\right)=\left(\hat{c}_{i 1, t}, \hat{c}_{i 2, t}, \hat{c}_{i 3, t} \times x_{t}'\right) \theta_{0}
 \end{flalign*}
+$g_1 \left(z_{i, t}\right)$ is a linear specification
 
-$g_1 \left(z_{i, t}\right)$ allows the characteristics to enter the return equation linearly
+$g_2 \left(z_{i, t}\right)$ and $g_3 \left(z_{i, t}\right)$ is a non-linear specification with interactions
 
-$g_2 \left(z_{i, t}\right)$ allows the characteristics to enter the return equation interactively and non-linearly.
+$g_4 \left(z_{i, t}\right)$ builds returns using $\hat{c}$, which are the unobserved characteristics without cross sectional correlation built in
 
-$g_3 \left(z_{i, t}\right)$ allows the characteristics to enter in a highly complex and non-linear fashion.
-
-$g_4 \left(z_{i, t}\right)$ builds returns using $\hat{c}$, which are the unobserved characteristics which have not been normalized.
-
-$\theta^0$ was tuned such that the cross sectional $R^2$ was around 25\%, and the predictive $R^2$ 5\%. 
+$\theta^0$ was tuned so that the cross sectional $R^2$ was around 25\%, and the predictive $R^2$ 5\%. 
 
 The simulation design results in $3 \times 4 = 12$ different simulated datasets, each with $N = 200$ stocks, $T = 180$ periods and $P_c = 100$ characteristics. Each design was simulated 50 times to assess the robustness of machine learning algorithms.
 \end{frame}
@@ -518,6 +513,40 @@ The simulation design results in $3 \times 4 = 12$ different simulated datasets,
 \begin{frame}
 \frametitle{Sample Splitting}
 $T = 180$ monthly periods corresponds to 15 years. The training sample was set to start from $T = 108$ or 9 years, a validation set 1 year in length. The last 3 years were reserved as a test set never to be used for validation or training.
+\end{frame}
+
+\begin{frame}
+\frametitle{Sample Splitting}
+\begin{figure}
+	\begin{center}
+		\begin{tabular}{|c|p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}|p{0.25cm}p{0.25cm}p{0.25cm}|}
+			\hline
+			Set No. &&&&&&&&&&&&&& \\
+			\hline
+			3 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & 
+			\cellcolor{pink} & 
+			\cellcolor{olive} & \cellcolor{olive} & \cellcolor{olive} & \cellcolor{olive} \\
+			2 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & 
+			\cellcolor{pink} & 
+			\cellcolor{olive} &	\cellcolor{olive} & \cellcolor{olive} & \cellcolor{olive} & \cellcolor{olive} \\
+			1 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & 
+			\cellcolor{pink} & 
+			\cellcolor{olive} & \cellcolor{olive} &	\cellcolor{olive} & \cellcolor{olive} & \cellcolor{olive} & \cellcolor{olive} \\
+			\hline
+			Year & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 10 & 11 & 12 & 13 & 14 & 15\\
+			\hline
+		\end{tabular}
+		\medskip
+		\begin{tabular}{|c|p{0.25cm}|}
+			\hline
+			Training & \cellcolor{cyan} \\
+			Validation & \cellcolor{pink} \\
+			Test & \cellcolor{olive} \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\caption{Sample Splitting Procedure}
+\end{figure}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
