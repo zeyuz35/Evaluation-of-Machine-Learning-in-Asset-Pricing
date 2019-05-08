@@ -7,12 +7,16 @@
 \documentclass[]{beamer}
 \usetheme{Boadilla}
 
+%Make beamer number figures, because it doesn't by default
+\setbeamertemplate{caption}[numbered]
+
 \usepackage[english]{babel}
 \usepackage[ruled, vlined]{algorithm2e}
 
 \usepackage{amsfonts}
-\usepackage{setspace,graphicx,epstopdf,amsmath}
-\usepackage{marginnote, datetime, url, enumitem, subfigure}
+\usepackage{setspace, graphicx, epstopdf, amsmath}
+%Do not use enumitem because this interferes with beamer drawing bullet points
+\usepackage{marginnote, datetime, url, subfigure}
 
 %Bibliography Stuff
 %Use natbib even though it's old because it's compliant with journal styles
@@ -95,7 +99,11 @@
 }
 
 \title{Evaluation of Machine Learning in Finance}
-\author{Ze Yu Zhong}
+\author{
+	Ze Yu Zhong \\
+	Supervisor: David Frazier
+}
+\institute{Monash University}
 
 
 \begin{document}
@@ -112,8 +120,12 @@
 \section{Problems in Empirical Finance}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%Intereave literature review throughout this section
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \begin{frame}
-\frametitle{Problems in Empirical Finance}
+\frametitle{Background of Problems in Empirical Finance}
 \begin{itemize}
 	\item Regressors can be:
 		\begin{itemize}
@@ -122,15 +134,14 @@
 			\item Cross sectionally correlated - regressors may seem important but are actually the result of a different underlying regressor
 			\item Endogeneous - omitted variable bias, etc
 		\end{itemize}
-
 \end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Problems in Empirical Finance}
+\frametitle{Background Problems in Empirical Finance}
 \begin{itemize}
 	\item Data is not robust - structural breaks are evident in returns data, and many regressors that once performed well do not anymore
-	\item Extremely large number of potential factors (regressors) that is still increasing: over 600 documented in the literature
+	\item Extremely large number of potential factors (regressors) that is still increasing: over 600 documented in the literature \cite{harvey_census_2019}
 \end{itemize}
 \end{frame}
 
@@ -138,12 +149,17 @@
 \section{What is Machine Learning?}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%%%%%%%%%%%%%%%%%
+%%Interweave Literature review throughout this section
+%%%%%%%%%%%%%%%%%
+
 \begin{frame}
 \frametitle{What is Machine Learning?}
 \begin{itemize}
 	\item Statistical/Machine Learning refers to a vast set of tools for understanding data
 	\item Building statistical models for predicting outputs based on inputs
 	\item Find patterns in datasets
+	\item Examples of procedures: Principal Components Analysis, Principal Least Squares
 	\item Examples of models: Ordinary Least Squares, LASSO Regression, Generalized Linear Models, Decisions Trees, Neural Networks
 \end{itemize}
 \end{frame}
@@ -152,11 +168,25 @@
 \section{Why apply Machine Learning in Finance?}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%%%%%%%%%%%%%%%%%
+%%Interweave Literature review throughout this section
+%%%%%%%%%%%%%%%%%
+
 \begin{frame}
 \frametitle{Why apply Machine Learning in Finance?}
 \begin{itemize}
 	\item Well suited for prediction
 	\item Better equipped to deal with large dimensionality
+	\item Capable of capturing non-linear transformations humans cannot realistically find
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Why apply Machine Learning in Finance?}
+\begin{itemize}
+	\item Machine Learning Algorithms have been applied successfully to solve some of the problems present
+	\item \cite{kozak_shrinking_2017}, \cite{rapach_forecasting_2013}, \cite{freyberger_dissecting_2017}, among others have applied shrinkage and selection methods to identify important factors
+	\item \cite{gu_empirical_2018}, \cite{hsu_finding_2014}, \cite{feng_deep_2018}, among others have constructed machine learning portfolios that historically outperform traditional portfoloios
 	\item Capable of capturing non-linear transformations humans cannot realistically find
 \end{itemize}
 \end{frame}
@@ -184,6 +214,10 @@
 \end{itemize}
 \end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Sample Splitting
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \begin{frame}
 \frametitle{Sample Splitting}
 \begin{itemize}
@@ -197,6 +231,49 @@
 	\item Increase training set by one more year and move the validation and test sets forward one year
 \end{itemize}
 \end{frame}
+
+\begin{frame}
+\frametitle{Sample Splitting}
+\begin{figure}
+	\begin{center}
+		\begin{tabular}{|c|p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}|p{0.25cm}p{0.25cm}p{0.25cm}|}
+			\hline
+			Set No. &&&&&&&&&&&&&&& \\
+			\hline
+			%%%%%%%%
+			3 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
+			\cellcolor{pink} & 
+			\cellcolor{olive} & \cellcolor{olive} &	\cellcolor{olive} \\
+			%%%%%%%%
+			2 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
+			\cellcolor{pink} & 
+			\cellcolor{olive} & \cellcolor{olive} &	\cellcolor{olive} & \cellcolor{olive} \\
+			%%%%%%%%
+			1 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
+			\cellcolor{pink} & 
+			\cellcolor{olive} & \cellcolor{olive} &	\cellcolor{olive} & \cellcolor{olive} & \cellcolor{olive} \\
+			\hline
+			Year & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15\\
+			\hline
+		\end{tabular}
+		\medskip
+		\begin{tabular}{|c|p{0.25cm}|}
+			\hline
+			Training & \cellcolor{cyan} \\
+			\hline
+			Validation & \cellcolor{pink} \\
+			\hline
+			Test & \cellcolor{olive} \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\caption{Sample Splitting Procedure}
+\end{figure}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Loss Functions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
 \frametitle{Loss Functions}
@@ -253,6 +330,10 @@
 \end{itemize}
 \end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Linear Models
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \begin{frame}
 \frametitle{Linear Models}
 \begin{itemize}
@@ -260,7 +341,7 @@
 	\begin{equation}
 	g(z_{i, t};\theta) = z_{i, t}' \theta
 	\end{equation}
-	\item Optimizing this with respect to minimizing MSE yields the Pooled OLS estimator
+	\item Optimizing $\theta$ with respect to minimizing MSE yields the Pooled OLS estimator
 	\item Limitations:
 	\begin{itemize}
 		\item Need to manually consider and specify non-linear interactions
@@ -268,6 +349,10 @@
 	\end{itemize}
 \end{itemize}
 \end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Penalized Linear
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
 \frametitle{Penalized Linear Models}
@@ -287,39 +372,108 @@
 \end{itemize}
 \end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Regression Trees and Random Forests
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \begin{frame}
 \frametitle{Regression Trees and Random Forests}
 \begin{itemize}
-	\item Classification and regression trees are fully non-parametric models that can capture complex multi-way interactions. A tree "grows" in a series of iterations. With each iteration, a split ("branch") is made along one predictor such that it is the best split available at that stage with respect to minimizing the loss function. These steps are continued until each observation is its own node, or more commonly until the stopping criterion is met. The eventual model slices the predictor space into rectangular partitions, and predicts the unknown function $g^*(z_{i,t})$ with the average value of the outcome variable in each partition.
-	
-	The prediction of a tree, $\mathcal{T}$, with \(K\) "leaves" (terminal nodes), and depth $L$ is
-	
-	\begin{equation}
-	g(z_{i,t};\theta,K,L) = \sum_{k=1}^{K}\theta_k\textbf{1}_{z_{i,t}\in C_k(L)}
-	\end{equation}
-	
-	where $C_k(L)$ is one of the $K$ partitions in the model.
-	
-	For this study, only recursive binary trees (the most common and easy to implement ) are considered. Though trees were originally proposed and fit with respect to minimizing mean squared error, they can be grown with respect to a variety of loss functions, including mean absolute error, mean squared error and Huber Loss:
-	
-	\begin{equation}
-	H(\theta, C) = \frac{1}{|C|} \sum_{z_{i,t} \in C} L(r_{i,t+1} - \theta)
-	\end{equation}
-	
-	where $|C|$ denotes the number of observations in set C (partition). Given $C$, it is clear that the optimal choice for minimising the loss function when it is mean squared error is simply $\theta = \frac{1}{|C|} \sum_{z_{io,t}\in C}^{ }r_{i,t+1}$ i.e. the average of the partition, and the median of the partition when the loss function is mean absolute error.
-	
-	Trees, grown to a deep enough level, are highly unbiased and flexible. The tradeoff of course, is their high variance and instability. Thus, an ensemble method called "Random Forest" was proposed to regularize trees by combining many different trees into a single prediction.
+	\item Fully non-parametric models that can capture complex multi-way interactions. 
+	\item A tree "grows" in a series of iterations:
+	\begin{enumerate}
+		\item Make a split ("branch") along one predictor, such that it is the best split available at that stage with respect to minimizing the loss function
+		\item Repeat until each observation is its own node, or until the stopping criterion is met
+	\end{enumerate}
+	\item The eventual model slices the predictor space into rectangular partitions, and predicts the unknown function $g^*(z_{i,t})$ with the ``average" value of the outcome variable in each partition, with repsect to minimizing the loss function	
 \end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Neural Networks}
+\frametitle{Regression Trees and Random Forests}
+The prediction of a tree, $\mathcal{T}$, with \(K\) "leaves" (terminal nodes), and depth $L$ is
+
+\begin{equation}
+g(z_{i,t};\theta,K,L) = \sum_{k=1}^{K}\theta_k\textbf{1}_{z_{i,t}\in C_k(L)}
+\end{equation}
+
+where $C_k(L)$ is one of the $K$ partitions in the model.
+
+Only recursive binary trees are considered. 
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Regression Trees and Random Forests}
+Trees can be grown with respect to a variety of loss functions, including mean absolute error, mean squared error and Huber Loss:
+
+\begin{equation}
+H(\theta, C) = \frac{1}{|C|} \sum_{z_{i,t} \in C} L(r_{i,t+1} - \theta)
+\end{equation}
+
+where $|C|$ denotes the number of observations in set C (partition). 
+
+Optimal prediction for each partition is the mean of the partition to minimize MSE, and the median of the partition to minimize MAE.
+\end{frame}
+
+\begin{frame}
+\frametitle{Random Forests}
+Trees have very low bias and high variance
+
+They are very prone to overfitting and non-robust
+
+Random Forests were proposed by \cite{breiman_random_2001} to address this
 \begin{itemize}
-\item Neural networks are arguably the most complex type of model available, able to capture several non-linear interactions through their many layers, hence its other name ``deep learning." On the flipside, their high flexibility often means that they are among the most parameterized and least interpretable models, earning them the reputation as a black box model.
+	\item Create $B$ bootstrap samples
+	\item Grow a highly overfit tree to each, but only using $m$ random subset of all predictors for each
+	\item Average the output from all trees as an ensemble model
+\end{itemize}
+\end{frame}
 
-\item The scope of this paper is limited to traditional ``feed-forward" networks. The feed forward network consists of an ``input layer" of scaled data inputs, one or more ``hidden layers" which interact and non-linearly transform the inputs, and finally an output layer that aggregates the hidden layers and transform them a final time for the final output. 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Neural Networks
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\item Neural networks with up to 5 hidden layers were considered, each named NNX where X represents the number of hidden layers. The number of neurons is each layer was chosen according to the geometric pyramid rule \citep{masters_practical_1993}: NN1 has 32 neurons, NN2 has 32 and 16 neurons in the first and second hidden layers respectively, NN3 has 32, 16, and 8 neurons, NN4 has 32, 16, 8, and 4 neurons, and NN5 has 32, 16, 8, 4, 2 neurons respectively. All units are fully connected; that is, each neurons receives input from all neurons the layer before it (see Figure \ref{Neural_Network}).
+\begin{frame}
+\frametitle{Neural Networks}
+Most complex type of model available
+
+Able to capture several non-linear interactions through their many layers, hence its other name ``deep learning" 
+
+Highly flexible and therefore often the most parameterized and least interpretable models
+
+The scope of this paper is limited to traditional ``feed-forward" networks. 
+\end{frame}
+
+\begin{frame}
+The feed forward network consists of an ``input layer" of scaled data inputs, one or more ``hidden layers" which interact and non-linearly transform the inputs, and finally an output layer that aggregates the hidden layers and transform them a final time for the final output. 
+
+A neural network with no hidden layers reduces to already familiar regression models, such as OLS and Probit (depending on activation function chosen).
+
+
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Neural Network Specifications}
+Neural networks with up to 5 hidden layers were considered. The number of neurons is each layer was chosen according to the geometric pyramid rule \citep{masters_practical_1993}
+
+All units are fully connected: each neurons receives input from all neurons the layer before it
+
+ReLU activation function was chosen for all hidden layers for computational speed, and hence popularity in literature:
+
+\begin{equation}
+\operatorname{ReLU}(x) = max(0, x)
+\end{equation}
+\end{frame}
+
+\begin{frame}
+\frametitle{Computation}
+\begin{itemize}
+	\item Stochastic Gradient Descent using ADAM
+	\item Batch Normalization
+	\item Randomize initial starting weights and biases, then average these into an ensemble model
+	\item See references for specific details
 \end{itemize}
 \end{frame}
 
@@ -329,9 +483,9 @@
 \begin{figure}
 	\begin{neuralnetwork}
 		%Options
-		[nodespacing=10mm, layerspacing=18mm,
+		[nodespacing=9.5mm, layerspacing=18mm,
 		maintitleheight=1em, layertitleheight=2em,
-		height=7, toprow=false, nodesize=15pt, style={},
+		height=7, toprow=false, nodesize=20pt, style={},
 		title={}, titlestyle={}]
 		\newcommand{\nodetextclear}[2]{}
 		%use \ifnum to get different labels, such as x_n on the last neuron
@@ -347,23 +501,23 @@
 		\newcommand{\nodetextxd}[2]{$x_####2^{(4)}$}
 		\newcommand{\nodetextxe}[2]{$x_####2^{(5)}$}
 		%Input Layer
-		\inputlayer[count=8, bias=false, exclude = {7}, title=Input Layer, text=\nodetextx]
+		\inputlayer[count=8, bias=false, exclude = {7}, title=, text=\nodetextx]
 		%Hidden Layer 1
-		\hiddenlayer[count=7, bias=false, exclude = {6}, title=Hidden Layer 1, text=\nodetextxa] 
+		\hiddenlayer[count=7, bias=false, exclude = {6}, title=, text=\nodetextxa] 
 		\linklayers[not from = {7}, not to = {6}]
 		%Hidden Layer 2
-		\hiddenlayer[count=6, bias=false, exclude = {5}, title=Hidden Layer 2, text=\nodetextxb] 
+		\hiddenlayer[count=6, bias=false, exclude = {5}, title=, text=\nodetextxb] 
 		\linklayers[not from = {6}, not to = {5}]
 		%Hidden Layer 3
-		\hiddenlayer[count=5, bias=false, exclude = {4}, title=Hidden Layer 3, text=\nodetextxc] 
+		\hiddenlayer[count=5, bias=false, exclude = {4}, title=, text=\nodetextxc] 
 		\linklayers[not from = {5}, not to = {4}]
 		%Hidden Layer 4
-		\hiddenlayer[count=4, bias=false, title=Hidden Layer 4, text=\nodetextxd] 
+		\hiddenlayer[count=4, bias=false, title=, text=\nodetextxd] 
 		\linklayers[not from = {4}]
 		%Hidden Layer 5
-		\hiddenlayer[count=2, bias=false, title=Hidden Layer 5, text=\nodetextxe] \linklayers
+		\hiddenlayer[count=2, bias=false, title=, text=\nodetextxe] \linklayers
 		%Final Layer
-		\outputlayer[count=1, title=Output Layer, text=\nodetexty] \linklayers
+		\outputlayer[count=1, title=, text=\nodetexty] \linklayers
 		% draw dots
 		\path (L0-6) -- node{$\vdots$} (L0-8);
 		\path (L1-5) -- node{$\vdots$} (L1-7);
@@ -383,12 +537,13 @@
 \begin{frame}
 \frametitle{Real World Observations}
 \begin{itemize}
-	\item Though \cite{gu_empirical_2018} explore the performance of machine learning on simulated returns series, their design used factors are uncorrelated across $i$, and, in particular, that the factors which do not matter in the return equation are uncorrelated with those that matter. This is not what is observed in practice. 
+	\item Though \cite{gu_empirical_2018} explore the performance of machine learning on simulated returns series, their design used factors which did not adequately capture the behaviour of stock characteristics observed in real life
 	\item In particular, their specification lacks:
 	\begin{itemize}
 		\item Cross Sectional correlation among factors
 		\item Stochastic Volatility in errors
-		\item 
+		\item More complex interactions
+		\item Multivariate time series
 	\end{itemize}
 \end{itemize}
 \end{frame}
@@ -400,9 +555,9 @@ Therefore, we simulate an extension: a latent factor model with stochastic volat
 
 \begin{flalign}
 r_{i, t+1} &= 
-g\left(z_{i, t}\right) + \beta_{i,t+1}v_{t+1} + e_{i, t+1}; 
-\quad z_{i, t}=\left(1, x_{t}\right)^{\prime} \otimes c_{i, t}, 
-\quad \beta_{i, t}=\left(c_{i 1, t}, c_{i 2, t}, c_{i 3, t}\right) \\ 
+g\left(z_{i, t}\right) + \beta_{i,t+1}v_{t+1} + e_{i, t+1}; \\
+z_{i, t} &= \left(1, x_{t}\right)^{\prime} \otimes c_{i, t}; 
+\quad \beta_{i, t}=\left(c_{i 1, t}, c_{i 2, t}, c_{i 3, t}\right); \\ 
 e_{i, t+1} &= 
 \exp\left( \frac{\sigma_{i, t+1}^2}{2} \right) \varepsilon_{i, t+1}; \\
 \sigma^2_{i,t+1} &= 
@@ -417,7 +572,7 @@ The matrix $C_t$ is an $N\times P_c$ vector of latent factors, where the first t
 
 \begin{frame}
 \frametitle{Simulating Characteristics}
-A simulation mechanism for $C_t$ that gives some correlation across the factors and across time was used. First consider drawing normal random numbers for each $1\leq i\leq N$ and $1\leq j\leq P_{c}$, according to 
+A simulation mechanism for $C_t$ that gives some correlation across the factors time was used. First consider drawing normal random numbers for each $1\leq i\leq N$ and $1\leq j\leq P_{c}$, according to 
 
 \begin{equation}
 \overline{c}_{i j, t} = \rho_{j} \overline{c}_{i j, t-1}+\epsilon_{i j, t} ;
@@ -431,8 +586,11 @@ B:=\Lambda\Lambda' + \frac{1}{10}\mathbb{I}_{n}, \quad
 \Lambda_i = (\lambda_{i1},\dots,\lambda_{i4}), \quad
 \lambda_{ik}\sim N(0,1), \; k=1,\dots,4
 \end{equation}
+\end{frame}
 
-which we transform into a correlation matrix $W$ via
+\begin{frame}
+\frametitle{Simulating Characteristics}
+Transform this into a correlation matrix $W$ via
 
 \begin{equation}
 W = \left( \operatorname{diag}(B) \right) ^{\frac{-1}{2}}
@@ -445,6 +603,10 @@ To build in cross-sectional correlation, from the $N\times P_{c}$ matrix $\bar{C
 \begin{equation}
 \widehat{C}_{t}=W\overline{C}_{t}
 \end{equation}
+\end{frame}
+
+\begin{frame}
+\frametitle{Simulating Characteristics}
 
 Finally, the "observed" characteristics for each $1\leq i\leq N$ and for $j=1, \dots, P_{c}$ are constructed according to:
 
@@ -452,7 +614,7 @@ Finally, the "observed" characteristics for each $1\leq i\leq N$ and for $j=1, \
 c_{i j, t} = \frac{2}{n+1} \operatorname{rank}\left(\hat{c}_{i j, t}\right) - 1.
 \end{equation}
 
-with the rank transformation normalizing all predictors to be within $[-1, 1]$. 
+with the rank transformation normalizing all predictors to be within $[-1, 1]$ 
 \end{frame}
 
 \begin{frame}
@@ -483,9 +645,9 @@ A_2 &=
 	\end{pmatrix} \\
 A_3 &=
 	\begin{pmatrix}
-	.99 & .2 & .1 \\
-	.2 & .9 & -.3 \\
-	.1 & -.3 & -.99
+	.99 & .20 & .10 \\
+	.20 & .90 & -.30 \\
+	.10 & -.30 & -.99
 	\end{pmatrix}
 \end{align}
 \end{frame}
@@ -519,28 +681,33 @@ $T = 180$ monthly periods corresponds to 15 years. The training sample was set t
 \frametitle{Sample Splitting}
 \begin{figure}
 	\begin{center}
-		\begin{tabular}{|c|p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}|p{0.25cm}p{0.25cm}p{0.25cm}|}
+		\begin{tabular}{|c|p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}|p{0.25cm}p{0.25cm}p{0.25cm}|}
 			\hline
-			Set No. &&&&&&&&&&&&&& \\
+			Set No. &&&&&&&&&&&&&&& \\
 			\hline
-			3 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & 
+			%%%%%%%%
+			3 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
 			\cellcolor{pink} & 
-			\cellcolor{olive} & \cellcolor{olive} & \cellcolor{olive} & \cellcolor{olive} \\
-			2 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & 
+			\cellcolor{olive} & \cellcolor{olive} &	\cellcolor{olive} \\
+			%%%%%%%%
+			2 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
 			\cellcolor{pink} & 
-			\cellcolor{olive} &	\cellcolor{olive} & \cellcolor{olive} & \cellcolor{olive} & \cellcolor{olive} \\
-			1 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & 
+			\cellcolor{olive} & \cellcolor{olive} &	\cellcolor{olive} & \cellcolor{olive} \\
+			%%%%%%%%
+			1 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
 			\cellcolor{pink} & 
-			\cellcolor{olive} & \cellcolor{olive} &	\cellcolor{olive} & \cellcolor{olive} & \cellcolor{olive} & \cellcolor{olive} \\
+			\cellcolor{olive} & \cellcolor{olive} &	\cellcolor{olive} & \cellcolor{olive} & \cellcolor{olive} \\
 			\hline
-			Year & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 10 & 11 & 12 & 13 & 14 & 15\\
+			Year & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15\\
 			\hline
 		\end{tabular}
 		\medskip
 		\begin{tabular}{|c|p{0.25cm}|}
 			\hline
 			Training & \cellcolor{cyan} \\
+			\hline
 			Validation & \cellcolor{pink} \\
+			\hline
 			Test & \cellcolor{olive} \\
 			\hline
 		\end{tabular}
@@ -569,8 +736,12 @@ Only more recent data will be used, such as period before and after 2008 GFC
 \begin{frame}
 \frametitle{Out of Sample R Squared}
 Overall predictive performance for individual excess stock returns were assessed using the out of sample $R^2$:
+
 \begin{equation}
-R^2_{OOS} = 1 - \frac{\sum_{(i, t)\in\mathcal{T}_3}(r_{i, t+1} - \widehat{r}_{i, t+1})}{\sum_{(i, t)\in\mathcal{T}_3}r_{i, t+1}^2}
+R^2_{OOS} = 
+	1 - 
+	\frac{\sum_{(i, t)\in\mathcal{T}_3}(r_{i, t+1} - \widehat{r}_{i, t+1})}
+	{\sum_{(i, t)\in\mathcal{T}_3} \left( r_{i, t+1} - \bar{r}_{i, t+1} \right) ^2}
 \end{equation}
 
 where $\mathcal{T}_3$ indicates that the fits are only assessed on the test subsample, which is never used for training or tuning. 
@@ -578,27 +749,36 @@ where $\mathcal{T}_3$ indicates that the fits are only assessed on the test subs
 
 \begin{frame}
 \frametitle{Diebold Mariano Tests for Predictive Accuracy}
-The Diebold-Mariano test (\cite{diebold_comparing_2002} and \cite{harvey_testing_1997}) compares the forecast accuracy of two forecast methods. Different to the overall R squared metric because it tests whether or not the models' forecast accuracy is significantly different
+\begin{itemize}
+	\item The Diebold-Mariano test (\cite{diebold_comparing_2002} and \cite{harvey_testing_1997}) compares the forecast accuracy of two forecast methods
+	
+	\item Different to the overall R squared metric because it tests whether or not the models' forecast accuracy is significantly different
+	
+	\item Tests whether or not the difference series ($d_t = e_{1t} - e_{2t}$) between two forecast methods' errors is different from zero
+	
+	\item As all models in this paper will be producing forecasts for an entire cross section of stocks, $e_{1t}$ and $e_{2t}$ will instead represent the average forecast errors for each model
+\end{itemize}
+\end{frame}
 
-Under the null hypothesis:
+\begin{frame}
+\frametitle{Diebold Mariano Tests for Predictive Accuracy}
+Under the null hypothesis (forecast errors from compared models are the same):
 
 \begin{align}
-	S_1^* &= \left[ 
-	\frac{n + 1 - 2h + n^{-1}h(h-1)}
-	{n} 
-	\right]^{1/2}S_1 \sim N(0,1) \\
-	S_1 &= \left[ 
-	\hat{V}(\bar{d})
-	\right] ^{-1/2}\bar{d} \\
-	\hat{\gamma}_k &= n^{-1} \sum_{t = k + 1}^{n}(d_t - \bar{d})(d_{t-k} - \bar{d}) \\
-	V(\bar{d}) &\approx n^{-1}\left[ 
-	\gamma_0 + 2 \sum_{k = 1}^{h - 1}\gamma_k
-	\right] 
+S_1^* &= \left[ 
+\frac{n + 1 - 2h + n^{-1}h(h-1)}
+{n} 
+\right]^{1/2}S_1 ; \quad S_1^* \sim N(0,1)\\
+S_1 &= \left[ 
+\hat{V}(\bar{d})
+\right] ^{-1/2}\bar{d} \\
+\hat{\gamma}_k &= n^{-1} \sum_{t = k + 1}^{n}(d_t - \bar{d})(d_{t-k} - \bar{d}) \\
+V(\bar{d}) &\approx n^{-1}\left[ 
+\gamma_0 + 2 \sum_{k = 1}^{h - 1}\gamma_k
+\right] 
 \end{align}
 
-where $d_t$ represents the difference series between the forecast errors of the two models $e_{1t} - e_{2t}$, $\hat{\gamma}_k$ represents the sample $k$th autocovariance for $d_t$, and $S_1$ represents the original unmodified Diebold Mariano test statistic.
-
-As all models in this paper will be producing forecasts for an entire cross section of stocks, $e_1t$ and $e_2t$ will instead represent the average forecast errors for each model.
+where $d_t$ represents the difference series between the forecast errors of the two models $e_{1t} - e_{2t}$.
 \end{frame}
 
 \begin{frame}
@@ -614,18 +794,12 @@ Despite obvious limitations, this allows us to visualize which factors machine l
 
 \begin{frame}
 \frametitle{Results}
-	content...
+
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{References}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{frame}
-\frametitle{References}
-	\bibliographystyle{jfe}
-	\bibliography{Bibliography}
-\end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Questions and Answers}

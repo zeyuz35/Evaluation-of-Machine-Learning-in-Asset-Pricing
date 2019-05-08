@@ -542,34 +542,39 @@ The simulation design results in $3 \times 4 = 12$ different simulated datasets,
 $T = 180$ monthly periods corresponds to 15 years. The training sample was set to start from $T = 108$ or 9 years, a validation set 1 year in length. The last 3 years were reserved as a test set never to be used for validation or training.
 
 \begin{figure}
-\begin{center}
-\begin{tabular}{|c|p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}|p{0.25cm}p{0.25cm}p{0.25cm}|}
-	\hline
-	Set No. &&&&&&&&&&&&&& \\
-	\hline
-	3 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & 
-	\cellcolor{pink} & 
-	\cellcolor{olive} & \cellcolor{olive} & \cellcolor{olive} & \cellcolor{olive} \\
-	2 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & 
-	\cellcolor{pink} & 
-	\cellcolor{olive} &	\cellcolor{olive} & \cellcolor{olive} & \cellcolor{olive} & \cellcolor{olive} \\
-	1 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & 
-	\cellcolor{pink} & 
-	\cellcolor{olive} & \cellcolor{olive} &	\cellcolor{olive} & \cellcolor{olive} & \cellcolor{olive} & \cellcolor{olive} \\
-	\hline
-	Year & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 10 & 11 & 12 & 13 & 14 & 15\\
-	\hline
-\end{tabular}
-\medskip
-\begin{tabular}{|c|p{0.25cm}|}
-	\hline
-	Training & \cellcolor{cyan} \\
-	Validation & \cellcolor{pink} \\
-	Test & \cellcolor{olive} \\
-	\hline
-\end{tabular}
-\end{center}
-\caption{Sample Splitting Procedure}
+	\begin{center}
+		\begin{tabular}{|c|p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}|p{0.25cm}p{0.25cm}p{0.25cm}|}
+			\hline
+			Set No. &&&&&&&&&&&&&&& \\
+			\hline
+			%%%%%%%%
+			3 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
+			\cellcolor{pink} & 
+			\cellcolor{olive} & \cellcolor{olive} &	\cellcolor{olive} \\
+			%%%%%%%%
+			2 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
+			\cellcolor{pink} & 
+			\cellcolor{olive} & \cellcolor{olive} &	\cellcolor{olive} & \cellcolor{olive} \\
+			%%%%%%%%
+			1 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
+			\cellcolor{pink} & 
+			\cellcolor{olive} & \cellcolor{olive} &	\cellcolor{olive} & \cellcolor{olive} & \cellcolor{olive} \\
+			\hline
+			Year & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15\\
+			\hline
+		\end{tabular}
+		\medskip
+		\begin{tabular}{|c|p{0.25cm}|}
+			\hline
+			Training & \cellcolor{cyan} \\
+			\hline
+			Validation & \cellcolor{pink} \\
+			\hline
+			Test & \cellcolor{olive} \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\caption{Sample Splitting Procedure}
 \end{figure}
 
 \subsection{Model Evaluation}

@@ -807,7 +807,7 @@ gen_pooled_panel <- function(){
 }
 ```
 
-```{r egenrate_panel_dataset}
+```{r geenrate_panel_dataset}
 z <- gen_z()
 
 pooled_panel <- gen_pooled_panel()
