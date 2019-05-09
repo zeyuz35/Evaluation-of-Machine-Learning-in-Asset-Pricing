@@ -120,12 +120,19 @@ gen_C_hat <- function(){
 
 #Remember you need to generate C_bar and C_hat first
 
-gen_C <- function(){
+##################################
+##Generate final "observed" C
+##################################
+
+#Remember you need to generate C_bar and C_hat first
+#This function "observes" characteristics by normalizing them within (-1, 1) via the rank transformation
+
+gen_C <- function(C_matrix){
   C <- rep(list(elm), Time+1)
 
   for (t in 1:(Time+1)) {
     C[[t]] <- (2/(N*P_c+1))*
-      matrix(rank(C_hat[[t]]), nrow = N, ncol = P_c) - matrix(
+      matrix(rank(C_matrix[[t]]), nrow = N, ncol = P_c) - matrix(
         data = 1, nrow = N, ncol = P_c
         )
   }
@@ -137,7 +144,7 @@ gen_C <- function(){
 ```{r generate_characteristics}
 C_bar <- gen_C_bar()
 C_hat <- gen_C_hat()
-C <- gen_C()
+C <- gen_C(C_hat)
 ```
 
 
@@ -462,7 +469,7 @@ gen_rt <- function(A, g, resid){
 
 #Tune v_sd for inidividual r square first
 #Gu et al had 0.05 for their v variance
-v_sd <- 0.05
+v_sd <- 0.0025
 
 #Tune SV parameters for individual r square first
 #Not too sure about stochastic volatility parameters
@@ -484,7 +491,7 @@ resid <- gen_rt_resid(omega, gamma, w, v_sd)
 
 theta <- matrix(c(0.02, 0.02, 0.02), nrow = 1)
 
-rt <- gen_rt(A1, g1, resid)
+rt <- gen_rt(A3, g1, resid)
 
 rt_cross_tune_panel <- data.frame(
   return = rep(0, 36000),
@@ -575,13 +582,15 @@ SST <- t(rt_cross_tune_panel$return - mean(rt_cross_tune_panel$return)) %*% (rt_
 #We want to cross sectional R squared to be 25%
 #We want the predictive R squared to be 5%
 
+#Big Problem, errors are random so individual r squared values are highly unstable
+
 #Set up Grids
 
 individual_rsquare_grid <- expand.grid(
-  v_sd = seq(0.2, 1, 0.2),
-  omega = -1,
-  gamma = seq(0.2, 1, 0.2),
-  w = seq(0.2, 1, 0.2)
+  v_sd = seq(0.01, 0.05, 0.01),
+  omega = -0.736,
+  gamma = 0.9,
+  w = sqrt(0.363)
 )
 
 individual_rsquare_grid <- cbind(individual_rsquare_grid, rsquare = rep(0, nrow(individual_rsquare_grid)), vol = rep(0, nrow(individual_rsquare_grid)))
@@ -657,9 +666,7 @@ for (i in 1:200) {
 }
 
 #Return mean of each individual rsquared
-#individual_rsquare_grid$rsquare[grid] <- 
-  
-  mean(rt_id_tune_df$rsquare)
+individual_rsquare_grid$rsquare[grid] <-  mean(rt_id_tune_df$rsquare)
 
 #Calculate Annualized Volatility
 #Annualized volatility = calculate volatility (via standard deviation) for the monthly returns, then annualize it by multiplying it by sqrt(12) for 12 months in a year
@@ -678,9 +685,7 @@ for (i in 1:200) {
 #Return the mean annualized volatility
 #Want this aorund 30%
 
-#individual_rsquare_grid$vol[grid] <- 
-  
-  mean(vol_tune_df$annual_vol)
+individual_rsquare_grid$vol[grid] <- mean(vol_tune_df$annual_vol)
 
 #Cross sectional r squared
 

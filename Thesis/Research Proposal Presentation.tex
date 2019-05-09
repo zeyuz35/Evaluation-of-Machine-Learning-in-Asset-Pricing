@@ -23,6 +23,7 @@
 %Actual bibliography style etc are specified where you actually want it
 \usepackage{natbib}
 
+
 %Fluff
 \linespread{1.3}
 
@@ -99,10 +100,12 @@
 }
 
 \title{Evaluation of Machine Learning in Finance}
+
 \author{
 	Ze Yu Zhong \\
 	Supervisor: David Frazier
 }
+
 \institute{Monash University}
 
 
@@ -110,10 +113,6 @@
 	
 \begin{frame}[plain]
     \maketitle
-\end{frame}
-
-\begin{frame}
-	\tableofcontents
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -130,7 +129,7 @@
 	\item Regressors can be:
 		\begin{itemize}
 			\item Non-stationary - information now does not contain information about the future
-			\item Persistent - shocks in a series have effects that last for a long time
+			\item Persistent - shocks in a series have effects that last for a long time. Statistical tests have very little power in rejecting false null hypotheses
 			\item Cross sectionally correlated - regressors may seem important but are actually the result of a different underlying regressor
 			\item Endogeneous - omitted variable bias, etc
 		\end{itemize}
@@ -186,7 +185,7 @@
 \begin{itemize}
 	\item Machine Learning Algorithms have been applied successfully to solve some of the problems present
 	\item \cite{kozak_shrinking_2017}, \cite{rapach_forecasting_2013}, \cite{freyberger_dissecting_2017}, among others have applied shrinkage and selection methods to identify important factors
-	\item \cite{gu_empirical_2018}, \cite{hsu_finding_2014}, \cite{feng_deep_2018}, among others have constructed machine learning portfolios that historically outperform traditional portfoloios
+	\item \cite{gu_empirical_2018}, \cite{hsu_finding_2014}, \cite{feng_deep_2018}, among others have constructed machine learning portfolios that historically outperform traditional portfolios
 	\item Capable of capturing non-linear transformations humans cannot realistically find
 \end{itemize}
 \end{frame}
@@ -800,13 +799,21 @@ Despite obvious limitations, this allows us to visualize which factors machine l
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{References}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%This is just here to get the citations working throughout the presentation, skip over this when presenting
+\begin{frame}
+\frametitle{References}
+\bibliographystyle{jfe}
+\bibliography{Bibliography}
+\end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Questions and Answers}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
-\frametitle{Questions and Answers}
+\begin{center}
+\huge Questions and Answers
+\end{center}
 \end{frame}
 
 \end{document}

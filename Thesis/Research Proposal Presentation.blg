@@ -1,5 +1,21 @@
-This is BibTeX, Version 0.99dThe top-level auxiliary file: Research Proposal Presentation.aux
+This is 8-bit Big BibTeX version 0.99d
+Implementation:  Microsoft(R) C/C++ for Win32
+Release version: 3.71 (04 mar 2019)
+
+The 8-bit codepage and sorting file: 88591lat.csf
+The top-level auxiliary file: Research Proposal Presentation.aux
 The style file: jfe.bst
+Reallocated glb_str_ptr (elt_size=4) to 10 items from 0.
+Reallocated global_strs (elt_size=1001) to 10 items from 0.
+Reallocated glb_str_end (elt_size=4) to 10 items from 0.
 Database file #1: Bibliography.bib
 Warning--empty journal in harvey_census_2019
+
+Here's how much of BibTeX's memory you used:
+ Cites:                12 out of 750
+ Fields:              173 out of 5000
+ Hash table:         4782 out of 5000
+ Strings:             678 out of 4000
+ Free string pool:   6178 out of 65000
+ Wizard functions:   2708 out of 3000
 (There was 1 warning)
