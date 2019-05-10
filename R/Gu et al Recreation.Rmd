@@ -105,76 +105,6 @@ C_bar <- gen_C_bar()
 C <- gen_C(C_bar)
 ```
 
-
-```{r function_generate_xt}
-########################
-##xt set up
-########################
-
-########################
-##Specify A Matrices
-########################
-
-A1 <- matrix(c(
-  0.95, 0, 0,
-  0, 0.95, 0,
-  0, 0, 0.95),
-  nrow = 3, ncol = 3
-)
-
-A2 <- matrix(c(
-  1, 0, 0.25,
-  0, 0.95, 0,
-  0.25, 0, 0.95),
-  nrow = 3, ncol = 3
-)
-
-A3 <- matrix(c(
-  0.99, 0.2, 0.1,
-  0.2, 0.90, -0.3,
-  0.1, -0.3, -0.99),
-  nrow = 3, ncol = 3
-)
-
-###################################
-###Function to Generate xt series
-###################################
-#xt is a multivariate time series with 3 different series
-#Generates xt series, gien A matrix specification
-
-gen_xt <- function(A){
-  
-  xt <- data.frame(x1 = c(0:Time),
-                   x2 = c(0:Time),
-                   x3 = c(0:Time)
-  )
-  
-  Axt <- xt
-  for (i in 1:(Time+1)) {
-    ut <- rnorm(3, mean = 0, sd = 1)
-    Axt[1+i,] <- Axt[i,] + ut
-  }
-  Axt <- Axt[-1,]
-  return(Axt)
-}
-
-#########################################
-##Function to plot xt
-#########################################
-
-#Transforms xt series to wide format to plot it
-
-plot_xt <- function(xt){
-  xt_tidy <- cbind(t = c(1:(Time+1)), xt)
-
-  xt_tidy <- xt_tidy %>%
-    gather(series, value, -t)
-  
-  ggplot(data = xt_tidy) +
-    geom_line(aes(x = t, y = value, colour = series))
-}
-```
-
 ```{r gu_gen_xt}
 
 ###########################################
@@ -198,97 +128,6 @@ gen_gu_xt <- function(){
 gu_xt <- gen_gu_xt()
 
 acf(gu_xt)
-
-```
-
-
-```{r function_g}
-############################
-##Different g() functions
-############################
-
-#Remmeber that theta needs to be tuned later. Set up all of the functions as functions of theta
-
-##############################
-#g1
-##############################
-
-#Default theta, 1x3 dimensions
-theta <- matrix(c(0.02, 0.02, 0.02), nrow = 1)
-
-g1 <- function(C, x, i, t, theta){
-  
-  matrix(c(
-    C[[t]][i,1], C[[t]][i,2], C[[t]][i,3] * t(x[t, 3])
-    ), nrow = 1) %*% t(theta)
-}
-
-#test if working
-g1(C, xt, 1, 1, theta)
-
-##############################
-#g2
-##############################
-
-#Default theta, 1x3 dimensions
-theta <- matrix(c(0.04, 0.035, 0.01), nrow = 1)
-
-g2 <- function(C, x, i, t, theta){
-  matrix(c(
-    C[[t]][i, 1]^2, 
-    C[[t]][i, 1]*C[[t]][i, 2],
-    sign(
-      C[[t]][i, 3] * t(x[t, 3])
-      )
-  ), nrow = 1) %*% t(theta)
-}
-
-#test if working
-g2(C, xt, 1, 1, theta)
-
-#############################
-#g3
-#############################
-
-#Default theta, 1x4 dimensions
-theta <- matrix(c(0.04, 0.035, 0.01, 0.01), nrow = 1)
-
-g3 <- function(C, x, i, t, theta){
-  matrix(
-    c(
-      (C[[t]][i, 1] > 0), 
-      C[[t]][i, 2]^3,
-      C[[t]][i, 1] * C[[t]][i, 2] * (C[[t]][i, 3] > 0),
-      logit(C[[t]][i, 3])
-      ),
-    nrow = 1) %*% t(theta)
-}
-
-#test if working
-g3(C, xt, 1, 1, theta)
-
-
-#################################
-#g4
-#Remember that we are supposed to pass C hat through to g4
-#################################
-
-#Default theta, 1x3 dimensions
-theta <- matrix(c(0.02, 0.02, 0.02), nrow = 1)
-
-g4 <- function(C, x, i, t, theta){
-  matrix(c(
-    C[[t]][i, 1],
-    C[[t]][i, 2],
-    C[[t]][i, 3]*t(x[t, 3])
-    ), nrow = 1
-  ) %*% t(theta)
-}
-
-#test if working
-g4(C_hat, xt, 1, 1, theta)
-
-#################################
 
 ```
 
@@ -533,6 +372,11 @@ for (i in 1:N) {
   #SST <- t(rt_id_tune_panel$return) %*% (rt_id_tune_panel$return)
   rt_id_tune_df$rsquare[i] <- 1 - SSR/SST
 }
+
+#Sanity check
+summary((rt_id_tune_panel$return - rt_id_tune_panel$g) - rt_id_tune_panel$resid)
+#Makes sure that the right returns, residuals etc are lined up correctly
+#Looks good (not exactly zero due to rounding)
 
 #Return mean of each individual rsquared
 mean(rt_id_tune_df$rsquare)

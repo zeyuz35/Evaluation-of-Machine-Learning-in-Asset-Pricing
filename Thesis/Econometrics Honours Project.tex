@@ -118,19 +118,51 @@
 
 \subsection{Topic}
 
-This thesis aims to evaluate the application of machine learning algorithms in empirical asset pricing. While there has been a significant recent interest in applying machine learning to the problem of predicting asset returns, there is little literature that focuses on how well these algorithms are at capturing true underlying mechanisms of stock returns. 12 different simulated datasets ranging from linear to highly non-linear data generating processes incorporating observed phenomena of cross sectional correlation, persistence, endogeneity, stochastic volatility, and real world data will be used to assess the performance of linear models, elastic net models, random forests and neural networks.
+This thesis aims to evaluate the application of machine learning algorithms in empirical asset pricing. While there has been a significant recent interest in applying machine learning to the problem of predicting asset returns, there is little literature that focuses on how well these algorithms are at capturing true underlying mechanisms of stock returns. 12 different simulated datasets ranging from linear to highly non-linear data generating processes incorporating observed phenomena of cross sectional correlation, persistence, endogeneity, stochastic volatility, in addition to real world data will be used to assess the performance of linear models, elastic net models, random forests and neural networks through out of sample predictive R squared.
+
+\rhs{Be specific about how performance is measured}
 
 \subsection{Background Literature and Motivations}
 
+\rhs{DEFINE WHAT A FACTOR IS}
+
 This paper is motivated by evaluating the performance of machine learning algorithms in empirical asset pricing, focusing on how well they deal with the many unique problems in financial returns data.
 
-Financial returns data exhibits many problems for statistical analysis: regressors are numerous and display persistence, non-stationarity, cross sectional correlation and endogeneity, in addition to the overall high noise (randomness) in financial returns data. Furthermore, the characteristics of financial data has not remained similar over time, presenting an additional non-robustness problem. Numerous examples of these  controversies surrounding factors have plagued the literature. For example, company valuation ratios such as dividend yield were introduced despite their validity being contingent on being a stationary time series, for which there was mixed evidence even when introduced, \citep{vuolteenaho_understanding_1999}. Though models incorporating dividend yield initially performed well, they were later shown to seemingly break down in a changing economic environment, (\cite{lettau_consumption_2001}, \cite{schwert_anomalies_2003} and others).
+Financial returns data exhibits many problems for statistical analysis. 
+
+regressors are numerous and 
+
+display persistence, 
+
+non-stationarity, 
+
+cross sectional correlation and endogeneity, 
+
+in addition to the overall high noise (randomness) + outliers in financial returns data. 
+
+Furthermore, the characteristics of financial data has not remained similar over time, presenting an additional non-robustness problem. 
+
+\rhs{Not clear why these are “problems”? Need to be clear as to why these can cause issues. For instance,  “regressors are numerous” is not a problem of the data. What inherent about financial data makes issues for standard statistical analysis? It doesn’t for certain types. You need to be clearer as to what features of statistical analysis are difficult with financial data.}
+
+Numerous examples of these  controversies surrounding factors have plagued the literature. For example, company valuation ratios such as dividend yield were introduced despite their validity being contingent on being a stationary time series, for which there was mixed evidence even when introduced, \citep{vuolteenaho_understanding_1999}. Though models incorporating dividend yield initially performed well, they were later shown to seemingly break down in a changing economic environment, (\cite{lettau_consumption_2001}, \cite{schwert_anomalies_2003} and others).
+
+\rhs{What is a factor? What do you mean by a factor. Why is this important. At this stage it is completely unclear what you mean. Need to be more specific. }
 
 This has not stopped the literature searching for more factors: quantitative trading firms were using 81 factor models as the norm \citep{hsu_finding_2014} by 2014, and literature has emerged in trying to evaluate the "factor zoo" consisting of well over 600 factors, (\cite{harvey__2016}, \cite{harvey_census_2019}, among others).
 
-Much of the literature developing models to try to deal with problematic regressors. To this end, machine learning algorithms have emerged and been recognised as well suited: algorithms such as shrinkage and selection methods have been utilised in factor selection (\cite{kozak_shrinking_2017}, \cite{rapach_forecasting_2013}, \cite{freyberger_dissecting_2017}), and most importantly, portfolios constructed using machine learning have been demonstrated to outperform traditional models in predicting stock returns (\cite{gu_empirical_2018}, \cite{hsu_finding_2014}, \cite{feng_deep_2018}). This has been attributed to machine learning's ability to evaluate and consider non-linear complexities among factors that cannot be feasibly achieved using traditional techniques.  
+\rhs{What do you mean by problematic? Have not propertly defined. be more specific.}
 
-However, though machine learning has shown great promise in these areas, little work done on how machine learning actually recognises and deals with the aforementioned problems in returns data. Prior work been done by \cite{gu_empirical_2018}, however; only basic simulation designs which did not fully explore these problems were used.
+\rhs{Why are these methods well-suited? Need to be specific. This is too vague.}
+
+\rhs{Shrinkage and selection are not algorithms…}
+
+Much of the literature developing models to try to deal with problematic regressors. To this end, machine learning algorithms have emerged and been recognised as well suited: 
+
+For example, machine learning methods as shrinkage and selection methods have been utilised in factor selection (\cite{kozak_shrinking_2017}, \cite{rapach_forecasting_2013}, \cite{freyberger_dissecting_2017}), and most importantly, portfolios constructed using machine learning have been demonstrated to outperform traditional models in predicting stock returns (\cite{gu_empirical_2018}, \cite{hsu_finding_2014}, \cite{feng_deep_2018}) in terms of out of sample R squared, and Sharpe Ratios. This has been attributed to machine learning's ability to evaluate and consider non-linear complexities among factors that cannot be feasibly achieved using traditional techniques. 
+
+\rhs{Has it? These few studies do not necessarily support its broad use or “great promise.” temper this statement}
+
+However, little work done on how machine learning actually recognises and deals with the aforementioned problems in returns data. Prior work been done by \cite{gu_empirical_2018}, however; only basic simulation designs which did were not representative of real financial data were considered.
 
 This paper will be the first in focusing on how machine learning algorithms perform in environments with problems exhibited by financial returns data through extensive simulations. In addition, these algorithms will once again be evaluated on real world data, but with only more recent and representative data included in order to test their short term robustness in predicting stock returns. These two aspects of the study together are able to offer a better glimpse as to how ``black box" machine learning algorithms deal with the challenges present in asset pricing, if at all.
 
@@ -422,11 +454,10 @@ g\left(z_{i, t}\right) + \beta_{i,t+1}v_{t+1} + e_{i, t+1};
 e_{i, t+1} &= 
 \exp\left( \frac{\sigma_{i, t+1}^2}{2} \right) \varepsilon_{i, t+1}; \\
 \sigma^2_{i,t+1} &= 
-\omega + \gamma_i\sigma^2_{t,i}+w_{i,t+1};
-\quad (\omega, \gamma, \omega) = (-0.736, 0.90, \sqrt{0.363}) \forall i
+\omega + \gamma \sigma^2_{t} + w_{t+1}
 \end{flalign}
 
-Let $v_{t+1}$ be a $3\times 1$ vector of errors, and $w_{i,t+1},\varepsilon_{i,t+1}$ scalar error terms. The parameters of these were tuned such that the R squared for each individual return series was 50\% and annualized volatility 30\%.
+Let $v_{t+1}$ be a $3\times 1$ vector of errors, and $w_{t+1} \sim N(0, 1)$ and $\varepsilon_{i,t+1} \sim N(0, 1)$ scalar error terms. The parameters of these are tuned such that the R squared for each individual return series was 50\% and annualized volatility 30\%.
 
 The matrix $C_t$ is an $N\times P_c$ vector of latent factors, where the first three columns correspond to $\beta_{i,t}$, across the $1\leq i\leq N$ dimensions, while the remaining $P_c-3$ factors do not enter the return equation. The $P_x\times1$ vector $x_t$ is a $3 \times 1$ multivariate time series, and $\varepsilon_{t+1}$ is a $N\times 1$ vector of idiosyncratic errors. 
 

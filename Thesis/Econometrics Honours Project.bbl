@@ -1,4 +1,4 @@
-\begin{thebibliography}{24}
+\begin{thebibliography}{23}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
 
 \bibitem[{Breiman(2001)}]{breiman_random_2001}
@@ -12,10 +12,6 @@ Breiman, L., 2017. Classification and {Regression} {Trees}. Routledge.
 Choromanska, A., Henaff, M., Mathieu, M., Arous, G.~B., LeCun, Y., 2014. The
   {Loss} {Surfaces} of {Multilayer} {Networks}. arXiv:1412.0233 [cs] ArXiv:
   1412.0233.
-
-\bibitem[{Diebold and Mariano(2002)}]{diebold_comparing_2002}
-Diebold, F.~X., Mariano, R.~S., 2002. Comparing predictive accuracy. Journal of
-  Business \& economic statistics 20, 134--144.
 
 \bibitem[{Feng et~al.(2018)Feng, He, and Polson}]{feng_deep_2018}
 Feng, G., He, J., Polson, N.~G., 2018. Deep {Learning} for {Predicting} {Asset}
