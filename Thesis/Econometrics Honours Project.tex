@@ -354,7 +354,7 @@ Neural networks with up to 5 hidden layers were considered, each named NNX where
 			\path (L3-3) -- node{$\vdots$} (L3-5);
 		\end{neuralnetwork}
 	\end{center}
-\caption{Neural Network 5 (most complex considered)}
+\caption{Neural Network 5 (most complex considered), without biases drawn}
 \label{Neural_Network}
 \end{figure}
 
@@ -372,7 +372,7 @@ where $\sigma()$ represents the activation function for that layer (see next sec
 	g(z;\theta) = x^{(L-1)'}\theta^{L-1}
 \end{equation}
 
-The neural network's weight and bias parameters are estimated by minimizing the loss function with respect to the parameters.
+Note that the specification of a constant ``1" at the beginning of each layer is the same as specifying a bias term as is popular in other parametrizations. The neural network's weight and bias parameters are estimated by minimizing the loss function with respect to the parameters.
 
 \subsubsection{Activation Function}
 

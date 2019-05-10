@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1557467407497.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "108|27|175|0|\n204|17|292|0|\n",
+    "hash" : "2465278048",
+    "id" : "13EB166D",
+    "lastKnownWriteTime" : 1557471079,
+    "last_content_update" : 1557471080188,
+    "path" : "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Gu et al Recreation.Rmd",
+    "project_path" : "Gu et al Recreation.Rmd",
+    "properties" : {
+        "cursorPosition" : "509,41",
+        "last_setup_crc32" : "B2BB0F725342664e",
+        "scrollLine" : "470"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

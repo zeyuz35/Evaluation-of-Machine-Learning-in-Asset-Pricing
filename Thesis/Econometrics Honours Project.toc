@@ -19,7 +19,7 @@
 \contentsline {subsubsection}{\numberline {2.8.2}Notation}{8}{subsubsection.2.8.2}
 \contentsline {subsubsection}{\numberline {2.8.3}Activation Function}{9}{subsubsection.2.8.3}
 \contentsline {subsubsection}{\numberline {2.8.4}Computation}{9}{subsubsection.2.8.4}
-\contentsline {subsubsection}{\numberline {2.8.5}Batch Normalization}{9}{subsubsection.2.8.5}
+\contentsline {subsubsection}{\numberline {2.8.5}Batch Normalization}{10}{subsubsection.2.8.5}
 \contentsline {subsubsection}{\numberline {2.8.6}Initialization}{10}{subsubsection.2.8.6}
 \contentsline {subsection}{\numberline {2.9}Simulation Design}{10}{subsection.2.9}
 \contentsline {subsubsection}{\numberline {2.9.1}Overall Design}{10}{subsubsection.2.9.1}
