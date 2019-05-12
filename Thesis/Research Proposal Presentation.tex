@@ -108,6 +108,7 @@
 
 \institute{Monash University}
 
+\date{}
 
 \begin{document}
 	
@@ -124,44 +125,104 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
+\frametitle{Main Motivation}
+To evaluate the application of machine learning to predicting financial asset returns, with specific regard to how they deal with the unique challenges present in financial data.
+\end{frame}
+
+\begin{frame}
+\frametitle{Background}
+Define ``factor" the same way as \cite{harvey__2016}: a collection of regressors to be used in pricing returns that can be used to proxy for unknown underlying risk factors due to their correlation with cross sectional returns.
+
+Contrasts with the strict view that risk factors should be variables that have unpredictable variation through time, and be able to explain cross sectional returns independently
+
+Individual factors are typically firm characteristics and show little variation over time, or are pre-known
+\end{frame}
+
+\begin{frame}
 \frametitle{Background}
 \begin{itemize}
-	\item Regressors can be:
-		\begin{itemize}
-			\item Non-stationary - information now does not contain information about the future
-			\item Persistent - shocks in a series have effects that last for a long time. Statistical tests have very little power in rejecting false null hypotheses
-			\item Cross sectionally correlated - regressors may seem important but are actually the result of a different underlying regressor
-			\item Endogeneous - omitted variable bias, etc
-		\end{itemize}
+\item \cite{goetzmann_testing_1993} and \cite{ang_stock_2006} note the persistence present in dividend ratio factors
+
+\item Movements in dividend ratios are dominated by movements in price and therefore dividend ratios are correlated with lagged dependent variables on the right hand side of the regression equation. 
+
+\item Violates the assumptions of independent regressors required for OLS to be unbiased: t stats which are biased upwards and increase with time horizon due to autocorrelated errors
+
+\item \cite{goetzmann_testing_1993} show that corrections to t statistics using the GMM and NW errors also appear to be biased upwards
 \end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Background}
 \begin{itemize}
-	\item Data is not robust - structural breaks are evident in returns data, and many regressors that once performed well do not anymore
-	\item Extremely large number of potential factors (regressors) that is still increasing: over 600 documented in the literature \cite{harvey_census_2019}
+\item \cite{goyal_predicting_2003} conclude that while models incorporating dividend related factors were able to achieve higher in sample performance prior to 1990 than the historical mean, they could not have outperformed the historical mean out of sample
+
+\item Attributed to the increasing persistence and non-stationarity of dividend ratios, noting that they have become like random walks as of 2001
+
+\item Mirrors the sentiment of (\cite{lettau_consumption_2001}, \cite{schwert_anomalies_2003} and others) who conclude that models incorporating dividend ratios seemed to break down in the 2000s despite having performed well in the 1990s
 \end{itemize}
 \end{frame}
+
+\begin{frame}
+\frametitle{Background}
+Despite the controversy, the prevailing tone within the literature was that various factors such as dividend ratios, earnings price ratio, interest and inflation etc. were able to predict excess returns, with \cite{lettau_consumption_2001} remarking that this was now ``widely accepted." 
+
+\cite{welch_comprehensive_2008} extend upon the work of \cite{goyal_predicting_2003} by including a more comprehensive set of variables and time horizons. 
+
+Conclude that not a single variable had any statistical forecasting power. 
+
+Show that the significance values of some factors change with the choice of sample periods.
+\end{frame}
+
+\begin{frame}
+\frametitle{Background}
+\begin{itemize}
+\item Literature has continued to produce more factors: quantitative trading firms were using 81 factor models as the norm by 2014 \citep{hsu_finding_2014}, and \cite{harvey_census_2019} currently document well over 600 different factors suggested in the literature. 
+
+\item \cite{harvey__2016} detail the false discovery problem when the number of potential factors is extremely high
+
+\item Produce a multiple testing framework to mitigate this, and conclude that many of the historically discovered would have deemed significant by chance
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Background}
+\begin{itemize}
+\item Number of potential factors discovered in the literature has increased to the same scale as, if not greater, than the number of stocks considered in a typical portfolio, or the time horizon, \citep{feng_taming_2019}
+
+\item Produces highly inefficient covariances in a standard cross sectional regression
+
+\item Moreover, when the number of factors exceeds the sample size, traditional cross sectional regressions become infeasible
+\end{itemize}
+
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Background}
+Many factors are cross sectionally correlated
+
+Factors may be significant because they are correlated with a true, underlying factor and do not provide independent information themselves, a concern which \cite{cochrane_presidential_2011} calls the multidimensional challenge
+
+Especially challenging for traditional regression models, which make strong functional form assumptions and are sensitive to outliers, \citep{freyberger_dissecting_2017}
+\end{frame}
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{What is Machine Learning?}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%%%%%%%%%%%%%%%%%
-%%Interweave Literature review throughout this section
-%%%%%%%%%%%%%%%%%
-
 \begin{frame}
 \frametitle{What is Machine Learning?}
-\begin{itemize}
-	\item \cite{hastie_elements_2009} define ``An Introduction to Statistical Learning" as a vast set of tools for understanding data
-\end{itemize}
-We will define it as:
-\begin{itemize}
-	\item 
-\end{itemize}
+\cite{hastie_elements_2009} define in \textit{An Introduction to Statistical Learning} as a vast set of tools for understanding data
 
+We will define it as a diverse collection of:
+\begin{itemize}
+	\item high dimensional models for statistical prediction,
+	\item ``regularization" methods for model selection and mitigation of overfitting in sample data
+	\item efficient systematic methods for searching potential model specifications
+\end{itemize}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -175,20 +236,36 @@ We will define it as:
 \begin{frame}
 \frametitle{Why apply Machine Learning in Finance?}
 \begin{itemize}
-	\item Well suited for prediction
-	\item Better equipped to deal with large dimensionality
-	\item Capable of capturing non-linear transformations humans cannot realistically find
+	\item High dimensional - more flexible and more likely to approximate underlying data generating processes
+	\item Explicit methods for guarding against overfitting and generalizing poorly
+	\item Methods to produce an optimal model from all possible at manageable computation cost
 \end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Why apply Machine Learning in Finance?}
+\frametitle{Applications in the Literature}
 \begin{itemize}
-	\item Machine Learning Algorithms have been applied successfully to solve some of the problems present
 	\item \cite{kozak_shrinking_2017}, \cite{rapach_forecasting_2013}, \cite{freyberger_dissecting_2017}, among others have applied shrinkage and selection methods to identify important factors
-	\item \cite{gu_empirical_2018}, \cite{hsu_finding_2014}, \cite{feng_deep_2018}, among others have constructed machine learning portfolios that historically outperform traditional portfolios
-	\item Capable of capturing non-linear transformations humans cannot realistically find
+	\item \cite{gu_empirical_2018}, \cite{feng_deep_2018}, among others have constructed machine learning portfolios that historically outperform traditional portfolios in terms of prediction error and predictive $R^2$
+	\item Attribute their success to
 \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Motivations}
+However, little work has been done on how machine learning actually recognises and deals with the challenges in financial data. 
+\begin{itemize}
+	\item \cite{feng_deep_2018} cross validates their training set, destroying temporal aspect of data, and only explore a handful of factors
+	\item \cite{gu_empirical_2018} only use data up until the 1970s to produce predictions in the last 30 years
+	\item \cite{gu_empirical_2018} conclude that all models agree on same subset of factors for importance, but in terms of relative importance of factors there are differences, and only their tree based methods recognise dividend yield as important
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Motivations}
+This paper will be the first to explore how machine learning performs in environments similar to financial data, with particular focus on how they deal with the challenges in financial data, acting as an extension to the simulation work of \cite{gu_empirical_2018}. 
+
+Models will also be evaluated again, but with more recent, representative financial data to explore robustness. 
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -197,21 +274,17 @@ We will define it as:
 
 \begin{frame}
 \frametitle{Model Overview}
-\begin{itemize}
-	\item Returns are modelled as an additive error model
-	\item
-		\begin{equation}
-		r_{i, t+1} = E(r_{i, t+1} | \mathcal{F}_t) + \epsilon_{i, t+1}
-		\end{equation}
+Returns are modelled as an additive error model
+\begin{equation}
+	r_{i, t+1} = E(r_{i, t+1} | \mathcal{F}_t) + \epsilon_{i, t+1}
+\end{equation}
 		
-		where 
+where 
+\begin{equation}
+	E(r_{i, t+1} | \mathcal{F}_t) = g^*(z_{i,t})
+\end{equation}
 		
-		\begin{equation}
-		E(r_{i, t+1} | \mathcal{F}_t) = g^*(z_{i,t})
-		\end{equation}
-		
-		with $g^*(z_{i,t})$ representing the model approximation using the predictor set $z_{i,t}$
-\end{itemize}
+Stocks are indexed as $i = 1, \dots, N$ and months by $t = 1, \dots, T$. $g^*(z_{i,t})$ represents the model approximation using the $P$ dimensional predictor set $z_{i,t}$. 
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -277,26 +350,29 @@ We will define it as:
 
 \begin{frame}
 \frametitle{Loss Functions}
-\begin{itemize}
-	\item Mean Absolute Error (MAE)
-		\begin{equation}
-		\text{MAE} = \frac{1}{n} \sum_{j = i}^{n} |y_j - \hat{y_j}|
-		\end{equation}
-	\item Mean Squared Error (MSE)
-		\begin{align}
-		\text{MSE} &= \frac{1}{n} \sum_{j = i}^{n} \left( y_j - \hat{y_j}\right) ^2
-		\end{align}
-	\item Huber Loss
-		\begin{align}
-		H(\epsilon_j = y_j - \hat{y_j};\xi) = 
-		\begin{cases}
-		\left( y_j - \hat{y_j}\right) ^2, 
-		\quad &\text{if} \quad |y_j - \hat{y_j}| \leq \xi ; \\
-		2 \xi  |y_j - \hat{y_j}| - \xi^2, 
-		\quad &\text{if} \quad |y_j - \hat{y_j}| > \xi
-		\end{cases}
-		\end{align}
-\end{itemize}
+Mean Absolute Error (MAE)
+
+	\begin{equation}
+	\text{MAE} = \frac{1}{n} \sum_{j = i}^{n} |y_j - \hat{y_j}|
+	\end{equation}
+	
+Mean Squared Error (MSE)
+
+	\begin{align}
+	\text{MSE} &= \frac{1}{n} \sum_{j = i}^{n} \left( y_j - \hat{y_j}\right) ^2
+	\end{align}
+	
+% Huber Loss
+%		\begin{align}
+%		H(\epsilon_j = y_j - \hat{y_j};\xi) = 
+%		\begin{cases}
+%		\left( y_j - \hat{y_j}\right) ^2, 
+%		\quad &\text{if} \quad |y_j - \hat{y_j}| \leq \xi ; \\
+%		2 \xi  |y_j - \hat{y_j}| - \xi^2, 
+%		\quad &\text{if} \quad |y_j - \hat{y_j}| > \xi
+%		\end{cases}
+%		\end{align}
+
 \end{frame}
 
 %\begin{frame}
@@ -336,18 +412,18 @@ We will define it as:
 
 \begin{frame}
 \frametitle{Linear Models}
-\begin{itemize}
-	\item Linear Models assume that the underlying conditional expectation \( g^*(z_{i, t}) \) can be modelled as a linear function of the predictors and the parameter vector \( \theta \):
+Linear Models assume that the underlying conditional expectation \( g^*(z_{i, t}) \) can be modelled as a linear function of the predictors and the parameter vector \( \theta \):
 	\begin{equation}
 	g(z_{i, t};\theta) = z_{i, t}' \theta
 	\end{equation}
-	\item Optimizing $\theta$ with respect to minimizing MSE yields the Pooled OLS estimator
-	\item Limitations:
+	
+Optimizing $\theta$ with respect to minimizing MSE yields the Pooled OLS estimator
+Limitations:
 	\begin{itemize}
 		\item Need to manually consider and specify non-linear interactions
 		\item Struggles with high dimensionality
 	\end{itemize}
-\end{itemize}
+
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -356,20 +432,20 @@ We will define it as:
 
 \begin{frame}
 \frametitle{Penalized Linear Models}
-\begin{itemize}
-	\item Penalized linear models have the same underlying statistical model as simple linear models, add a new penalty term in the loss function:
+Penalized linear models have the same underlying statistical model as simple linear models, add a new penalty term in the loss function:
 	\begin{equation}
 	\mathcal{L(\theta;.)} = 
 	\underset{\text{Loss Function}}{\underbrace{\mathcal{L(\theta)}}} + 
 	\underset{\text{Penalty Term}}{\underbrace{\phi(\theta;.)}}
 	\end{equation}
-	\item Focus on the popular "elastic net" penalty  \citep{zou_regularization_2005}, which takes the form for the penalty function \( \phi(\theta;.) \):
+	
+Focus on the popular "elastic net" penalty  \citep{zou_regularization_2005}, which takes the form for the penalty function \( \phi(\theta;.) \):
+
 	\begin{equation}
 	\phi(\theta;\lambda,\rho) = 
 	\lambda(1-\rho) \sum_{j = 1}^{P}|\theta_j| +
 	\frac{1}{2} \lambda \rho \sum_{j = 1}^{P}\theta_j^2
 	\end{equation}
-\end{itemize}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -446,10 +522,10 @@ The scope of this paper is limited to traditional ``feed-forward" networks.
 \end{frame}
 
 \begin{frame}
+\frametitle{Neural Networks}
 The feed forward network consists of an ``input layer" of scaled data inputs, one or more ``hidden layers" which interact and non-linearly transform the inputs, and finally an output layer that aggregates the hidden layers and transform them a final time for the final output. 
 
 A neural network with no hidden layers reduces to already familiar regression models, such as OLS and Logit (depending on activation function and choice form of output).
-
 \end{frame}
 
 \begin{frame}
@@ -531,25 +607,10 @@ ReLU activation function was chosen for all hidden layers for computational spee
 \section{Simulation}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Real World Observations}
-\begin{frame}
-\frametitle{Real World Observations}
-\begin{itemize}
-	\item Though \cite{gu_empirical_2018} explore the performance of machine learning on simulated returns series, their design used factors which did not adequately capture the behaviour of stock characteristics observed in real life
-	\item In particular, their specification lacks:
-	\begin{itemize}
-		\item Cross Sectional correlation among factors
-		\item Stochastic Volatility in errors
-		\item More complex interactions
-		\item Multivariate time series
-	\end{itemize}
-\end{itemize}
-\end{frame}
-
 \subsection{Simulation Design}
 \begin{frame}
 \frametitle{Overall Simulation Design}
-Therefore, we simulate an extension: a latent factor model with stochastic volatility for excess return, $r_{t+1}$, for $t=1,\dots,T$:
+Simulate a latent factor model with stochastic volatility for excess return, $r_{t+1}$, for $t=1,\dots,T$:
 
 \begin{flalign}
 r_{i, t+1} &= 
@@ -557,26 +618,31 @@ g\left(z_{i, t}\right) + \beta_{i,t+1}v_{t+1} + e_{i, t+1}; \\
 z_{i, t} &= \left(1, x_{t}\right)^{\prime} \otimes c_{i, t}; 
 \quad \beta_{i, t}=\left(c_{i 1, t}, c_{i 2, t}, c_{i 3, t}\right); \\ 
 e_{i, t+1} &= 
-\exp\left( \frac{\sigma_{i, t+1}^2}{2} \right) \varepsilon_{i, t+1}; \\
+\exp\left(\sigma_{i, t+1}^2 \right) \varepsilon_{i, t+1}; \\
 \sigma^2_{i,t+1} &= 
 \omega + \gamma_i\sigma^2_{t,i}+w_{i,t+1}
 \end{flalign}
 
-$v_{t+1}$ is a $3\times 1$ vector of errors, $w_{i,t+1},\varepsilon_{i,t+1}$ are scalar error terms. The parameters of these were tuned such that the R squared for each individual return series was 50\% and annualized volatility 30\%.
-
-The matrix $C_t$ is an $N\times P_c$ vector of latent factors, where the first three columns correspond to $\beta_{i,t}$, across the $1\leq i\leq N$ dimensions, while the remaining $P_c-3$ factors do not enter the return equation. The $P_x\times1$ vector $x_t$ is a $3 \times 1$ multivariate time series, and $\varepsilon_{t+1}$ is a $N\times 1$ vector of idiosyncratic errors. 
+$v_{t+1}$ is a $3\times 1$ vector of errors, $w_{i,t+1},\varepsilon_{i,t+1}$ are scalar error terms. Variances tuned such that the R squared for each individual return series was 50\% and annualized volatility 30\%.
 
 \end{frame}
 
 \begin{frame}
 \frametitle{Simulating Characteristics}
-A simulation mechanism for $C_t$ that gives some correlation across the factors time was used. First consider drawing normal random numbers for each $1\leq i\leq N$ and $1\leq j\leq P_{c}$, according to 
+
+The matrix $C_t$ is an $N\times P_c$ vector of latent factors. The $P_x\times1$ vector $x_t$ is a $3 \times 1$ multivariate time series, and $\varepsilon_{t+1}$ is a $N\times 1$ vector of idiosyncratic errors. 
+
+Simulation mechanism for $C_t$ that gives some correlation across the factors time was used. First consider drawing normal random numbers for each $1\leq i\leq N$ and $1\leq j\leq P_{c}$, according to 
 
 \begin{equation}
 \overline{c}_{i j, t} = \rho_{j} \overline{c}_{i j, t-1}+\epsilon_{i j, t} ;
 \quad \rho_{j} \sim \mathcal{U} \left( \frac{1}{2},1 \right) 
 \end{equation}
 
+\end{frame}
+
+\begin{frame}
+\frametitle{Simulating Characteristics}
 Then, define the matrix 
 
 \begin{equation}
@@ -584,10 +650,7 @@ B:=\Lambda\Lambda' + \frac{1}{10}\mathbb{I}_{n}, \quad
 \Lambda_i = (\lambda_{i1},\dots,\lambda_{i4}), \quad
 \lambda_{ik}\sim N(0,1), \; k=1,\dots,4
 \end{equation}
-\end{frame}
 
-\begin{frame}
-\frametitle{Simulating Characteristics}
 Transform this into a correlation matrix $W$ via
 
 \begin{equation}
@@ -617,7 +680,7 @@ with the rank transformation normalizing all predictors to be within $[-1, 1]$
 
 \begin{frame}
 \frametitle{Simulating Macroeconomic Time Series}
-For simulation of $x_{t}$, a $3 \times 1$ multivariate time series, we consider a VAR model:
+For simulation of $x_{t}$, a $3 \times 1$ multivariate time series, we consider a VAR model, a generalization of the univariate autoregressive model to multiple time series:
 \begin{equation}
 x_{t}=Ax_{t-1}+u_t, 
 \quad u_t \sim N\left( \mu = (0, 0, 0)' , \Sigma = \mathbb{I}_{3}
@@ -721,10 +784,6 @@ $T = 180$ monthly periods corresponds to 15 years. The training sample was set t
 \begin{frame}
 \frametitle{Data Source}
 CRSP/Compustat database for stock returns with stock level characteristics such as accounting ratios and macroeconomic factors will be queried.
-
-Previous work by \cite{gu_empirical_2018} and \cite{feng_deep_2018} only use training data up until the 1970s to forecast returns for the last 30 years
-
-\cite{feng_deep_2018} in particular uses cross validation to tune hyperparameters, completely breaking the temporal aspect of the dataset
 
 Only more recent data will be used, such as the period before and after 2008 GFC
 \end{frame}

@@ -16,7 +16,7 @@
 \contentsline {subsubsection}{\numberline {2.8.1}Introduction}{9}{subsubsection.2.8.1}% 
 \contentsline {subsubsection}{\numberline {2.8.2}Activation Function}{9}{subsubsection.2.8.2}% 
 \contentsline {subsubsection}{\numberline {2.8.3}Computation}{9}{subsubsection.2.8.3}% 
-\contentsline {subsubsection}{\numberline {2.8.4}Batch Normalization}{10}{subsubsection.2.8.4}% 
+\contentsline {subsubsection}{\numberline {2.8.4}Batch Normalization}{11}{subsubsection.2.8.4}% 
 \contentsline {subsubsection}{\numberline {2.8.5}Initialization}{11}{subsubsection.2.8.5}% 
 \contentsline {subsection}{\numberline {2.9}Simulation Design}{11}{subsection.2.9}% 
 \contentsline {subsubsection}{\numberline {2.9.1}Overall Design}{11}{subsubsection.2.9.1}% 
