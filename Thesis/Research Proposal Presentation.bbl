@@ -4,10 +4,6 @@
 \bibitem[{Breiman(2001)}]{breiman_random_2001}
 Breiman, L., 2001. Random forests. Machine learning 45, 5--32.
 
-\bibitem[{Diebold and Mariano(2002)}]{diebold_comparing_2002}
-Diebold, F.~X., Mariano, R.~S., 2002. Comparing predictive accuracy. Journal of
-  Business \& economic statistics 20, 134--144.
-
 \bibitem[{Feng et~al.(2018)Feng, He, and Polson}]{feng_deep_2018}
 Feng, G., He, J., Polson, N.~G., 2018. Deep {Learning} for {Predicting} {Asset}
   {Returns}. arXiv:1804.09314 [cs, econ, stat] ArXiv: 1804.09314.
@@ -22,13 +18,20 @@ Gu, S., Kelly, B., Xiu, D., 2018. Empirical asset pricing via machine learning.
   Tech. rep., National Bureau of Economic Research.
 
 \bibitem[{Harvey and Liu(2019)}]{harvey_census_2019}
-Harvey, C.~R., Liu, Y., 2019. A {Census} of the {Factor} {Zoo} p.~7.
+Harvey, C.~R., Liu, Y., 2019. A {Census} of the {Factor} {Zoo}. Social Science
+  Research Network p.~7.
 
 \bibitem[{Harvey et~al.(1997)Harvey, Leybourne, and
   Newbold}]{harvey_testing_1997}
 Harvey, D., Leybourne, S., Newbold, P., 1997. Testing the equality of
   prediction mean squared errors. International Journal of Forecasting 13,
   281--291.
+
+\bibitem[{Hastie et~al.(2009)Hastie, Tibshirani, and
+  Friedman}]{hastie_elements_2009}
+Hastie, T., Tibshirani, R., Friedman, J.~H., 2009. The elements of statistical
+  learning: data mining, inference, and prediction. Springer series in
+  statistics, Springer, New York, NY, second ed.
 
 \bibitem[{Hsu and Kalesnik(2014)}]{hsu_finding_2014}
 Hsu, J., Kalesnik, V., 2014. Finding smart beta in the factor zoo. Research

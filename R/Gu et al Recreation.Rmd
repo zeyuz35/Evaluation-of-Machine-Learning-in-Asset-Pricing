@@ -30,10 +30,13 @@ set.seed(27935248)
 ##Simulation
 #####################################
 
+#The defaults are N = 200, P_c = 50 or 100
+#Keeping this low for now just to make everything more manageable
+
 #Number of stocks
 N <- 20
 #Number of characteristics that underly true model
-P_c <- 50
+P_c <- 10
 #Number of Periods
 Time <- 180
 
@@ -50,6 +53,8 @@ Time <- 180
 ##Function to Generate C_bar
 #######
 
+#Gu et al's specification does has a constant rho for all t and i, but differs across j
+
 gen_C_bar <- function(){
   #empty matrix
   elm <- matrix(
@@ -58,12 +63,14 @@ gen_C_bar <- function(){
   
   C_bar <- rep(list(elm), Time + 2)
   
+  #Gu et al set rho to runif 0.9, 1
+  #Generate a rho different across j, but constant across t and i
+  rho <- runif(P_c, 0.9, 1)
+  
   for (t in 1:(Time+1)) {
     for (j in 1:P_c) {
-      #Gu et al set rho to runif 0.9, 1
-      rho <- runif(1, 0.9, 1)
       #Gu et al set error term here to be standard normal
-      C_bar[[t+1]][, j] <- (C_bar[[t]][, j]*rho + rnorm(N, 0, 1))
+      C_bar[[t+1]][, j] <- (C_bar[[t]][, j]*rho[j] + rnorm(N, 0, 1))
     }  
   }
   
@@ -103,6 +110,8 @@ C_bar <- gen_C_bar()
 #C_hat <- gen_C_hat()
 #Gu et al do NOT build in cross sectional correlation
 C <- gen_C(C_bar)
+
+
 ```
 
 ```{r gu_gen_xt}
@@ -110,7 +119,7 @@ C <- gen_C(C_bar)
 ###########################################
 ## GU ET AL UNIVARIATE SPECIFICATION
 ###########################################
-gen_gu_xt <- function(){
+gu_gen_xt <- function(){
   xt <- c(0:Time)
   p <- 0.95
   
@@ -125,7 +134,7 @@ gen_gu_xt <- function(){
 }
 
 #Test, working
-gu_xt <- gen_gu_xt()
+gu_xt <- gu_gen_xt()
 
 acf(gu_xt)
 
@@ -285,7 +294,7 @@ gu_gen_g <- function(g){
   rt <- rep(list(elp), Time+1)
   
   #########################
-  gu_xt <- gen_gu_xt()
+  gu_xt <- gu_gen_xt()
   #########################
   
   for (t in 1:(Time)) {
@@ -350,6 +359,8 @@ for (i in 1:N){
   rt_cross_tune_panel[((i-1)*(Time+1)+1):(i*(Time+1)), ] <- rt_cross_tune_df
   
 }
+
+df <- data.frame(matrix(unlist(g), nrow=length(g), byrow=T))
   
 #Remove 1st row because returns data only starts from t = 2
 rt_cross_tune_panel <- rt_cross_tune_panel %>%

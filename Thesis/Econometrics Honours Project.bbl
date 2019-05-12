@@ -1,17 +1,33 @@
-\begin{thebibliography}{23}
+\begin{thebibliography}{32}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+
+\bibitem[{Ang and Bekaert(2006)}]{ang_stock_2006}
+Ang, A., Bekaert, G., 2006. Stock return predictability: {Is} it there? The
+  Review of Financial Studies 20, 651--707.
+
+\bibitem[{Breiman(1984)}]{breiman_classification_1984}
+Breiman, L., 1984. Classification and {Regression} {Trees}. Routledge.
 
 \bibitem[{Breiman(2001)}]{breiman_random_2001}
 Breiman, L., 2001. Random forests. Machine learning 45, 5--32.
-
-\bibitem[{Breiman(2017)}]{breiman_classification_2017}
-Breiman, L., 2017. Classification and {Regression} {Trees}. Routledge.
 
 \bibitem[{Choromanska et~al.(2014)Choromanska, Henaff, Mathieu, Arous, and
   LeCun}]{choromanska_loss_2014}
 Choromanska, A., Henaff, M., Mathieu, M., Arous, G.~B., LeCun, Y., 2014. The
   {Loss} {Surfaces} of {Multilayer} {Networks}. arXiv:1412.0233 [cs] ArXiv:
   1412.0233.
+
+\bibitem[{Cochrane(2011)}]{cochrane_presidential_2011}
+Cochrane, J.~H., 2011. Presidential {Address}: {Discount} {Rates}. The Journal
+  of Finance 66, 1047--1108.
+
+\bibitem[{Diebold and Mariano(1995)}]{diebold_comparing_1995}
+Diebold, F.~X., Mariano, R.~S., 1995. Comparing predictive accuracy. Journal of
+  Business \& economic statistics 20, 134--144.
+
+\bibitem[{Feng et~al.(2019)Feng, Giglio, and Xiu}]{feng_taming_2019}
+Feng, G., Giglio, S., Xiu, D., 2019. Taming the factor zoo: {A} test of new
+  factors. Tech. rep., National Bureau of Economic Research.
 
 \bibitem[{Feng et~al.(2018)Feng, He, and Polson}]{feng_deep_2018}
 Feng, G., He, J., Polson, N.~G., 2018. Deep {Learning} for {Predicting} {Asset}
@@ -22,6 +38,14 @@ Feng, G., He, J., Polson, N.~G., 2018. Deep {Learning} for {Predicting} {Asset}
 Freyberger, J., Neuhierl, A., Weber, M., 2017. Dissecting characteristics
   nonparametrically. Tech. rep., National Bureau of Economic Research.
 
+\bibitem[{Goetzmann and Jorion(1993)}]{goetzmann_testing_1993}
+Goetzmann, W.~N., Jorion, P., 1993. Testing the predictive power of dividend
+  yields. The Journal of Finance 48, 663--679.
+
+\bibitem[{Goyal and Welch(2003)}]{goyal_predicting_2003}
+Goyal, A., Welch, I., 2003. Predicting the equity premium with dividend ratios.
+  Management Science 49, 639--654.
+
 \bibitem[{Gu et~al.(2018)Gu, Kelly, and Xiu}]{gu_empirical_2018}
 Gu, S., Kelly, B., Xiu, D., 2018. Empirical asset pricing via machine learning.
   Tech. rep., National Bureau of Economic Research.
@@ -31,7 +55,8 @@ Hansen, L.~K., Salamon, P., 1990. Neural network ensembles. IEEE Transactions
   on Pattern Analysis \& Machine Intelligence pp. 993--1001.
 
 \bibitem[{Harvey and Liu(2019)}]{harvey_census_2019}
-Harvey, C.~R., Liu, Y., 2019. A {Census} of the {Factor} {Zoo} p.~7.
+Harvey, C.~R., Liu, Y., 2019. A {Census} of the {Factor} {Zoo}. Social Science
+  Research Network p.~7.
 
 \bibitem[{Harvey et~al.(2016)Harvey, Liu, and Zhu}]{harvey__2016}
 Harvey, C.~R., Liu, Y., Zhu, H., 2016. … and the {Cross}-{Section} of
@@ -43,15 +68,24 @@ Harvey, D., Leybourne, S., Newbold, P., 1997. Testing the equality of
   prediction mean squared errors. International Journal of Forecasting 13,
   281--291.
 
+\bibitem[{Hastie et~al.(2009)Hastie, Tibshirani, and
+  Friedman}]{hastie_elements_2009}
+Hastie, T., Tibshirani, R., Friedman, J.~H., 2009. The elements of statistical
+  learning: data mining, inference, and prediction. Springer series in
+  statistics, Springer, New York, NY, second ed.
+
+\bibitem[{Hoerl and Kennard(1970)}]{hoerl_ridge_1970}
+Hoerl, A.~E., Kennard, R.~W., 1970. Ridge regression: {Biased} estimation for
+  nonorthogonal problems. Technometrics 12, 55--67.
+
+\bibitem[{Hornik et~al.(1989)Hornik, Stinchcombe, and
+  White}]{hornik_multilayer_1989}
+Hornik, K., Stinchcombe, M., White, H., 1989. Multilayer feedforward networks
+  are universal approximators. Neural networks 2, 359--366.
+
 \bibitem[{Hsu and Kalesnik(2014)}]{hsu_finding_2014}
 Hsu, J., Kalesnik, V., 2014. Finding smart beta in the factor zoo. Research
   Affiliates (July) .
-
-\bibitem[{Huber(1992)}]{huber_robust_1992}
-Huber, P.~J., 1992. Robust {Estimation} of a {Location} {Parameter}. In: Kotz,
-  S., Johnson, N.~L. (eds.), {\em Breakthroughs in {Statistics}: {Methodology}
-  and {Distribution}\/}, Springer New York, New York, NY, Springer {Series} in
-  {Statistics}, pp. 492--518.
 
 \bibitem[{Ioffe and Szegedy(2015)}]{ioffe_batch_2015}
 Ioffe, S., Szegedy, C., 2015. Batch normalization: {Accelerating} deep network
@@ -90,10 +124,14 @@ Rapach, D., Zhou, G., 2013. Forecasting {Stock} {Returns}. In: {\em Handbook of
 Schwert, G.~W., 2003. Anomalies and market efficiency. Handbook of the
   Economics of Finance 1, 939--974.
 
-\bibitem[{Vuolteenaho(1999)}]{vuolteenaho_understanding_1999}
-Vuolteenaho, T., 1999. Understanding the {Aggregate} {Book}-to-{Market}
-  {Ratio}. {SSRN} {Scholarly} {Paper} ID 161911, Social Science Research
-  Network, Rochester, NY.
+\bibitem[{Tibshirani(1996)}]{tibshirani_regression_1996}
+Tibshirani, R., 1996. Regression shrinkage and selection via the lasso. Journal
+  of the Royal Statistical Society: Series B (Methodological) 58, 267--288.
+
+\bibitem[{Welch and Goyal(2008)}]{welch_comprehensive_2008}
+Welch, I., Goyal, A., 2008. A {Comprehensive} {Look} at {The} {Empirical}
+  {Performance} of {Equity} {Premium} {Prediction}. Review of Financial Studies
+  21, 1455--1508.
 
 \bibitem[{Zou and Hastie(2005)}]{zou_regularization_2005}
 Zou, H., Hastie, T., 2005. Regularization and variable selection via the

@@ -116,7 +116,7 @@
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Problems in Empirical Finance}
+\section{Background}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -124,7 +124,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
-\frametitle{Background of Problems in Empirical Finance}
+\frametitle{Background}
 \begin{itemize}
 	\item Regressors can be:
 		\begin{itemize}
@@ -137,7 +137,7 @@
 \end{frame}
 
 \begin{frame}
-\frametitle{Background Problems in Empirical Finance}
+\frametitle{Background}
 \begin{itemize}
 	\item Data is not robust - structural breaks are evident in returns data, and many regressors that once performed well do not anymore
 	\item Extremely large number of potential factors (regressors) that is still increasing: over 600 documented in the literature \cite{harvey_census_2019}
@@ -155,12 +155,13 @@
 \begin{frame}
 \frametitle{What is Machine Learning?}
 \begin{itemize}
-	\item Statistical/Machine Learning refers to a vast set of tools for understanding data
-	\item Building statistical models for predicting outputs based on inputs
-	\item Find patterns in datasets
-	\item Examples of procedures: Principal Components Analysis, Principal Least Squares
-	\item Examples of models: Ordinary Least Squares, LASSO Regression, Generalized Linear Models, Decisions Trees, Neural Networks
+	\item \cite{hastie_elements_2009} define ``An Introduction to Statistical Learning" as a vast set of tools for understanding data
 \end{itemize}
+We will define it as:
+\begin{itemize}
+	\item 
+\end{itemize}
+
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -298,26 +299,26 @@
 \end{itemize}
 \end{frame}
 
-\begin{frame}
-\frametitle{Loss Functions}
-\begin{figure}
-	\begin{center}
-		\begin{tikzpicture}
-		\begin{axis}[ xlabel={$\epsilon$}, ylabel={Loss}, axis lines=middle, samples=41, grid, thick, domain=-2:2]
-		\addplot+[no marks] {abs(x)};
-		\addlegendentry{MAE}
-		\addplot+[no marks] {x^2};
-		\addlegendentry{MSE}
-		\addplot+[no marks] {(2 * abs(x) - 1)*(abs(x) > 1) +
-			(x^2)*(abs(x) <= 1 )};
-		\addlegendentry{Huber Loss}
-		\end{axis}
-		\end{tikzpicture}
-	\end{center}
-	\caption{Illustration of MAE, MSE and Huber Loss when $\xi = 1$}
-	\label{fig:loss_functions}
-\end{figure}
-\end{frame}
+%\begin{frame}
+%\frametitle{Loss Functions}
+%\begin{figure}
+%	\begin{center}
+%		\begin{tikzpicture}
+%		\begin{axis}[ xlabel={$\epsilon$}, ylabel={Loss}, axis lines=middle, samples=41, grid, thick, domain=-2:2]
+%		\addplot+[no marks] {abs(x)};
+%		\addlegendentry{MAE}
+%		\addplot+[no marks] {x^2};
+%		\addlegendentry{MSE}
+%		\addplot+[no marks] {(2 * abs(x) - 1)*(abs(x) > 1) +
+%			(x^2)*(abs(x) <= 1 )};
+%		\addlegendentry{Huber Loss}
+%		\end{axis}
+%		\end{tikzpicture}
+%	\end{center}
+%	\caption{Illustration of MAE, MSE and Huber Loss when $\xi = 1$}
+%	\label{fig:loss_functions}
+%\end{figure}
+%\end{frame}
 
 \begin{frame}
 \frametitle{Models Considered}
@@ -447,9 +448,7 @@ The scope of this paper is limited to traditional ``feed-forward" networks.
 \begin{frame}
 The feed forward network consists of an ``input layer" of scaled data inputs, one or more ``hidden layers" which interact and non-linearly transform the inputs, and finally an output layer that aggregates the hidden layers and transform them a final time for the final output. 
 
-A neural network with no hidden layers reduces to already familiar regression models, such as OLS and Probit (depending on activation function chosen).
-
-
+A neural network with no hidden layers reduces to already familiar regression models, such as OLS and Logit (depending on activation function and choice form of output).
 
 \end{frame}
 
@@ -723,9 +722,11 @@ $T = 180$ monthly periods corresponds to 15 years. The training sample was set t
 \frametitle{Data Source}
 CRSP/Compustat database for stock returns with stock level characteristics such as accounting ratios and macroeconomic factors will be queried.
 
-Most previous studies have included decades of data in their training sample - this does not make much sense as several factors are different now
+Previous work by \cite{gu_empirical_2018} and \cite{feng_deep_2018} only use training data up until the 1970s to forecast returns for the last 30 years
 
-Only more recent data will be used, such as period before and after 2008 GFC
+\cite{feng_deep_2018} in particular uses cross validation to tune hyperparameters, completely breaking the temporal aspect of the dataset
+
+Only more recent data will be used, such as the period before and after 2008 GFC
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

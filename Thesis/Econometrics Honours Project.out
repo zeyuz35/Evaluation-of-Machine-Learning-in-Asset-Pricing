@@ -1,41 +1,39 @@
 \BOOKMARK [1][-]{section.1}{Introduction}{}% 1
 \BOOKMARK [2][-]{subsection.1.1}{Topic}{section.1}% 2
 \BOOKMARK [2][-]{subsection.1.2}{Background Literature and Motivations}{section.1}% 3
-\BOOKMARK [2][-]{subsection.1.3}{Main Findings}{section.1}% 4
-\BOOKMARK [1][-]{section.2}{Methodology}{}% 5
-\BOOKMARK [2][-]{subsection.2.1}{Overall Model Design}{section.2}% 6
-\BOOKMARK [2][-]{subsection.2.2}{Sample Splitting}{section.2}% 7
-\BOOKMARK [2][-]{subsection.2.3}{Loss Function}{section.2}% 8
-\BOOKMARK [3][-]{subsubsection.2.3.1}{Mean Absolute Error}{subsection.2.3}% 9
-\BOOKMARK [3][-]{subsubsection.2.3.2}{Mean Squared Error and Root Mean Squared Error}{subsection.2.3}% 10
-\BOOKMARK [3][-]{subsubsection.2.3.3}{Huber Loss}{subsection.2.3}% 11
-\BOOKMARK [2][-]{subsection.2.4}{Linear Model}{section.2}% 12
-\BOOKMARK [2][-]{subsection.2.5}{Penalized Linear Model}{section.2}% 13
-\BOOKMARK [2][-]{subsection.2.6}{Classification and Regression Trees}{section.2}% 14
-\BOOKMARK [2][-]{subsection.2.7}{Random Forests}{section.2}% 15
-\BOOKMARK [2][-]{subsection.2.8}{Neural Networks}{section.2}% 16
-\BOOKMARK [3][-]{subsubsection.2.8.1}{Introduction}{subsection.2.8}% 17
-\BOOKMARK [3][-]{subsubsection.2.8.2}{Notation}{subsection.2.8}% 18
-\BOOKMARK [3][-]{subsubsection.2.8.3}{Activation Function}{subsection.2.8}% 19
-\BOOKMARK [3][-]{subsubsection.2.8.4}{Computation}{subsection.2.8}% 20
-\BOOKMARK [3][-]{subsubsection.2.8.5}{Batch Normalization}{subsection.2.8}% 21
-\BOOKMARK [3][-]{subsubsection.2.8.6}{Initialization}{subsection.2.8}% 22
-\BOOKMARK [2][-]{subsection.2.9}{Simulation Design}{section.2}% 23
-\BOOKMARK [3][-]{subsubsection.2.9.1}{Overall Design}{subsection.2.9}% 24
-\BOOKMARK [3][-]{subsubsection.2.9.2}{Simulating Characteristics}{subsection.2.9}% 25
-\BOOKMARK [3][-]{subsubsection.2.9.3}{Simulating Macroeconomic Series}{subsection.2.9}% 26
-\BOOKMARK [3][-]{subsubsection.2.9.4}{Simulating Return Series}{subsection.2.9}% 27
-\BOOKMARK [3][-]{subsubsection.2.9.5}{Sample Splitting}{subsection.2.9}% 28
-\BOOKMARK [2][-]{subsection.2.10}{Model Evaluation}{section.2}% 29
-\BOOKMARK [3][-]{subsubsection.2.10.1}{R Squared}{subsection.2.10}% 30
-\BOOKMARK [3][-]{subsubsection.2.10.2}{Diebold-Mariano Test}{subsection.2.10}% 31
-\BOOKMARK [2][-]{subsection.2.11}{Variable Importance}{section.2}% 32
-\BOOKMARK [1][-]{section.3}{Study}{}% 33
-\BOOKMARK [2][-]{subsection.3.1}{Data}{section.3}% 34
-\BOOKMARK [2][-]{subsection.3.2}{Model}{section.3}% 35
-\BOOKMARK [1][-]{section.4}{Appendix}{}% 36
-\BOOKMARK [2][-]{subsection.4.1}{Algorithms}{section.4}% 37
-\BOOKMARK [3][-]{subsubsection.4.1.1}{Penalized Linear}{subsection.4.1}% 38
-\BOOKMARK [3][-]{subsubsection.4.1.2}{Classification and Regression Trees}{subsection.4.1}% 39
-\BOOKMARK [3][-]{subsubsection.4.1.3}{Random Forest}{subsection.4.1}% 40
-\BOOKMARK [3][-]{subsubsection.4.1.4}{Neural Networks}{subsection.4.1}% 41
+\BOOKMARK [1][-]{section.2}{Methodology}{}% 4
+\BOOKMARK [2][-]{subsection.2.1}{Overall Model Design}{section.2}% 5
+\BOOKMARK [2][-]{subsection.2.2}{Sample Splitting}{section.2}% 6
+\BOOKMARK [2][-]{subsection.2.3}{Loss Function}{section.2}% 7
+\BOOKMARK [3][-]{subsubsection.2.3.1}{Mean Absolute Error}{subsection.2.3}% 8
+\BOOKMARK [3][-]{subsubsection.2.3.2}{Mean Squared Error and Root Mean Squared Error}{subsection.2.3}% 9
+\BOOKMARK [2][-]{subsection.2.4}{Linear Model}{section.2}% 10
+\BOOKMARK [2][-]{subsection.2.5}{Penalized Linear Model}{section.2}% 11
+\BOOKMARK [2][-]{subsection.2.6}{Classification and Regression Trees}{section.2}% 12
+\BOOKMARK [2][-]{subsection.2.7}{Random Forests}{section.2}% 13
+\BOOKMARK [2][-]{subsection.2.8}{Neural Networks}{section.2}% 14
+\BOOKMARK [3][-]{subsubsection.2.8.1}{Introduction}{subsection.2.8}% 15
+\BOOKMARK [3][-]{subsubsection.2.8.2}{Activation Function}{subsection.2.8}% 16
+\BOOKMARK [3][-]{subsubsection.2.8.3}{Computation}{subsection.2.8}% 17
+\BOOKMARK [3][-]{subsubsection.2.8.4}{Batch Normalization}{subsection.2.8}% 18
+\BOOKMARK [3][-]{subsubsection.2.8.5}{Initialization}{subsection.2.8}% 19
+\BOOKMARK [2][-]{subsection.2.9}{Simulation Design}{section.2}% 20
+\BOOKMARK [3][-]{subsubsection.2.9.1}{Overall Design}{subsection.2.9}% 21
+\BOOKMARK [3][-]{subsubsection.2.9.2}{Simulating Characteristics}{subsection.2.9}% 22
+\BOOKMARK [3][-]{subsubsection.2.9.3}{Simulating Macroeconomic Series}{subsection.2.9}% 23
+\BOOKMARK [3][-]{subsubsection.2.9.4}{Simulating Return Series}{subsection.2.9}% 24
+\BOOKMARK [3][-]{subsubsection.2.9.5}{Sample Splitting}{subsection.2.9}% 25
+\BOOKMARK [2][-]{subsection.2.10}{Model Evaluation}{section.2}% 26
+\BOOKMARK [3][-]{subsubsection.2.10.1}{R Squared}{subsection.2.10}% 27
+\BOOKMARK [3][-]{subsubsection.2.10.2}{Diebold-Mariano Test}{subsection.2.10}% 28
+\BOOKMARK [2][-]{subsection.2.11}{Variable Importance}{section.2}% 29
+\BOOKMARK [1][-]{section.3}{Study}{}% 30
+\BOOKMARK [2][-]{subsection.3.1}{Data}{section.3}% 31
+\BOOKMARK [2][-]{subsection.3.2}{Model}{section.3}% 32
+\BOOKMARK [1][-]{section.4}{Results}{}% 33
+\BOOKMARK [1][-]{section.5}{Appendix}{}% 34
+\BOOKMARK [2][-]{subsection.5.1}{Algorithms}{section.5}% 35
+\BOOKMARK [3][-]{subsubsection.5.1.1}{Penalized Linear}{subsection.5.1}% 36
+\BOOKMARK [3][-]{subsubsection.5.1.2}{Classification and Regression Trees}{subsection.5.1}% 37
+\BOOKMARK [3][-]{subsubsection.5.1.3}{Random Forest}{subsection.5.1}% 38
+\BOOKMARK [3][-]{subsubsection.5.1.4}{Neural Networks}{subsection.5.1}% 39

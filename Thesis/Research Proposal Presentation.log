@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.7000 64-bit) (preloaded format=pdflatex 2019.5.8)  9 MAY 2019 14:11
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.7000 64-bit) (preloaded format=pdflatex 2019.5.8)  12 MAY 2019 18:17
 entering extended mode
 **"./Research Proposal Presentation.tex"
 ("Research Proposal Presentation.tex"
@@ -138,10 +138,10 @@ Package: everyshi 2001/05/15 v3.00 EveryShipout Package (MS)
 ))
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/utilities\pgfrcs.code.tex"
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf\pgf.revision.tex")
-Package: pgfrcs 2019/04/04 v3.1.2 (3.1.2)
+Package: pgfrcs 2019/05/09 v3.1.3 (3.1.3)
 ))
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/systemlayer\pgfsys.code.tex"
-Package: pgfsys 2019/04/04 v3.1.2 (3.1.2)
+Package: pgfsys 2019/05/09 v3.1.3 (3.1.3)
 
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/utilities\pgfkeys.code.tex"
 \pgfkeys@pathtoks=\toks17
@@ -159,6 +159,8 @@ x"
 \pgf@yb=\dimen135
 \pgf@xc=\dimen136
 \pgf@yc=\dimen137
+\pgf@xd=\dimen138
+\pgf@yd=\dimen139
 \w@pgf@writea=\write3
 \r@pgf@reada=\read1
 \c@pgf@counta=\count108
@@ -170,26 +172,26 @@ x"
 \t@pgf@tokc=\toks22
 \pgf@sys@id@count=\count112
  ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/systemlayer\pgf.cfg"
-File: pgf.cfg 2019/04/04 v3.1.2 (3.1.2)
+File: pgf.cfg 2019/05/09 v3.1.3 (3.1.3)
 )
 Driver file for pgf: pgfsys-pdftex.def
 
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/systemlayer\pgfsys-pdftex.def"
-File: pgfsys-pdftex.def 2019/04/04 v3.1.2 (3.1.2)
+File: pgfsys-pdftex.def 2019/05/09 v3.1.3 (3.1.3)
 
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/systemlayer\pgfsys-common-pdf.def
 "
-File: pgfsys-common-pdf.def 2019/04/04 v3.1.2 (3.1.2)
+File: pgfsys-common-pdf.def 2019/05/09 v3.1.3 (3.1.3)
 )))
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/systemlayer\pgfsyssoftpath.code.t
 ex"
-File: pgfsyssoftpath.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: pgfsyssoftpath.code.tex 2019/05/09 v3.1.3 (3.1.3)
 \pgfsyssoftpath@smallbuffer@items=\count113
 \pgfsyssoftpath@bigbuffer@items=\count114
 )
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/systemlayer\pgfsysprotocol.code.t
 ex"
-File: pgfsysprotocol.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: pgfsysprotocol.code.tex 2019/05/09 v3.1.3 (3.1.3)
 )) ("C:\Program Files\MiKTeX 2.9\tex/latex/xcolor\xcolor.sty"
 Package: xcolor 2016/05/11 v2.12 LaTeX color extensions (UK)
 
@@ -204,9 +206,9 @@ Package: colortbl 2018/12/12 v1.0d Color table columns (DPC)
 
 ("C:\Program Files\MiKTeX 2.9\tex/latex/tools\array.sty"
 Package: array 2018/12/30 v2.4k Tabular extension package (FMi)
-\col@sep=\dimen138
+\col@sep=\dimen140
 \ar@mcellbox=\box36
-\extrarowheight=\dimen139
+\extrarowheight=\dimen141
 \NC@list=\toks23
 \extratabsurround=\skip44
 \backup@length=\skip45
@@ -230,13 +232,13 @@ Package xcolor Info: Model `wave' substituted by `hsb' on input line 1371.
 File: dvipsnam.def 2016/06/17 v3.0m Driver-dependent file (DPC,SPQR)
 ))
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/basiclayer\pgfcore.code.tex"
-Package: pgfcore 2019/04/04 v3.1.2 (3.1.2)
+Package: pgfcore 2019/05/09 v3.1.3 (3.1.3)
 
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/math\pgfmath.code.tex"
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/math\pgfmathcalc.code.tex"
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/math\pgfmathutil.code.tex")
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/math\pgfmathparser.code.tex"
-\pgfmath@dimen=\dimen140
+\pgfmath@dimen=\dimen142
 \pgfmath@count=\count116
 \pgfmath@box=\box38
 \pgfmath@toks=\toks25
@@ -263,39 +265,40 @@ hmetics.code.tex")))
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/math\pgfmathfloat.code.tex"
 \c@pgfmathroundto@lastzeros=\count117
 ))
+("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/math\pgfint.code.tex")
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/basiclayer\pgfcorepoints.code.tex
 "
-File: pgfcorepoints.code.tex 2019/04/04 v3.1.2 (3.1.2)
-\pgf@picminx=\dimen141
-\pgf@picmaxx=\dimen142
-\pgf@picminy=\dimen143
-\pgf@picmaxy=\dimen144
-\pgf@pathminx=\dimen145
-\pgf@pathmaxx=\dimen146
-\pgf@pathminy=\dimen147
-\pgf@pathmaxy=\dimen148
-\pgf@xx=\dimen149
-\pgf@xy=\dimen150
-\pgf@yx=\dimen151
-\pgf@yy=\dimen152
-\pgf@zx=\dimen153
-\pgf@zy=\dimen154
+File: pgfcorepoints.code.tex 2019/05/09 v3.1.3 (3.1.3)
+\pgf@picminx=\dimen143
+\pgf@picmaxx=\dimen144
+\pgf@picminy=\dimen145
+\pgf@picmaxy=\dimen146
+\pgf@pathminx=\dimen147
+\pgf@pathmaxx=\dimen148
+\pgf@pathminy=\dimen149
+\pgf@pathmaxy=\dimen150
+\pgf@xx=\dimen151
+\pgf@xy=\dimen152
+\pgf@yx=\dimen153
+\pgf@yy=\dimen154
+\pgf@zx=\dimen155
+\pgf@zy=\dimen156
 )
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/basiclayer\pgfcorepathconstruct.c
 ode.tex"
-File: pgfcorepathconstruct.code.tex 2019/04/04 v3.1.2 (3.1.2)
-\pgf@path@lastx=\dimen155
-\pgf@path@lasty=\dimen156
+File: pgfcorepathconstruct.code.tex 2019/05/09 v3.1.3 (3.1.3)
+\pgf@path@lastx=\dimen157
+\pgf@path@lasty=\dimen158
 )
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/basiclayer\pgfcorepathusage.code.
 tex"
-File: pgfcorepathusage.code.tex 2019/04/04 v3.1.2 (3.1.2)
-\pgf@shorten@end@additional=\dimen157
-\pgf@shorten@start@additional=\dimen158
+File: pgfcorepathusage.code.tex 2019/05/09 v3.1.3 (3.1.3)
+\pgf@shorten@end@additional=\dimen159
+\pgf@shorten@start@additional=\dimen160
 )
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/basiclayer\pgfcorescopes.code.tex
 "
-File: pgfcorescopes.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: pgfcorescopes.code.tex 2019/05/09 v3.1.3 (3.1.3)
 \pgfpic=\box39
 \pgf@hbox=\box40
 \pgf@layerbox@main=\box41
@@ -303,60 +306,60 @@ File: pgfcorescopes.code.tex 2019/04/04 v3.1.2 (3.1.2)
 )
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/basiclayer\pgfcoregraphicstate.co
 de.tex"
-File: pgfcoregraphicstate.code.tex 2019/04/04 v3.1.2 (3.1.2)
-\pgflinewidth=\dimen159
+File: pgfcoregraphicstate.code.tex 2019/05/09 v3.1.3 (3.1.3)
+\pgflinewidth=\dimen161
 )
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/basiclayer\pgfcoretransformations
 .code.tex"
-File: pgfcoretransformations.code.tex 2019/04/04 v3.1.2 (3.1.2)
-\pgf@pt@x=\dimen160
-\pgf@pt@y=\dimen161
-\pgf@pt@temp=\dimen162
+File: pgfcoretransformations.code.tex 2019/05/09 v3.1.3 (3.1.3)
+\pgf@pt@x=\dimen162
+\pgf@pt@y=\dimen163
+\pgf@pt@temp=\dimen164
 )
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/basiclayer\pgfcorequick.code.tex"
-File: pgfcorequick.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: pgfcorequick.code.tex 2019/05/09 v3.1.3 (3.1.3)
 )
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/basiclayer\pgfcoreobjects.code.te
 x"
-File: pgfcoreobjects.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: pgfcoreobjects.code.tex 2019/05/09 v3.1.3 (3.1.3)
 )
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/basiclayer\pgfcorepathprocessing.
 code.tex"
-File: pgfcorepathprocessing.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: pgfcorepathprocessing.code.tex 2019/05/09 v3.1.3 (3.1.3)
 )
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/basiclayer\pgfcorearrows.code.tex
 "
-File: pgfcorearrows.code.tex 2019/04/04 v3.1.2 (3.1.2)
-\pgfarrowsep=\dimen163
+File: pgfcorearrows.code.tex 2019/05/09 v3.1.3 (3.1.3)
+\pgfarrowsep=\dimen165
 )
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/basiclayer\pgfcoreshade.code.tex"
-File: pgfcoreshade.code.tex 2019/04/04 v3.1.2 (3.1.2)
-\pgf@max=\dimen164
+File: pgfcoreshade.code.tex 2019/05/09 v3.1.3 (3.1.3)
+\pgf@max=\dimen166
 \pgf@sys@shading@range@num=\count119
 \pgf@shadingcount=\count120
 ) ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/basiclayer\pgfcoreimage.code.te
 x"
-File: pgfcoreimage.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: pgfcoreimage.code.tex 2019/05/09 v3.1.3 (3.1.3)
 
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/basiclayer\pgfcoreexternal.code.t
 ex"
-File: pgfcoreexternal.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: pgfcoreexternal.code.tex 2019/05/09 v3.1.3 (3.1.3)
 \pgfexternal@startupbox=\box42
 ))
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/basiclayer\pgfcorelayers.code.tex
 "
-File: pgfcorelayers.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: pgfcorelayers.code.tex 2019/05/09 v3.1.3 (3.1.3)
 )
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/basiclayer\pgfcoretransparency.co
 de.tex"
-File: pgfcoretransparency.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: pgfcoretransparency.code.tex 2019/05/09 v3.1.3 (3.1.3)
 )
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/basiclayer\pgfcorepatterns.code.t
 ex"
-File: pgfcorepatterns.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: pgfcorepatterns.code.tex 2019/05/09 v3.1.3 (3.1.3)
 )
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/basiclayer\pgfcorerdf.code.tex"
-File: pgfcorerdf.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: pgfcorerdf.code.tex 2019/05/09 v3.1.3 (3.1.3)
 ))) ("C:\Program Files\MiKTeX 2.9\tex/latex/pgf/utilities\xxcolor.sty"
 Package: xxcolor 2003/10/24 ver 0.1
 \XC@nummixins=\count121
@@ -418,7 +421,7 @@ Package: auxhook 2016/05/16 v1.4 Hooks for auxiliary files (HO)
 ("C:\Program Files\MiKTeX 2.9\tex/latex/oberdiek\kvoptions.sty"
 Package: kvoptions 2016/05/16 v3.12 Key value format for package options (HO)
 )
-\@linkdim=\dimen165
+\@linkdim=\dimen167
 \Hy@linkcounter=\count123
 \Hy@pagecounter=\count124
 
@@ -449,10 +452,10 @@ Package hyperref Info: Bookmarks ON on input line 4772.
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
 LaTeX Info: Redefining \url on input line 5125.
-\XeTeXLinkMargin=\dimen166
+\XeTeXLinkMargin=\dimen168
 \Fld@menulength=\count127
-\Field@Width=\dimen167
-\Fld@charsize=\dimen168
+\Field@Width=\dimen169
+\Fld@charsize=\dimen170
 Package hyperref Info: Hyper figures OFF on input line 6380.
 Package hyperref Info: Link nesting OFF on input line 6385.
 Package hyperref Info: Hyper index ON on input line 6388.
@@ -524,14 +527,14 @@ Package: translator 2018/01/04 v1.12 Easy translation of strings in LaTeX
 \beamer@zoombox=\box45
 \beamer@zoomcount=\count138
 \beamer@zoomframecount=\count139
-\beamer@frametextheight=\dimen169
+\beamer@frametextheight=\dimen171
 \c@subsectionslide=\count140
 \beamer@frametopskip=\skip48
 \beamer@framebottomskip=\skip49
 \beamer@frametopskipautobreak=\skip50
 \beamer@framebottomskipautobreak=\skip51
 \beamer@envbody=\toks29
-\framewidth=\dimen170
+\framewidth=\dimen172
 \c@framenumber=\count141
 )
 ("C:\Program Files\MiKTeX 2.9\tex/latex/beamer\beamerbaseverbatim.sty"
@@ -540,7 +543,7 @@ Package: translator 2018/01/04 v1.12 Easy translation of strings in LaTeX
 ("C:\Program Files\MiKTeX 2.9\tex/latex/beamer\beamerbaseframesize.sty"
 \beamer@splitbox=\box46
 \beamer@autobreakcount=\count142
-\beamer@autobreaklastheight=\dimen171
+\beamer@autobreaklastheight=\dimen173
 \beamer@frametitletoks=\toks30
 \beamer@framesubtitletoks=\toks31
 )
@@ -562,12 +565,12 @@ Package: translator 2018/01/04 v1.12 Easy translation of strings in LaTeX
 \bmb@boxshadow=\box51
 \bmb@boxshadowball=\box52
 \bmb@boxshadowballlarge=\box53
-\bmb@temp=\dimen172
-\bmb@dima=\dimen173
-\bmb@dimb=\dimen174
-\bmb@prevheight=\dimen175
+\bmb@temp=\dimen174
+\bmb@dima=\dimen175
+\bmb@dimb=\dimen176
+\bmb@prevheight=\dimen177
 )
-\beamer@blockheadheight=\dimen176
+\beamer@blockheadheight=\dimen178
 ))
 ("C:\Program Files\MiKTeX 2.9\tex/latex/beamer\beamerbaselocalstructure.sty"
 ("C:\Program Files\MiKTeX 2.9\tex/latex/tools\enumerate.sty"
@@ -580,7 +583,7 @@ Package: enumerate 2015/07/23 v3.00 enumerate extensions (DPC)
 \belowcaptionskip=\skip53
 )
 ("C:\Program Files\MiKTeX 2.9\tex/latex/beamer\beamerbasenavigation.sty"
-\beamer@section@min@dim=\dimen177
+\beamer@section@min@dim=\dimen179
 )
 ("C:\Program Files\MiKTeX 2.9\tex/latex/beamer\beamerbasetheorems.sty"
 ("C:\Program Files\MiKTeX 2.9\tex/latex/amsmath\amsmath.sty"
@@ -594,11 +597,11 @@ Package: amstext 2000/06/29 v2.01 AMS text
 ("C:\Program Files\MiKTeX 2.9\tex/latex/amsmath\amsgen.sty"
 File: amsgen.sty 1999/11/30 v2.0 generic functions
 \@emptytoks=\toks34
-\ex@=\dimen178
+\ex@=\dimen180
 ))
 ("C:\Program Files\MiKTeX 2.9\tex/latex/amsmath\amsbsy.sty"
 Package: amsbsy 1999/11/29 v1.2d Bold Symbols
-\pmbraise@=\dimen179
+\pmbraise@=\dimen181
 )
 ("C:\Program Files\MiKTeX 2.9\tex/latex/amsmath\amsopn.sty"
 Package: amsopn 2016/03/08 v2.02 operator names
@@ -615,7 +618,7 @@ LaTeX Info: Redefining \dots on input line 485.
 LaTeX Info: Redefining \cdots on input line 606.
 \Mathstrutbox@=\box54
 \strutbox@=\box55
-\big@size=\dimen180
+\big@size=\dimen182
 LaTeX Font Info:    Redeclaring font encoding OML on input line 729.
 LaTeX Font Info:    Redeclaring font encoding OMS on input line 730.
 \macc@depth=\count150
@@ -628,12 +631,12 @@ LaTeX Font Info:    Redeclaring font encoding OMS on input line 730.
 \column@=\count155
 \maxfields@=\count156
 \andhelp@=\toks36
-\eqnshift@=\dimen181
-\alignsep@=\dimen182
-\tagshift@=\dimen183
-\tagwidth@=\dimen184
-\totwidth@=\dimen185
-\lineht@=\dimen186
+\eqnshift@=\dimen183
+\alignsep@=\dimen184
+\tagshift@=\dimen185
+\tagwidth@=\dimen186
+\totwidth@=\dimen187
+\lineht@=\dimen188
 \@envbody=\toks37
 \multlinegap=\skip55
 \multlinetaggap=\skip56
@@ -660,8 +663,8 @@ Package: amsthm 2017/10/31 v2.20.4
 ("C:\Program Files\MiKTeX 2.9\tex/latex/beamer\beamerfontthemedefault.sty")
 ("C:\Program Files\MiKTeX 2.9\tex/latex/beamer\beamercolorthemedefault.sty")
 ("C:\Program Files\MiKTeX 2.9\tex/latex/beamer\beamerinnerthemedefault.sty"
-\beamer@dima=\dimen187
-\beamer@dimb=\dimen188
+\beamer@dima=\dimen189
+\beamer@dimb=\dimen190
 )
 ("C:\Program Files\MiKTeX 2.9\tex/latex/beamer\beamerouterthemedefault.sty")))
 ("C:\Program Files\MiKTeX 2.9\tex/latex/beamer\beamerthemeBoadilla.sty"
@@ -688,7 +691,7 @@ Language: english 2017/06/06 v3.3r English support from the babel system
 ("C:\Program Files\MiKTeX 2.9\tex/generic/babel\babel.def"
 File: babel.def 2019/05/04 3.31 Babel common definitions
 \babel@savecnt=\count158
-\U@D=\dimen189
+\U@D=\dimen191
 
 ("C:\Program Files\MiKTeX 2.9\tex/generic/babel\txtbabel.def")
 LaTeX Info: Redefining \textlatin on input line 2089.
@@ -725,12 +728,12 @@ Package: relsize 2013/03/29 ver 4.1
 \skiplength=\skip66
 \algomargin=\skip67
 \skipalgocfslide=\skip68
-\algowidth=\dimen190
-\inoutsize=\dimen191
-\inoutindent=\dimen192
-\interspacetitleruled=\dimen193
-\interspacealgoruled=\dimen194
-\interspacetitleboxruled=\dimen195
+\algowidth=\dimen192
+\inoutsize=\dimen193
+\inoutindent=\dimen194
+\interspacetitleruled=\dimen195
+\interspacealgoruled=\dimen196
+\interspacetitleboxruled=\dimen197
 \algocf@ruledwidth=\skip69
 \algocf@inoutbox=\box56
 \algocf@inputbox=\box57
@@ -842,9 +845,9 @@ LaTeX Info: Redefining \today on input line 736.
 Package: subfigure 2002/07/30 v2.1.4 subfigure package
 \subfigtopskip=\skip79
 \subfigcapskip=\skip80
-\subfigcaptopadj=\dimen196
+\subfigcaptopadj=\dimen198
 \subfigbottomskip=\skip81
-\subfigcapmargin=\dimen197
+\subfigcapmargin=\dimen199
 \subfiglabelskip=\skip82
 \c@subfigure=\count192
 \c@lofdepth=\count193
@@ -877,52 +880,52 @@ Package: trimspaces 2009/09/17 v1.1 Trim spaces around a token list
 ))
 ("C:\Program Files\MiKTeX 2.9\tex/latex/pgf/frontendlayer\tikz.sty"
 ("C:\Program Files\MiKTeX 2.9\tex/latex/pgf/basiclayer\pgf.sty"
-Package: pgf 2019/04/04 v3.1.2 (3.1.2)
+Package: pgf 2019/05/09 v3.1.3 (3.1.3)
 
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/modules\pgfmoduleshapes.code.tex"
-File: pgfmoduleshapes.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: pgfmoduleshapes.code.tex 2019/05/09 v3.1.3 (3.1.3)
 \pgfnodeparttextbox=\box64
 ) ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/modules\pgfmoduleplot.code.tex"
-File: pgfmoduleplot.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: pgfmoduleplot.code.tex 2019/05/09 v3.1.3 (3.1.3)
 )
 ("C:\Program Files\MiKTeX 2.9\tex/latex/pgf/compatibility\pgfcomp-version-0-65.
 sty"
-Package: pgfcomp-version-0-65 2019/04/04 v3.1.2 (3.1.2)
-\pgf@nodesepstart=\dimen198
-\pgf@nodesepend=\dimen199
+Package: pgfcomp-version-0-65 2019/05/09 v3.1.3 (3.1.3)
+\pgf@nodesepstart=\dimen256
+\pgf@nodesepend=\dimen257
 )
 ("C:\Program Files\MiKTeX 2.9\tex/latex/pgf/compatibility\pgfcomp-version-1-18.
 sty"
-Package: pgfcomp-version-1-18 2019/04/04 v3.1.2 (3.1.2)
+Package: pgfcomp-version-1-18 2019/05/09 v3.1.3 (3.1.3)
 )) ("C:\Program Files\MiKTeX 2.9\tex/latex/pgf/utilities\pgffor.sty"
 ("C:\Program Files\MiKTeX 2.9\tex/latex/pgf/utilities\pgfkeys.sty"
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/utilities\pgfkeys.code.tex"))
 ("C:\Program Files\MiKTeX 2.9\tex/latex/pgf/math\pgfmath.sty"
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/math\pgfmath.code.tex"))
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/utilities\pgffor.code.tex"
-Package: pgffor 2019/04/04 v3.1.2 (3.1.2)
+Package: pgffor 2019/05/09 v3.1.3 (3.1.3)
 
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/math\pgfmath.code.tex")
-\pgffor@iter=\dimen256
-\pgffor@skip=\dimen257
+\pgffor@iter=\dimen258
+\pgffor@skip=\dimen259
 \pgffor@stack=\toks49
 \pgffor@toks=\toks50
 ))
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/frontendlayer/tikz\tikz.code.tex"
-Package: tikz 2019/04/04 v3.1.2 (3.1.2)
+Package: tikz 2019/05/09 v3.1.3 (3.1.3)
 
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/libraries\pgflibraryplothandlers.
 code.tex"
-File: pgflibraryplothandlers.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: pgflibraryplothandlers.code.tex 2019/05/09 v3.1.3 (3.1.3)
 \pgf@plot@mark@count=\count197
-\pgfplotmarksize=\dimen258
+\pgfplotmarksize=\dimen260
 )
-\tikz@lastx=\dimen259
-\tikz@lasty=\dimen260
-\tikz@lastxsaved=\dimen261
-\tikz@lastysaved=\dimen262
-\tikzleveldistance=\dimen263
-\tikzsiblingdistance=\dimen264
+\tikz@lastx=\dimen261
+\tikz@lasty=\dimen262
+\tikz@lastxsaved=\dimen263
+\tikz@lastysaved=\dimen264
+\tikzleveldistance=\dimen265
+\tikzsiblingdistance=\dimen266
 \tikz@figbox=\box65
 \tikz@figbox@bg=\box66
 \tikz@tempbox=\box67
@@ -933,7 +936,7 @@ File: pgflibraryplothandlers.code.tex 2019/04/04 v3.1.2 (3.1.2)
 \tikz@fig@count=\count267
 
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/modules\pgfmodulematrix.code.tex"
-File: pgfmodulematrix.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: pgfmodulematrix.code.tex 2019/05/09 v3.1.3 (3.1.3)
 \pgfmatrixcurrentrow=\count268
 \pgfmatrixcurrentcolumn=\count269
 \pgf@matrix@numberofcolumns=\count270
@@ -942,7 +945,7 @@ File: pgfmodulematrix.code.tex 2019/04/04 v3.1.2 (3.1.2)
 
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/frontendlayer/tikz/libraries\tikz
 librarytopaths.code.tex"
-File: tikzlibrarytopaths.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: tikzlibrarytopaths.code.tex 2019/05/09 v3.1.3 (3.1.3)
 )))
 ("C:\Program Files\MiKTeX 2.9\tex/latex/algorithmicx\algorithmicx.sty"
 Package: algorithmicx 2005/04/27 v1.2 Algorithmicx
@@ -965,8 +968,8 @@ Package: mathtools 2018/01/08 v1.21 mathematical typesetting tools
 Package: calc 2017/05/25 v4.3 Infix arithmetic (KKT,FJ)
 \calc@Acount=\count279
 \calc@Bcount=\count280
-\calc@Adimen=\dimen265
-\calc@Bdimen=\dimen266
+\calc@Adimen=\dimen267
+\calc@Bdimen=\dimen268
 \calc@Askip=\skip90
 \calc@Bskip=\skip91
 LaTeX Info: Redefining \setlength on input line 80.
@@ -982,50 +985,50 @@ LaTeX Info: Thecontrolsequence`\)'isalreadyrobust on input line 129.
 LaTeX Info: Thecontrolsequence`\['isalreadyrobust on input line 129.
 LaTeX Info: Thecontrolsequence`\]'isalreadyrobust on input line 129.
 \g_MT_multlinerow_int=\count282
-\l_MT_multwidth_dim=\dimen267
+\l_MT_multwidth_dim=\dimen269
 \origjot=\skip93
-\l_MT_shortvdotswithinadjustabove_dim=\dimen268
-\l_MT_shortvdotswithinadjustbelow_dim=\dimen269
-\l_MT_above_intertext_sep=\dimen270
-\l_MT_below_intertext_sep=\dimen271
-\l_MT_above_shortintertext_sep=\dimen272
-\l_MT_below_shortintertext_sep=\dimen273
+\l_MT_shortvdotswithinadjustabove_dim=\dimen270
+\l_MT_shortvdotswithinadjustbelow_dim=\dimen271
+\l_MT_above_intertext_sep=\dimen272
+\l_MT_below_intertext_sep=\dimen273
+\l_MT_above_shortintertext_sep=\dimen274
+\l_MT_below_shortintertext_sep=\dimen275
 )
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/frontendlayer/tikz/libraries\tikz
 libraryshapes.code.tex"
-File: tikzlibraryshapes.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: tikzlibraryshapes.code.tex 2019/05/09 v3.1.3 (3.1.3)
 
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/frontendlayer/tikz/libraries\tikz
 libraryshapes.geometric.code.tex"
-File: tikzlibraryshapes.geometric.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: tikzlibraryshapes.geometric.code.tex 2019/05/09 v3.1.3 (3.1.3)
 
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/libraries/shapes\pgflibraryshapes
 .geometric.code.tex"
-File: pgflibraryshapes.geometric.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: pgflibraryshapes.geometric.code.tex 2019/05/09 v3.1.3 (3.1.3)
 ))
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/frontendlayer/tikz/libraries\tikz
 libraryshapes.misc.code.tex"
-File: tikzlibraryshapes.misc.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: tikzlibraryshapes.misc.code.tex 2019/05/09 v3.1.3 (3.1.3)
 
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/libraries/shapes\pgflibraryshapes
 .misc.code.tex"
-File: pgflibraryshapes.misc.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: pgflibraryshapes.misc.code.tex 2019/05/09 v3.1.3 (3.1.3)
 ))
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/frontendlayer/tikz/libraries\tikz
 libraryshapes.symbols.code.tex"
-File: tikzlibraryshapes.symbols.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: tikzlibraryshapes.symbols.code.tex 2019/05/09 v3.1.3 (3.1.3)
 
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/libraries/shapes\pgflibraryshapes
 .symbols.code.tex"
-File: pgflibraryshapes.symbols.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: pgflibraryshapes.symbols.code.tex 2019/05/09 v3.1.3 (3.1.3)
 ))
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/frontendlayer/tikz/libraries\tikz
 libraryshapes.arrows.code.tex"
-File: tikzlibraryshapes.arrows.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: tikzlibraryshapes.arrows.code.tex 2019/05/09 v3.1.3 (3.1.3)
 
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/libraries/shapes\pgflibraryshapes
 .arrows.code.tex"
-File: pgflibraryshapes.arrows.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: pgflibraryshapes.arrows.code.tex 2019/05/09 v3.1.3 (3.1.3)
 ))
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/frontendlayer/tikz/libraries\tikz
 libraryshapes.callouts.code.tex"
@@ -1033,11 +1036,11 @@ libraryshapes.callouts.code.tex"
 .callouts.code.tex"))
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/frontendlayer/tikz/libraries\tikz
 libraryshapes.multipart.code.tex"
-File: tikzlibraryshapes.multipart.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: tikzlibraryshapes.multipart.code.tex 2019/05/09 v3.1.3 (3.1.3)
 
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/libraries/shapes\pgflibraryshapes
 .multipart.code.tex"
-File: pgflibraryshapes.multipart.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: pgflibraryshapes.multipart.code.tex 2019/05/09 v3.1.3 (3.1.3)
 \pgfnodepartlowerbox=\box69
 \pgfnodeparttwobox=\box70
 \pgfnodepartthreebox=\box71
@@ -1061,10 +1064,10 @@ File: pgflibraryshapes.multipart.code.tex 2019/04/04 v3.1.2 (3.1.2)
 ))))
 ("C:\Program Files\MiKTeX 2.9\tex/latex/xpatch\xpatch.sty"
 ("C:\Program Files\MiKTeX 2.9\tex/latex/l3kernel\expl3.sty"
-Package: expl3 2019-05-05 L3 programming layer (loader) 
+Package: expl3 2019-05-07 L3 programming layer (loader) 
 
 ("C:\Program Files\MiKTeX 2.9\tex/latex/l3kernel\expl3-code.tex"
-Package: expl3 2019-05-05 L3 programming layer (code)
+Package: expl3 2019-05-07 L3 programming layer (code)
 \c_max_int=\count283
 \l_tmpa_int=\count284
 \l_tmpb_int=\count285
@@ -1077,12 +1080,12 @@ Package: expl3 2019-05-05 L3 programming layer (code)
 \l__iow_line_target_int=\count292
 \l__iow_one_indent_int=\count293
 \l__iow_indent_int=\count294
-\c_zero_dim=\dimen274
-\c_max_dim=\dimen275
-\l_tmpa_dim=\dimen276
-\l_tmpb_dim=\dimen277
-\g_tmpa_dim=\dimen278
-\g_tmpb_dim=\dimen279
+\c_zero_dim=\dimen276
+\c_max_dim=\dimen277
+\l_tmpa_dim=\dimen278
+\l_tmpb_dim=\dimen279
+\g_tmpa_dim=\dimen280
+\g_tmpb_dim=\dimen281
 \c_zero_skip=\skip94
 \c_max_skip=\skip95
 \l_tmpa_skip=\skip96
@@ -1097,7 +1100,7 @@ Package: expl3 2019-05-05 L3 programming layer (code)
 \g_tmpb_muskip=\muskip17
 \l_keys_choice_int=\count295
 \l__intarray_loop_int=\count296
-\c__intarray_sp_dim=\dimen280
+\c__intarray_sp_dim=\dimen282
 \g__intarray_font_int=\count297
 \c__fp_leading_shift_int=\count298
 \c__fp_middle_shift_int=\count299
@@ -1172,23 +1175,23 @@ Package: expl3 2019-05-05 L3 programming layer (code)
 \l_tmpb_box=\box91
 \g_tmpa_box=\box92
 \g_tmpb_box=\box93
-\l__box_top_dim=\dimen281
-\l__box_bottom_dim=\dimen282
-\l__box_left_dim=\dimen283
-\l__box_right_dim=\dimen284
-\l__box_top_new_dim=\dimen285
-\l__box_bottom_new_dim=\dimen286
-\l__box_left_new_dim=\dimen287
-\l__box_right_new_dim=\dimen288
+\l__box_top_dim=\dimen283
+\l__box_bottom_dim=\dimen284
+\l__box_left_dim=\dimen285
+\l__box_right_dim=\dimen286
+\l__box_top_new_dim=\dimen287
+\l__box_bottom_new_dim=\dimen288
+\l__box_left_new_dim=\dimen289
+\l__box_right_new_dim=\dimen290
 \l__box_internal_box=\box94
 \l__coffin_internal_box=\box95
-\l__coffin_internal_dim=\dimen289
-\l__coffin_offset_x_dim=\dimen290
-\l__coffin_offset_y_dim=\dimen291
-\l__coffin_x_dim=\dimen292
-\l__coffin_y_dim=\dimen293
-\l__coffin_x_prime_dim=\dimen294
-\l__coffin_y_prime_dim=\dimen295
+\l__coffin_internal_dim=\dimen291
+\l__coffin_offset_x_dim=\dimen292
+\l__coffin_offset_y_dim=\dimen293
+\l__coffin_x_dim=\dimen294
+\l__coffin_y_dim=\dimen295
+\l__coffin_x_prime_dim=\dimen296
+\l__coffin_y_prime_dim=\dimen297
 \c_empty_coffin=\box96
 \l__coffin_aligned_coffin=\box97
 \l__coffin_aligned_internal_coffin=\box98
@@ -1196,20 +1199,20 @@ Package: expl3 2019-05-05 L3 programming layer (code)
 \l_tmpb_coffin=\box100
 \g_tmpa_coffin=\box101
 \g_tmpb_coffin=\box102
-\l__coffin_bounding_shift_dim=\dimen296
-\l__coffin_left_corner_dim=\dimen297
-\l__coffin_right_corner_dim=\dimen298
-\l__coffin_bottom_corner_dim=\dimen299
-\l__coffin_top_corner_dim=\dimen300
-\l__coffin_scaled_total_height_dim=\dimen301
-\l__coffin_scaled_width_dim=\dimen302
+\l__coffin_bounding_shift_dim=\dimen298
+\l__coffin_left_corner_dim=\dimen299
+\l__coffin_right_corner_dim=\dimen300
+\l__coffin_bottom_corner_dim=\dimen301
+\l__coffin_top_corner_dim=\dimen302
+\l__coffin_scaled_total_height_dim=\dimen303
+\l__coffin_scaled_width_dim=\dimen304
 \c__coffin_empty_coffin=\box103
 \l__coffin_display_coffin=\box104
 \l__coffin_display_coord_coffin=\box105
 \l__coffin_display_pole_coffin=\box106
-\l__coffin_display_offset_dim=\dimen303
-\l__coffin_display_x_dim=\dimen304
-\l__coffin_display_y_dim=\dimen305
+\l__coffin_display_offset_dim=\dimen305
+\l__coffin_display_x_dim=\dimen306
+\l__coffin_display_y_dim=\dimen307
 \g__file_internal_ior=\read2
 \l__seq_internal_a_int=\count366
 \l__seq_internal_b_int=\count367
@@ -1234,11 +1237,11 @@ Package: forest 2017/07/14 v2.1.5 Drawing (linguistic) trees
 
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/frontendlayer/tikz/libraries\tikz
 libraryfit.code.tex"
-File: tikzlibraryfit.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: tikzlibraryfit.code.tex 2019/05/09 v3.1.3 (3.1.3)
 )
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/frontendlayer/tikz/libraries\tikz
 librarycalc.code.tex"
-File: tikzlibrarycalc.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: tikzlibrarycalc.code.tex 2019/05/09 v3.1.3 (3.1.3)
 )
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/libraries\pgflibraryintersections
 .code.tex"
@@ -1261,7 +1264,7 @@ Package: inlinedef 2008/07/10 v1.0 Inlined expansions within definitions
 \ID@usercommands=\toks54
 \safeloop@depth=\count376
 \safeRKloop@depth=\count377
-\forest@temp@dimen=\dimen306
+\forest@temp@dimen=\dimen308
 \forest@temp@count=\count378
 \forest@n=\count379
 \forest@temp@global@count=\count380
@@ -1272,7 +1275,7 @@ Package: inlinedef 2008/07/10 v1.0 Inlined expansions within definitions
 \forest@global@temparray@N=\count384
 \forest@isnum@count=\count385
 \forest@isdim@nonintpart=\count386
-\forest@isdim@dimen=\dimen307
+\forest@isdim@dimen=\dimen309
 \forest@sort@m=\count387
 \forest@sort@k=\count388
 \forest@sort@p=\count389
@@ -1292,10 +1295,10 @@ Package: inlinedef 2008/07/10 v1.0 Inlined expansions within definitions
 \forest@nodewalk@shortsteps@resolution=\toks59
 \forest@do@dynamics=\toks60
 \forest@box=\box108
-\forest@xg=\dimen308
-\forest@yg=\dimen309
-\forest@xs=\dimen310
-\forest@ys=\dimen311
+\forest@xg=\dimen310
+\forest@yg=\dimen311
+\forest@xs=\dimen312
+\forest@ys=\dimen313
 \forest@pi@toks=\toks61
 \forest@segment@toks=\toks62
 \forest@PIi@toks=\toks63
@@ -1307,30 +1310,30 @@ Package: inlinedef 2008/07/10 v1.0 Inlined expansions within definitions
 )
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/libraries\pgflibraryarrows.meta.c
 ode.tex"
-File: pgflibraryarrows.meta.code.tex 2019/04/04 v3.1.2 (3.1.2)
-\pgfarrowinset=\dimen312
-\pgfarrowlength=\dimen313
-\pgfarrowwidth=\dimen314
-\pgfarrowlinewidth=\dimen315
+File: pgflibraryarrows.meta.code.tex 2019/05/09 v3.1.3 (3.1.3)
+\pgfarrowinset=\dimen314
+\pgfarrowlength=\dimen315
+\pgfarrowwidth=\dimen316
+\pgfarrowlinewidth=\dimen317
 ) ("C:\Program Files\MiKTeX 2.9\tex/latex/todonotes\todonotes.sty"
 Package: todonotes 2019/01/24 v1.1.2 Todonotes source and documentation.
 Package: todonotes 2018/11/22
 
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/frontendlayer/tikz/libraries\tikz
 librarypositioning.code.tex"
-File: tikzlibrarypositioning.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: tikzlibrarypositioning.code.tex 2019/05/09 v3.1.3 (3.1.3)
 )
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/frontendlayer/tikz/libraries\tikz
 libraryshadows.code.tex"
-File: tikzlibraryshadows.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: tikzlibraryshadows.code.tex 2019/05/09 v3.1.3 (3.1.3)
 
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/frontendlayer/tikz/libraries\tikz
 libraryfadings.code.tex"
-File: tikzlibraryfadings.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: tikzlibraryfadings.code.tex 2019/05/09 v3.1.3 (3.1.3)
 
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/libraries\pgflibraryfadings.code.
 tex"
-File: pgflibraryfadings.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: pgflibraryfadings.code.tex 2019/05/09 v3.1.3 (3.1.3)
 )))
 \c@@todonotes@numberoftodonotes=\count402
 ) ("C:\Program Files\MiKTeX 2.9\tex/latex/pgfplots\pgfplots.sty"
@@ -1342,7 +1345,7 @@ Package: pgfplots 2018/03/28 v1.16 Data Visualization (1.16)
 \t@pgfplots@toka=\toks65
 \t@pgfplots@tokb=\toks66
 \t@pgfplots@tokc=\toks67
-\pgfplots@tmpa=\dimen316
+\pgfplots@tmpa=\dimen318
 \c@pgfplots@coordindex=\count403
 \c@pgfplots@scanlineindex=\count404
 
@@ -1413,14 +1416,14 @@ ex")))
 librarydecorations.code.tex"
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/modules\pgfmoduledecorations.code
 .tex"
-\pgfdecoratedcompleteddistance=\dimen317
-\pgfdecoratedremainingdistance=\dimen318
-\pgfdecoratedinputsegmentcompleteddistance=\dimen319
-\pgfdecoratedinputsegmentremainingdistance=\dimen320
-\pgf@decorate@distancetomove=\dimen321
+\pgfdecoratedcompleteddistance=\dimen319
+\pgfdecoratedremainingdistance=\dimen320
+\pgfdecoratedinputsegmentcompleteddistance=\dimen321
+\pgfdecoratedinputsegmentremainingdistance=\dimen322
+\pgf@decorate@distancetomove=\dimen323
 \pgf@decorate@repeatstate=\count409
-\pgfdecorationsegmentamplitude=\dimen322
-\pgfdecorationsegmentlength=\dimen323
+\pgfdecorationsegmentamplitude=\dimen324
+\pgfdecorationsegmentlength=\dimen325
 )
 \tikz@lib@dec@box=\box109
 )
@@ -1433,20 +1436,20 @@ librarydecorations.pathreplacing.code.tex"
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/libraries/decorations\pgflibraryd
 ecorations.pathreplacing.code.tex"))
 \pgfplots@numplots=\count410
-\pgfplots@xmin@reg=\dimen324
-\pgfplots@xmax@reg=\dimen325
-\pgfplots@ymin@reg=\dimen326
-\pgfplots@ymax@reg=\dimen327
-\pgfplots@zmin@reg=\dimen328
-\pgfplots@zmax@reg=\dimen329
+\pgfplots@xmin@reg=\dimen326
+\pgfplots@xmax@reg=\dimen327
+\pgfplots@ymin@reg=\dimen328
+\pgfplots@ymax@reg=\dimen329
+\pgfplots@zmin@reg=\dimen330
+\pgfplots@zmax@reg=\dimen331
 )
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/frontendlayer/tikz/libraries\tikz
 libraryplotmarks.code.tex"
-File: tikzlibraryplotmarks.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: tikzlibraryplotmarks.code.tex 2019/05/09 v3.1.3 (3.1.3)
 
 ("C:\Program Files\MiKTeX 2.9\tex/generic/pgf/libraries\pgflibraryplotmarks.cod
 e.tex"
-File: pgflibraryplotmarks.code.tex 2019/04/04 v3.1.2 (3.1.2)
+File: pgflibraryplotmarks.code.tex 2019/05/09 v3.1.3 (3.1.3)
 )))
 Package hyperref Info: Option `colorlinks' set `true' on input line 100.
 
@@ -1509,13 +1512,13 @@ LaTeX Font Info:    ... okay on input line 112.
 ("C:\Program Files\MiKTeX 2.9\tex/context/base/mkii\supp-pdf.mkii"
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count411
-\scratchdimen=\dimen330
+\scratchdimen=\dimen332
 \scratchbox=\box110
 \nofMPsegments=\count412
 \nofMParguments=\count413
 \everyMPshowfont=\toks69
 \MPscratchCnt=\count414
-\MPscratchDim=\dimen331
+\MPscratchDim=\dimen333
 \MPnumerator=\count415
 \makeMPintoPDFobject=\count416
 \everyMPtoPDFconversion=\toks70
@@ -1701,32 +1704,32 @@ Overfull \hbox (46.42625pt too wide) has occurred while \output is active
 [8
 
 ]
-Overfull \hbox (3.83684pt too wide) in paragraph at lines 271--271
+Overfull \hbox (3.83684pt too wide) in paragraph at lines 272--272
 []|\OT1/cmss/m/n/10.95 10| 
  []
 
 
-Overfull \hbox (3.83684pt too wide) in paragraph at lines 271--271
+Overfull \hbox (3.83684pt too wide) in paragraph at lines 272--272
 []|\OT1/cmss/m/n/10.95 11| 
  []
 
 
-Overfull \hbox (3.83684pt too wide) in paragraph at lines 271--271
+Overfull \hbox (3.83684pt too wide) in paragraph at lines 272--272
 []|\OT1/cmss/m/n/10.95 12| 
  []
 
 
-Overfull \hbox (3.83684pt too wide) in paragraph at lines 271--271
+Overfull \hbox (3.83684pt too wide) in paragraph at lines 272--272
 []|\OT1/cmss/m/n/10.95 13| 
  []
 
 
-Overfull \hbox (3.83684pt too wide) in paragraph at lines 271--271
+Overfull \hbox (3.83684pt too wide) in paragraph at lines 272--272
 []|\OT1/cmss/m/n/10.95 14| 
  []
 
 
-Overfull \hbox (3.83684pt too wide) in paragraph at lines 271--271
+Overfull \hbox (3.83684pt too wide) in paragraph at lines 272--272
 []|\OT1/cmss/m/n/10.95 15| 
  []
 
@@ -1738,7 +1741,7 @@ Overfull \hbox (46.42625pt too wide) has occurred while \output is active
 [9
 
 ]
-Overfull \vbox (10.75415pt too high) detected at line 299
+Overfull \vbox (10.75415pt too high) detected at line 300
  []
 
 
@@ -1824,13 +1827,6 @@ Overfull \hbox (46.42625pt too wide) has occurred while \output is active
  []
 
 [21
-
-]
-Overfull \hbox (46.42625pt too wide) has occurred while \output is active
- [][]  \OT1/cmss/m/n/6 ([])  
- []
-
-[22
 
 ]
 Missing character: There is no ; in font nullfont!
@@ -2275,9 +2271,20 @@ Overfull \hbox (46.42625pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
+[22
+
+]
+Overfull \hbox (46.42625pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
 [23
 
 ]
+Overfull \vbox (91.51366pt too high) detected at line 569
+ []
+
+
 Overfull \hbox (46.42625pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
@@ -2285,10 +2292,6 @@ Overfull \hbox (46.42625pt too wide) has occurred while \output is active
 [24
 
 ]
-Overfull \vbox (91.51366pt too high) detected at line 570
- []
-
-
 Overfull \hbox (46.42625pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
@@ -2324,6 +2327,10 @@ Overfull \hbox (46.42625pt too wide) has occurred while \output is active
 [29
 
 ]
+Overfull \vbox (74.3434pt too high) detected at line 671
+ []
+
+
 Overfull \hbox (46.42625pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
@@ -2331,10 +2338,6 @@ Overfull \hbox (46.42625pt too wide) has occurred while \output is active
 [30
 
 ]
-Overfull \vbox (74.3434pt too high) detected at line 672
- []
-
-
 Overfull \hbox (46.42625pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
@@ -2342,6 +2345,36 @@ Overfull \hbox (46.42625pt too wide) has occurred while \output is active
 [31
 
 ]
+Overfull \hbox (3.83684pt too wide) in paragraph at lines 715--715
+[]|\OT1/cmss/m/n/10.95 10| 
+ []
+
+
+Overfull \hbox (3.83684pt too wide) in paragraph at lines 715--715
+[]|\OT1/cmss/m/n/10.95 11| 
+ []
+
+
+Overfull \hbox (3.83684pt too wide) in paragraph at lines 715--715
+[]|\OT1/cmss/m/n/10.95 12| 
+ []
+
+
+Overfull \hbox (3.83684pt too wide) in paragraph at lines 715--715
+[]|\OT1/cmss/m/n/10.95 13| 
+ []
+
+
+Overfull \hbox (3.83684pt too wide) in paragraph at lines 715--715
+[]|\OT1/cmss/m/n/10.95 14| 
+ []
+
+
+Overfull \hbox (3.83684pt too wide) in paragraph at lines 715--715
+[]|\OT1/cmss/m/n/10.95 15| 
+ []
+
+
 Overfull \hbox (46.42625pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
@@ -2349,36 +2382,6 @@ Overfull \hbox (46.42625pt too wide) has occurred while \output is active
 [32
 
 ]
-Overfull \hbox (3.83684pt too wide) in paragraph at lines 716--716
-[]|\OT1/cmss/m/n/10.95 10| 
- []
-
-
-Overfull \hbox (3.83684pt too wide) in paragraph at lines 716--716
-[]|\OT1/cmss/m/n/10.95 11| 
- []
-
-
-Overfull \hbox (3.83684pt too wide) in paragraph at lines 716--716
-[]|\OT1/cmss/m/n/10.95 12| 
- []
-
-
-Overfull \hbox (3.83684pt too wide) in paragraph at lines 716--716
-[]|\OT1/cmss/m/n/10.95 13| 
- []
-
-
-Overfull \hbox (3.83684pt too wide) in paragraph at lines 716--716
-[]|\OT1/cmss/m/n/10.95 14| 
- []
-
-
-Overfull \hbox (3.83684pt too wide) in paragraph at lines 716--716
-[]|\OT1/cmss/m/n/10.95 15| 
- []
-
-
 Overfull \hbox (46.42625pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
@@ -2393,6 +2396,11 @@ Overfull \hbox (46.42625pt too wide) has occurred while \output is active
 [34
 
 ]
+
+Package natbib Warning: Citation `diebold_comparing_2002' on page 35 undefined 
+on input line 761.
+
+
 Overfull \hbox (46.42625pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
@@ -2400,6 +2408,10 @@ Overfull \hbox (46.42625pt too wide) has occurred while \output is active
 [35
 
 ]
+Overfull \vbox (12.89719pt too high) detected at line 782
+ []
+
+
 Overfull \hbox (46.42625pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
@@ -2407,10 +2419,6 @@ Overfull \hbox (46.42625pt too wide) has occurred while \output is active
 [36
 
 ]
-Overfull \vbox (12.89719pt too high) detected at line 781
- []
-
-
 Overfull \hbox (46.42625pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
@@ -2424,30 +2432,23 @@ Overfull \hbox (46.42625pt too wide) has occurred while \output is active
 
 [38
 
-]
+] ("Research Proposal Presentation.bbl")
+Overfull \vbox (229.59459pt too high) detected at line 808
+ []
+
+
 Overfull \hbox (46.42625pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
 [39
 
-] ("Research Proposal Presentation.bbl")
-Overfull \vbox (194.23451pt too high) detected at line 807
- []
-
-
-Overfull \hbox (46.42625pt too wide) has occurred while \output is active
- [][]  \OT1/cmss/m/n/6 ([])  
- []
-
-[40
-
 ]
 Overfull \hbox (46.42625pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
-[41
+[40
 
 ]
 \tf@nav=\write7
@@ -2459,23 +2460,27 @@ Overfull \hbox (46.42625pt too wide) has occurred while \output is active
 \tf@snm=\write9
 \openout9 = `"Research Proposal Presentation.snm"'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 819.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 819.
- ("Research Proposal Presentation.aux")
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 819.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 819.
+
+
+Package natbib Warning: There were undefined citations.
+
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 820.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 820.
+("Research Proposal Presentation.aux")
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 820.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 820.
 Package rerunfilecheck Info: File `"Research Proposal Presentation".out' has no
 t changed.
-(rerunfilecheck)             Checksum: 336EE595F7E62A1C1E861F8D85E1DC88;738.
+(rerunfilecheck)             Checksum: 5F09A0CFD61B03D2C5172FD5A56362FA;719.
  ) 
 Here is how much of TeX's memory you used:
- 54660 strings out of 492895
- 1301803 string characters out of 3133463
- 1607602 words of memory out of 3000000
- 57649 multiletter control sequences out of 15000+200000
- 544426 words of font info for 67 fonts, out of 3000000 for 9000
+ 54300 strings out of 492895
+ 1290728 string characters out of 3133463
+ 1611158 words of memory out of 3000000
+ 57289 multiletter control sequences out of 15000+200000
+ 542277 words of font info for 59 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 73i,19n,105p,1638b,2322s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 64i,19n,98p,1638b,1304s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Pr
 ogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Fi
 les/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Program Files/MiKTe
@@ -2491,10 +2496,10 @@ es/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Program Files/MiKTeX
  2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files/MiKTeX 2.9/font
 s/type1/public/amsfonts/symbols/msam7.pfb><C:/Program Files/MiKTeX 2.9/fonts/ty
 pe1/public/amsfonts/symbols/msbm10.pfb>
-Output written on "Research Proposal Presentation.pdf" (41 pages, 486117 bytes)
+Output written on "Research Proposal Presentation.pdf" (40 pages, 430940 bytes)
 .
 PDF statistics:
- 1389 PDF objects out of 1440 (max. 8388607)
- 110 named destinations out of 1000 (max. 500000)
- 549 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1262 PDF objects out of 1440 (max. 8388607)
+ 107 named destinations out of 1000 (max. 500000)
+ 249 words of extra memory for PDF output out of 10000 (max. 10000000)
 
