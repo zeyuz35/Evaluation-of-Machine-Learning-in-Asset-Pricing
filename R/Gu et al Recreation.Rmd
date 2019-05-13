@@ -30,7 +30,13 @@ set.seed(27935248)
 ##Simulation
 #####################################
 
-#The defaults are N = 200, P_c = 50 or 100
+#The defaults are N = 200, P_c = 50 or 100, and Time = 180
+#Also had P_x = number of macroeconomic time series = 2 (1 actual + constant)
+#Total predictors = P_c * P_x = 100, or 200
+
+
+#Our P_x will have 4 dimensions then
+
 #Keeping this low for now just to make everything more manageable
 
 #Number of stocks
@@ -38,7 +44,7 @@ N <- 20
 #Number of characteristics that underly true model
 P_c <- 10
 #Number of Periods
-Time <- 180
+Time <- 18
 
 ```
 
@@ -53,18 +59,29 @@ Time <- 180
 ##Function to Generate C_bar
 #######
 
-#Gu et al's specification does has a constant rho for all t and i, but differs across j
+# c_t is an N * P_c matrix of characteristics
+# c_(ij, t) = rho_j * c_(i, j, t-1) + e_(ij, t)
 
-gen_C_bar <- function(){
-  #empty matrix
+# Note that rho_j only depends on j (column), and is thus constant across all stocks i and time t
+
+# Therefore need to simulate a matrix (panel) of characteristics for each time
+
+gen_C_bar <- function () {
+  #initialize empty list
+
   elm <- matrix(
-    data = 0, nrow = N, ncol = P_c
+    data = 0, nrow = N,
+    ncol = P_c
   )
   
+  #Set to Time + 2 to make generating the first time period's characteristics
+  #Just have to remove first time period with this specification
   C_bar <- rep(list(elm), Time + 2)
   
-  #Gu et al set rho to runif 0.9, 1
-  #Generate a rho different across j, but constant across t and i
+  #Generate rho_j
+  
+  #Gu et al have parameters set to 0.9, 1
+  
   rho <- runif(P_c, 0.9, 1)
   
   for (t in 1:(Time+1)) {
@@ -80,11 +97,11 @@ gen_C_bar <- function(){
   return(C_bar)
 }
 
+C_bar <- gen_C_bar()
 ##################################
 ##Generate final "observed" C
 ##################################
 
-#Remember you need to generate C_bar and C_hat first
 #This function "observes" characteristics by normalizing them within (-1, 1) via the rank transformation
 
 gen_C <- function(C_matrix){
@@ -107,11 +124,14 @@ gen_C <- function(C_matrix){
 
 ```{r generate_characteristics}
 C_bar <- gen_C_bar()
-#C_hat <- gen_C_hat()
-#Gu et al do NOT build in cross sectional correlation
+
 C <- gen_C(C_bar)
 
+#Sanity Check
 
+#summary(C[[1]])
+
+#All within correct range of -1, 1, hooray
 ```
 
 ```{r gu_gen_xt}
@@ -119,13 +139,16 @@ C <- gen_C(C_bar)
 ###########################################
 ## GU ET AL UNIVARIATE SPECIFICATION
 ###########################################
+
+#Gu set their p here to be 0.95
+#error term ~ Normal(0, 1-p^2), different for all t
+
 gu_gen_xt <- function(){
   xt <- c(0:Time)
   p <- 0.95
   
   for (i in 1:(Time+1)) {
-  #Gu et al set these to N(0, 1-p^2); p^2 = 0.95
-    ut <- rnorm(1, mean = 0, sd = (1-p^2))
+    ut <- rnorm(1, mean = 0, sd = sqrt((1-p^2)))
     xt[1+i] <- p*xt[i] + ut
   }
   #Remove Initial
@@ -137,6 +160,8 @@ gu_gen_xt <- function(){
 gu_xt <- gu_gen_xt()
 
 acf(gu_xt)
+
+#What the shit Gu, this isn't very persistent at all
 
 ```
 
@@ -194,6 +219,8 @@ gu_g2(C, gu_xt, 1, 1, theta)
 ###########
 
 #Beta is the the first 3 rows of the specified characteristics vector
+#Beta_i,t = (c_i1t, c_i2t, c_i3t)
+#This means that Beta as a whole should be an N x 3 matrix for a given t
 
 gen_Beta <- function(C){
   
@@ -324,9 +351,6 @@ v_sd <- 0.05
 
 ep_sd <- 0.05
 
-#Tune theta for cross sectional r square
-#theta
-
 theta <- matrix(c(0.02, 0.02, 0.02), nrow = 1)
 
 resid <- gu_gen_rt_resid(v_sd, ep_sd)
@@ -334,39 +358,47 @@ resid <- gu_gen_rt_resid(v_sd, ep_sd)
 g <- gu_gen_g(gu_g1)
 
 rt_cross_tune_panel <- data.frame(
-  g = rep(0, N*Time),
-  resid = rep(0, N*Time),
-  time = rep(0, N*Time),
-  stock = rep(0, N*Time)
+  g = 0,
+  resid = 0,
+  time = 0,
+  stock = 0
+)
+
+#Initialize a data frame to store our ultimate panel data in
+rt_cross_tune_df <- data.frame(
+  resid = rep(0, Time+1),
+  g = rep(0, Time+1),
+  time = rep(0, Time+1),
+  stock = rep(0, Time+1)
 )
 
 for (i in 1:N){
-
-  rt_cross_tune_df <- data.frame(
-    resid = rep(0, Time+1),
-    g = rep(0, Time+1),
-    time = rep(0, Time+1),
-    stock = rep(i, Time+1)
-  )
-  
+  #Store the residuals and g into it
   for (t in 1:(Time+1)){
     rt_cross_tune_df$resid[t] <- resid[[t]][i]
     rt_cross_tune_df$g[t] <- g[[t]][i]
     rt_cross_tune_df$time <- t
+    rt_cross_tune_df$stock <- i
   }
-  
-  #Cbind returns, id, time and predictors
-  rt_cross_tune_panel[((i-1)*(Time+1)+1):(i*(Time+1)), ] <- rt_cross_tune_df
-  
+  rt_cross_tune_panel <- rbind(rt_cross_tune_panel, rt_cross_tune_df)
 }
 
-df <- data.frame(matrix(unlist(g), nrow=length(g), byrow=T))
+for (t in (Time+1)) {
+  rt_cross_tune_panel <- cbind(resid = resid[[t]], g = g[[t]], time = rep(t, N), stock = rep(1, N))
+}
+
+
+```
   
+  
+```{r}
 #Remove 1st row because returns data only starts from t = 2
 rt_cross_tune_panel <- rt_cross_tune_panel %>%
   filter(time != 1) %>%
-  select(-time) %>%
-  mutate(return = resid + g)
+  mutate(return = resid + g) %>%
+  #Generate Squared Series
+  mutate(return_sq = (return-mean(return)^2)) %>%
+  mutate(resid_sq = resid^2)
 
 #Individual return R squared
 
@@ -378,8 +410,8 @@ rt_id_tune_df <- data.frame(
 for (i in 1:N) {
   rt_id_tune_panel <- rt_cross_tune_panel %>%
     filter(stock == i)
-  SSR <- t(rt_id_tune_panel$return - rt_id_tune_panel$g) %*% (rt_id_tune_panel$return - rt_id_tune_panel$g)
-  SST <- t(rt_id_tune_panel$return - mean(rt_id_tune_panel$return)) %*% (rt_id_tune_panel$return - mean(rt_id_tune_panel$return))
+  SSR <- sum(rt_id_tune_panel$resid_sq)
+  SST <- sum(rt_id_tune_panel$return_sq)
   #SST <- t(rt_id_tune_panel$return) %*% (rt_id_tune_panel$return)
   rt_id_tune_df$rsquare[i] <- 1 - SSR/SST
 }
@@ -410,12 +442,20 @@ for (i in 1:N) {
 #Want this aorund 30%
 mean(vol_tune_df$annual_vol)
 
-#Cross sectional r squared
+#Cross Sectional R Squared for a given time period
 
-SSR <- t(rt_cross_tune_panel$resid) %*% (rt_cross_tune_panel$resid)
-SST <- t(rt_cross_tune_panel$return - mean(rt_cross_tune_panel$return)) %*% (rt_cross_tune_panel$return - mean(rt_cross_tune_panel$return))
+rt_cross_tune_panel_cross_section <- rt_cross_tune_panel %>%
+  filter(time == 2)
 
-#SST <- t(rt_cross_tune_panel$return) %*% (rt_cross_tune_panel$return)
+SSR <- rt_cross_tune_panel_cross_section$resid_sq
+SST <- rt_cross_tune_panel_cross_section$return_sq
+
+1 - SSR/SST
+
+#Predictive R Squared, across the entire cross section and all time
+
+SSR <- sum(rt_cross_tune_panel$resid_sq)
+SST <- sum(rt_cross_tune_panel$return_sq)
 
 1 - SSR/SST
 
