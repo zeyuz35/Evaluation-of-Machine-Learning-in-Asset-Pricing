@@ -40,11 +40,11 @@ set.seed(27935248)
 #Keeping this low for now just to make everything more manageable
 
 #Number of stocks
-N <- 50
+N <- 200
 #Number of characteristics that underly true model
-P_c <- 10
+P_c <- 100
 #Number of Periods
-Time <- 18
+Time <- 180
 
 ```
 
@@ -189,7 +189,7 @@ gu_g1(C, gu_xt, 1, 1, theta)
 #######################
 
 #Default theta, 1x3 dimensions
-theta <- matrix(c(0.04, 0.035, 0.01), nrow = 1)
+theta <- matrix(c(0.04, 0.03, 0.012), nrow = 1)
 
 gu_g2 <- function(C, x, i, t, theta){
   matrix(c(
@@ -261,8 +261,6 @@ gu_gen_v <- function(v_sd){
   return(v)
 }
 
-#No SV error strucure for Gu et al, yay!
-
 ###
 ##Epsilon Term is N x 1 vector of idiosyncatic errors, distributed at students t with 5 dof (0, 0.05^2)
 ###
@@ -282,7 +280,7 @@ gu_gen_error <- function(ep_sd){
   for (t in 1:Time+1){
     for (i in 1:N) {
       #This is how you build in a specified variance for student t
-      error[[t]][i] <- rt(1, 5)*sqrt(ep_sd^2 * (5-2)/5)
+      error[[t]][i] <- rt(1, df = 5)*sqrt(ep_sd^2 * (5-2)/5)
     }
   }
   
@@ -342,18 +340,27 @@ r_squared <- function(preds, actual){
   rsq <- 1 - rss/tss
   return(rsq)
 }
+
+r_squared_proper <- function(preds, actual){
+  rss <- sum((actual - preds) ^ 2)  ## residual sum of squares
+  tss <- sum((actual - mean(actual)) ^ 2)  ## total sum of squares
+  rsq <- 1 - rss/tss
+  return(rsq)
+}
 ```
 
 
 ```{r gu_tune_rsquared_skeleton, eval = FALSE}
 #Tuning Cross Sectional R Squared SKELETON CODE
 
-#Problems, due to randomness, r squared values vary A LOT between different runs
+#Problems, due to randomness, r squared values vary a bit between different runs
 
-#Individual time series rsquare seems to be same as predictive rsquare, probably doing something wrong
+#Individual time series rsquare is too low
 #Individual annualized volatility seems to be more around 25% rather than the required 30%
 #Cross sectional r squared seems to be around 5%, too low
 #Predictive R squared seems to OK around 5%
+
+#Individual time series r square and cross sectional r square seem to be wrong
 
 
 #We want inidividual r squared for each stock to be 50%
@@ -363,15 +370,23 @@ r_squared <- function(preds, actual){
 
 #Generate paramaters first
 
-#Tune v_sd for inidividual r square first
-#Gu et al had 0.05 for their v sd
+C_bar <- gen_C_bar()
+
+C <- gen_C(C_bar)
+
+gu_xt <- gu_gen_xt()
+
 v_sd <- 0.05
 
 ep_sd <- 0.05
 
-theta <- matrix(c(0.02, 0.02, 0.02), nrow = 1)
-
 resid <- gu_gen_rt_resid(v_sd, ep_sd)
+
+# theta <- matrix(c(0.04, 0.03, 0.012), nrow = 1)
+# 
+# g <- gu_gen_g(gu_g2)
+
+theta <- matrix(c(0.02, 0.02, 0.02), nrow = 1)
 
 g <- gu_gen_g(gu_g1)
 
@@ -411,7 +426,7 @@ rt_id_tune_df <- data.frame(
 for (i in 1:N) {
   rt_id_tune_panel <- rt_cross_tune_panel %>%
     filter(stock == i)
-  rt_id_tune_df$rsquare[i] <- r_squared(rt_cross_tune_panel$g, rt_cross_tune_panel$return)
+  rt_id_tune_df$rsquare[i] <- r_squared_proper(rt_id_tune_panel$g, rt_id_tune_panel$return)
 }
 
 #Return mean of each individual rsquared
@@ -453,7 +468,7 @@ for (t in 2:(Time+1)) {
   rt_cross_tune_panel_cross_section <- rt_cross_tune_panel %>% 
     filter(time == t)
   
-  rt_cross_section$rsquare[t-1] <- r_squared(rt_cross_tune_panel_cross_section$g, rt_cross_tune_panel_cross_section$return)
+  rt_cross_section$rsquare[t-1] <- r_squared_proper(rt_cross_tune_panel_cross_section$g, rt_cross_tune_panel_cross_section$return)
 }
 
 mean(rt_cross_section$rsquare)
