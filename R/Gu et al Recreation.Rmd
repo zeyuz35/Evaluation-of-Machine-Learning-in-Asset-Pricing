@@ -40,7 +40,7 @@ set.seed(27935248)
 #Keeping this low for now just to make everything more manageable
 
 #Number of stocks
-N <- 20
+N <- 50
 #Number of characteristics that underly true model
 P_c <- 10
 #Number of Periods
@@ -318,7 +318,7 @@ gu_gen_rt_resid <- function(v_sd, ep_sd){
 gu_gen_g <- function(g){
   elp <- matrix(0, nrow = N, ncol = 1)
   
-  rt <- rep(list(elp), Time+1)
+  gt <- rep(list(elp), Time+1)
   
   #########################
   gu_xt <- gu_gen_xt()
@@ -326,17 +326,35 @@ gu_gen_g <- function(g){
   
   for (t in 1:(Time)) {
     for (i in 1:N){
-      rt[[t+1]][i] <- g(C, gu_xt, i, t, theta)
+      gt[[t]][i] <- g(C, gu_xt, i, t, theta)
     }
   }
   
-  return(rt)
+  return(gt)
 }
 
 ```
 
+```{r}
+r_squared <- function(preds, actual){
+  rss <- sum((actual - preds) ^ 2)  ## residual sum of squares
+  tss <- sum((actual) ^ 2)  ## total sum of squares
+  rsq <- 1 - rss/tss
+  return(rsq)
+}
+```
+
+
 ```{r gu_tune_rsquared_skeleton, eval = FALSE}
 #Tuning Cross Sectional R Squared SKELETON CODE
+
+#Problems, due to randomness, r squared values vary A LOT between different runs
+
+#Individual time series rsquare seems to be same as predictive rsquare, probably doing something wrong
+#Individual annualized volatility seems to be more around 25% rather than the required 30%
+#Cross sectional r squared seems to be around 5%, too low
+#Predictive R squared seems to OK around 5%
+
 
 #We want inidividual r squared for each stock to be 50%
 #We want inidividual annualized volatility to be 30%
@@ -357,48 +375,31 @@ resid <- gu_gen_rt_resid(v_sd, ep_sd)
 
 g <- gu_gen_g(gu_g1)
 
-rt_cross_tune_panel <- data.frame(
-  g = 0,
-  resid = 0,
-  time = 0,
-  stock = 0
-)
+rt_cross_tune_list <- rep(list(NULL), Time)
 
-#Initialize a data frame to store our ultimate panel data in
-rt_cross_tune_df <- data.frame(
-  resid = rep(0, Time+1),
-  g = rep(0, Time+1),
-  time = rep(0, Time+1),
-  stock = rep(0, Time+1)
-)
-
-for (i in 1:N){
-  #Store the residuals and g into it
-  for (t in 1:(Time+1)){
-    rt_cross_tune_df$resid[t] <- resid[[t]][i]
-    rt_cross_tune_df$g[t] <- g[[t]][i]
-    rt_cross_tune_df$time <- t
-    rt_cross_tune_df$stock <- i
-  }
-  rt_cross_tune_panel <- rbind(rt_cross_tune_panel, rt_cross_tune_df)
+for (t in 1:(Time+1)) {
+  df <- data.frame(resid = resid[[t]], g = g[[t]], time = rep(t, N), stock = c(1:N))
+  rt_cross_tune_list[[t]] <- df
 }
 
-for (t in (Time+1)) {
-  rt_cross_tune_panel <- cbind(resid = resid[[t]], g = g[[t]], time = rep(t, N), stock = rep(1, N))
+rt_cross_tune_panel <- rt_cross_tune_list[[1]]
+
+for (t in 1:(Time+1)) {
+  rt_cross_tune_panel <- rbind(rt_cross_tune_panel, rt_cross_tune_list[[t]])
 }
 
-
-```
-  
-  
-```{r}
 #Remove 1st row because returns data only starts from t = 2
 rt_cross_tune_panel <- rt_cross_tune_panel %>%
   filter(time != 1) %>%
   mutate(return = resid + g) %>%
   #Generate Squared Series
-  mutate(return_sq = (return-mean(return)^2)) %>%
-  mutate(resid_sq = resid^2)
+  mutate(return_sq = ((return)^2)) %>%
+  mutate(resid_sq = resid^2) %>%
+  mutate(g_sq = (g - mean(return))^2)
+
+summary(rt_cross_tune_panel$resid_sq + rt_cross_tune_panel$g_sq - rt_cross_tune_panel$return_sq)
+
+######################################################################################
 
 #Individual return R squared
 
@@ -410,19 +411,13 @@ rt_id_tune_df <- data.frame(
 for (i in 1:N) {
   rt_id_tune_panel <- rt_cross_tune_panel %>%
     filter(stock == i)
-  SSR <- sum(rt_id_tune_panel$resid_sq)
-  SST <- sum(rt_id_tune_panel$return_sq)
-  #SST <- t(rt_id_tune_panel$return) %*% (rt_id_tune_panel$return)
-  rt_id_tune_df$rsquare[i] <- 1 - SSR/SST
+  rt_id_tune_df$rsquare[i] <- r_squared(rt_cross_tune_panel$g, rt_cross_tune_panel$return)
 }
-
-#Sanity check
-summary((rt_id_tune_panel$return - rt_id_tune_panel$g) - rt_id_tune_panel$resid)
-#Makes sure that the right returns, residuals etc are lined up correctly
-#Looks good (not exactly zero due to rounding)
 
 #Return mean of each individual rsquared
 mean(rt_id_tune_df$rsquare)
+
+######################################################################################
 
 #Calculate Annualized Volatility
 #Annualized volatility = calculate volatility (via standard deviation) for the monthly returns, then annualize it by multiplying it by sqrt(12) for 12 months in a year
@@ -439,654 +434,34 @@ for (i in 1:N) {
 }
 
 #Return the mean annualized volatility
-#Want this aorund 30%
+#Want this around 30%
 mean(vol_tune_df$annual_vol)
+
+######################################################################################
 
 #Cross Sectional R Squared for a given time period
 
-rt_cross_tune_panel_cross_section <- rt_cross_tune_panel %>%
-  filter(time == 2)
+rt_cross_section <- data.frame(
+  time = rep(0, Time),
+  rsquare = rep(0, Time)
+)
 
-SSR <- rt_cross_tune_panel_cross_section$resid_sq
-SST <- rt_cross_tune_panel_cross_section$return_sq
 
-1 - SSR/SST
+for (t in 2:(Time+1)) {
+  rt_cross_section$time <- t
+  
+  rt_cross_tune_panel_cross_section <- rt_cross_tune_panel %>% 
+    filter(time == t)
+  
+  rt_cross_section$rsquare[t-1] <- r_squared(rt_cross_tune_panel_cross_section$g, rt_cross_tune_panel_cross_section$return)
+}
+
+mean(rt_cross_section$rsquare)
+
+######################################################################################
 
 #Predictive R Squared, across the entire cross section and all time
 
-SSR <- sum(rt_cross_tune_panel$resid_sq)
-SST <- sum(rt_cross_tune_panel$return_sq)
-
-1 - SSR/SST
-
-#This is quite off from Gu et al's specification and results. NOT GOOD
-```
-
-```{r tune_rsquared_skeleton}
-#Same as before, but now with grid set up
-
-#Tuning Cross Sectional R Squared SKELETON CODE
-
-#We want inidividual r squared for each stock to be 50%
-#We want inidividual annualized volatility to be 30%
-#We want to cross sectional R squared to be 25%
-#We want the predictive R squared to be 5%
-
-#Big Problem, errors are random so individual r squared values are highly unstable
-
-#Set up Grids
-
-individual_rsquare_grid <- expand.grid(
-  v_sd = seq(0.01, 0.05, 0.01),
-  omega = -0.736,
-  gamma = 0.9,
-  w = sqrt(0.363)
-)
-
-individual_rsquare_grid <- cbind(individual_rsquare_grid, rsquare = rep(0, nrow(individual_rsquare_grid)), vol = rep(0, nrow(individual_rsquare_grid)))
-
-#Generate paramaters first
-
-###START ACTUAL CACULATIONS
-
-for (grid in 1:nrow(individual_rsquare_grid)) {
-  
-resid <- gen_rt_resid(
-  omega = individual_rsquare_grid$omega[grid], 
-  gamma = individual_rsquare_grid$gamma[grid], 
-  w = individual_rsquare_grid$w[grid], 
-  v_sd = individual_rsquare_grid$v_sd[grid]
-)
-
-#Tune theta for cross sectional r square
-#theta
-
-theta <- matrix(c(0.02, 0.02, 0.02), nrow = 1)
-
-rt <- gen_rt(A1, g1, resid)
-
-rt_cross_tune_panel <- data.frame(
-  return = rep(0, 36000),
-  resid = rep(0, 36000),
-  time = rep(0, 36000),
-  stock = rep(0, 36000)
-)
-
-for (i in 1:N){
-
-  rt_cross_tune_df <- data.frame(
-    return = rep(0, Time+1),
-    resid = rep(0, Time+1),
-    time = rep(0, Time+1)
-  )
-  
-  for (t in 1:(Time+1)){
-    rt_cross_tune_df$return[t] <- rt[[t]][i]
-    rt_cross_tune_df$resid[t] <- resid[[t]][i]
-  }
-  
-  #Cbind returns, id, time and predictors
-  panel <- cbind(rt_cross_tune_df$return, rt_cross_tune_df$resid, c(1:(Time+1)), c(rep(i, (Time+1))))
-  rt_cross_tune_panel[((i-1)*(Time+1)+1):(i*(Time+1)), ] <- panel
-  
-}
-  
-#Sort by time
-rt_cross_tune_panel <- rt_cross_tune_panel %>%
-  arrange(time)
-  
-#Remove 1st row because returns data only starts from t = 2
-rt_cross_tune_panel <- rt_cross_tune_panel %>%
-  filter(time != 1) %>%
-  select(-time)
-
-#Individual return R squared
-
-rt_id_tune_df <- data.frame(
-  stock = c(1:200),
-  rsquare = c(1:200)
-)
-
-for (i in 1:200) {
-  rt_id_tune_panel <- rt_cross_tune_panel %>%
-    filter(stock == i)
-  SSR <- t(rt_id_tune_panel$resid) %*% rt_id_tune_panel$resid
-  SST <- t(rt_id_tune_panel$return - mean(rt_id_tune_panel$return)) %*% (rt_id_tune_panel$return - mean(rt_id_tune_panel$return))
-  rt_id_tune_df$rsquare[i] <- 1 - SSR/SST
-}
-
-#Return mean of each individual rsquared
-individual_rsquare_grid$rsquare[grid] <-  mean(rt_id_tune_df$rsquare)
-
-#Calculate Annualized Volatility
-#Annualized volatility = calculate volatility (via standard deviation) for the monthly returns, then annualize it by multiplying it by sqrt(12) for 12 months in a year
-
-vol_tune_df <- data.frame(
-  stock = c(1:200),
-  annual_vol = c(1:200)
-)
-
-for (i in 1:200) {
-  vol_tune_panel <- rt_cross_tune_panel %>%
-    filter(stock == i)
-  vol_tune_df$annual_vol[i] <- sd(vol_tune_panel$return) * sqrt(12)
-}
-
-#Return the mean annualized volatility
-#Want this aorund 30%
-
-individual_rsquare_grid$vol[grid] <- mean(vol_tune_df$annual_vol)
-
-#Cross sectional r squared
-
-SSR <- t(rt_cross_tune_panel$resid) %*% (rt_cross_tune_panel$resid)
-SST <- t(rt_cross_tune_panel$return - mean(rt_cross_tune_panel$return)) %*% (rt_cross_tune_panel$return - mean(rt_cross_tune_panel$return))
-
-1 - SSR/SST
-  
-}
-
-
-
-```
-
-
-```{r generate_returns}
-##############################
-##Generate Return Series
-##############################
-
-##############################
-##g1
-##############################
-
-rt_A1_g1 <- gen_rt(A1, g1, gen_rt_resid(omega, gamma, w))
-#rt_A2_g1 <- gen_rt(A2, g1)
-#rt_A3_g1 <- gen_rt(A3, g1)
-
-##############################
-##g2
-##############################
-
-#rt_A1_g2 <- gen_rt(A1, g2)
-#rt_A2_g2 <- gen_rt(A2, g2)
-#rt_A3_g2 <- gen_rt(A3, g2)
-
-##############################
-##g3
-##############################
-
-#rt_A1_g3 <- gen_rt(A1, g3)
-#rt_A2_g3 <- gen_rt(A2, g3)
-#rt_A3_g3 <- gen_rt(A3, g3)
-
-
-##############################
-##g4
-##############################
-
-#rt_A1_g4 <- gen_rt(A1, g4)
-#rt_A2_g4 <- gen_rt(A2, g4)
-#rt_A3_g4 <- gen_rt(A3, g4)
-```
-
-```{r function_build_predictor}
-##############################################################################
-##Function to build predictor set for each i individual stock, and each time t
-##############################################################################
-
-###Note that the format of the list/matrix is different from previously so that it can be fed into algorithms more easily
-###Instead of t denoting the list, it is now the row number of the matrix containing all predictors
-###This should make it very easy to reconcile with the return series
-
-#Our P_x is 1 constant + 3 multivariate time series = 4
-#Hence, ncol = 4*P_c
-
-gen_z <- function(){
-  null_matrix <- matrix(0, nrow = Time+1, ncol = 4*P_c)
-
-  z <- rep(list(null_matrix), N)
-  
-  xt <- gen_xt(A1)
-  
-  for (i in 1:N) {
-    for (t in 1:(Time+1)){
-      z[[i]][t, ] <- t(
-        kronecker(t(cbind(c(rep(1, Time+1)), xt)[t, ]), C[[t]][i, ])
-        )
-    }
-  }
-  return(z)
-}
-
-############################################################################
-##Function to cbind the corresponding return series and the predictor set together, and return it in dataframe form
-############################################################################
-
-gen_pooled_panel <- function(){
-  
-  #Initialize entire dataset dimensions
-  #There should be 181*200 = 36,200 rows
-  #There should be 1 return column + 1 id column + 1 time column + 400 predictors = 403 columns
-  
-  pooled_panel <- matrix(data = 0, nrow = (181*200), ncol = (1+1+1+400))
-  
-  for (i in 1:N){
-    #Extract return series for ith stock from the return series list first
-    #Initialize empty matrix
-    r <- matrix(0, nrow = Time+1, ncol = 1)
-    
-    for (t in 1:(Time+1)){
-        r[t] <- rt_A1_g1[[t]][i]
-    }
-    
-    #Cbind returns, id, time and predictors
-    panel <- cbind(r, c(rep(i, (Time+1))), c(1:(Time+1)), z[[i]])
-    pooled_panel[((i-1)*(Time+1)+1):(i*(Time+1)), ] <- panel
-  }
-  
-  #Pass this through to data frame format with column titles so you know which column is which
-  pooled_panel <- data.frame(return = pooled_panel[, 1], stock = pooled_panel[, 2], time = pooled_panel[, 3], pooled_panel[, 4:403])
-  
-  #Sort by time
-  pooled_panel <- pooled_panel %>%
-  arrange(time)
-  
-  #Remove 1st row because returns data only starts from t = 2
-  pooled_panel <- pooled_panel %>%
-    filter(time != 1)
-  
-  #Return
-  return(pooled_panel)
-  
-}
-```
-
-```{r geenrate_panel_dataset}
-z <- gen_z()
-
-pooled_panel <- gen_pooled_panel()
-
-pooled_panel_y <- pooled_panel$return
-
-pooled_panel_x <- pooled_panel %>%
-  select(-return, -stock, -time)
-
-
-```
-
-```{r train_valid_test}
-#Create Training + Test Sets
-
-#$T = 180$ monthly periods corresponds to 15 years. The training sample was set to start from $T = 108$ or 9 years, a validation set 1 year in length. The last 3 years were reserved as a test set never to be used for validation or training.
-
-#This means that there are only 3 sample periods to train on, yay
-
-#Caret and other packages are not so good at dealing with custom training/validation/test sets. Have to specify resampling, tuning and testing manually (ugh)
-
-time_slices <- createTimeSlices(1:(Time-36), initialWindow = 108, horizon = 12, fixedWindow = FALSE, skip = 11)
-
-true_test <- list(c(121:180), c(133:180), c(145:180))
-
-time_slices <- list.append(time_slices, true_test)
-
-names(time_slices) <- c("train", "validation", "test")
-
-```
-
-```{r pooled_ols}
-#POLS
-
-#Pooled OLS does not have anything hyperparameters to tune, easy example to start off with
-
-#Expand formula manually this way because PLM is dumb and gets confused by y ~ .
-
-plm_formula <- function(panel){
-  colnames <- colnames(pooled_panel)
-  colnames <- colnames[-c(1:3)]
-  f <- as.formula(c("return ~ ", paste(colnames, collapse = "+")))
-  return(f)
-}
-
-f <- plm_formula(pooled_panel)
-
-#Initialize Loss Function Statistics
-
-POLS_stats <- data.frame(
-  set = c(1:3),
-  #Training
-  train_MAE = c(1:3),
-  train_MSE = c(1:3),
-  train_RMSE = c(1:3),
-  train_R2 = c(1:3),
-  #Validation
-  valid_MAE = c(1:3),
-  valid_MSE = c(1:3),
-  valid_RMSE = c(1:3),
-  valid_R2 = c(1:3),
-  #Test
-  test_MAE = c(1:3),
-  test_MSE = c(1:3),
-  test_RMSE = c(1:3),
-  test_R2 = c(1:3)
-)
-
-#Initialize Forecasts
-
-POLS_forecasts <- rep(list(0), 3)
-
-#Initialize Models
-
-POLS_models <- rep(list(0), 3)
-
-for (set in 1:3) {
-  #Load training, validation and test sets
-    train <- pooled_panel %>%
-      filter(time %in% unlist(time_slices$train[set]))
-    validation <- pooled_panel %>%
-      filter(time %in% unlist(time_slices$validation[set]))
-    test <- pooled_panel %>%
-      filter(time %in% unlist(time_slices$test[set]))
-    
-  #Initialize forecasts
-    POLS_forecasts[[set]] <- data.frame(
-      time = test$time,
-      forecast = rep(0, length(test$time)),
-      forecast_error = rep(0, length(test$time))
-    )
-
-  #Train model on training set
-  
-    pols <- plm(f, data = train, model = "pooling", index = c("time", "stock"))
-    POLS_models[[set]] <- pols
-    
-  #Usually Tuning via Validation set would be here, but POLS does not need tuning
-  
-  #Training Set Statistics
-    POLS_stats$train_MAE[set] <- mae(train$return, predict(pols))
-    POLS_stats$train_MSE[set] <- mse(train$return, predict(pols))
-    POLS_stats$train_RMSE[set] <- rmse(train$return, predict(pols))
-    error <- (train$return - predict(pols))
-    SSR <- t(error) %*% (error)
-    SST <- t(train$return - mean(train$return)) %*% (train$return - mean(train$return))
-    POLS_stats$train_R2[set] <- (1 - SSR/SST)
-    
-  #Validation Set Statistics
-    POLS_stats$valid_MAE[set] <- mae(validation$return, predict(pols, newdata = validation))
-    POLS_stats$valid_MSE[set] <- mse(validation$return, predict(pols, newdata = validation))
-    POLS_stats$valid_RMSE[set] <- rmse(validation$return, predict(pols, newdata = validation))
-    
-    error <- (validation$return - predict(pols, newdata = validation))
-    SSR <- t(error) %*% (error)
-    SST <- t(validation$return - mean(validation$return)) %*% (validation$return - mean(validation$return))
-    POLS_stats$valid_R2[set] <- (1 - SSR/SST)
-  
-  #Test Set Statistics
-    POLS_stats$test_MAE[set] <- mae(test$return, predict(pols, newdata = test))
-    POLS_stats$test_MSE[set] <- mse(test$return, predict(pols, newdata = test))
-    POLS_stats$test_RMSE[set] <- rmse(test$return, predict(pols, newdata = test))
-    
-    error <- (test$return - predict(pols, newdata = test))
-    SSR <- t(error) %*% (error)
-    SST <- t(test$return - mean(test$return)) %*% (test$return - mean(test$return))
-    POLS_stats$test_R2[set] <- (1 - SSR/SST)
-    
-  #Forecasts
-    POLS_forecasts[[set]]$forecast <- predict(pols, newdata = test)
-    POLS_forecasts[[set]]$forecast_error <- test$return - predict(pols, newdata = test)
-}
-
-POLS_stats
-
-summary(POLS_models[[3]])
-
-
-```
-
-```{r elastic_net}
-#Elasticnet
-
-#Elasticnet only has alpha to tune, thank god
-
-elasticnet_grid <- expand.grid(
-  alpha = seq(0, 1, 0.01)
-)
-
-#Initialize Loss Function Statistics
-
-elasticnet_stats <- data.frame(
-  set = c(1:3),
-  #Training
-  train_MAE = c(1:3),
-  train_MSE = c(1:3),
-  train_RMSE = c(1:3),
-  train_R2 = c(1:3),
-  #Validation
-  valid_MAE = c(1:3),
-  valid_MSE = c(1:3),
-  valid_RMSE = c(1:3),
-  valid_R2 = c(1:3),
-  #Test
-  test_MAE = c(1:3),
-  test_MSE = c(1:3),
-  test_RMSE = c(1:3),
-  test_R2 = c(1:3)
-)
-
-#Initialize Forecasts
-
-elasticnet_forecasts <- rep(list(0), 3)
-
-#Initialize Models
-
-elasticnet_models <- rep(list(0), 3)
-
-for (set in 1:3) {
-  #Load training, validation and test sets
-    train <- pooled_panel %>%
-      filter(time %in% unlist(time_slices$train[set]))
-    train_x <- train %>%
-      select(-return, -time, -stock)
-    train_y <- train %>%
-      select(return)
-    
-    validation <- pooled_panel %>%
-      filter(time %in% unlist(time_slices$validation[set]))
-    validation_x <- validation %>%
-      select(-return, -time, -stock)
-    validation_y <- validation %>%
-      select(return)
-    
-    test <- pooled_panel %>%
-      filter(time %in% unlist(time_slices$test[set]))
-    test_x <- test %>%
-      select(-return, -time, -stock)
-    test_y <- test %>%
-      select(return)
-    
-  #Initialize forecasts
-    elasticnet_forecasts[[set]] <- data.frame(
-      time = test$time,
-      forecast = rep(0, length(test$time)),
-      forecast_error = rep(0, length(test$time))
-    )
-
-  #Train model on training set
-  
-    elasticnet <- glmnet(x = train_x, y = train_y)
-    POLS_models[[set]] <- pols
-    
-  #Usually Tuning via Validation set would be here, but POLS does not need tuning
-  
-  #Training Set Statistics
-    POLS_stats$train_MAE[set] <- mae(train$return, predict(pols))
-    POLS_stats$train_MSE[set] <- mse(train$return, predict(pols))
-    POLS_stats$train_RMSE[set] <- rmse(train$return, predict(pols))
-    error <- (train$return - predict(pols))
-    SSR <- t(error) %*% (error)
-    SST <- t(train$return - mean(train$return)) %*% (train$return - mean(train$return))
-    POLS_stats$train_R2[set] <- (1 - SSR/SST)
-    
-  #Validation Set Statistics
-    POLS_stats$valid_MAE[set] <- mae(validation$return, predict(pols, newdata = validation))
-    POLS_stats$valid_MSE[set] <- mse(validation$return, predict(pols, newdata = validation))
-    POLS_stats$valid_RMSE[set] <- rmse(validation$return, predict(pols, newdata = validation))
-    
-    error <- (validation$return - predict(pols, newdata = validation))
-    SSR <- t(error) %*% (error)
-    SST <- t(validation$return - mean(validation$return)) %*% (validation$return - mean(validation$return))
-    POLS_stats$valid_R2[set] <- (1 - SSR/SST)
-  
-  #Test Set Statistics
-    POLS_stats$test_MAE[set] <- mae(test$return, predict(pols, newdata = test))
-    POLS_stats$test_MSE[set] <- mse(test$return, predict(pols, newdata = test))
-    POLS_stats$test_RMSE[set] <- rmse(test$return, predict(pols, newdata = test))
-    
-    error <- (test$return - predict(pols, newdata = test))
-    SSR <- t(error) %*% (error)
-    SST <- t(test$return - mean(test$return)) %*% (test$return - mean(test$return))
-    POLS_stats$test_R2[set] <- (1 - SSR/SST)
-    
-  #Forecasts
-    POLS_forecasts[[set]]$forecast <- predict(pols, newdata = test)
-    POLS_forecasts[[set]]$forecast_error <- test$return - predict(pols, newdata = test)
-}
-
-```
-
-```{r random_forest}
-#Random Forest
-
-#Random Forest should also be fairly straightforward, only two tuning parameters mtry and ntree (usually)
-
-#The vanilla randomForest package is very basic and too slow
-#We will use the ranger package, which is apparently a C++ implementation of the random forest algorithm and should be faster
-#Another alternative is to use XGBoost (which is very very fast) and set boosting rounds = 1, because in this case it should be a standard random forest
-
-#COmpute power is a real struggle, and the aim is just to get the code basis working for the moment. Very conservative grids are therefore used for now
-
-#Default ntree = 500
-#Default mtry = count(predictors/3) = 400/3 = 133
-
-random_forest_grid <- expand.grid(
-  ntree = seq(10, 50, 10),
-  mtry = seq(10, 100, 10)
-)
-
-#Generate formula, actually same code from PLM earlier
-
-rf_formula <- function(panel){
-  colnames <- colnames(pooled_panel)
-  colnames <- colnames[-c(1:3)]
-  f <- as.formula(c("return ~ ", paste(colnames, collapse = "+")))
-  return(f)
-}
-
-f <- rf_formula(pooled_panel)
-
-#Initialize Loss Function Statistics
-
-RF_stats <- data.frame(
-  set = c(1:3),
-  #Training
-  train_MAE = c(1:3),
-  train_MSE = c(1:3),
-  train_RMSE = c(1:3),
-  train_R2 = c(1:3),
-  #Validation
-  valid_MAE = c(1:3),
-  valid_MSE = c(1:3),
-  valid_RMSE = c(1:3),
-  valid_R2 = c(1:3),
-  #Test
-  test_MAE = c(1:3),
-  test_MSE = c(1:3),
-  test_RMSE = c(1:3),
-  test_R2 = c(1:3)
-)
-
-#Initialize Forecasts
-
-RF_forecasts <- rep(list(0), 3)
-
-#Initialize Models
-
-RF_models <- rep(list(0), 3)
-
-for (set in 1:3) {
-  #Load training, validation and test sets
-    train <- pooled_panel %>%
-      filter(time %in% unlist(time_slices$train[set]))
-    validation <- pooled_panel %>%
-      filter(time %in% unlist(time_slices$validation[set]))
-    test <- pooled_panel %>%
-      filter(time %in% unlist(time_slices$test[set]))
-    
-  #Initialize forecasts
-    RF_forecasts[[set]] <- data.frame(
-      time = test$time,
-      forecast = rep(0, length(test$time)),
-      forecast_error = rep(0, length(test$time))
-    )
-
-  #Train model on training set
-  
-    rf <- ranger(f, data = train, model = "pooling", index = c("stock", "time"))
-    RF_models[[set]] <- rf
-    
-  #Usually Tuning via Validation set would be here, but POLS does not need tuning
-  
-  #Training Set Statistics
-    RF_stats$train_MAE[set] <- mae(train$return, predict(rf))
-    RF_stats$train_MSE[set] <- mse(train$return, predict(rf))
-    RF_stats$train_RMSE[set] <- rmse(train$return, predict(rf))
-    #R squared still pending, haven't figured out how to do it yet fully
-    
-  #Validation Set Statistics
-    RF_stats$valid_MAE[set] <- mae(validation$return, predict(rf, newdata = validation))
-    RF_stats$valid_MSE[set] <- mse(validation$return, predict(rf, newdata = validation))
-    RF_stats$valid_RMSE[set] <- rmse(validation$return, predict(rf, newdata = validation))
-    #R squared still pending, haven't figured out how to do it yet fully
-  
-  #Test Set Statistics
-    RF_stats$test_MAE[set] <- mae(test$return, predict(rf, newdata = test))
-    RF_stats$test_MSE[set] <- mse(test$return, predict(rf, newdata = test))
-    RF_stats$test_RMSE[set] <- rmse(test$return, predict(rf, newdata = test))
-    #R squared still pending, haven't figured out how to do it yet fully
-    
-  #Forecasts
-    RF_forecasts[[set]]$forecast <- predict(rf, newdata = test)
-    RF_forecasts[[set]]$forecast_error <- test$return - predict(rf, newdata = test)
-    
-}
-
-```
-
-```{r random_forest_tune}
-#Train RF Model + tune
-rf <- ranger(f, data = train, 
-             #Hyperparameters
-             
-             #Tuning parameters
-              num.trees = 10,
-              mtry = 10,
-             
-             #No Tuning
-              #Default Min node size
-              min.node.size = 5,
-             
-             #Other
-             write.forest = TRUE,
-             importance = "impurity"
-             )
-
-importance(rf)
-
-```
-
-
-```{r neural_networks}
-#Neural Network
-
+r_squared(rt_cross_tune_panel$g, rt_cross_tune_panel$return)
 ```
 
