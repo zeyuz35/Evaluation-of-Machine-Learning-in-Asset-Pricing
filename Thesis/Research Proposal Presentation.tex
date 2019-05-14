@@ -131,56 +131,10 @@ To evaluate the application of machine learning to predicting financial asset re
 
 \begin{frame}
 \frametitle{Background}
-Define ``factor" the same way as \cite{harvey__2016}: a collection of regressors to be used in pricing returns that can be used to proxy for unknown underlying risk factors due to their correlation with cross sectional returns.
-
-Contrasts with the strict view that risk factors should be variables that have unpredictable variation through time, and be able to explain cross sectional returns independently
-
-Individual factors are typically firm characteristics and show little variation over time, or are pre-known
-\end{frame}
-
-\begin{frame}
-\frametitle{Background}
 \begin{itemize}
-\item \cite{goetzmann_testing_1993} and \cite{ang_stock_2006} note the persistence present in dividend ratio factors
+\item Factors : a collection of regressors to be used in pricing returns that can be used to proxy for unknown underlying risk factors due to their correlation with cross sectional returns, \citep{harvey__2016}
 
-\item Movements in dividend ratios are dominated by movements in price and therefore dividend ratios are correlated with lagged dependent variables on the right hand side of the regression equation. 
-
-\item Violates the assumptions of independent regressors required for OLS to be unbiased: t stats which are biased upwards and increase with time horizon due to autocorrelated errors
-
-\item \cite{goetzmann_testing_1993} show that corrections to t statistics using the GMM and NW errors also appear to be biased upwards
-\end{itemize}
-\end{frame}
-
-\begin{frame}
-\frametitle{Background}
-\begin{itemize}
-\item \cite{goyal_predicting_2003} conclude that while models incorporating dividend related factors were able to achieve higher in sample performance prior to 1990 than the historical mean, they could not have outperformed the historical mean out of sample
-
-\item Attributed to the increasing persistence and non-stationarity of dividend ratios, noting that they have become like random walks as of 2001
-
-\item Mirrors the sentiment of (\cite{lettau_consumption_2001}, \cite{schwert_anomalies_2003} and others) who conclude that models incorporating dividend ratios seemed to break down in the 2000s despite having performed well in the 1990s
-\end{itemize}
-\end{frame}
-
-\begin{frame}
-\frametitle{Background}
-Despite the controversy, the prevailing tone within the literature was that various factors such as dividend ratios, earnings price ratio, interest and inflation etc. were able to predict excess returns, with \cite{lettau_consumption_2001} remarking that this was now ``widely accepted." 
-
-\cite{welch_comprehensive_2008} extend upon the work of \cite{goyal_predicting_2003} by including a more comprehensive set of variables and time horizons. 
-
-Conclude that not a single variable had any statistical forecasting power. 
-
-Show that the significance values of some factors change with the choice of sample periods.
-\end{frame}
-
-\begin{frame}
-\frametitle{Background}
-\begin{itemize}
-\item Literature has continued to produce more factors: quantitative trading firms were using 81 factor models as the norm by 2014 \citep{hsu_finding_2014}, and \cite{harvey_census_2019} currently document well over 600 different factors suggested in the literature. 
-
-\item \cite{harvey__2016} detail the false discovery problem when the number of potential factors is extremely high
-
-\item Produce a multiple testing framework to mitigate this, and conclude that many of the historically discovered would have deemed significant by chance
+\item Contrasts with the strict view that risk factors should be variables that have unpredictable variation through time, and be able to explain cross sectional returns independently
 \end{itemize}
 
 \end{frame}
@@ -188,26 +142,47 @@ Show that the significance values of some factors change with the choice of samp
 \begin{frame}
 \frametitle{Background}
 \begin{itemize}
-\item Number of potential factors discovered in the literature has increased to the same scale as, if not greater, than the number of stocks considered in a typical portfolio, or the time horizon, \citep{feng_taming_2019}
 
-\item Produces highly inefficient covariances in a standard cross sectional regression
+\item Early Example - Dividend Ratio
+\item Can be \textit{persistent} (\cite{goetzmann_testing_1993}, \cite{ang_stock_2006})
 
-\item Moreover, when the number of factors exceeds the sample size, traditional cross sectional regressions become infeasible
+\item Dividend Ratios are correlated with lagged dependent variables on the right hand side of the regression equation. 
+
+\item Violates the assumptions of independent regressors required for OLS: t stats which are biased upwards and increase with time horizon due to autocorrelated errors
+
+\item Corrections to t statistics using the GMM and NW errors are also shown to be biased, \citep{goetzmann_testing_1993}
 \end{itemize}
-
-
 \end{frame}
 
 \begin{frame}
 \frametitle{Background}
-Many factors are cross sectionally correlated
+\begin{itemize}
+\item Traditionally, dividend ratios have been included because they have shown good in sample performance, particularly in the 1990s \citep{goyal_predicting_2003}
 
-Factors may be significant because they are correlated with a true, underlying factor and do not provide independent information themselves, a concern which \cite{cochrane_presidential_2011} calls the multidimensional challenge
+\item Proved to be not robust and have poor out of sample performance, especially since 2000s (\cite{goyal_predicting_2003}, \cite{lettau_consumption_2001}, \cite{schwert_anomalies_2003})
 
-Especially challenging for traditional regression models, which make strong functional form assumptions and are sensitive to outliers, \citep{freyberger_dissecting_2017}
+\end{itemize}
 \end{frame}
 
+\begin{frame}
+\frametitle{Background}
+\begin{itemize}
+\item Factors such as dividend ratios, earnings price ratio, interest and inflation etc. were ``widely accepted" able to predict excess returns, \citep{lettau_consumption_2001}
 
+\item \cite{welch_comprehensive_2008} conclude that not a single variable had any statistical forecasting power, and the significance values of some factors change with the choice of sample periods.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Background}
+\begin{itemize}
+\item More factors produced by literature: currently over 600 documented \citep{harvey_census_2019}
+
+\item False discovery problem, \citep{harvey__2016}
+
+\item Factors are cross sectionally correlated - inefficient covariances, factors may be subsumed within others, \citep{feng_taming_2019}
+\end{itemize}
+\end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{What is Machine Learning?}
@@ -215,7 +190,7 @@ Especially challenging for traditional regression models, which make strong func
 
 \begin{frame}
 \frametitle{What is Machine Learning?}
-\cite{hastie_elements_2009} define in \textit{An Introduction to Statistical Learning} as a vast set of tools for understanding data
+\cite{hastie_elements_2009} define in \textit{An Introduction to Statistical Learning} as a vast set of tools for understanding data.
 
 We will define it as a diverse collection of:
 \begin{itemize}
@@ -236,7 +211,7 @@ We will define it as a diverse collection of:
 \begin{frame}
 \frametitle{Why apply Machine Learning in Finance?}
 \begin{itemize}
-	\item High dimensional - more flexible and more likely to approximate underlying data generating processes
+	\item High dimensional - more flexible than traditional regression models, which make strong functional form assumptions and are sensitive to outliers, \citep{freyberger_dissecting_2017}
 	\item Explicit methods for guarding against overfitting and generalizing poorly
 	\item Methods to produce an optimal model from all possible at manageable computation cost
 \end{itemize}
@@ -247,7 +222,7 @@ We will define it as a diverse collection of:
 \begin{itemize}
 	\item \cite{kozak_shrinking_2017}, \cite{rapach_forecasting_2013}, \cite{freyberger_dissecting_2017}, among others have applied shrinkage and selection methods to identify important factors
 	\item \cite{gu_empirical_2018}, \cite{feng_deep_2018}, among others have constructed machine learning portfolios that historically outperform traditional portfolios in terms of prediction error and predictive $R^2$
-	\item Attribute their success to
+	\item Attribute their success to machine learning's ability to find non-linear interactions
 \end{itemize}
 \end{frame}
 
@@ -257,15 +232,17 @@ However, little work has been done on how machine learning actually recognises a
 \begin{itemize}
 	\item \cite{feng_deep_2018} cross validates their training set, destroying temporal aspect of data, and only explore a handful of factors
 	\item \cite{gu_empirical_2018} only use data up until the 1970s to produce predictions in the last 30 years
-	\item \cite{gu_empirical_2018} conclude that all models agree on same subset of factors for importance, but in terms of relative importance of factors there are differences, and only their tree based methods recognise dividend yield as important
+	\item \cite{gu_empirical_2018}'s models do not have entirely consistent importance metrics - only their tree based methods recognise dividend yield as important
 \end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Motivations}
-This paper will be the first to explore how machine learning performs in environments similar to financial data, with particular focus on how they deal with the challenges in financial data, acting as an extension to the simulation work of \cite{gu_empirical_2018}. 
+\begin{itemize}
+\item This paper will be the first to explore how machine learning performs in environments similar to financial data, with particular focus on how they deal with the challenges in financial data, acting as an extension to the simulation work of \cite{gu_empirical_2018}. 
 
-Models will also be evaluated again, but with more recent, representative financial data to explore robustness. 
+\item Models will also be evaluated again, but with more recent, representative financial data to explore robustness. 
+\end{itemize}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -291,19 +268,14 @@ Stocks are indexed as $i = 1, \dots, N$ and months by $t = 1, \dots, T$. $g^*(z_
 %Sample Splitting
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}
-\frametitle{Sample Splitting}
-\begin{itemize}
-	\item Two main approaches to dealing with temporal data
-	\begin{itemize}
-		\item Rolling window - training, validation, and test set lengths are fixed and move forwards in time
-		\item Growing window - training set grows in size, but validation and test set lengths are fixed and move forwards in time
-	\end{itemize}
-	\item Hybrid approach was chosen for feasibility
-	\item Define a training set, validate on the next year, forecast for the next year
-	\item Increase training set by one more year and move the validation and test sets forward one year
-\end{itemize}
-\end{frame}
+%\begin{frame}
+%\frametitle{Sample Splitting}
+%\begin{itemize}
+%	\item Rolling window - training, validation, and test set lengths are fixed and move forwards in time
+%	\item Growing window - training set grows in size, but validation and test set lengths are fixed and move forwards in time
+%	\item Hybrid approach was chosen for feasibility
+%\end{itemize}
+%\end{frame}
 
 \begin{frame}
 \frametitle{Sample Splitting}
@@ -418,12 +390,6 @@ Linear Models assume that the underlying conditional expectation \( g^*(z_{i, t}
 	\end{equation}
 	
 Optimizing $\theta$ with respect to minimizing MSE yields the Pooled OLS estimator
-Limitations:
-	\begin{itemize}
-		\item Need to manually consider and specify non-linear interactions
-		\item Struggles with high dimensionality
-	\end{itemize}
-
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -453,7 +419,7 @@ Focus on the popular "elastic net" penalty  \citep{zou_regularization_2005}, whi
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
-\frametitle{Regression Trees and Random Forests}
+\frametitle{Regression Trees \& Random Forests}
 \begin{itemize}
 	\item Fully non-parametric models that can capture complex multi-way interactions. 
 	\item A tree "grows" in a series of iterations:
@@ -461,35 +427,8 @@ Focus on the popular "elastic net" penalty  \citep{zou_regularization_2005}, whi
 		\item Make a split ("branch") along one predictor, such that it is the best split available at that stage with respect to minimizing the loss function
 		\item Repeat until each observation is its own node, or until the stopping criterion is met
 	\end{enumerate}
-	\item The eventual model slices the predictor space into rectangular partitions, and predicts the unknown function $g^*(z_{i,t})$ with the ``average" value of the outcome variable in each partition, with repsect to minimizing the loss function	
+	\item Slices the predictor space into rectangular partitions, and predicts the unknown function $g^*(z_{i,t})$ with the ``average" value of the outcome variable in each partition to minimize the loss function
 \end{itemize}
-\end{frame}
-
-\begin{frame}
-\frametitle{Regression Trees and Random Forests}
-The prediction of a tree, $\mathcal{T}$, with \(K\) "leaves" (terminal nodes), and depth $L$ is
-
-\begin{equation}
-g(z_{i,t};\theta,K,L) = \sum_{k=1}^{K}\theta_k\textbf{1}_{z_{i,t}\in C_k(L)}
-\end{equation}
-
-where $C_k(L)$ is one of the $K$ partitions in the model.
-
-Only recursive binary trees are considered. 
-
-\end{frame}
-
-\begin{frame}
-\frametitle{Regression Trees and Random Forests}
-Trees can be grown with respect to a variety of loss functions, including mean absolute error, mean squared error and Huber Loss:
-
-\begin{equation}
-H(\theta, C) = \frac{1}{|C|} \sum_{z_{i,t} \in C} L(r_{i,t+1} - \theta)
-\end{equation}
-
-where $|C|$ denotes the number of observations in set C (partition). 
-
-Optimal prediction for each partition is the mean of the partition to minimize MSE, and the median of the partition to minimize MAE.
 \end{frame}
 
 \begin{frame}
@@ -512,27 +451,50 @@ Random Forests were proposed by \cite{breiman_random_2001} to address this
 
 \begin{frame}
 \frametitle{Neural Networks}
-Most complex type of model available
+Feed forward neural networks consist of an ``input layer" of scaled data inputs, ``hidden layers" which interact and non-linearly transform the inputs, and finally an ``output layer" that aggregates the hidden layers and transform them a final time for the final output. 
 
-Able to capture several non-linear interactions through their many layers, hence its other name ``deep learning" 
-
-Highly flexible and therefore often the most parameterized and least interpretable models
-
-The scope of this paper is limited to traditional ``feed-forward" networks. 
-\end{frame}
-
-\begin{frame}
-\frametitle{Neural Networks}
-The feed forward network consists of an ``input layer" of scaled data inputs, one or more ``hidden layers" which interact and non-linearly transform the inputs, and finally an output layer that aggregates the hidden layers and transform them a final time for the final output. 
-
-A neural network with no hidden layers reduces to already familiar regression models, such as OLS and Logit (depending on activation function and choice form of output).
+\begin{figure}
+	\begin{neuralnetwork}
+		%Options
+		[nodespacing=9.5mm, layerspacing=18mm,
+		maintitleheight=1em, layertitleheight=2em,
+		height=7, toprow=false, nodesize=24pt, style={},
+		title={}, titlestyle={}]
+		\newcommand{\nodetextclear}[2]{}
+		%use \ifnum to get different labels, such as x_n on the last neuron
+		\newcommand{\nodetextx}[2]{\ifnum ####2=8 $x_n^{(0)}$ \else $x_####2^{(0)}$ \fi}
+		\newcommand{\nodetexty}[2]{$y_####2$}
+		%Hidden layer textcommands
+		%32 neurons
+		\newcommand{\nodetextxa}[2]{\ifnum ####2=7 $x_{32}^{(1)}$ \else $x_####2^{(1)}$ \fi}
+		%16 neurons
+		\newcommand{\nodetextxb}[2]{\ifnum ####2=6 $x_{16}^{(2)}$ \else $x_####2^{(2)}$ \fi}
+		%8 neurons
+		\newcommand{\nodetextxc}[2]{\ifnum ####2=5 $x_{8}^{(3)}$ \else $x_####2^{(3)}$ \fi}
+		\newcommand{\nodetextxd}[2]{$x_####2^{(4)}$}
+		\newcommand{\nodetextxe}[2]{$x_####2^{(5)}$}
+		%Input Layer
+		\inputlayer[count=3, bias=true, title=, text=\nodetextx]
+		%Hidden Layer 1
+		\hiddenlayer[count=1, bias=true, title=, text=\nodetextxa] 
+		\linklayers[]
+		%Final Layer
+		\outputlayer[count=1, title=, text=\nodetexty] \linklayers
+	\end{neuralnetwork}
+\caption{Sample Neural Network}
+\end{figure}
 \end{frame}
 
 \begin{frame}
 \frametitle{Neural Network Specifications}
-Neural networks with up to 5 hidden layers were considered. The number of neurons is each layer was chosen according to the geometric pyramid rule \citep{masters_practical_1993}
 
-All units are fully connected: each neurons receives input from all neurons the layer before it
+\begin{itemize}
+\item Neural networks with up to 5 hidden layers were considered. 
+
+\item The number of neurons is each layer determined by geometric pyramid rule \citep{masters_practical_1993}
+
+\item All units are fully connected
+\end{itemize}
 
 ReLU activation function was chosen for all hidden layers for computational speed, and hence popularity in literature:
 
@@ -541,15 +503,15 @@ ReLU activation function was chosen for all hidden layers for computational spee
 \end{equation}
 \end{frame}
 
-\begin{frame}
-\frametitle{Computation}
-\begin{itemize}
-	\item Stochastic Gradient Descent using ADAM
-	\item Batch Normalization
-	\item Randomize initial starting weights and biases, then average these into an ensemble model
-	\item See references for specific details
-\end{itemize}
-\end{frame}
+%\begin{frame}
+%\frametitle{Computation}
+%\begin{itemize}
+%	\item Stochastic Gradient Descent using ADAM
+%	\item Batch Normalization
+%	\item Randomize initial starting weights and biases, then average these into an ensemble model
+%	\item See references for specific details
+%\end{itemize}
+%\end{frame}
 
 \begin{frame}
 %Beamer hack snad uses # in a loop
@@ -733,50 +695,6 @@ $\theta^0$ was tuned so that the cross sectional $R^2$ was around 25\%, and the 
 The simulation design results in $3 \times 4 = 12$ different simulated datasets, each with $N = 200$ stocks, $T = 180$ periods and $P_c = 100$ characteristics. Each design was simulated 50 times to assess the robustness of machine learning algorithms.
 \end{frame}
 
-\begin{frame}
-\frametitle{Sample Splitting}
-$T = 180$ monthly periods corresponds to 15 years. The training sample was set to start from $T = 108$ or 9 years, a validation set 1 year in length. The last 3 years were reserved as a test set never to be used for validation or training.
-\end{frame}
-
-\begin{frame}
-\frametitle{Sample Splitting}
-\begin{figure}
-	\begin{center}
-		\begin{tabular}{|c|p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}|p{0.25cm}p{0.25cm}p{0.25cm}|}
-			\hline
-			Set No. &&&&&&&&&&&&&&& \\
-			\hline
-			%%%%%%%%
-			3 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
-			\cellcolor{pink} & 
-			\cellcolor{olive} & \cellcolor{olive} &	\cellcolor{olive} \\
-			%%%%%%%%
-			2 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
-			\cellcolor{pink} & 
-			\cellcolor{olive} & \cellcolor{olive} &	\cellcolor{olive} & \cellcolor{olive} \\
-			%%%%%%%%
-			1 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
-			\cellcolor{pink} & 
-			\cellcolor{olive} & \cellcolor{olive} &	\cellcolor{olive} & \cellcolor{olive} & \cellcolor{olive} \\
-			\hline
-			Year & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15\\
-			\hline
-		\end{tabular}
-		\medskip
-		\begin{tabular}{|c|p{0.25cm}|}
-			\hline
-			Training & \cellcolor{cyan} \\
-			\hline
-			Validation & \cellcolor{pink} \\
-			\hline
-			Test & \cellcolor{olive} \\
-			\hline
-		\end{tabular}
-	\end{center}
-	\caption{Sample Splitting Procedure}
-\end{figure}
-\end{frame}
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Real Data}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -809,36 +727,34 @@ where $\mathcal{T}_3$ indicates that the fits are only assessed on the test subs
 \begin{frame}
 \frametitle{Diebold Mariano Tests for Predictive Accuracy}
 \begin{itemize}
-	\item The Diebold-Mariano test (\cite{diebold_comparing_2002} and \cite{harvey_testing_1997}) compares the forecast accuracy of two forecast methods
-	
-	\item Different to the overall R squared metric because it tests whether or not the models' forecast accuracy is significantly different
+	\item Compares the forecast accuracy of two forecast methods, (\cite{diebold_comparing_2002} and \cite{harvey_testing_1997})
 	
 	\item Tests whether or not the difference series ($d_t = e_{1t} - e_{2t}$) between two forecast methods' errors is different from zero
 	
-	\item As all models in this paper will be producing forecasts for an entire cross section of stocks, $e_{1t}$ and $e_{2t}$ will instead represent the average forecast errors for each model
+	\item $e_{1t}$ and $e_{2t}$ will instead represent the average forecast errors for each model
 \end{itemize}
 \end{frame}
 
-\begin{frame}
-\frametitle{Diebold Mariano Tests for Predictive Accuracy}
-Under the null hypothesis (forecast errors from compared models are the same):
-
-\begin{align}
-S_1^* &= \left[ 
-\frac{n + 1 - 2h + n^{-1}h(h-1)}
-{n} 
-\right]^{1/2}S_1 ; \quad S_1^* \sim N(0,1)\\
-S_1 &= \left[ 
-\hat{V}(\bar{d})
-\right] ^{-1/2}\bar{d} \\
-\hat{\gamma}_k &= n^{-1} \sum_{t = k + 1}^{n}(d_t - \bar{d})(d_{t-k} - \bar{d}) \\
-V(\bar{d}) &\approx n^{-1}\left[ 
-\gamma_0 + 2 \sum_{k = 1}^{h - 1}\gamma_k
-\right] 
-\end{align}
-
-where $d_t$ represents the difference series between the forecast errors of the two models $e_{1t} - e_{2t}$.
-\end{frame}
+%\begin{frame}
+%\frametitle{Diebold Mariano Tests for Predictive Accuracy}
+%Under the null hypothesis:
+%
+%\begin{align}
+%S_1^* &= \left[ 
+%\frac{n + 1 - 2h + n^{-1}h(h-1)}
+%{n} 
+%\right]^{1/2}S_1 ; \quad S_1^* \sim N(0,1)\\
+%S_1 &= \left[ 
+%\hat{V}(\bar{d})
+%\right] ^{-1/2}\bar{d} \\
+%\hat{\gamma}_k &= n^{-1} \sum_{t = k + 1}^{n}(d_t - \bar{d})(d_{t-k} - \bar{d}) \\
+%V(\bar{d}) &\approx n^{-1}\left[ 
+%\gamma_0 + 2 \sum_{k = 1}^{h - 1}\gamma_k
+%\right] 
+%\end{align}
+%
+%where $d_t$ = $e_{1t} - e_{2t}$.
+%\end{frame}
 
 \begin{frame}
 \frametitle{Variable Importance}
@@ -853,7 +769,7 @@ Despite obvious limitations, this allows us to visualize which factors machine l
 
 \begin{frame}
 \frametitle{Results}
-
+Work is currently being done on trying to tune the R-Squared values of the simulated datasets
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
