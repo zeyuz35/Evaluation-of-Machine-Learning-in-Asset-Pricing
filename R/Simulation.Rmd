@@ -31,11 +31,17 @@ set.seed(27935248)
 #####################################
 
 #Number of stocks
-N <- 200
-#Number of characteristics that underly true model
-P_c <- 100
-#Number of Periods
-Time <- 180
+# N <- 200
+# #Number of characteristics that underly true model
+# P_c <- 100
+# #Number of Periods
+# Time <- 180
+
+N <- 20
+
+P_c <- 10
+
+Time <- 18
 
 ```
 
@@ -58,10 +64,12 @@ gen_C_bar <- function(){
   
   C_bar <- rep(list(elm), Time + 2)
   
+  #Generate rho vector to be constant across time and stocks
+  rho <- runif(P_c, 1/2, 1)
+  
   for (t in 1:(Time+1)) {
     for (j in 1:P_c) {
-      rho <- runif(1, 1/2, 1)
-      C_bar[[t+1]][, j] <- (C_bar[[t]][, j]*rho + rnorm(N, 0, 1))
+      C_bar[[t+1]][, j] <- (C_bar[[t]][, j] * rho[j] + rnorm(N, 0, 1))
     }  
   }
   
@@ -71,27 +79,26 @@ gen_C_bar <- function(){
   return(C_bar)
 }
 
-######################
-##B and lambda matrix
-######################
+#######################################
+##Generate correlation matrix
+#######################################
 
-gen_B <- function(){
+gen_W <- function(){
+  
+  #Generate Lambda Matrix first
+  
   Lambda <- matrix(
     data = rnorm(N*4, 0, 1),
     nrow = N, ncol = 4
   )
   
+  #Use Lambda to create B matrix
+  
   B <- (Lambda) %*% t(Lambda)
   B <- B + 1/10*diag(nrow = nrow(B))
   
-  return(B)
-}
-
-#######################################
-##Transform into correlation matrix W
-#######################################
-
-gen_W <- function(){
+  #Turn B into a correlation matrix
+  
   W <- diag(B)^(-1/2)*B*diag(B)^(-1/2)
   return(W)
 }
@@ -99,10 +106,9 @@ gen_W <- function(){
 #########################
 ##Generate C_hat
 #########################
-#Generation of C hat requires generating B and W first
+#This builds in the correlation from W into original C_bar
 
 gen_C_hat <- function(){
-  B <- gen_B()
   W <- gen_W()
   
   C_hat <- rep(list(elm), Time + 1)
@@ -118,13 +124,6 @@ gen_C_hat <- function(){
 ##Generate final "observed" C
 ##################################
 
-#Remember you need to generate C_bar and C_hat first
-
-##################################
-##Generate final "observed" C
-##################################
-
-#Remember you need to generate C_bar and C_hat first
 #This function "observes" characteristics by normalizing them within (-1, 1) via the rank transformation
 
 gen_C <- function(C_matrix){
@@ -204,7 +203,7 @@ gen_xt <- function(A){
 ##Function to plot xt
 #########################################
 
-#Transforms xt series to wide format to plot it
+#Transforms xt series to wide format and plots it
 
 plot_xt <- function(xt){
   xt_tidy <- cbind(t = c(1:(Time+1)), xt)
@@ -414,6 +413,8 @@ gen_error <- function(omega, gamma, w){
 ##Function to generate return series + its residuals given specification of A and g function
 ############################################################################
 
+#This generates beta, v vector of errors, and the epsilon errors, then binds them together for the final error term
+
 gen_rt_resid <- function(omega, gamma, w, v_sd){
   elp <- matrix(0, nrow = N, ncol = 1)
   
@@ -427,12 +428,14 @@ gen_rt_resid <- function(omega, gamma, w, v_sd){
   
   for (t in 1:(Time)) {
     for (i in 1:N){
-      resid[[t+1]][i] <- Beta[[t+1]][i, ] %*% v[[t+1]] + error[[t+1]][i]
+      resid[[t]][i] <- Beta[[t]][i, ] %*% v[[t]] + error[[t]][i]
     }
   }
   
   return(resid)
 }
+
+#This generates the final return series, given the residuals (to be generated using above function)
 
 gen_rt <- function(A, g, resid){
   elp <- matrix(0, nrow = N, ncol = 1)
@@ -460,8 +463,8 @@ gen_rt <- function(A, g, resid){
 ```{r tune_rsquared_skeleton, eval = FALSE}
 #Tuning Cross Sectional R Squared SKELETON CODE
 
-#We want inidividual r squared for each stock to be 50%
-#We want inidividual annualized volatility to be 30%
+#We want individual r squared for each stock to be 50%
+#We want individual annualized volatility to be 30%
 #We want to cross sectional R squared to be 25%
 #We want the predictive R squared to be 5%
 
@@ -469,92 +472,81 @@ gen_rt <- function(A, g, resid){
 
 #Tune v_sd for inidividual r square first
 #Gu et al had 0.05 for their v variance
-v_sd <- 0.0025
+v_sd <- 0.05
 
 #Tune SV parameters for individual r square first
 #Not too sure about stochastic volatility parameters
 
-  #Defaults
-  omega <- -0.736
-  gamma <- 0.90
-  w <- sqrt(0.363)
+  # #Defaults
+  # omega <- -0.736
+  # gamma <- 0.90
+  # w <- sqrt(0.363)
   
   #Custom
   omega <- -0.736
   gamma <- 0.90
   w <- sqrt(0.363)
   
-resid <- gen_rt_resid(omega, gamma, w, v_sd)
-
-#Tune theta for cross sectional r square
-#theta
-
+#Theta
+  
 theta <- matrix(c(0.02, 0.02, 0.02), nrow = 1)
+  
+resid <- gen_rt_resid(omega, gamma, w, v_sd)
 
 rt <- gen_rt(A3, g1, resid)
 
-rt_cross_tune_panel <- data.frame(
-  return = rep(0, 36000),
-  resid = rep(0, 36000),
-  time = rep(0, 36000),
-  stock = rep(0, 36000)
-)
+####################################################################################
 
-for (i in 1:N){
+rt_cross_tune_list <- rep(list(NULL), Time)
 
-  rt_cross_tune_df <- data.frame(
-    return = rep(0, Time+1),
-    resid = rep(0, Time+1),
-    time = rep(0, Time+1)
-  )
-  
-  for (t in 1:(Time+1)){
-    rt_cross_tune_df$return[t] <- rt[[t]][i]
-    rt_cross_tune_df$resid[t] <- resid[[t]][i]
-  }
-  
-  #Cbind returns, id, time and predictors
-  panel <- cbind(rt_cross_tune_df$return, rt_cross_tune_df$resid, c(1:(Time+1)), c(rep(i, (Time+1))))
-  rt_cross_tune_panel[((i-1)*(Time+1)+1):(i*(Time+1)), ] <- panel
-  
+for (t in 1:(Time+1)) {
+  df <- data.frame(return = rt[[t]], resid = resid[[t]], time = rep(t, N), stock = c(1:N))
+  rt_cross_tune_list[[t]] <- df
 }
-  
-#Sort by time
-rt_cross_tune_panel <- rt_cross_tune_panel %>%
-  arrange(time)
-  
+
+rt_cross_tune_panel <- rt_cross_tune_list[[1]]
+
+for (t in 1:(Time+1)) {
+  rt_cross_tune_panel <- rbind(rt_cross_tune_panel, rt_cross_tune_list[[t]])
+}
+
 #Remove 1st row because returns data only starts from t = 2
 rt_cross_tune_panel <- rt_cross_tune_panel %>%
-  filter(time != 1) %>%
-  select(-time)
+  filter(time != 1)
 
-#Individual return R squared
+####################################################################################
+
+#Individual time series R squared
+
+#Initialize Dataframe
 
 rt_id_tune_df <- data.frame(
-  stock = c(1:200),
-  rsquare = c(1:200)
+  stock = c(1:N),
+  rsquare = c(1:N)
 )
 
-for (i in 1:200) {
+for (i in 1:N) {
   rt_id_tune_panel <- rt_cross_tune_panel %>%
     filter(stock == i)
   SSR <- t(rt_id_tune_panel$resid) %*% rt_id_tune_panel$resid
-  SST <- t(rt_id_tune_panel$return - mean(rt_id_tune_panel$return)) %*% (rt_id_tune_panel$return - mean(rt_id_tune_panel$return))
+  SST <- t(rt_id_tune_panel$return) %*% (rt_id_tune_panel$return)
   rt_id_tune_df$rsquare[i] <- 1 - SSR/SST
 }
 
 #Return mean of each individual rsquared
 mean(rt_id_tune_df$rsquare)
 
+####################################################################################
+
 #Calculate Annualized Volatility
 #Annualized volatility = calculate volatility (via standard deviation) for the monthly returns, then annualize it by multiplying it by sqrt(12) for 12 months in a year
 
 vol_tune_df <- data.frame(
-  stock = c(1:200),
-  annual_vol = c(1:200)
+  stock = c(1:N),
+  annual_vol = c(1:N)
 )
 
-for (i in 1:200) {
+for (i in 1:N) {
   vol_tune_panel <- rt_cross_tune_panel %>%
     filter(stock == i)
   vol_tune_df$annual_vol[i] <- sd(vol_tune_panel$return) * sqrt(12)
@@ -564,12 +556,18 @@ for (i in 1:200) {
 #Want this aorund 30%
 mean(vol_tune_df$annual_vol)
 
+####################################################################################
+
 #Cross sectional r squared
 
 SSR <- t(rt_cross_tune_panel$resid) %*% (rt_cross_tune_panel$resid)
 SST <- t(rt_cross_tune_panel$return - mean(rt_cross_tune_panel$return)) %*% (rt_cross_tune_panel$return - mean(rt_cross_tune_panel$return))
 
 1 - SSR/SST
+
+####################################################################################
+
+#Predictive R Squared
 ```
 
 ```{r tune_rsquared_skeleton}

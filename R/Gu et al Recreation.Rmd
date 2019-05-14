@@ -314,10 +314,10 @@ gu_gen_rt_resid <- function(v_sd, ep_sd){
   return(resid)
 }
 
-gu_gen_g <- function(g){
+gu_gen_rt <- function(g, resid){
   elp <- matrix(0, nrow = N, ncol = 1)
   
-  gt <- rep(list(elp), Time+1)
+  rt <- rep(list(elp), Time+1)
   
   #########################
   gu_xt <- gu_gen_xt()
@@ -325,7 +325,7 @@ gu_gen_g <- function(g){
   
   for (t in 1:(Time)) {
     for (i in 1:N){
-      gt[[t]][i] <- g(C, gu_xt, i, t, theta)
+      rt[[t+1]][i] <- g(C, gu_xt, i, t, theta) + resid[[t+1]][i]
     }
   }
   
@@ -335,15 +335,15 @@ gu_gen_g <- function(g){
 ```
 
 ```{r}
-r_squared <- function(preds, actual){
-  rss <- sum((actual - preds) ^ 2)  ## residual sum of squares
+r_squared <- function(resids, actual){
+  rss <- sum(resids ^ 2)  ## residual sum of squares
   tss <- sum((actual) ^ 2)  ## total sum of squares
   rsq <- 1 - rss/tss
   return(rsq)
 }
 
 r_squared_proper <- function(preds, actual){
-  rss <- sum((actual - preds) ^ 2)  ## residual sum of squares
+  rss <- sum(resids ^ 2)  ## residual sum of squares
   tss <- sum((actual - mean(actual)) ^ 2)  ## total sum of squares
   rsq <- 1 - rss/tss
   return(rsq)
@@ -385,7 +385,7 @@ resid <- gu_gen_rt_resid(v_sd, ep_sd)
 
 theta <- matrix(c(0.02, 0.02, 0.02), nrow = 1)
 
-g <- gu_gen_g(gu_g1)
+rt <- gu_gen_rt(gu_g1, resid)
 
 # theta <- matrix(c(0.04, 0.03, 0.012), nrow = 1)
 # 
@@ -394,7 +394,7 @@ g <- gu_gen_g(gu_g1)
 rt_cross_tune_list <- rep(list(NULL), Time)
 
 for (t in 1:(Time+1)) {
-  df <- data.frame(resid = resid[[t]], g = g[[t]], time = rep(t, N), stock = c(1:N))
+  df <- data.frame(resid = resid[[t]], return = return[[t]], time = rep(t, N), stock = c(1:N))
   rt_cross_tune_list[[t]] <- df
 }
 

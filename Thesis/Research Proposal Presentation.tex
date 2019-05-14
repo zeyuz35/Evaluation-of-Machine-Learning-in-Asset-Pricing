@@ -132,40 +132,31 @@ To evaluate the application of machine learning to predicting financial asset re
 \begin{frame}
 \frametitle{Background}
 \begin{itemize}
-\item Factors : a collection of regressors to be used in pricing returns that can be used to proxy for unknown underlying risk factors due to their correlation with cross sectional returns, \citep{harvey__2016}
+\item Factors: a collection of regressors to be used in pricing returns that can be used to proxy for unknown underlying risk factors due to their correlation with cross sectional returns, \citep{harvey__2016}
 
-\item Contrasts with the strict view that risk factors should be variables that have unpredictable variation through time, and be able to explain cross sectional returns independently
+\item Violates strict view that risk factors should be variables that have unpredictable variation through time, and be able to explain cross sectional returns independently
 \end{itemize}
 
 \end{frame}
 
 \begin{frame}
-\frametitle{Background}
+\frametitle{Background - Dividend Ratio Example}
 \begin{itemize}
 
-\item Early Example - Dividend Ratio
-\item Can be \textit{persistent} (\cite{goetzmann_testing_1993}, \cite{ang_stock_2006})
+\item Dividend Ratios have been included due to good in sample performance in the 1990s \citep{goyal_predicting_2003}
 
-\item Dividend Ratios are correlated with lagged dependent variables on the right hand side of the regression equation. 
+\item \textit{Persistent} (\cite{goetzmann_testing_1993}, \cite{ang_stock_2006}) : correlated with lagged dependent variables on the right hand side of the regression equation. 
 
-\item Violates the assumptions of independent regressors required for OLS: t stats which are biased upwards and increase with time horizon due to autocorrelated errors
+\item Violates assumptions of independent regressors required for OLS: t stats are biased upwards due to autocorrelated errors
 
-\item Corrections to t statistics using the GMM and NW errors are also shown to be biased, \citep{goetzmann_testing_1993}
+\item GMM and NW errors corrections are also biased, \citep{goetzmann_testing_1993}
+
+\item Not robust and have poor out of sample performance since 2000s (\cite{goyal_predicting_2003}, \cite{lettau_consumption_2001}, \cite{schwert_anomalies_2003})
 \end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Background}
-\begin{itemize}
-\item Traditionally, dividend ratios have been included because they have shown good in sample performance, particularly in the 1990s \citep{goyal_predicting_2003}
-
-\item Proved to be not robust and have poor out of sample performance, especially since 2000s (\cite{goyal_predicting_2003}, \cite{lettau_consumption_2001}, \cite{schwert_anomalies_2003})
-
-\end{itemize}
-\end{frame}
-
-\begin{frame}
-\frametitle{Background}
+\frametitle{Dividend Ratio Example}
 \begin{itemize}
 \item Factors such as dividend ratios, earnings price ratio, interest and inflation etc. were ``widely accepted" able to predict excess returns, \citep{lettau_consumption_2001}
 
@@ -181,6 +172,8 @@ To evaluate the application of machine learning to predicting financial asset re
 \item False discovery problem, \citep{harvey__2016}
 
 \item Factors are cross sectionally correlated - inefficient covariances, factors may be subsumed within others, \citep{feng_taming_2019}
+
+\item Number of factors may be more than sample size, making regression impossible
 \end{itemize}
 \end{frame}
 
@@ -190,7 +183,7 @@ To evaluate the application of machine learning to predicting financial asset re
 
 \begin{frame}
 \frametitle{What is Machine Learning?}
-\cite{hastie_elements_2009} define in \textit{An Introduction to Statistical Learning} as a vast set of tools for understanding data.
+\cite{hastie_elements_2009} define in \textit{An Introduction to Statistical Learning} as ``a vast set of tools for understanding data."
 
 We will define it as a diverse collection of:
 \begin{itemize}
@@ -208,20 +201,20 @@ We will define it as a diverse collection of:
 %%Interweave Literature review throughout this section
 %%%%%%%%%%%%%%%%%
 
-\begin{frame}
-\frametitle{Why apply Machine Learning in Finance?}
-\begin{itemize}
-	\item High dimensional - more flexible than traditional regression models, which make strong functional form assumptions and are sensitive to outliers, \citep{freyberger_dissecting_2017}
-	\item Explicit methods for guarding against overfitting and generalizing poorly
-	\item Methods to produce an optimal model from all possible at manageable computation cost
-\end{itemize}
-\end{frame}
+%\begin{frame}
+%\frametitle{Why apply Machine Learning in Finance?}
+%\begin{itemize}
+%	\item High dimensional - more flexible than traditional regression models, which make strong functional form assumptions and are sensitive to outliers, \citep{freyberger_dissecting_2017}
+%	\item Explicit methods for guarding against overfitting and generalizing poorly
+%	\item Methods to produce an optimal model from all possible at manageable computation cost
+%\end{itemize}
+%\end{frame}
 
 \begin{frame}
 \frametitle{Applications in the Literature}
 \begin{itemize}
-	\item \cite{kozak_shrinking_2017}, \cite{rapach_forecasting_2013}, \cite{freyberger_dissecting_2017}, among others have applied shrinkage and selection methods to identify important factors
-	\item \cite{gu_empirical_2018}, \cite{feng_deep_2018}, among others have constructed machine learning portfolios that historically outperform traditional portfolios in terms of prediction error and predictive $R^2$
+	\item \cite{kozak_shrinking_2017}, \cite{rapach_forecasting_2013}, \cite{freyberger_dissecting_2017}, and others apply shrinkage and selection methods to identify important factors
+	\item \cite{gu_empirical_2018}, \cite{feng_deep_2018}, construct machine learning portfolios that historically outperform traditional portfolios in terms of prediction error and predictive $R^2$
 	\item Attribute their success to machine learning's ability to find non-linear interactions
 \end{itemize}
 \end{frame}
@@ -232,15 +225,23 @@ However, little work has been done on how machine learning actually recognises a
 \begin{itemize}
 	\item \cite{feng_deep_2018} cross validates their training set, destroying temporal aspect of data, and only explore a handful of factors
 	\item \cite{gu_empirical_2018} only use data up until the 1970s to produce predictions in the last 30 years
-	\item \cite{gu_empirical_2018}'s models do not have entirely consistent importance metrics - only their tree based methods recognise dividend yield as important
+	\item \cite{gu_empirical_2018}'s models do not have consistent importance metrics - only their tree based methods recognise dividend yield as important
 \end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Motivations}
 \begin{itemize}
-\item This paper will be the first to explore how machine learning performs in environments similar to financial data, with particular focus on how they deal with the challenges in financial data, acting as an extension to the simulation work of \cite{gu_empirical_2018}. 
+\item Can machine learning deal with the challenges in financial data?
+\begin{itemize}
+	\item Persistent Regressors
+	\item Identify true factors from a high dimensional, cross sectionally correlated panel
+	\item Is regularization enough to handle non-robustness?
+	\item Are their conclusions consistent?
+	\item Do they perform better than traditional methods?
+\end{itemize}
 
+\item Explore this via simulation and use popular machine learning models
 \item Models will also be evaluated again, but with more recent, representative financial data to explore robustness. 
 \end{itemize}
 \end{frame}
@@ -368,16 +369,6 @@ Mean Squared Error (MSE)
 %\end{figure}
 %\end{frame}
 
-\begin{frame}
-\frametitle{Models Considered}
-\begin{itemize}
-	\item Linear Models
-	\item Penalized Linear Models (Elastic Net)
-	\item Random Forests
-	\item Neural Networks
-\end{itemize}
-\end{frame}
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Linear Models
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -398,20 +389,18 @@ Optimizing $\theta$ with respect to minimizing MSE yields the Pooled OLS estimat
 
 \begin{frame}
 \frametitle{Penalized Linear Models}
-Penalized linear models have the same underlying statistical model as simple linear models, add a new penalty term in the loss function:
-	\begin{equation}
-	\mathcal{L(\theta;.)} = 
-	\underset{\text{Loss Function}}{\underbrace{\mathcal{L(\theta)}}} + 
-	\underset{\text{Penalty Term}}{\underbrace{\phi(\theta;.)}}
-	\end{equation}
-	
-Focus on the popular "elastic net" penalty  \citep{zou_regularization_2005}, which takes the form for the penalty function \( \phi(\theta;.) \):
+Linear Models + Penalty term (Elastic Net by \cite{zou_regularization_2005} shown):
+	\begin{align}
+	\mathcal{L(\theta;.)} &= 
+		\underset{\text{Loss Function}}{\underbrace{\mathcal{L(\theta)}}} + 
+		\underset{\text{Penalty Term}}{\underbrace{\phi(\theta;.)}} \\
+	\phi(\theta;\lambda,\rho) &= 
+		\lambda(1-\rho) \sum_{j = 1}^{P}|\theta_j| +
+		\frac{1}{2} \lambda \rho \sum_{j = 1}^{P}\theta_j^2
+	\end{align}
 
-	\begin{equation}
-	\phi(\theta;\lambda,\rho) = 
-	\lambda(1-\rho) \sum_{j = 1}^{P}|\theta_j| +
-	\frac{1}{2} \lambda \rho \sum_{j = 1}^{P}\theta_j^2
-	\end{equation}
+Elastic Net penalty produces efficient and parsimonious via shrinkage and selection
+	
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -451,7 +440,10 @@ Random Forests were proposed by \cite{breiman_random_2001} to address this
 
 \begin{frame}
 \frametitle{Neural Networks}
-Feed forward neural networks consist of an ``input layer" of scaled data inputs, ``hidden layers" which interact and non-linearly transform the inputs, and finally an ``output layer" that aggregates the hidden layers and transform them a final time for the final output. 
+\begin{align}
+	x_k^{(l)} &= \alpha(x^{(l-1)'}\theta_k^{l-1}) \\
+	x_1^{(1)} &= \alpha \left( (x_0^{(0)}, x_1^{(0)}, x_2^{(0)}, x_3^{(0)})'\theta_1^{0} \right) 
+\end{align}
 
 \begin{figure}
 	\begin{neuralnetwork}
@@ -594,7 +586,9 @@ $v_{t+1}$ is a $3\times 1$ vector of errors, $w_{i,t+1},\varepsilon_{i,t+1}$ are
 
 The matrix $C_t$ is an $N\times P_c$ vector of latent factors. The $P_x\times1$ vector $x_t$ is a $3 \times 1$ multivariate time series, and $\varepsilon_{t+1}$ is a $N\times 1$ vector of idiosyncratic errors. 
 
-Simulation mechanism for $C_t$ that gives some correlation across the factors time was used. First consider drawing normal random numbers for each $1\leq i\leq N$ and $1\leq j\leq P_{c}$, according to 
+Simulation mechanism for $C_t$ that gives some correlation across the factors time was used. 
+
+Draw normal random numbers for each $1\leq i\leq N$ and $1\leq j\leq P_{c}$, according to 
 
 \begin{equation}
 \overline{c}_{i j, t} = \rho_{j} \overline{c}_{i j, t-1}+\epsilon_{i j, t} ;
@@ -621,7 +615,7 @@ W = \left( \operatorname{diag}(B) \right) ^{\frac{-1}{2}}
 \left( \operatorname{diag}(B) \right) ^{\frac{-1}{2}}
 \end{equation}
 
-To build in cross-sectional correlation, from the $N\times P_{c}$ matrix $\bar{C}_t$, we simulate characteristics according to
+Use $W$ to build in cross sectional correlation for $N\times P_{c}$ matrix $\bar{C}_t$:
 
 \begin{equation}
 \widehat{C}_{t}=W\overline{C}_{t}
@@ -642,57 +636,47 @@ with the rank transformation normalizing all predictors to be within $[-1, 1]$
 
 \begin{frame}
 \frametitle{Simulating Macroeconomic Time Series}
-For simulation of $x_{t}$, a $3 \times 1$ multivariate time series, we consider a VAR model, a generalization of the univariate autoregressive model to multiple time series:
-\begin{equation}
+For simulation of $x_{t}$, a $3 \times 1$ multivariate time series, we consider a VAR model:
+\begin{equation*}
 x_{t}=Ax_{t-1}+u_t, 
 \quad u_t \sim N\left( \mu = (0, 0, 0)' , \Sigma = \mathbb{I}_{3}
-\right)
-\end{equation}
-\end{frame}
+\end{equation*}
 
-\begin{frame}
-\frametitle{Simulating Macroeconomic Time Series}
-Consider 3 different specifications for matrix $A$:
-\begin{align}
-A_1 &=
-	\begin{pmatrix}
-	.95 & 0 & 0 \\
-	0 & .95 & 0 \\
-	0 & 0 & .95
-	\end{pmatrix} \\
-A_2 &=
-	\begin{pmatrix}
-	1 & 0 & .25 \\
-	0 & .95 & 0 \\
-	.25 & 0 &.95
-	\end{pmatrix} \\
-A_3 &=
-	\begin{pmatrix}
-	.99 & .20 & .10 \\
-	.20 & .90 & -.30 \\
-	.10 & -.30 & -.99
-	\end{pmatrix}
-\end{align}
+\begin{equation*}
+A_1 =
+\begin{bmatrix}
+.95 & 0 & 0 \\
+0 & .95 & 0 \\
+0 & 0 & .95
+\end{bmatrix} ;
+A_2 =
+\begin{bmatrix}
+1 & 0 & .25 \\
+0 & .95 & 0 \\
+.25 & 0 &.95
+\end{bmatrix} ;
+A_3 =
+\begin{bmatrix}
+.99 & .20 & .10 \\
+.20 & .90 & -.30 \\
+.10 & -.30 & -.99
+\end{bmatrix}
+\end{equation*}
 \end{frame}
 
 \begin{frame}
 \frametitle{Simulating Return Series}
 We will consider four different functions $g(\cdot)$:
 \begin{flalign*}
-(1)\; & g_1 \left(z_{i, t}\right)=\left(c_{i 1, t}, c_{i 2, t}, c_{i 3, t} \times x_{t}'\right) \theta_{0} \\
-(2)\; & g_2 \left(z_{i, t}\right)=\left(c_{i 1, t}^{2}, c_{i 1, t} \times c_{i 2, t}, \operatorname{sgn}\left(c_{i 3, t} \times  x_{t}'\right)\right) \theta_{0} \\
+(1)\; & g_1 \left(z_{i, t}\right)=\left(c_{i 1, t}, c_{i 2, t}, c_{i 3, t} \times x_{3,t}'\right) \theta_{0} \\
+(2)\; & g_2 \left(z_{i, t}\right)=\left(c_{i 1, t}^{2}, c_{i 1, t} \times c_{i 2, t}, \operatorname{sgn}\left(c_{i 3, t} \times  x_{3,t}'\right)\right) \theta_{0} \\
 (3)\; & g_3 \left(z_{i, t}\right) = \left(1[c_{i3,t}>0],c_{i 2, t}^{3}, c_{i 1, t} \times c_{i 2, t}\times 1[c_{i3,t}>0], \text{logit}\left({c}_{i 3, t} \right)\right) \theta_{0} \\
-(4)\; & g_4 \left(z_{i, t}\right)=\left(\hat{c}_{i 1, t}, \hat{c}_{i 2, t}, \hat{c}_{i 3, t} \times x_{t}'\right) \theta_{0}
+(4)\; & g_4 \left(z_{i, t}\right)=\left(\hat{c}_{i 1, t}, \hat{c}_{i 2, t}, \hat{c}_{i 3, t} \times x_{3,t}'\right) \theta_{0}
 \end{flalign*}
-$g_1 \left(z_{i, t}\right)$ is a linear specification
 
-$g_2 \left(z_{i, t}\right)$ and $g_3 \left(z_{i, t}\right)$ is a non-linear specification with interactions
+Tune $\theta^0$ s.t. cross sectional $R^2$ is 25\%, and predictive $R^2$ is 5\%. 
 
-$g_4 \left(z_{i, t}\right)$ builds returns using $\hat{c}$, which are the unobserved characteristics without cross sectional correlation built in
-
-$\theta^0$ was tuned so that the cross sectional $R^2$ was around 25\%, and the predictive $R^2$ 5\%. 
-
-The simulation design results in $3 \times 4 = 12$ different simulated datasets, each with $N = 200$ stocks, $T = 180$ periods and $P_c = 100$ characteristics. Each design was simulated 50 times to assess the robustness of machine learning algorithms.
+The simulation design results in $3 \times 4 = 12$ different simulation designs, with $N = 200$ stocks, $T = 180$ periods and $P_c = 100$ characteristics. Each design will be simulated 50 times to assess the robustness of machine learning algorithms.
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -701,9 +685,12 @@ The simulation design results in $3 \times 4 = 12$ different simulated datasets,
 
 \begin{frame}
 \frametitle{Data Source}
-CRSP/Compustat database for stock returns with stock level characteristics such as accounting ratios and macroeconomic factors will be queried.
+\begin{itemize}
+\item CRSP/Compustat database for stock returns with stock level characteristics such as accounting ratios and macroeconomic factors will be queried.
 
-Only more recent data will be used, such as the period before and after 2008 GFC
+\item Only more recent data will be used, such as the period before and after 2008 GFC
+\end{itemize}
+
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -731,7 +718,7 @@ where $\mathcal{T}_3$ indicates that the fits are only assessed on the test subs
 	
 	\item Tests whether or not the difference series ($d_t = e_{1t} - e_{2t}$) between two forecast methods' errors is different from zero
 	
-	\item $e_{1t}$ and $e_{2t}$ will instead represent the average forecast errors for each model
+	\item $e_{1t}$ and $e_{2t}$ represent the average forecast errors for each model
 \end{itemize}
 \end{frame}
 
@@ -758,9 +745,15 @@ where $\mathcal{T}_3$ indicates that the fits are only assessed on the test subs
 
 \begin{frame}
 \frametitle{Variable Importance}
-The importance of each predictor $j$ is denoted as $VI_j$, and is defined as the reduction in predictive R-Squared from setting all values of predictor $j$ to 0, while holding the remaining model estimates fixed. 
 
-Despite obvious limitations, this allows us to visualize which factors machine learning algorithms have determined to be important.
+\begin{itemize}
+\item The importance of each predictor $j$ is denoted as $VI_j$
+
+\item Defined as the reduction in predictive R-Squared from setting all values of predictor $j$ to 0, while holding the remaining model estimates fixed
+
+\item Will allow us to see what factors the models have determined to be important
+\end{itemize}
+
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
