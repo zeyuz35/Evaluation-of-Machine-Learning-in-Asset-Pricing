@@ -40,11 +40,11 @@ set.seed(27935248)
 #Keeping this low for now just to make everything more manageable
 
 #Number of stocks
-N <- 200
+N <- 40
 #Number of characteristics that underly true model
-P_c <- 100
+P_c <- 20
 #Number of Periods
-Time <- 180
+Time <- 90
 
 ```
 
@@ -148,7 +148,10 @@ gu_gen_xt <- function(){
   p <- 0.95
   
   for (i in 1:(Time+1)) {
-    ut <- rnorm(1, mean = 0, sd = sqrt((1-p^2)))
+    ut <- rnorm(1, 
+                mean = 0, 
+                sd = sqrt((1-p^2))
+                )
     xt[1+i] <- p*xt[i] + ut
   }
   #Remove Initial
@@ -160,8 +163,6 @@ gu_gen_xt <- function(){
 gu_xt <- gu_gen_xt()
 
 acf(gu_xt)
-
-#What the shit Gu, this isn't very persistent at all
 
 ```
 
@@ -350,7 +351,7 @@ r_squared_proper <- function(preds, actual){
 ```
 
 
-```{r gu_tune_rsquared_skeleton, eval = FALSE}
+```{r gu_tune_rsquared_skeleton}
 #Tuning Cross Sectional R Squared SKELETON CODE
 
 #Problems, due to randomness, r squared values vary a bit between different runs
@@ -382,13 +383,13 @@ ep_sd <- 0.05
 
 resid <- gu_gen_rt_resid(v_sd, ep_sd)
 
-# theta <- matrix(c(0.04, 0.03, 0.012), nrow = 1)
-# 
-# g <- gu_gen_g(gu_g2)
-
 theta <- matrix(c(0.02, 0.02, 0.02), nrow = 1)
 
 g <- gu_gen_g(gu_g1)
+
+# theta <- matrix(c(0.04, 0.03, 0.012), nrow = 1)
+# 
+# g <- gu_gen_g(gu_g2)
 
 rt_cross_tune_list <- rep(list(NULL), Time)
 
@@ -406,11 +407,7 @@ for (t in 1:(Time+1)) {
 #Remove 1st row because returns data only starts from t = 2
 rt_cross_tune_panel <- rt_cross_tune_panel %>%
   filter(time != 1) %>%
-  mutate(return = resid + g) %>%
-  #Generate Squared Series
-  mutate(return_sq = ((return)^2)) %>%
-  mutate(resid_sq = resid^2) %>%
-  mutate(g_sq = (g - mean(return))^2)
+  mutate(return = resid + g)
 
 summary(rt_cross_tune_panel$resid_sq + rt_cross_tune_panel$g_sq - rt_cross_tune_panel$return_sq)
 
@@ -429,7 +426,7 @@ for (i in 1:N) {
   rt_id_tune_df$rsquare[i] <- r_squared_proper(rt_id_tune_panel$g, rt_id_tune_panel$return)
 }
 
-#Return mean of each individual rsquared
+#Return mean of each individual time series rsquared
 mean(rt_id_tune_df$rsquare)
 
 ######################################################################################
