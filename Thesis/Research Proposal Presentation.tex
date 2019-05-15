@@ -126,7 +126,7 @@
 
 \begin{frame}
 \frametitle{Main Motivation}
-To evaluate the application of machine learning to predicting financial asset returns, with specific regard to how they deal with the unique challenges present in financial data.
+To evaluate the application of machine learning to predicting financial asset returns, with specific regard to how they deal with the unique challenges present in financial data via simulation.
 \end{frame}
 
 \begin{frame}
@@ -134,7 +134,9 @@ To evaluate the application of machine learning to predicting financial asset re
 \begin{itemize}
 \item Factors: a collection of regressors to be used in pricing returns that can be used to proxy for unknown underlying risk factors due to their correlation with cross sectional returns, \citep{harvey__2016}
 
-\item Violates strict view that risk factors should be variables that have unpredictable variation through time, and be able to explain cross sectional returns independently
+	\begin{itemize}
+		\item Violates strict view that risk factors should be variables that have unpredictable variation through time, and be able to explain cross sectional returns independently
+	\end{itemize}
 \end{itemize}
 
 \end{frame}
@@ -143,13 +145,17 @@ To evaluate the application of machine learning to predicting financial asset re
 \frametitle{Background - Dividend Ratio Example}
 \begin{itemize}
 
-\item Dividend Ratios have been included due to good in sample performance in the 1990s \citep{goyal_predicting_2003}
+\item Included due to good in sample performance in the 1990s \citep{goyal_predicting_2003}
 
-\item \textit{Persistent} (\cite{goetzmann_testing_1993}, \cite{ang_stock_2006}) : correlated with lagged dependent variables on the right hand side of the regression equation. 
+\item \textit{Persistent} (\cite{goetzmann_testing_1993}, \cite{ang_stock_2006})
 
-\item Violates assumptions of independent regressors required for OLS: t stats are biased upwards due to autocorrelated errors
-
-\item GMM and NW errors corrections are also biased, \citep{goetzmann_testing_1993}
+	\begin{itemize}
+	\item Correlated with lagged dependent variables on the right hand side of the regression equation. 
+	
+	\item Violates assumptions of independent regressors of OLS: t stats are biased upwards due to autocorrelated errors
+	
+	\item GMM and NW errors corrections are also biased, \citep{goetzmann_testing_1993}
+	\end{itemize}
 
 \item Not robust and have poor out of sample performance since 2000s (\cite{goyal_predicting_2003}, \cite{lettau_consumption_2001}, \cite{schwert_anomalies_2003})
 \end{itemize}
@@ -169,11 +175,15 @@ To evaluate the application of machine learning to predicting financial asset re
 \begin{itemize}
 \item More factors produced by literature: currently over 600 documented \citep{harvey_census_2019}
 
-\item False discovery problem, \citep{harvey__2016}
+\begin{itemize}
+	\item False discovery problem, \citep{harvey__2016}
+	
+	\item Factors are cross sectionally correlated - inefficient covariances, factors may be subsumed within others, \citep{feng_taming_2019}
+	
+	\item Number of factors may be more than sample size, making regression impossible
+\end{itemize}
 
-\item Factors are cross sectionally correlated - inefficient covariances, factors may be subsumed within others, \citep{feng_taming_2019}
 
-\item Number of factors may be more than sample size, making regression impossible
 \end{itemize}
 \end{frame}
 
@@ -183,7 +193,9 @@ To evaluate the application of machine learning to predicting financial asset re
 
 \begin{frame}
 \frametitle{What is Machine Learning?}
-\cite{hastie_elements_2009} define in \textit{An Introduction to Statistical Learning} as ``a vast set of tools for understanding data."
+``...a vast set of tools for understanding data."
+
+- \textit{An Introduction to Statistical Learning}, \citep{hastie_elements_2009}
 
 We will define it as a diverse collection of:
 \begin{itemize}
@@ -234,14 +246,14 @@ However, little work has been done on how machine learning actually recognises a
 \begin{itemize}
 \item Can machine learning deal with the challenges in financial data?
 \begin{itemize}
-	\item Persistent Regressors
-	\item Identify true factors from a high dimensional, cross sectionally correlated panel
+	\item Persistent Regressors?
+	\item Identify true factors from a high dimensional, cross sectionally correlated panel?
 	\item Is regularization enough to handle non-robustness?
 	\item Are their conclusions consistent?
 	\item Do they perform better than traditional methods?
 \end{itemize}
 
-\item Explore this via simulation and use popular machine learning models
+\item Explore this via simulation and popular machine learning models
 \item Models will also be evaluated again, but with more recent, representative financial data to explore robustness. 
 \end{itemize}
 \end{frame}
@@ -262,7 +274,9 @@ where
 	E(r_{i, t+1} | \mathcal{F}_t) = g^*(z_{i,t})
 \end{equation}
 		
-Stocks are indexed as $i = 1, \dots, N$ and months by $t = 1, \dots, T$. $g^*(z_{i,t})$ represents the model approximation using the $P$ dimensional predictor set $z_{i,t}$. 
+Stocks are indexed as $i = 1, \dots, N$ and months by $t = 1, \dots, T$. 
+
+$g^*(z_{i,t})$ represents the model approximation using the $P$ dimensional predictor set $z_{i,t}$. 
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -380,7 +394,7 @@ Linear Models assume that the underlying conditional expectation \( g^*(z_{i, t}
 	g(z_{i, t};\theta) = z_{i, t}' \theta
 	\end{equation}
 	
-Optimizing $\theta$ with respect to minimizing MSE yields the Pooled OLS estimator
+Optimizing $\theta$ w.r.t. MSE yields the Pooled OLS estimator
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -584,9 +598,13 @@ $v_{t+1}$ is a $3\times 1$ vector of errors, $w_{i,t+1},\varepsilon_{i,t+1}$ are
 \begin{frame}
 \frametitle{Simulating Characteristics}
 
-The matrix $C_t$ is an $N\times P_c$ vector of latent factors. The $P_x\times1$ vector $x_t$ is a $3 \times 1$ multivariate time series, and $\varepsilon_{t+1}$ is a $N\times 1$ vector of idiosyncratic errors. 
+Matrix $C_t$ is an $N\times P_c$ vector of latent factors. 
 
-Simulation mechanism for $C_t$ that gives some correlation across the factors time was used. 
+$x_t$ is a $3 \times 1$ multivariate time series
+
+$\varepsilon_{t+1}$ is a $N\times 1$ vector of idiosyncratic errors. 
+
+Simulation mechanism for $C_t$ that gives correlation across the factors \& time
 
 Draw normal random numbers for each $1\leq i\leq N$ and $1\leq j\leq P_{c}$, according to 
 
@@ -642,7 +660,7 @@ x_{t}=Ax_{t-1}+u_t,
 \quad u_t \sim N\left( \mu = (0, 0, 0)' , \Sigma = \mathbb{I}_{3}
 \end{equation*}
 
-\begin{equation*}
+\[
 A_1 =
 \begin{bmatrix}
 .95 & 0 & 0 \\
@@ -661,7 +679,7 @@ A_3 =
 .20 & .90 & -.30 \\
 .10 & -.30 & -.99
 \end{bmatrix}
-\end{equation*}
+\]
 \end{frame}
 
 \begin{frame}
@@ -708,7 +726,7 @@ R^2_{OOS} =
 	{\sum_{(i, t)\in\mathcal{T}_3} \left( r_{i, t+1} - \bar{r}_{i, t+1} \right) ^2}
 \end{equation}
 
-where $\mathcal{T}_3$ indicates that the fits are only assessed on the test subsample, which is never used for training or tuning. 
+where $\mathcal{T}_3$ indicates that the fits are only assessed on the test subsample
 \end{frame}
 
 \begin{frame}

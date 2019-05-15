@@ -1,4 +1,5 @@
-\babel@toc {english}{}
+\beamer@endinputifotherversion {3.33pt}
+\select@language {english}
 \beamer@sectionintoc {1}{Background}{2}{0}{1}
 \beamer@sectionintoc {2}{What is Machine Learning?}{7}{0}{2}
 \beamer@sectionintoc {3}{Why apply Machine Learning in Finance?}{8}{0}{3}
