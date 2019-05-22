@@ -162,6 +162,8 @@ gu_gen_xt <- function(){
 #Test, working
 gu_xt <- gu_gen_xt()
 
+#Check Persistence visually
+
 acf(gu_xt)
 
 ```
