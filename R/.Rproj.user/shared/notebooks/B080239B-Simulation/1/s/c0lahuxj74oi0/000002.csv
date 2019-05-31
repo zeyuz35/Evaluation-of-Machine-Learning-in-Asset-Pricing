@@ -45,7 +45,7 @@
 "0","#########################################"
 "0","##Function to plot xt"
 "0","#########################################"
-"0","#Transforms xt series to wide format to plot it"
+"0","#Transforms xt series to wide format and plots it"
 "0","plot_xt <- function(xt){"
 "0","  xt_tidy <- cbind(t = c(1:(Time+1)), xt)"
 "0","  xt_tidy <- xt_tidy %>%"
@@ -54,3 +54,4 @@
 "0","  ggplot(data = xt_tidy) +"
 "0","    geom_line(aes(x = t, y = value, colour = series))"
 "0","}"
+"0","xt <- gen_xt(A1)"

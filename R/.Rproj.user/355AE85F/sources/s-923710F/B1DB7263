@@ -1,0 +1,24 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1559279760653.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "B1DB7263",
+    "lastKnownWriteTime" : 1559279517,
+    "last_content_update" : 1559279517,
+    "path" : "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Sim_david.Rmd",
+    "project_path" : "Sim_david.Rmd",
+    "properties" : {
+        "cursorPosition" : "389,21",
+        "docOutlineVisible" : "0",
+        "last_setup_crc32" : "C8CE3BF85342664e",
+        "scrollLine" : "352"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}
