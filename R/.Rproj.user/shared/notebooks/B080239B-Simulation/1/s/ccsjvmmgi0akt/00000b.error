@@ -1,0 +1,1 @@
+{"frames":[{"character_number":0,"end_character_number":0,"end_line_number":0,"file":"","func":"gen_error(sv = 1, 0.05, omega = -0.736, gamma = 0.9, w = sqrt(0.363))","line_number":0}],"message":"Error in error[i, 1, t] <- exp(sigma2[t]/2) * rnorm(1, 0, ep_sd) : \n  incorrect number of subscripts\n"}
