@@ -1,0 +1,113 @@
+---
+title: "Boston House Prices"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(keras)
+library(datasets)
+library(mlbench)
+library(ggplot2)
+library(GGally)
+library(glmnet)
+library(caret)
+```
+
+```{r}
+#Get data
+data("BostonHousing2")
+dim(BostonHousing2)
+head(BostonHousing2)
+summary(BostonHousing2)
+BostonHousing2 <- BostonHousing2 %>%
+  select(-medv)
+BostonHousing2_dmy <- dummyVars(~., data = BostonHousing2, fullRank = Y)
+BostonHousing2_dmy2 <- data.frame(predict(BostonHousing2_dmy, newdata = BostonHousing2))
+BostonHousing2_dmy2 <- as.matrix(BostonHousing2_dmy2)
+```
+
+```{r}
+#Training and Test Sets
+seed <- 1337
+split <- 0.8
+df <- BostonHousing2_dmy2
+
+set.seed(seed)
+smp_size <- floor(nrow(df)*split)
+sample <- sample.int(n = nrow(df), size = floor(split*nrow(df)), replace = F)
+train <- df[sample, ]
+test <- df[-sample, ]
+```
+
+```{r}
+#Data Exploration
+
+```
+
+
+```{r}
+#Linear Model
+lm_model <- lm(cmedv ~., data = train)
+summary(lm_model)
+
+glm_model <- glm(cmedv ~., data = train)
+summary(glm_model)
+```
+
+```{r}
+#Data Prep
+
+train_y <- train[,95]
+
+train_x <- train[,-95]
+```
+
+
+```{r}
+#Elasticnet
+elasticnet <- cv.glmnet(train_x, train_y, family = "gaussian",
+                        alpha = 0.5, standardize = TRUE, 
+                        nfolds = 100, type.measure = "mse")
+plot(elasticnet)
+```
+
+```{r}
+#randomforest
+```
+
+```{r}
+##NeuralNet
+NeuralNet <- keras_model_sequential()
+NeuralNet %>%
+  layer_dense(units = 256, activation = "relu", input_shape = c(107)) %>%
+  layer_dense(units = 128, activation = "relu") %>%
+  layer_dense(units = 56, activation = "relu")
+```
+
+```{r}
+#Simulation
+set.seed(1337)
+x <- c(1:100)
+y <- c(1:100)
+x[1] <- 0
+
+for(i in 1:100){
+  x[i] <- rnorm(1, mean = 0, sd = 1)
+}
+
+y = sin(x)
+
+xy <- data.frame(x = x, y = y)
+
+ggplot(aes(x = x, y = y), data = xy) +
+  geom_line()
+
+cor(x, y)
+
+acf(y)
+```
+
+
+
