@@ -1,0 +1,4 @@
+"0","  xt_tidy <- cbind(t = c(1:(Time)), xt[1,,])
+"
+"2","Error in xt[1, , ] : incorrect number of dimensions
+"

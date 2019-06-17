@@ -1,1 +1,0 @@
-{"frames":[{"character_number":0,"end_character_number":0,"end_line_number":0,"file":"","func":"gen_C_bar()","line_number":0}],"message":"Error in dimnames(C_bar) <- `*vtmp*` : \n  length of 'dimnames' [3] not equal to array extent\n"}
