@@ -1,5 +1,0 @@
-"0","error <- gen_error(sv = 1, 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363))
-"
-"2","Error in error[i, 1, t] <- exp(sigma2[t]/2) * rnorm(1, 0, ep_sd) : 
-  incorrect number of subscripts
-"
