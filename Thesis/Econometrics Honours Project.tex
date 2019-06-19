@@ -785,6 +785,28 @@ Batch Normalization Algorithm as detailed by \cite{ioffe_batch_2015}.
 	\caption{Batch Normalization for one activation over one batch}
 \end{algorithm}
 
+\subsubsection{Tuning of Simulated Datasets}
+
+The simulated datasets were tuned according to three statistics: average individual time series R squared, average annualized volatility, and cross sectional R squared. 
+
+The methodology for evaluating average time series R squared and cross sectional R squared is consistent with that detailed by \cite{cochrane_asset_2005}. The steps are reproduced here for reference; for complete details refer to \cite{cochrane_asset_2005}.
+
+First evaluate the following OLS model:
+
+\begin{equation}
+	R_{it} = a_i + \beta_i' f_{it} + \epsilon_{it} 
+\end{equation}
+
+where $f_{it}$ represents the \textit{true} factors in the returns process. The corresponding R-squared value for this time series regression is calculated across all stocks and averaged.
+
+A cross ssectional regression for the risk premia is then run across assets of average returns on the factor coefficients:
+
+\begin{equation}
+	\bar{R_{it}} = \alpha_i = \beta_i' \lambda
+\end{equation}
+
+where the $\beta_i'$ are the estimated coefficients from the time series regressions earlier.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%BIBLIOGRAPHY
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

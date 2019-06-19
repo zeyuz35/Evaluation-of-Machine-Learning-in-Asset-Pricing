@@ -426,41 +426,125 @@ gen_g_panel(g1, C, xt, theta)
 ##################################
 
 gen_g_factor_panel <- function(g_function, C, x, theta) {
-  g_factor_panel <- array(0, dim = c(N, 1, Time))
+  
   g_name <- as.character(substitute(g_function))
-  for (i in 1:N) {
-    for (t in 1:Time) {
-      #G1 case
-      if (g_name == "g1") {
-          #Univariate xt case
-          if (ncol(x) == 1) {
-            matrix(c(
-              C[i, 1, t], C[i, 2, t], C[i, 3, t] * x[t]
-              ), nrow = 1) %*% t(theta)
-          } 
-          #Multivariate Case
-          else {
-            matrix(c(
-              C[i, 1, t], C[i, 2, t], C[i, 3, t] * t(x[3, t])
-              ), nrow = 1) %*% t(theta)
-          }
+  
+  #G1 case
+  
+  if (g_name == "g1") {
+        
+    stock_dim <- paste0("stock_", c(1:N))
+    c_dim <- c("c_i1,t", "c_i2,t", "c_i3,t * x_t'")
+    time_dim <- paste0("time_", c(1:(Time)))
+        
+    g_factor_panel <- array(0, dim = c(N, 3, Time), dimnames = list(stock_dim, c_dim, time_dim))
+    
+    for (i in i:N) {
+      for (t in 1:Time) {
+        #Univariate Case
+        if (ncol(x) == 1) {
+          g_factor_panel[i, , t] <- matrix(c(C[i, 1, t], C[i, 2, t], C[i, 3, t] * x[t]), nrow = 1)
         }
-      }
-      #G2 case
-      else if (g_name == "g2") {
         
-      }
-      #G3 case
-      else if (g_name == "g3") {
-        
-      }
-      #G4 case
-      else{
-        
+        #Multivariate Case
+        else {
+          g_factor_panel[i, , t] <- matrix(c(C[i, 1, t], C[i, 2, t], C[i, 3, t] * t(x[3, t])), nrow = 1)
+        }
       }
     }
   }
+  
+  #G2 Case
+  
+  else if (g_name == "g2") {
+        
+    stock_dim <- paste0("stock_", c(1:N))
+    c_dim <- c("c_i1,t^2", "c_i1,t * c_i2,t", "sgn(c_i3,t * x_t')")
+    time_dim <- paste0("time_", c(1:(Time)))
+        
+    g_factor_panel <- array(0, dim = c(N, 3, Time), dimnames = list(stock_dim, c_dim, time_dim))
+    
+    for (i in i:N) {
+      for (t in 1:Time) {
+        #Univariate Case
+        if (ncol(x) == 1) {
+          g_factor_panel[i, , t] <- matrix(c(C[i, 1, t]^2, C[i, 1, t]*C[i, 2, t], sign(C[i, 3, t] * x[t])), nrow = 1)
+        }
+        
+        #Multivariate Case
+        else {
+          g_factor_panel[i, , t] <- matrix(c(
+            C[i, 1, t]^2, 
+            C[i, 1, t]*C[i, 2, t],
+            sign(C[i, 3, t] * t(x[3, t]))), 
+            nrow = 1
+            )
+        }
+      }
+    }
+  }
+  
+  #G3 Case
+  
+  else if (g_name == "g3") {
+        
+    stock_dim <- paste0("stock_", c(1:N))
+    c_dim <- c("I(c_i3,t > 0)", "c_i2,t^3", "c_i1,t * c_12,t * I(c_i3,t > 0)", "logit(c_i3,t)")
+    time_dim <- paste0("time_", c(1:(Time)))
+        
+    g_factor_panel <- array(0, dim = c(N, 4, Time), dimnames = list(stock_dim, c_dim, time_dim))
+    
+    for (i in i:N) {
+      for (t in 1:Time) {
+        g_factor_panel[i, , t] <- matrix(c(
+          (C[i, 1, t] > 0), 
+          C[i, 2, t]^3,
+          C[i, 1, t] * C[i, 2, t] * (C[i, 3, t] > 0),
+          logit(C[i, 3, t])
+          ), nrow = 1)
+      }
+    }
+  }
+  
+  #G4 Case
+  
+  else if (g_name == "g4") {
+        
+    stock_dim <- paste0("stock_", c(1:N))
+    c_dim <- c("chat_i1,t", "chat_i2,t", "chat_i3,t * x_t'")
+    time_dim <- paste0("time_", c(1:(Time+1)))
+        
+    g_factor_panel <- array(0, dim = c(N, 3, Time), dimnames = list(stock_dim, c_dim, time_dim))
+    
+    #Same as G1 case, but remember to pass c_hat through to this
+    
+    for (i in i:N) {
+      for (t in 1:Time) {
+        #Univariate Case
+        if (ncol(x) == 1) {
+          g_factor_panel[i, , t] <- matrix(c(C[i, 1, t]^2, C[i, 1, t]*C[i, 2, t], sign(C[i, 3, t] * x[t])), nrow = 1)
+        }
+        
+        #Multivariate Case
+        else {
+          g_factor_panel[i, , t] <- matrix(c(
+            C[i, 1, t]^2, 
+            C[i, 1, t]*C[i, 2, t],
+            sign(C[i, 3, t] * t(x[3, t]))), 
+            nrow = 1
+            )
+        }
+      }
+    }
+  }
+  return(g_factor_panel)
 }
+
+#test this
+#working, yay
+
+g_factor_panel <- gen_g_factor_panel(g2, C, x, theta)
+g_factor_panel
 
 ```
 
