@@ -425,12 +425,11 @@ gen_g_panel(g1, C, xt, theta)
 ## Will be used for time series and cross sectional R squared later
 ##################################
 
-gen_g_factor_panel <- function(g_function, C, x, theta) {
+gen_g_factor_panel <- function(g_function, C, x) {
   
   g_name <- as.character(substitute(g_function))
   
   #G1 case
-  
   if (g_name == "g1") {
         
     stock_dim <- paste0("stock_", c(1:N))
@@ -445,7 +444,6 @@ gen_g_factor_panel <- function(g_function, C, x, theta) {
         if (ncol(x) == 1) {
           g_factor_panel[i, , t] <- matrix(c(C[i, 1, t], C[i, 2, t], C[i, 3, t] * x[t]), nrow = 1)
         }
-        
         #Multivariate Case
         else {
           g_factor_panel[i, , t] <- matrix(c(C[i, 1, t], C[i, 2, t], C[i, 3, t] * t(x[3, t])), nrow = 1)
@@ -455,7 +453,6 @@ gen_g_factor_panel <- function(g_function, C, x, theta) {
   }
   
   #G2 Case
-  
   else if (g_name == "g2") {
         
     stock_dim <- paste0("stock_", c(1:N))
@@ -470,7 +467,6 @@ gen_g_factor_panel <- function(g_function, C, x, theta) {
         if (ncol(x) == 1) {
           g_factor_panel[i, , t] <- matrix(c(C[i, 1, t]^2, C[i, 1, t]*C[i, 2, t], sign(C[i, 3, t] * x[t])), nrow = 1)
         }
-        
         #Multivariate Case
         else {
           g_factor_panel[i, , t] <- matrix(c(
@@ -485,7 +481,6 @@ gen_g_factor_panel <- function(g_function, C, x, theta) {
   }
   
   #G3 Case
-  
   else if (g_name == "g3") {
         
     stock_dim <- paste0("stock_", c(1:N))
@@ -507,7 +502,6 @@ gen_g_factor_panel <- function(g_function, C, x, theta) {
   }
   
   #G4 Case
-  
   else if (g_name == "g4") {
         
     stock_dim <- paste0("stock_", c(1:N))
@@ -517,14 +511,12 @@ gen_g_factor_panel <- function(g_function, C, x, theta) {
     g_factor_panel <- array(0, dim = c(N, 3, Time), dimnames = list(stock_dim, c_dim, time_dim))
     
     #Same as G1 case, but remember to pass c_hat through to this
-    
     for (i in i:N) {
       for (t in 1:Time) {
         #Univariate Case
         if (ncol(x) == 1) {
           g_factor_panel[i, , t] <- matrix(c(C[i, 1, t]^2, C[i, 1, t]*C[i, 2, t], sign(C[i, 3, t] * x[t])), nrow = 1)
         }
-        
         #Multivariate Case
         else {
           g_factor_panel[i, , t] <- matrix(c(
@@ -543,9 +535,17 @@ gen_g_factor_panel <- function(g_function, C, x, theta) {
 #test this
 #working, yay
 
-g_factor_panel <- gen_g_factor_panel(g2, C, x, theta)
+g_factor_panel <- gen_g_factor_panel(g1, C, x)
 g_factor_panel
 
+g_factor_panel <- gen_g_factor_panel(g2, C, x)
+g_factor_panel
+
+g_factor_panel <- gen_g_factor_panel(g3, C, x)
+g_factor_panel
+
+g_factor_panel <- gen_g_factor_panel(g4, C, x)
+g_factor_panel
 ```
 
 ```{r function_return_equation}
@@ -565,11 +565,9 @@ gen_betav <- function(C, v_sd){
     v <- matrix(data = rnorm(3,mean=0, sd = v_sd), 
               nrow = 3, 
               ncol = 1)
-    
     for (i in 1:N) {
       Beta_v[i, 1, t] <- Beta[i, , t] %*% v
     }
-    
   }
   return(Beta_v)
 }
@@ -652,19 +650,26 @@ error <- gen_error(sv = 0, 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363))
 
 g1_panel <- gen_g_panel(g1, C, xt, theta)
 error_sv <- gen_error(sv = 1, 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363))
+error_nosv <- gen_error(sv = 0, 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363))
 
-rt_panel <- g1_panel + error_sv
+# Turn off sv for now
+rt_panel <- g1_panel + error_nosv
+
+# Turning on sv
+
+#rt_panel <- g1_panel + error_sv
 
 ```
 
 ```{r tune_rsquared, eval = FALSE}
-#Nuked this shit, sub in David's code
-
 #See Cochrane's book for more details and explanations, Chapter 12
 
 # Absolutely no clue how Gu et al calibrated their R squared values
 # But, their average time series R squared for each stock was 50%, average annualized volatility was 30%
 # Cross sectional R squared was 25%, and predictive R squared was 5%.
+
+# David was getting something around 20% time series r squared, and 5% cross sectional (double check)
+# This is expected to reduce by a whole lot more as we increase the size of the panel, in terms of both time and cross section size
 
 ##########################################
 # Time series R-squared
@@ -698,6 +703,8 @@ for (i in 1:N){
   
   #True factor set
   
+  Xs <- gen_g_factor_panel(g1, C, x)
+  
   Xs <- cbind(t(C[i, 1:2, ]),(as.matrix(C[i, 3, ]*as.matrix(x[, 1]))))
   
   #Not too sure what this is doing, not used anywhere
@@ -719,6 +726,8 @@ for (i in 1:N){
 }
 
 mean(Rsquared)
+
+# Not too sure what is going on here
 
 val <- g1(C,x,theta)
 true_res <- rowSums((rt - val)^2)
@@ -762,7 +771,7 @@ summary(cross_fit)
 
 # Calculated with z_it = (1, xt)' \otimes c_it
 
-gen_predictor_z <- function(C, xt){
+gen_predictor_z <- function(C, x){
   
 }
 
@@ -859,378 +868,7 @@ pooled_panel_x <- pooled_panel %>%
 
 ```
 
-```{r train_valid_test}
-#Create Training + Test Sets
-
-#$T = 180$ monthly periods corresponds to 15 years. The training sample was set to start from $T = 108$ or 9 years, a validation set 1 year in length. The last 3 years were reserved as a test set never to be used for validation or training.
-
-#This means that there are only 3 sample periods to train on, yay
-
-#Caret and other packages are not so good at dealing with custom training/validation/test sets. Have to specify resampling, tuning and testing manually (ugh)
-
-time_slices <- createTimeSlices(1:(Time-36), initialWindow = 108, horizon = 12, fixedWindow = FALSE, skip = 11)
-
-true_test <- list(c(121:180), c(133:180), c(145:180))
-
-time_slices <- list.append(time_slices, true_test)
-
-names(time_slices) <- c("train", "validation", "test")
-
-```
-
-```{r pooled_ols}
-#POLS
-
-#Pooled OLS does not have anything hyperparameters to tune, easy example to start off with
-
-#Expand formula manually this way because PLM is dumb and gets confused by y ~ .
-
-plm_formula <- function(panel){
-  colnames <- colnames(pooled_panel)
-  colnames <- colnames[-c(1:3)]
-  f <- as.formula(c("return ~ ", paste(colnames, collapse = "+")))
-  return(f)
-}
-
-f <- plm_formula(pooled_panel)
-
-#Initialize Loss Function Statistics
-
-POLS_stats <- data.frame(
-  set = c(1:3),
-  #Training
-  train_MAE = c(1:3),
-  train_MSE = c(1:3),
-  train_RMSE = c(1:3),
-  train_R2 = c(1:3),
-  #Validation
-  valid_MAE = c(1:3),
-  valid_MSE = c(1:3),
-  valid_RMSE = c(1:3),
-  valid_R2 = c(1:3),
-  #Test
-  test_MAE = c(1:3),
-  test_MSE = c(1:3),
-  test_RMSE = c(1:3),
-  test_R2 = c(1:3)
-)
-
-#Initialize Forecasts
-
-POLS_forecasts <- rep(list(0), 3)
-
-#Initialize Models
-
-POLS_models <- rep(list(0), 3)
-
-for (set in 1:3) {
-  #Load training, validation and test sets
-    train <- pooled_panel %>%
-      filter(time %in% unlist(time_slices$train[set]))
-    validation <- pooled_panel %>%
-      filter(time %in% unlist(time_slices$validation[set]))
-    test <- pooled_panel %>%
-      filter(time %in% unlist(time_slices$test[set]))
-    
-  #Initialize forecasts
-    POLS_forecasts[[set]] <- data.frame(
-      time = test$time,
-      forecast = rep(0, length(test$time)),
-      forecast_error = rep(0, length(test$time))
-    )
-
-  #Train model on training set
-  
-    pols <- plm(f, data = train, model = "pooling", index = c("time", "stock"))
-    POLS_models[[set]] <- pols
-    
-  #Usually Tuning via Validation set would be here, but POLS does not need tuning
-  
-  #Training Set Statistics
-    POLS_stats$train_MAE[set] <- mae(train$return, predict(pols))
-    POLS_stats$train_MSE[set] <- mse(train$return, predict(pols))
-    POLS_stats$train_RMSE[set] <- rmse(train$return, predict(pols))
-    error <- (train$return - predict(pols))
-    SSR <- t(error) %*% (error)
-    SST <- t(train$return - mean(train$return)) %*% (train$return - mean(train$return))
-    POLS_stats$train_R2[set] <- (1 - SSR/SST)
-    
-  #Validation Set Statistics
-    POLS_stats$valid_MAE[set] <- mae(validation$return, predict(pols, newdata = validation))
-    POLS_stats$valid_MSE[set] <- mse(validation$return, predict(pols, newdata = validation))
-    POLS_stats$valid_RMSE[set] <- rmse(validation$return, predict(pols, newdata = validation))
-    
-    error <- (validation$return - predict(pols, newdata = validation))
-    SSR <- t(error) %*% (error)
-    SST <- t(validation$return - mean(validation$return)) %*% (validation$return - mean(validation$return))
-    POLS_stats$valid_R2[set] <- (1 - SSR/SST)
-  
-  #Test Set Statistics
-    POLS_stats$test_MAE[set] <- mae(test$return, predict(pols, newdata = test))
-    POLS_stats$test_MSE[set] <- mse(test$return, predict(pols, newdata = test))
-    POLS_stats$test_RMSE[set] <- rmse(test$return, predict(pols, newdata = test))
-    
-    error <- (test$return - predict(pols, newdata = test))
-    SSR <- t(error) %*% (error)
-    SST <- t(test$return - mean(test$return)) %*% (test$return - mean(test$return))
-    POLS_stats$test_R2[set] <- (1 - SSR/SST)
-    
-  #Forecasts
-    POLS_forecasts[[set]]$forecast <- predict(pols, newdata = test)
-    POLS_forecasts[[set]]$forecast_error <- test$return - predict(pols, newdata = test)
-}
-
-POLS_stats
-
-summary(POLS_models[[3]])
-
-
-```
-
-```{r elastic_net}
-#Elasticnet
-
-#Elasticnet only has alpha to tune, thank god
-
-elasticnet_grid <- expand.grid(
-  alpha = seq(0, 1, 0.01)
-)
-
-#Initialize Loss Function Statistics
-
-elasticnet_stats <- data.frame(
-  set = c(1:3),
-  #Training
-  train_MAE = c(1:3),
-  train_MSE = c(1:3),
-  train_RMSE = c(1:3),
-  train_R2 = c(1:3),
-  #Validation
-  valid_MAE = c(1:3),
-  valid_MSE = c(1:3),
-  valid_RMSE = c(1:3),
-  valid_R2 = c(1:3),
-  #Test
-  test_MAE = c(1:3),
-  test_MSE = c(1:3),
-  test_RMSE = c(1:3),
-  test_R2 = c(1:3)
-)
-
-#Initialize Forecasts
-
-elasticnet_forecasts <- rep(list(0), 3)
-
-#Initialize Models
-
-elasticnet_models <- rep(list(0), 3)
-
-for (set in 1:3) {
-  #Load training, validation and test sets
-    train <- pooled_panel %>%
-      filter(time %in% unlist(time_slices$train[set]))
-    train_x <- train %>%
-      select(-return, -time, -stock)
-    train_y <- train %>%
-      select(return)
-    
-    validation <- pooled_panel %>%
-      filter(time %in% unlist(time_slices$validation[set]))
-    validation_x <- validation %>%
-      select(-return, -time, -stock)
-    validation_y <- validation %>%
-      select(return)
-    
-    test <- pooled_panel %>%
-      filter(time %in% unlist(time_slices$test[set]))
-    test_x <- test %>%
-      select(-return, -time, -stock)
-    test_y <- test %>%
-      select(return)
-    
-  #Initialize forecasts
-    elasticnet_forecasts[[set]] <- data.frame(
-      time = test$time,
-      forecast = rep(0, length(test$time)),
-      forecast_error = rep(0, length(test$time))
-    )
-
-  #Train model on training set
-  
-    elasticnet <- glmnet(x = train_x, y = train_y)
-    POLS_models[[set]] <- pols
-    
-  #Usually Tuning via Validation set would be here, but POLS does not need tuning
-  
-  #Training Set Statistics
-    POLS_stats$train_MAE[set] <- mae(train$return, predict(pols))
-    POLS_stats$train_MSE[set] <- mse(train$return, predict(pols))
-    POLS_stats$train_RMSE[set] <- rmse(train$return, predict(pols))
-    error <- (train$return - predict(pols))
-    SSR <- t(error) %*% (error)
-    SST <- t(train$return - mean(train$return)) %*% (train$return - mean(train$return))
-    POLS_stats$train_R2[set] <- (1 - SSR/SST)
-    
-  #Validation Set Statistics
-    POLS_stats$valid_MAE[set] <- mae(validation$return, predict(pols, newdata = validation))
-    POLS_stats$valid_MSE[set] <- mse(validation$return, predict(pols, newdata = validation))
-    POLS_stats$valid_RMSE[set] <- rmse(validation$return, predict(pols, newdata = validation))
-    
-    error <- (validation$return - predict(pols, newdata = validation))
-    SSR <- t(error) %*% (error)
-    SST <- t(validation$return - mean(validation$return)) %*% (validation$return - mean(validation$return))
-    POLS_stats$valid_R2[set] <- (1 - SSR/SST)
-  
-  #Test Set Statistics
-    POLS_stats$test_MAE[set] <- mae(test$return, predict(pols, newdata = test))
-    POLS_stats$test_MSE[set] <- mse(test$return, predict(pols, newdata = test))
-    POLS_stats$test_RMSE[set] <- rmse(test$return, predict(pols, newdata = test))
-    
-    error <- (test$return - predict(pols, newdata = test))
-    SSR <- t(error) %*% (error)
-    SST <- t(test$return - mean(test$return)) %*% (test$return - mean(test$return))
-    POLS_stats$test_R2[set] <- (1 - SSR/SST)
-    
-  #Forecasts
-    POLS_forecasts[[set]]$forecast <- predict(pols, newdata = test)
-    POLS_forecasts[[set]]$forecast_error <- test$return - predict(pols, newdata = test)
-}
-
-```
-
-```{r random_forest}
-#Random Forest
-
-#Random Forest should also be fairly straightforward, only two tuning parameters mtry and ntree (usually)
-
-#The vanilla randomForest package is very basic and too slow
-#We will use the ranger package, which is apparently a C++ implementation of the random forest algorithm and should be faster
-#Another alternative is to use XGBoost (which is very very fast) and set boosting rounds = 1, because in this case it should be a standard random forest
-
-#COmpute power is a real struggle, and the aim is just to get the code basis working for the moment. Very conservative grids are therefore used for now
-
-#Default ntree = 500
-#Default mtry = count(predictors/3) = 400/3 = 133
-
-random_forest_grid <- expand.grid(
-  ntree = seq(10, 50, 10),
-  mtry = seq(10, 100, 10)
-)
-
-#Generate formula, actually same code from PLM earlier
-
-rf_formula <- function(panel){
-  colnames <- colnames(pooled_panel)
-  colnames <- colnames[-c(1:3)]
-  f <- as.formula(c("return ~ ", paste(colnames, collapse = "+")))
-  return(f)
-}
-
-f <- rf_formula(pooled_panel)
-
-#Initialize Loss Function Statistics
-
-RF_stats <- data.frame(
-  set = c(1:3),
-  #Training
-  train_MAE = c(1:3),
-  train_MSE = c(1:3),
-  train_RMSE = c(1:3),
-  train_R2 = c(1:3),
-  #Validation
-  valid_MAE = c(1:3),
-  valid_MSE = c(1:3),
-  valid_RMSE = c(1:3),
-  valid_R2 = c(1:3),
-  #Test
-  test_MAE = c(1:3),
-  test_MSE = c(1:3),
-  test_RMSE = c(1:3),
-  test_R2 = c(1:3)
-)
-
-#Initialize Forecasts
-
-RF_forecasts <- rep(list(0), 3)
-
-#Initialize Models
-
-RF_models <- rep(list(0), 3)
-
-for (set in 1:3) {
-  #Load training, validation and test sets
-    train <- pooled_panel %>%
-      filter(time %in% unlist(time_slices$train[set]))
-    validation <- pooled_panel %>%
-      filter(time %in% unlist(time_slices$validation[set]))
-    test <- pooled_panel %>%
-      filter(time %in% unlist(time_slices$test[set]))
-    
-  #Initialize forecasts
-    RF_forecasts[[set]] <- data.frame(
-      time = test$time,
-      forecast = rep(0, length(test$time)),
-      forecast_error = rep(0, length(test$time))
-    )
-
-  #Train model on training set
-  
-    rf <- ranger(f, data = train, model = "pooling", index = c("stock", "time"))
-    RF_models[[set]] <- rf
-    
-  #Usually Tuning via Validation set would be here, but POLS does not need tuning
-  
-  #Training Set Statistics
-    RF_stats$train_MAE[set] <- mae(train$return, predict(rf))
-    RF_stats$train_MSE[set] <- mse(train$return, predict(rf))
-    RF_stats$train_RMSE[set] <- rmse(train$return, predict(rf))
-    #R squared still pending, haven't figured out how to do it yet fully
-    
-  #Validation Set Statistics
-    RF_stats$valid_MAE[set] <- mae(validation$return, predict(rf, newdata = validation))
-    RF_stats$valid_MSE[set] <- mse(validation$return, predict(rf, newdata = validation))
-    RF_stats$valid_RMSE[set] <- rmse(validation$return, predict(rf, newdata = validation))
-    #R squared still pending, haven't figured out how to do it yet fully
-  
-  #Test Set Statistics
-    RF_stats$test_MAE[set] <- mae(test$return, predict(rf, newdata = test))
-    RF_stats$test_MSE[set] <- mse(test$return, predict(rf, newdata = test))
-    RF_stats$test_RMSE[set] <- rmse(test$return, predict(rf, newdata = test))
-    #R squared still pending, haven't figured out how to do it yet fully
-    
-  #Forecasts
-    RF_forecasts[[set]]$forecast <- predict(rf, newdata = test)
-    RF_forecasts[[set]]$forecast_error <- test$return - predict(rf, newdata = test)
-    
-}
-
-```
-
 ```{r}
-#Train RF Model + tune
-rf <- ranger(f, data = train, 
-             #Hyperparameters
-             
-             #Tuning parameters
-              num.trees = 10,
-              mtry = 10,
-             
-             #No Tuning
-              #Default Min node size
-              min.node.size = 5,
-             
-             #Other
-             write.forest = TRUE,
-             importance = "impurity"
-             )
-
-importance(rf)
-
-```
-
-
-```{r neural_networks}
-#Neural Network
-
+## Export Datasets as external objects, just another way of maintaining reproducbility throughout the project and alleviating the need for generating the datasets every single time
 ```
 
