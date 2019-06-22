@@ -167,7 +167,12 @@ gen_C <- function(C_matrix){
 ```{r generate_characteristics}
 C_bar <- gen_C_bar()
 C_hat <- gen_C_hat(C_bar)
-C <- gen_C(C_hat)
+
+#No Cross Sectional Correlation
+C <- gen_C(C_bar)
+
+# Cross Sectional Correlation
+#C <- gen_C(C_hat)
 ```
 
 ```{r function_generate_xt_multivariate}
@@ -233,6 +238,8 @@ gen_xt <- function(A){
 
 #Transforms xt series to wide format and plots it
 
+#Plot function not currently working with arrays, not too important anyway
+
 plot_xt <- function(xt){
   
   xt_tidy <- cbind(t = c(1:(Time)), xt)
@@ -243,6 +250,8 @@ plot_xt <- function(xt){
   ggplot(data = xt_tidy) +
     geom_line(aes(x = t, y = value, colour = series))
 }
+
+#Generate a multivaraite xt
 
 xt <- gen_xt(A1)
 
@@ -266,6 +275,8 @@ gen_xt_univariate <- function(){
   return(matrix(data = xt, ncol = 1))
 }
 
+#Generate a univariate xt
+
 xt_univariate <- gen_xt_univariate()
 
 ```
@@ -281,148 +292,10 @@ logit <- function(x){
   (1 + exp(-x))^(-1)
 }
 
-#Remmeber that theta needs to be tuned later. Set up all of the functions as functions of theta
-
-#Code these up so that they can take either the trivariate xt or univariate xt series
-
-##############################
-#g1
-##############################
-
-#Default theta, 1x3 dimensions
-theta <- matrix(c(0.02, 0.02, 0.02), nrow = 1)
-
-g1 <- function(C, x, i, t, theta){
-  #Univariate xt case
-  if (ncol(x) == 1) {
-    matrix(c(
-      C[i, 1, t], C[i, 2, t], C[i, 3, t] * x[t]
-      ), nrow = 1) %*% t(theta)
-  } 
-  #Multivariate Case
-  else {
-    matrix(c(
-      C[i, 1, t], C[i, 2, t], C[i, 3, t] * t(x[3, t])
-      ), nrow = 1) %*% t(theta)
-  }
-}
-
-#test if working
-g1(C, xt_univariate, 1, 1, theta)
-g1(C, xt, 1, 1, theta)
-
-##############################
-#g2
-##############################
-
-#Default theta, 1x3 dimensions
-theta <- matrix(c(0.04, 0.035, 0.01), nrow = 1)
-
-g2 <- function(C, x, i, t, theta){
-  #Univariate Case
-  if (ncol(x) == 1) {
-    matrix(c(
-      C[i, 1, t]^2, 
-      C[i, 1, t]*C[i, 2, t],
-      sign(
-        C[i, 3, t] * x[t]
-        )
-    ), nrow = 1) %*% t(theta)
-  }
-  #Multivariate Case
-  else {
-    matrix(c(
-      C[i, 1, t]^2, 
-      C[i, 1, t]*C[i, 2, t],
-      sign(
-        C[i, 3, t] * t(x[3, t])
-        )
-    ), nrow = 1) %*% t(theta)
-  }
-}
-
-#test if working
-g2(C, xt_univariate, 1, 1, theta)
-g2(C, xt, 1, 1, theta)
-
-#############################
-#g3
-#############################
-
-#Default theta, 1x4 dimensions
-theta <- matrix(c(0.04, 0.035, 0.01, 0.01), nrow = 1)
-
-g3 <- function(C, x, i, t, theta){
-  #g3 does not care about xt series. Should work regardless
-  matrix(
-    c(
-      (C[i, 1, t] > 0), 
-      C[i, 2, t]^3,
-      C[i, 1, t] * C[i, 2, t] * (C[i, 3, t] > 0),
-      logit(C[i, 3, t])
-      ),
-    nrow = 1) %*% t(theta)
-}
-
-#test if working
-g3(C, xt, 1, 1, theta)
-
 #################################
-#g4
-#Remember that we are supposed to pass C hat through to g4
-#################################
-
-#Default theta, 1x3 dimensions
-theta <- matrix(c(0.02, 0.02, 0.02), nrow = 1)
-
-g4 <- function(C, x, i, t, theta){
-  #Univariate
-  if (ncol(x) == 1) {
-    matrix(c(
-      C[i, 1, t],
-      C[i, 2, t],
-      C[i, 3, t] * x[t]
-      ), nrow = 1
-    ) %*% t(theta)
-  } 
-  #Multivariate
-  else {
-    matrix(c(
-      C[i, 1, t],
-      C[i, 2, t],
-      C[i, 3, t] * t(x[3, t])
-      ), nrow = 1
-    ) %*% t(theta)
-  }
-}
-
-#test if working
-g4(C_hat, xt_univariate, 1, 1, theta)
-g4(C_hat, xt, 1, 1, theta)
-
-#################################
-
-#################################
-## Generate an entire cross section of g(), given C, x and theta
-## Will be useful later
-#################################
-
-gen_g_panel <- function(g_function, C, x, theta) {
-  g_panel <- array(0, dim = c(N, 1, Time))
-  for (i in 1:N) {
-    for (t in 1:Time) {
-      g_panel[i, 1, t] <- g_function(C, x, i, t, theta)
-    }
-  }
-  return(g_panel)
-}
-
-#It works, yay
-gen_g_panel(g1, C, xt, theta)
 
 ##################################
 ## Generate true factors for entire panel
-## Will be used for time series and cross sectional R squared later
 ##################################
 
 gen_g_factor_panel <- function(g_function, C, x) {
@@ -440,11 +313,11 @@ gen_g_factor_panel <- function(g_function, C, x) {
     
     for (i in i:N) {
       for (t in 1:Time) {
-        #Univariate Case
+        #Univariate xt Case
         if (ncol(x) == 1) {
           g_factor_panel[i, , t] <- matrix(c(C[i, 1, t], C[i, 2, t], C[i, 3, t] * x[t]), nrow = 1)
         }
-        #Multivariate Case
+        #Multivariate xt Case
         else {
           g_factor_panel[i, , t] <- matrix(c(C[i, 1, t], C[i, 2, t], C[i, 3, t] * t(x[3, t])), nrow = 1)
         }
@@ -463,11 +336,11 @@ gen_g_factor_panel <- function(g_function, C, x) {
     
     for (i in i:N) {
       for (t in 1:Time) {
-        #Univariate Case
+        #Univariate xt Case
         if (ncol(x) == 1) {
           g_factor_panel[i, , t] <- matrix(c(C[i, 1, t]^2, C[i, 1, t]*C[i, 2, t], sign(C[i, 3, t] * x[t])), nrow = 1)
         }
-        #Multivariate Case
+        #Multivariate xt Case
         else {
           g_factor_panel[i, , t] <- matrix(c(
             C[i, 1, t]^2, 
@@ -506,18 +379,18 @@ gen_g_factor_panel <- function(g_function, C, x) {
         
     stock_dim <- paste0("stock_", c(1:N))
     c_dim <- c("chat_i1,t", "chat_i2,t", "chat_i3,t * x_t'")
-    time_dim <- paste0("time_", c(1:(Time+1)))
+    time_dim <- paste0("time_", c(1:(Time)))
         
     g_factor_panel <- array(0, dim = c(N, 3, Time), dimnames = list(stock_dim, c_dim, time_dim))
     
     #Same as G1 case, but remember to pass c_hat through to this
     for (i in i:N) {
       for (t in 1:Time) {
-        #Univariate Case
+        #Univariate xt Case
         if (ncol(x) == 1) {
           g_factor_panel[i, , t] <- matrix(c(C[i, 1, t]^2, C[i, 1, t]*C[i, 2, t], sign(C[i, 3, t] * x[t])), nrow = 1)
         }
-        #Multivariate Case
+        #Multivariate xt Case
         else {
           g_factor_panel[i, , t] <- matrix(c(
             C[i, 1, t]^2, 
@@ -535,51 +408,34 @@ gen_g_factor_panel <- function(g_function, C, x) {
 #test this
 #working, yay
 
-g_factor_panel <- gen_g_factor_panel(g1, C, x)
-g_factor_panel
+g1_factor_panel <- gen_g_factor_panel(g1, C, x)
 
-g_factor_panel <- gen_g_factor_panel(g2, C, x)
-g_factor_panel
+g2_factor_panel <- gen_g_factor_panel(g2, C, x)
 
-g_factor_panel <- gen_g_factor_panel(g3, C, x)
-g_factor_panel
+g3_factor_panel <- gen_g_factor_panel(g3, C, x)
 
-g_factor_panel <- gen_g_factor_panel(g4, C, x)
-g_factor_panel
+g4_factor_panel <- gen_g_factor_panel(g4, C, x)
+
+#################################
+## Generate an panel of g(), given a panel of g factors and theta
+## Will be useful later
+#################################
+
+#Remmeber to make sure theta and the factor set are conformable
+gen_g_panel <- function(g_factor, theta) {
+  g_panel <- array(0, dim = c(N, 1, Time))
+  for (i in 1:N) {
+    for (t in 1:Time) {
+      g_panel[i, 1, t] <- g_factor[i, , t] %*% t(theta)
+    }
+  }
+  return(g_panel)
+}
+
+g1_panel <- gen_g_panel(g1_factor_panel, theta = matrix(c(0.04, 0.035, 0.01), nrow = 1))
 ```
 
 ```{r function_return_equation}
-##########################
-##Functions for elements in return equation
-##########################
-
-#This function generates Beta*v part of the errors
-#Returns it for the entire panel of data, for each stock and across all time
-#Note that v here is a 3x1 vector of errors that varies across t but is constant across all stocks
-
-gen_betav <- function(C, v_sd){
-  Beta <- C[, 1:3, ]
-  Beta_v <- array(0, dim = c(N, 1, Time))
-  
-  for (t in 1:(Time)) {
-    v <- matrix(data = rnorm(3,mean=0, sd = v_sd), 
-              nrow = 3, 
-              ncol = 1)
-    for (i in 1:N) {
-      Beta_v[i, 1, t] <- Beta[i, , t] %*% v
-    }
-  }
-  return(Beta_v)
-}
-
-#Test if working
-#It's working
-Beta_v <- gen_betav(C, v_sd = 0.05)
-  
-#############################
-##Error Structure
-#############################
-
 ##Specify omega, gamma and w
 omega <- -0.736
 gamma <- 0.90
@@ -587,7 +443,7 @@ w <- sqrt(0.363)
 ##
 
 #############################
-##Function to generate errors (e)
+##Function to generate errors
 #############################
 
 #Modified this function that that you can specify which parts of the error you wish to turn on or off
@@ -606,9 +462,24 @@ gen_error <- function(sv,
                       #and student t sd in simple case
                       ep_sd,
                       #sv parameters
-                      omega, gamma, w){
+                      omega, gamma, w,
+                      #Beta_v Error parameters
+                      C, v_sd){
   #Initialize
   error <- array(data = 0, dim = c(N, 1, Time))
+  
+  ##Beta_v component, add this on to the other error component at the end
+  Beta <- C[, 1:3, ]
+  Beta_v <- array(0, dim = c(N, 1, Time))
+  
+  for (t in 1:(Time)) {
+    v <- matrix(data = rnorm(3,mean=0, sd = v_sd), 
+              nrow = 3, 
+              ncol = 1)
+    for (i in 1:N) {
+      Beta_v[i, 1, t] <- Beta[i, , t] %*% v
+    }
+  }
   ###########
   #SV errors
   ###########
@@ -627,39 +498,86 @@ gen_error <- function(sv,
         error[i, 1, t] <- exp(sigma2[t+1]/2) * rnorm(1, 0, ep_sd)
       }
     }
-    return(error)
+    return(error + Beta_v)
   }
   ##################
-  #Student t errors
+  #NON-SV Student t errors
   ##################
   else {
-    for (t in 1:(Time+1)) {
+    for (t in 1:(Time)) {
       error[, , t] <- matrix(data = rt(N, df = 5) * sqrt(ep_sd^2 * (5-2)/5), nrow = N)
     }
-    return(error)
+    return(error + Beta_v)
   }
 }
 
 #SV version check
-error <- gen_error(sv = 1, 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363))
+error <- gen_error(sv = 1, 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363), C, v_sd = 0.05)
+
 #Non-SV version check
 #You'll still need to specify values for omega, gamma and w, they just won't be used
-error <- gen_error(sv = 0, 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363))
+error <- gen_error(sv = 0, 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363), C, v_sd = 0.05)
 
-#Bind panel of g() and errors together
-
-g1_panel <- gen_g_panel(g1, C, xt, theta)
-error_sv <- gen_error(sv = 1, 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363))
-error_nosv <- gen_error(sv = 0, 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363))
-
-# Turn off sv for now
-rt_panel <- g1_panel + error_nosv
-
-# Turning on sv
-
-#rt_panel <- g1_panel + error_sv
+#Both Working, yay
 
 ```
+
+```{r}
+##Just a recap chunk of everything that needs to be run to generate everything thus far before we move on to tuning R squared
+
+C_bar <- gen_C_bar()
+C_hat <- gen_C_hat()
+
+#Change this to C_hat if you want to build in cross sectional correlation
+C <- gen_C(C_bar)
+
+A1 <- matrix(c(
+  0.95, 0, 0,
+  0, 0.95, 0,
+  0, 0, 0.95),
+  nrow = 3, ncol = 3
+)
+
+A2 <- matrix(c(
+  1, 0, 0.25,
+  0, 0.95, 0,
+  0.25, 0, 0.95),
+  nrow = 3, ncol = 3
+)
+
+A3 <- matrix(c(
+  0.99, 0.2, 0.1,
+  0.2, 0.90, -0.3,
+  0.1, -0.3, -0.99),
+  nrow = 3, ncol = 3
+)
+
+xt <- gen_xt(A1)
+
+xt_univariate <- gen_xt_univariate()
+
+#Generate the true underlying factors first
+g1_factor_panel <- gen_g_factor_panel(g1, C, xt)
+
+#Then pass them through to multiply them by theta to get g()
+g1_panel <- gen_g_panel(g1_factor_panel, theta = matrix(c(0.04, 0.035, 0.01), nrow = 1))
+
+#Generate the errors
+
+#SV version
+error_sv <- gen_error(sv = 1, 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363), C, v_sd = 0.05)
+
+#Non-SV version
+error_nosv <- gen_error(sv = 0, 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363), C, v_sd = 0.05)
+
+#Finally generate a returns panel
+
+rt_panel_g1_A1 <- g1_panel + error_nosv
+
+#All works, hooray
+
+```
+
 
 ```{r tune_rsquared, eval = FALSE}
 #See Cochrane's book for more details and explanations, Chapter 12
@@ -682,50 +600,58 @@ rt_panel <- g1_panel + error_nosv
 # Save the coefficients for Beta from this, labelling them as Lambda
 # Calculate the SSR and SST, and hence R squared for each stock return's time series
 
-#Initialize R squared matrix
+#Empty Matrices to be used
 Rsquared <- matrix(0, N, 1)
 SSR <- matrix(0, N, 1)
 SST <- matrix(0, N, 1)
-Fits <- matrix(0, (Time+1), N)
+Fits <- matrix(0, Time, N)
+
+#This stores all the BETAS, NOT the constant
 Coeff_Betas <- matrix(0, N, 3)
 Xs_bar <- matrix(0, N, 3)
-R_bar <- matrix(0, N, 1)R
-Resids <- matrix(0, (Time+1), N)
+R_bar <- matrix(0, N, 1)
+Resids <- matrix(0, Time, N)
+
+annual_vol <- matrix(0, N, 1)
 
 #Done for the g1 case for now
 
-for (i in 1:N){
-  
+#First run individual time series regressions
+for (i in 1:N) {
   #True Returns
+  Rs <- rt_panel_g1_A1[i, , ]
+  R_bar[i, 1] <- mean(Rs)
   
-  Rs<- rt[i, ]
-  R_bar[i, 1]<-mean(Rs)
+  #True Factor Set
+  Xs <- t(g1_factor_panel[i, , ])
   
-  #True factor set
+  #Not too sure what this is doing, not used anywhere else
+  Xs_bar[i, ] <- colMeans(Xs)
   
-  Xs <- gen_g_factor_panel(g1, C, x)
+  df <- data.frame(Rs, Xs)
   
-  Xs <- cbind(t(C[i, 1:2, ]),(as.matrix(C[i, 3, ]*as.matrix(x[, 1]))))
+  fit <- lm(Rs ~., df)
+  Fits[, i] <- fit$fitted.values
   
-  #Not too sure what this is doing, not used anywhere
-  Xs_bar[i, ]<- colMeans(Xs)
+  #Save all the betas except for the constant, slightly more clever way that handles different number of true factors
+  Coeff_Betas[i, ] <- as.numeric(fit$coefficients[-1])
   
-  df<-data.frame(Rs, Xs)
-  
-  fit<-lm(Rs ~., df)
-  Fits[, i]<- fit$fitted.values
-  
-  Coeff_Betas[i, ] <- as.numeric(fit$coefficients[2:4])
-  
-  Resids[, i]<- fit$residuals
+  Resids[, i] <- fit$residuals
   SSR[i, 1]<- sum(Resids[, i]^2)
   SST[i, 1]<- sum((Rs-mean(Rs))^2)
   
-  
   Rsquared[i, 1]<-summary(fit)$r.squared
+  
+  #annualized volatility
+  
+  annual_vol[i] <- sd(Rs) * sqrt(12)
 }
 
+#Holy fuck its working but it's not what we're looking for
+#Fuck it
 mean(Rsquared)
+#The no sv designs makes all stocks have pretty similar volatility, hmmmm
+mean(annual_vol)
 
 # Not too sure what is going on here
 
@@ -744,21 +670,15 @@ fitted_Rsquared <- 1 - (sum(SSR)/sum(SST))
 
 # E(Rei) = alpha_i (constant) + B_i * lambda
 
-R_bar <- rowMeans(rt)
+R_bar <- rowMeans(rt_panel_g1_A1)
 df_new <- data.frame(R_bar, Coeff_Betas) 
 
 cross_fit <- lm(R_bar~ Coeff_Betas, df_new) 
-summary(cross_fit)
+summary(cross_fit)$r.squared
 
 # This gives us the cross sectional R squared
 
-```
-
-
-```{r generate_returns}
-##############################
-##Generate Return Series
-##############################
+# Same as David, both of their r squared values are offffff
 
 ```
 
@@ -771,20 +691,24 @@ summary(cross_fit)
 
 # Calculated with z_it = (1, xt)' \otimes c_it
 
+# xt should be P_x x 1
+# c_it should be P_c x 1
+# z_it should be a P_c*P_c x 1 vector of features
+
 gen_predictor_z <- function(C, x){
   
 }
 
 #First strap on a vector of 1 to the xt set
-xt_set <- cbind(1, xt)
+x_dim <- "constant"
+time_dim <- paste0("time_", c(0:(Time)))
+constant <- array(data = 1, dim = c(1, Time+1), dimnames = list(x_dim, time_dim))
+constant <- constant[, -1]
+xt_set <- rbind(constant, xt)
 
-#This works, dimnames need to be cleaned up back in the function to generate C though
-#Pretty enough as it is
-#Kronecker will return an array
-z1 <- kronecker(t(xt_set[1,]), C[1, , 1], make.dimnames = TRUE)
-z2 <- kronecker(t(xt_set[2,]), C[2, , 1], make.dimnames = TRUE)
+z1 <- kronecker(t(xt_set[, 1]), t(C[1, , 1]), make.dimnames = TRUE)
 
-
+#Yes bitch it's working
 
 ```
 
