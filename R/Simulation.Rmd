@@ -213,11 +213,6 @@ A3 <- matrix(c(
 
 gen_xt <- function(A){
   
-  xt <- data.frame(x1 = c(0:Time),
-                   x2 = c(0:Time),
-                   x3 = c(0:Time)
-  )
-  
   x_dim <- paste0("x_", 1:3)
   time_dim <- paste0("time_", c(0:(Time)))
   
@@ -261,18 +256,22 @@ xt <- gen_xt(A1)
 #xt function, just for simplicity
 
 gen_xt_univariate <- function(){
+  
+  x_dim <- paste0("x_", 1)
+  time_dim <- paste0("time_", c(1:(Time)))
+  
   #Initialize
-  xt <- rep(0, Time+1)
+  xt <- array(0, dim = c(1, 1, Time), dimnames = list(c("row"), x_dim, time_dim))
   rho <- 0.95
   ut_sd <- sqrt(1 -rho^2)
   
-  xt[1] <- rnorm(1, mean = 0, sd = ut_sd)
+  xt[1, 1, 1] <- rnorm(1, mean = 0, sd = ut_sd)
   
-  for (t in 2:(Time+1)) {
-    xt[t] <- xt[t-1]*rho + rnorm(1, mean = 0, sd = ut_sd)
+  for (t in 2:(Time)) {
+    xt[1, 1, t] <- xt[t-1]*rho + rnorm(1, mean = 0, sd = ut_sd)
   }
   
-  return(matrix(data = xt, ncol = 1))
+  return(xt)
 }
 
 #Generate a univariate xt
@@ -315,7 +314,7 @@ gen_g_factor_panel <- function(g_function, C, x) {
       for (t in 1:Time) {
         #Univariate xt Case
         if (ncol(x) == 1) {
-          g_factor_panel[i, , t] <- matrix(c(C[i, 1, t], C[i, 2, t], C[i, 3, t] * x[t]), nrow = 1)
+          g_factor_panel[i, , t] <- matrix(c(C[i, 1, t], C[i, 2, t], C[i, 3, t] * x[1, , t]), nrow = 1)
         }
         #Multivariate xt Case
         else {
@@ -338,7 +337,7 @@ gen_g_factor_panel <- function(g_function, C, x) {
       for (t in 1:Time) {
         #Univariate xt Case
         if (ncol(x) == 1) {
-          g_factor_panel[i, , t] <- matrix(c(C[i, 1, t]^2, C[i, 1, t]*C[i, 2, t], sign(C[i, 3, t] * x[t])), nrow = 1)
+          g_factor_panel[i, , t] <- matrix(c(C[i, 1, t]^2, C[i, 1, t]*C[i, 2, t], sign(C[i, 3, t] * x[1, 1, t])), nrow = 1)
         }
         #Multivariate xt Case
         else {
@@ -388,7 +387,7 @@ gen_g_factor_panel <- function(g_function, C, x) {
       for (t in 1:Time) {
         #Univariate xt Case
         if (ncol(x) == 1) {
-          g_factor_panel[i, , t] <- matrix(c(C[i, 1, t]^2, C[i, 1, t]*C[i, 2, t], sign(C[i, 3, t] * x[t])), nrow = 1)
+          g_factor_panel[i, , t] <- matrix(c(C[i, 1, t]^2, C[i, 1, t]*C[i, 2, t], sign(C[i, 3, t] * x[1, 1, t])), nrow = 1)
         }
         #Multivariate xt Case
         else {
@@ -408,13 +407,13 @@ gen_g_factor_panel <- function(g_function, C, x) {
 #test this
 #working, yay
 
-g1_factor_panel <- gen_g_factor_panel(g1, C, x)
+g1_factor_panel <- gen_g_factor_panel(g1, C, xt)
 
-g2_factor_panel <- gen_g_factor_panel(g2, C, x)
+g2_factor_panel <- gen_g_factor_panel(g2, C, xt)
 
-g3_factor_panel <- gen_g_factor_panel(g3, C, x)
+g3_factor_panel <- gen_g_factor_panel(g3, C, xt)
 
-g4_factor_panel <- gen_g_factor_panel(g4, C, x)
+g4_factor_panel <- gen_g_factor_panel(g4, C, xt)
 
 #################################
 ## Generate an panel of g(), given a panel of g factors and theta
@@ -687,112 +686,74 @@ summary(cross_fit)$r.squared
 ##Function to build predictor set for the entire panel
 ##############################################################################
 
-#Kronecker product thing
+#Kronecker product
 
 # Calculated with z_it = (1, xt)' \otimes c_it
 
 # xt should be P_x x 1
 # c_it should be P_c x 1
-# z_it should be a P_c*P_c x 1 vector of features
+# z_it should be a P_c*(P_x + 1) x 1 vector of features
+# 
+
 
 gen_predictor_z <- function(C, x){
   
+  xt_set <- rbind(1, x)
+  
+  dimnames(xt_set)[[1]][1] <- "constant"
+  
+  stock_dim <- paste0("stock_", c(1:N))
+  c_dim <- dimnames(kronecker(t(xt_set[, 1]), t(C[1, , 1]), make.dimnames = TRUE))[[2]]
+  time_dim <- paste0("time_", c(1:(Time)))
+  
+  z_panel <- array(0, dim = c(N, (nrow(xt)+1) * P_c, Time), dimnames = list(stock_dim, c_dim, time_dim))
+  
+  for (i in 1:N) {
+    for (t in 1:Time) {
+      z_panel[i, , t] <- kronecker(t(xt_set[, t]), t(C[i, , t]), make.dimnames = TRUE)
+    }
+  }
+  return(z_panel)
 }
 
-#First strap on a vector of 1 to the xt set
-x_dim <- "constant"
-time_dim <- paste0("time_", c(0:(Time)))
-constant <- array(data = 1, dim = c(1, Time+1), dimnames = list(x_dim, time_dim))
-constant <- constant[, -1]
-xt_set <- rbind(constant, xt)
+gen_predictor_z(C, xt)
 
-z1 <- kronecker(t(xt_set[, 1]), t(C[1, , 1]), make.dimnames = TRUE)
+z_panel_g1_A1 <- gen_predictor_z(C, xt)
 
 #Yes bitch it's working
 
-```
+# Bind Returns and Predictor Sets Together into one 2D dataframe, ready to be used for training models
 
-```{r}
-
-#We need to take all of those arrays and convert them into a panel data format
-
-#Our P_x is 1 constant + 3 multivariate time series = 4
-#Hence, ncol = 4*P_c
-
-gen_z <- function(){
-  null_matrix <- matrix(0, nrow = Time+1, ncol = 4*P_c)
-
-  z <- rep(list(null_matrix), N)
+bind_rt_predictor <- function(rt_panel, z_panel) {
   
-  xt <- gen_xt(A1)
+  df <- cbind(data.frame(rt_panel_g1_A1[, , 1]), time = 2, stock = paste0("stock_", c(1:N)), data.frame(z_panel_g1_A1[, , 1]))
+
+  colnames(df)[1] <- "rt"
+  row.names(df) <- NULL
   
-  for (i in 1:N) {
-    for (t in 1:(Time+1)){
-      z[[i]][t, ] <- t(
-        kronecker(t(cbind(c(rep(1, Time+1)), xt)[t, ]), C[[t]][i, ])
-        )
-    }
+  for (t in 2:Time) {
+    df_new <- cbind(data.frame(rt_panel_g1_A1[, , t]), time = 1+t, stock = paste0("stock_", c(1:N)), data.frame(z_panel_g1_A1[, , t]))
+    colnames(df_new)[1] <- "rt"
+    row.names(df_new) <- NULL
+    df <- rbind(df, df_new)
   }
-  return(z)
+  return(df)
 }
 
-############################################################################
-##Function to cbind the corresponding return series and the predictor set together, and return it in dataframe form
-############################################################################
+#test
 
-gen_pooled_panel <- function(){
-  
-  #Initialize entire dataset dimensions
-  #There should be 181*200 = 36,200 rows
-  #There should be 1 return column + 1 id column + 1 time column + 400 predictors = 403 columns
-  
-  pooled_panel <- matrix(data = 0, nrow = (181*200), ncol = (1+1+1+400))
-  
-  for (i in 1:N){
-    #Extract return series for ith stock from the return series list first
-    #Initialize empty matrix
-    r <- matrix(0, nrow = Time+1, ncol = 1)
-    
-    for (t in 1:(Time+1)){
-        r[t] <- rt_A1_g1[[t]][i]
-    }
-    
-    #Cbind returns, id, time and predictors
-    panel <- cbind(r, c(rep(i, (Time+1))), c(1:(Time+1)), z[[i]])
-    pooled_panel[((i-1)*(Time+1)+1):(i*(Time+1)), ] <- panel
-  }
-  
-  #Pass this through to data frame format with column titles so you know which column is which
-  pooled_panel <- data.frame(return = pooled_panel[, 1], stock = pooled_panel[, 2], time = pooled_panel[, 3], pooled_panel[, 4:403])
-  
-  #Sort by time
-  pooled_panel <- pooled_panel %>%
-  arrange(time)
-  
-  #Remove 1st row because returns data only starts from t = 2
-  pooled_panel <- pooled_panel %>%
-    filter(time != 1)
-  
-  #Return
-  return(pooled_panel)
-  
-}
-```
+panel_g1_A1 <- bind_rt_predictor(rt_panel_g1_A1, z_panel_g1_A1)
 
-```{r geenrate_panel_dataset}
-z <- gen_z()
-
-pooled_panel <- gen_pooled_panel()
-
-pooled_panel_y <- pooled_panel$return
-
-pooled_panel_x <- pooled_panel %>%
-  select(-return, -stock, -time)
-
+#With that... DONE WITH THIS PART OF THE PROJECT
 
 ```
 
 ```{r}
-## Export Datasets as external objects, just another way of maintaining reproducbility throughout the project and alleviating the need for generating the datasets every single time
+#This is just code to generate the different specifications of the dataset
+#Gu et al were really extra and ran something like 100 different simulation for their specification
+
+
+
 ```
+
 
