@@ -46,7 +46,7 @@ N <- 20
 
 P_c <- 10
 
-Time <- 18
+Time <- 180
 
 ```
 
@@ -815,10 +815,6 @@ panel_g1_A1 <- bind_rt_predictor(rt_panel_g1_A1, z_panel_g1_A1)
 ```
 
 ```{r}
-#This is just code to generate the different specifications of the dataset
-#Gu et al were really extra and ran something like 100 different simulation for their specification
-
-#Currently a bit of a playground
 
 ##########################
 A1 <- matrix(c(
@@ -848,7 +844,7 @@ sim_tune <- function(sim_N, cross_corr, A_matrix, xt_multi, g_function, theta,
                      #Error Parameters
                      error_sv, error_omega, error_gamma, error_w, error_v_sd) {
 
-  sim_tune_stats <- data.frame(time_series_fitted.rsquare = rep(0, 100), annual_vol = rep(0, 100), cross_section_rsquare = rep(0, 100))
+  sim_tune_stats <- data.frame(time_series_fitted.rsquare = rep(0, sim_N), annual_vol = rep(0, sim_N), cross_section_rsquare = rep(0, sim_N))
 
   for (s in 1:sim_N) {
     C_bar <- gen_C_bar()
@@ -860,29 +856,6 @@ sim_tune <- function(sim_N, cross_corr, A_matrix, xt_multi, g_function, theta,
     else {
       C <- gen_C(C_hat)
     }
-    
-    ##########################
-    A1 <- matrix(c(
-      0.95, 0, 0,
-      0, 0.95, 0,
-      0, 0, 0.95),
-      nrow = 3, ncol = 3
-    )
-    
-    A2 <- matrix(c(
-      1, 0, 0.25,
-      0, 0.95, 0,
-      0.25, 0, 0.95),
-      nrow = 3, ncol = 3
-    )
-    
-    A3 <- matrix(c(
-      0.99, 0.2, 0.1,
-      0.2, 0.90, -0.3,
-      0.1, -0.3, -0.99),
-      nrow = 3, ncol = 3
-    )
-    ##########################
     
     if (xt_multi == 1) {
       xt <- gen_xt(A_matrix)
@@ -912,12 +885,67 @@ sim_tune <- function(sim_N, cross_corr, A_matrix, xt_multi, g_function, theta,
 ```{r}
 # Actual Generation of the datasets
 
+#Overall Dimensionality
+N <- 20
+P_c <- 10
+Time <- 18
 
+sim_tune <- function(sim_N, cross_corr, A_matrix, xt_multi, g_function, theta, 
+                     #Error Parameters
+                     error_sv, error_omega, error_gamma, error_w, error_v_sd) {
+  #Initialize
+  dataset <- list(sim_tune_stats = data.frame(time_series_fitted.rsquare = 0, 
+                                               annual_vol = 0, 
+                                               cross_section_rsquare = 0),
+                   data = 0
+                   )
+  
+  dataset2 <- list(sim_tune_stats = data.frame(time_series_fitted.rsquare = 0, 
+                                               annual_vol = 0, 
+                                               cross_section_rsquare = 0),
+                   data = 0
+                   )
+  
+  datasets <- list(dataset, dataset2)
+  
+  for (s in 1:sim_N) {
+    C_bar <- gen_C_bar()
+    C_hat <- gen_C_hat(C_bar)
+    
+    if (cross_corr == 0) {
+      C <- gen_C(C_bar)
+    }
+    else {
+      C <- gen_C(C_hat)
+    }
+    
+    if (xt_multi == 1) {
+      xt <- gen_xt(A_matrix)
+    }
+    else {
+      xt <- gen_xt_univariate()
+    }
+      
+    #Generate the true underlying factors first
+    g_factor_panel <- gen_g_factor_panel(g_function, C, xt)
+    
+    #Then pass them through to multiply them by theta to get g()
+    g_panel <- gen_g_panel(g_factor_panel, theta)
+      
+    #Generate the errors
+  
+    error <- gen_error(sv = error_sv, 0.05, omega = error_omega, gamma = error_gamma, w = error_w, C, v_sd = error_v_sd)
+      
+    rt_panel <- g_panel + error
+      
+    sim_tune_stats[s,] <- panel_tune_stats(rt_panel, g_factor_panel)
+  }
+}
 
 ```
 
 
-```{r}
+```{r, eval = FALSE}
 #Playing around simulation specifications
 
 #Overall Dimensionality

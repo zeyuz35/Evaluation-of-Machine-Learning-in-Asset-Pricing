@@ -35,13 +35,25 @@ set.seed(27935248)
 
 #Caret and other packages are not so good at dealing with custom training/validation/test sets. Have to specify resampling, tuning and testing manually (ugh)
 
-time_slices <- createTimeSlices(1:(Time-36), initialWindow = 108, horizon = 12, fixedWindow = FALSE, skip = 11)
+customTimeSlices <- function(start, end, initialWindow, horizon, test_size) {
+  total <- c(start:end)
+  offset <- start - 1
+  set_num <- (end - start + offset - test_size - initialWindow) / horizon
+  
+  time_slice <- list(train = 0, validation = 0, test = 0)
+  time_slices <- rep(list(time_slice), 3)
 
-true_test <- list(c(121:180), c(133:180), c(145:180))
+  for (t in 1:set_num) {
+    time_slice$train <- c(start:(initialWindow + (t-1) * horizon + offset))
+    time_slice$validation <- c((initialWindow + (t-1) * horizon + offset + 1):(initialWindow + (t) * horizon + offset))
+    time_slice$test <- c((initialWindow + (t) * horizon + offset + 1):end)
+    
+    time_slices[[t]] <- time_slice
+  }
+}
 
-time_slices <- list.append(time_slices, true_test)
-
-names(time_slices) <- c("train", "validation", "test")
+#Create custom time slices
+timeSlices <- customeTimeSlices(start = 2, end = 181, initialWindow = 108, horizon = 12, test_size = 36)
 
 ```
 
