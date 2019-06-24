@@ -299,7 +299,7 @@ logit <- function(x){
 
 gen_g_factor_panel <- function(g_function, C, x) {
   
-  g_name <- as.character(substitute(g_function))
+  g_name <- g_function
   
   #G1 case
   if (g_name == "g1") {
@@ -310,7 +310,7 @@ gen_g_factor_panel <- function(g_function, C, x) {
         
     g_factor_panel <- array(0, dim = c(N, 3, Time), dimnames = list(stock_dim, c_dim, time_dim))
     
-    for (i in i:N) {
+    for (i in 1:N) {
       for (t in 1:Time) {
         #Univariate xt Case
         if (ncol(x) == 1) {
@@ -333,7 +333,7 @@ gen_g_factor_panel <- function(g_function, C, x) {
         
     g_factor_panel <- array(0, dim = c(N, 3, Time), dimnames = list(stock_dim, c_dim, time_dim))
     
-    for (i in i:N) {
+    for (i in 1:N) {
       for (t in 1:Time) {
         #Univariate xt Case
         if (ncol(x) == 1) {
@@ -361,7 +361,7 @@ gen_g_factor_panel <- function(g_function, C, x) {
         
     g_factor_panel <- array(0, dim = c(N, 4, Time), dimnames = list(stock_dim, c_dim, time_dim))
     
-    for (i in i:N) {
+    for (i in 1:N) {
       for (t in 1:Time) {
         g_factor_panel[i, , t] <- matrix(c(
           (C[i, 1, t] > 0), 
@@ -383,20 +383,16 @@ gen_g_factor_panel <- function(g_function, C, x) {
     g_factor_panel <- array(0, dim = c(N, 3, Time), dimnames = list(stock_dim, c_dim, time_dim))
     
     #Same as G1 case, but remember to pass c_hat through to this
-    for (i in i:N) {
+    
+    for (i in 1:N) {
       for (t in 1:Time) {
         #Univariate xt Case
         if (ncol(x) == 1) {
-          g_factor_panel[i, , t] <- matrix(c(C[i, 1, t]^2, C[i, 1, t]*C[i, 2, t], sign(C[i, 3, t] * x[1, 1, t])), nrow = 1)
+          g_factor_panel[i, , t] <- matrix(c(C[i, 1, t], C[i, 2, t], C[i, 3, t] * x[1, , t]), nrow = 1)
         }
         #Multivariate xt Case
         else {
-          g_factor_panel[i, , t] <- matrix(c(
-            C[i, 1, t]^2, 
-            C[i, 1, t]*C[i, 2, t],
-            sign(C[i, 3, t] * t(x[3, t]))), 
-            nrow = 1
-            )
+          g_factor_panel[i, , t] <- matrix(c(C[i, 1, t], C[i, 2, t], C[i, 3, t] * t(x[3, t])), nrow = 1)
         }
       }
     }
@@ -407,13 +403,13 @@ gen_g_factor_panel <- function(g_function, C, x) {
 #test this
 #working, yay
 
-g1_factor_panel <- gen_g_factor_panel(g1, C, xt)
+g1_factor_panel <- gen_g_factor_panel("g1", C, xt)
 
-g2_factor_panel <- gen_g_factor_panel(g2, C, xt)
+g2_factor_panel <- gen_g_factor_panel("g2", C, xt)
 
-g3_factor_panel <- gen_g_factor_panel(g3, C, xt)
+g3_factor_panel <- gen_g_factor_panel("g3", C, xt)
 
-g4_factor_panel <- gen_g_factor_panel(g4, C, xt)
+g4_factor_panel <- gen_g_factor_panel("g4", C, xt)
 
 #################################
 ## Generate an panel of g(), given a panel of g factors and theta
@@ -646,8 +642,6 @@ for (i in 1:N) {
   annual_vol[i] <- sd(Rs) * sqrt(12)
 }
 
-#Holy fuck its working but it's not what we're looking for
-#Fuck it
 mean(Rsquared)
 #The no sv designs makes all stocks have pretty similar volatility, hmmmm
 mean(annual_vol)
@@ -677,7 +671,98 @@ summary(cross_fit)$r.squared
 
 # This gives us the cross sectional R squared
 
-# Same as David, both of their r squared values are offffff
+# Same as David, both of their r squared values are off
+```
+
+```{r tune_stats_function}
+############################
+# Function Form
+############################
+# Given a return series panel and its corresponding underlying true factors, return its mean individual time series R squared, mean annualized volatility, and cross sectional r squared
+
+panel_tune_stats <- function(return_panel, true_factor_panel) {
+  #Initialize
+  tune_stats <- data.frame(time_series_rsquare = 0, annual_vol = 0, cross_section_rsquare = 0)
+  
+  ########
+  ## Time Series + Annual Vol
+  ########
+  
+    #Empty Matrices to be used
+    Rsquared <- matrix(0, N, 1)
+    SSR <- matrix(0, N, 1)
+    SST <- matrix(0, N, 1)
+    Fits <- matrix(0, Time, N)
+    
+    #This stores all the BETAS, NOT the constant
+    Coeff_Betas <- matrix(0, N, 3)
+    Xs_bar <- matrix(0, N, 3)
+    R_bar <- matrix(0, N, 1)
+    Resids <- matrix(0, Time, N)
+    
+    annual_vol <- matrix(0, N, 1)
+    
+    #Done for the g1 case for now
+    
+    #First run individual time series regressions
+    for (i in 1:N) {
+      #True Returns
+      Rs <- return_panel[i, , ]
+      R_bar[i, 1] <- mean(Rs)
+      
+      #True Factor Set
+      Xs <- t(true_factor_panel[i, , ])
+      
+      #Not too sure what this is doing, not used anywhere else
+      Xs_bar[i, ] <- colMeans(Xs)
+      
+      df <- data.frame(Rs, Xs)
+      
+      fit <- lm(Rs ~., df)
+      Fits[, i] <- fit$fitted.values
+      
+      #Save all the betas except for the constant, slightly more clever way that handles different number of true factors
+      Coeff_Betas[i, ] <- as.numeric(fit$coefficients[-1])
+      
+      Resids[, i] <- fit$residuals
+      SSR[i, 1] <- sum(Resids[, i]^2)
+      SST[i, 1] <- sum((Rs-mean(Rs))^2)
+      
+      Rsquared[i, 1] <- summary(fit)$r.squared
+      
+      #annualized volatility
+      
+      annual_vol[i] <- sd(Rs) * sqrt(12)
+    }
+    
+  tune_stats$time_series_rsquare <- mean(Rsquared)
+    
+  tune_stats$annual_vol <- mean(annual_vol)
+    
+    # Not too sure what is going on here
+    
+    # val <- g1(C,x,theta)
+    # true_res <- rowSums((rt - val)^2)
+    # true_sst <- rowSums((rt - rowMeans(rt))^2)
+    # true_rRsquared <- 1 - (sum(true_res)/sum(true_sst))
+    
+    # fitted_Rsquared <- 1 - (sum(SSR)/sum(SST))
+    
+  # Cross Sectional Correlation
+    
+    R_bar <- rowMeans(return_panel)
+    df_new <- data.frame(R_bar, Coeff_Betas) 
+    
+    cross_fit <- lm(R_bar ~ Coeff_Betas, df_new) 
+    
+  tune_stats$cross_section_rsquare <- summary(cross_fit)$r.squared
+  
+  return(tune_stats)
+}
+
+#Works, hooray
+
+panel_tune_stats(rt_panel_g1_A1, g1_factor_panel)
 
 ```
 
@@ -752,7 +837,152 @@ panel_g1_A1 <- bind_rt_predictor(rt_panel_g1_A1, z_panel_g1_A1)
 #This is just code to generate the different specifications of the dataset
 #Gu et al were really extra and ran something like 100 different simulation for their specification
 
+#Currently a bit of a playground
 
+##########################
+A1 <- matrix(c(
+  0.95, 0, 0,
+  0, 0.95, 0,
+  0, 0, 0.95),
+  nrow = 3, ncol = 3
+)
+
+A2 <- matrix(c(
+  1, 0, 0.25,
+  0, 0.95, 0,
+  0.25, 0, 0.95),
+  nrow = 3, ncol = 3
+)
+
+A3 <- matrix(c(
+  0.99, 0.2, 0.1,
+  0.2, 0.90, -0.3,
+  0.1, -0.3, -0.99),
+  nrow = 3, ncol = 3
+)
+##########################
+
+# Simulate a specification 100 times
+sim_tune <- function(sim_N, cross_corr, A_matrix, xt_multi, g_function, theta, 
+                     #Error Parameters
+                     error_sv, error_omega, error_gamma, error_w, error_v_sd) {
+
+  sim_tune_stats <- data.frame(time_series_rsquare = rep(0, 100), annual_vol = rep(0, 100), cross_section_rsquare = rep(0, 100))
+
+  for (s in 1:sim_N) {
+    C_bar <- gen_C_bar()
+    C_hat <- gen_C_hat(C_bar)
+    
+    if (cross_corr == 0) {
+      C <- gen_C(C_bar)
+    }
+    else {
+      C <- gen_C(C_hat)
+    }
+    
+    ##########################
+    A1 <- matrix(c(
+      0.95, 0, 0,
+      0, 0.95, 0,
+      0, 0, 0.95),
+      nrow = 3, ncol = 3
+    )
+    
+    A2 <- matrix(c(
+      1, 0, 0.25,
+      0, 0.95, 0,
+      0.25, 0, 0.95),
+      nrow = 3, ncol = 3
+    )
+    
+    A3 <- matrix(c(
+      0.99, 0.2, 0.1,
+      0.2, 0.90, -0.3,
+      0.1, -0.3, -0.99),
+      nrow = 3, ncol = 3
+    )
+    ##########################
+    
+    if (xt_multi == 1) {
+      xt <- gen_xt(A_matrix)
+    }
+    else {
+      xt <- gen_xt_univariate()
+    }
+    
+    #Generate the true underlying factors first
+    g_factor_panel <- gen_g_factor_panel(g_function, C, xt)
+    
+    #Then pass them through to multiply them by theta to get g()
+    g_panel <- gen_g_panel(g_factor_panel, theta)
+    
+    #Generate the errors
+
+    error <- gen_error(sv = error_sv, 0.05, omega = error_omega, gamma = error_gamma, w = error_w, C, v_sd = error_v_sd)
+    
+    rt_panel <- g_panel + error
+    
+    sim_tune_stats[s,] <- panel_tune_stats(rt_panel, g_factor_panel)
+  }
+  summary(sim_tune_stats)
+}
+
+
+#Gu et al's original specfication, recreated
+sim_tune(100, cross_corr = 0, A1, xt_multi = 0, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1), 
+         error_sv = 0, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+
+sim_tune(100, cross_corr = 0, A1, xt_multi = 0, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1), 
+         error_sv = 0, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+
+#Our different specifications
+
+#G1
+
+sim_tune(100, cross_corr = 1, A1, xt_multi = 1, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1), 
+         error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+
+sim_tune(100, cross_corr = 1, A2, xt_multi = 1, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1), 
+         error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+
+sim_tune(100, cross_corr = 1, A3, xt_multi = 1, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1), 
+         error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+
+#G2
+
+sim_tune(100, cross_corr = 1, A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1), 
+         error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+
+sim_tune(100, cross_corr = 1, A2, xt_multi = 1, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1), 
+         error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+
+sim_tune(100, cross_corr = 1, A3, xt_multi = 1, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1), 
+         error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+
+#G3
+#Remember that G3 has 4 underlying factors, adjust theta accordingly
+
+sim_tune(100, cross_corr = 1, A1, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.001), nrow = 1), 
+         error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+
+sim_tune(100, cross_corr = 1, A2, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.001), nrow = 1), 
+         error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+
+sim_tune(100, cross_corr = 1, A3, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.001), nrow = 1), 
+         error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+
+##########################################
+## OBSERVATIONS
+##########################################
+
+## I am somehow a bit closer to Gu et al's r squared values. Still quite off though. There is also a lot of variance
+
+## Our specifications which have SV and cross sectional correlation have rather high r squared values - higher than Gu et al's
+## Very skeptical, probably did something wrong???
+## 
+
+
+## 
 
 ```
 
