@@ -995,11 +995,14 @@ sim_tune(100, cross_corr = 1, A3, xt_multi = 1, g_function = "g3", theta = matri
 ## OBSERVATIONS
 ##########################################
 
-## I am somehow a bit closer to Gu et al's r squared values. Still quite off though. There is also a lot of variance
+## Very low dimensionality makes all r squared values go up a lot to the point of being unreasonable. This is seen in Gu et al's design as well. 
 
-## Our specifications which have SV and cross sectional correlation have rather high r squared values - higher than Gu et al's
-## Very skeptical, probably did something wrong???
-## 
+## High dimensionality lowers this drastically
+## This means that we have to fix a large number of dimensions to tune our specifications. This is computationally quite intensive
+
+## Cross sectional correlation doesn't seem to do much
+## Multivariate xt specification causes very high time series r squared
+## SV only seems to increase annualized volatility
 
 
 ## 

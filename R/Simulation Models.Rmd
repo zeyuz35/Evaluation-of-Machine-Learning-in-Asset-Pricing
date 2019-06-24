@@ -22,6 +22,7 @@ library(rlist)
 library(plm)
 library(Metrics)
 library(ranger)
+library(glmnetUtils)
 
 set.seed(27935248)
 ```
@@ -50,30 +51,30 @@ customTimeSlices <- function(start, end, initialWindow, horizon, test_size) {
     
     time_slices[[t]] <- time_slice
   }
+  return(time_slices)
 }
 
 #Create custom time slices
-timeSlices <- customeTimeSlices(start = 2, end = 181, initialWindow = 108, horizon = 12, test_size = 36)
+timeSlices <- customTimeSlices(start = 2, end = 181, initialWindow = 108, horizon = 12, test_size = 36)
 
 ```
 
 ```{r pooled_ols}
 #POLS
 
-#Pooled OLS does not have anything hyperparameters to tune, easy example to start off with
+#Use panel_g1_A1 generated from Simulation.rmd for now. Generalize it later
+
+pooled_panel <- panel_g1_A1
 
 #Expand formula manually this way because PLM is dumb and gets confused by y ~ .
-
 plm_formula <- function(panel){
-  colnames <- colnames(pooled_panel)
-  colnames <- colnames[-c(1:3)]
-  f <- as.formula(c("return ~ ", paste(colnames, collapse = "+")))
+  #Remove the first 3 colNames, as these correspond to the return, time and stock id
+  panel_colnames <- colnames(panel)[-c(1:3)]
+  f <- as.formula(c("rt ~", paste(panel_colnames, collapse = "+")))
   return(f)
 }
 
 f <- plm_formula(pooled_panel)
-
-#Initialize Loss Function Statistics
 
 POLS_stats <- data.frame(
   set = c(1:3),
@@ -103,81 +104,82 @@ POLS_forecasts <- rep(list(0), 3)
 POLS_models <- rep(list(0), 3)
 
 for (set in 1:3) {
-  #Load training, validation and test sets
-    train <- pooled_panel %>%
-      filter(time %in% unlist(time_slices$train[set]))
-    validation <- pooled_panel %>%
-      filter(time %in% unlist(time_slices$validation[set]))
-    test <- pooled_panel %>%
-      filter(time %in% unlist(time_slices$test[set]))
-    
-  #Initialize forecasts
-    POLS_forecasts[[set]] <- data.frame(
-      time = test$time,
-      forecast = rep(0, length(test$time)),
-      forecast_error = rep(0, length(test$time))
-    )
+  #Load Training, validation and test sets
 
-  #Train model on training set
+  train <- pooled_panel %>%
+    filter(time %in% timeSlices[[set]]$train)
+  validation <- pooled_panel %>%
+    filter(time %in% timeSlices[[set]]$validation)
+  test<- pooled_panel %>%
+    filter(time %in% timeSlices[[set]]$test)
   
-    pols <- plm(f, data = train, model = "pooling", index = c("time", "stock"))
-    POLS_models[[set]] <- pols
-    
-  #Usually Tuning via Validation set would be here, but POLS does not need tuning
+  #Train Model on training set
+  
+  pols <- plm(f, data = train, model = "pooling", index = c("time", "stock"))
+  
+  POLS_models[[set]] <- pols
+  
+  #No Tuning Needed
+  
+  #Statistics
   
   #Training Set Statistics
-    POLS_stats$train_MAE[set] <- mae(train$return, predict(pols))
-    POLS_stats$train_MSE[set] <- mse(train$return, predict(pols))
-    POLS_stats$train_RMSE[set] <- rmse(train$return, predict(pols))
-    error <- (train$return - predict(pols))
-    SSR <- t(error) %*% (error)
-    SST <- t(train$return - mean(train$return)) %*% (train$return - mean(train$return))
-    POLS_stats$train_R2[set] <- (1 - SSR/SST)
-    
+  POLS_stats$train_MAE[set] <- mae(train$rt, predict(pols))
+  POLS_stats$train_MSE[set] <- mse(train$rt, predict(pols))
+  POLS_stats$train_RMSE[set] <- rmse(train$rt, predict(pols))
+  error <- (train$rt - predict(pols))
+  SSR <- t(error) %*% (error)
+  SST <- t(train$rt - mean(train$rt)) %*% (train$rt - mean(train$rt))
+  POLS_stats$train_R2[set] <- (1 - SSR/SST)
+      
   #Validation Set Statistics
-    POLS_stats$valid_MAE[set] <- mae(validation$return, predict(pols, newdata = validation))
-    POLS_stats$valid_MSE[set] <- mse(validation$return, predict(pols, newdata = validation))
-    POLS_stats$valid_RMSE[set] <- rmse(validation$return, predict(pols, newdata = validation))
+  POLS_stats$valid_MAE[set] <- mae(validation$rt, predict(pols, newdata = validation))
+  POLS_stats$valid_MSE[set] <- mse(validation$rt, predict(pols, newdata = validation))
+  POLS_stats$valid_RMSE[set] <- rmse(validation$rt, predict(pols, newdata = validation))
+      
+  error <- (validation$rt - predict(pols, newdata = validation))
+  SSR <- t(error) %*% (error)
+  SST <- t(validation$rt - mean(validation$rt)) %*% (validation$rt - mean(validation$rt))
+  POLS_stats$valid_R2[set] <- (1 - SSR/SST)
     
-    error <- (validation$return - predict(pols, newdata = validation))
-    SSR <- t(error) %*% (error)
-    SST <- t(validation$return - mean(validation$return)) %*% (validation$return - mean(validation$return))
-    POLS_stats$valid_R2[set] <- (1 - SSR/SST)
-  
   #Test Set Statistics
-    POLS_stats$test_MAE[set] <- mae(test$return, predict(pols, newdata = test))
-    POLS_stats$test_MSE[set] <- mse(test$return, predict(pols, newdata = test))
-    POLS_stats$test_RMSE[set] <- rmse(test$return, predict(pols, newdata = test))
-    
-    error <- (test$return - predict(pols, newdata = test))
-    SSR <- t(error) %*% (error)
-    SST <- t(test$return - mean(test$return)) %*% (test$return - mean(test$return))
-    POLS_stats$test_R2[set] <- (1 - SSR/SST)
-    
+  POLS_stats$test_MAE[set] <- mae(test$rt, predict(pols, newdata = test))
+  POLS_stats$test_MSE[set] <- mse(test$rt, predict(pols, newdata = test))
+  POLS_stats$test_RMSE[set] <- rmse(test$rt, predict(pols, newdata = test))
+      
+  error <- (test$rt - predict(pols, newdata = test))
+  SSR <- t(error) %*% (error)
+  SST <- t(test$rt - mean(test$rt)) %*% (test$rt - mean(test$rt))
+  POLS_stats$test_R2[set] <- (1 - SSR/SST)
+      
   #Forecasts
-    POLS_forecasts[[set]]$forecast <- predict(pols, newdata = test)
-    POLS_forecasts[[set]]$forecast_error <- test$return - predict(pols, newdata = test)
+  POLS_forecasts[[set]]$forecast <- predict(pols, newdata = test)
+  POLS_forecasts[[set]]$forecast_error <- test$rt - predict(pols, newdata = test)
 }
 
 POLS_stats
 
-summary(POLS_models[[3]])
-
-
+#Just breaking into one of the POLS models
+#Seems to be picking up on strange things
+summary(POLS_models[[1]])
 ```
 
 ```{r elastic_net}
 #Elasticnet
 
-#Elasticnet only has alpha to tune, thank god
+#Can't seem to find anything online that tunes ELN for you with specified validation sets, instead of straight-forward cross validation
+#DOuble check with David maybe, on hold for now
 
-elasticnet_grid <- expand.grid(
-  alpha = seq(0, 1, 0.01)
+#Elasticnet only has alpha and lambda to tune
+
+ELN_grid <- expand.grid(
+  alpha = seq(0, 1, 0.01),
+  lambda = seq(0, 100, 1)
 )
 
 #Initialize Loss Function Statistics
 
-elasticnet_stats <- data.frame(
+ELN_stats <- data.frame(
   set = c(1:3),
   #Training
   train_MAE = c(1:3),
@@ -198,11 +200,21 @@ elasticnet_stats <- data.frame(
 
 #Initialize Forecasts
 
-elasticnet_forecasts <- rep(list(0), 3)
+ELN_forecasts <- rep(list(0), 3)
 
 #Initialize Models
 
-elasticnet_models <- rep(list(0), 3)
+ELN_models <- rep(list(0), 3)
+
+####
+ELN_tune_list <- rep(list(0), nrow(ELN_grid))
+
+#Set up a tuning list with the tuning hyperparameters, training loss and validation loss
+#Unfortunately the grid part of this is strictly non-numeric (it's a 2 element vector in this case), and so we'll have to use lists instead of arrays
+
+for (i in 1:nrow(ELN_grid)) {
+  ELN_tune_list[[i]] <- list(ELN_grid = ELN_grid[i,], )
+}
 
 for (set in 1:3) {
   #Load training, validation and test sets
@@ -286,22 +298,22 @@ for (set in 1:3) {
 #We will use the ranger package, which is apparently a C++ implementation of the random forest algorithm and should be faster
 #Another alternative is to use XGBoost (which is very very fast) and set boosting rounds = 1, because in this case it should be a standard random forest
 
-#COmpute power is a real struggle, and the aim is just to get the code basis working for the moment. Very conservative grids are therefore used for now
+#Compute power is a real struggle, and the aim is just to get the code basis working for the moment. Very conservative grids are therefore used for now
 
 #Default ntree = 500
 #Default mtry = count(predictors/3) = 400/3 = 133
 
-random_forest_grid <- expand.grid(
-  ntree = seq(10, 50, 10),
+rf_grid <- expand.grid(
+  ntree = seq(500, 1000, 1000),
   mtry = seq(10, 100, 10)
 )
 
 #Generate formula, actually same code from PLM earlier
 
 rf_formula <- function(panel){
-  colnames <- colnames(pooled_panel)
-  colnames <- colnames[-c(1:3)]
-  f <- as.formula(c("return ~ ", paste(colnames, collapse = "+")))
+  #Remove the first 3 colNames, as these correspond to the return, time and stock id
+  panel_colnames <- colnames(panel)[-c(1:3)]
+  f <- as.formula(c("rt ~", paste(panel_colnames, collapse = "+")))
   return(f)
 }
 
@@ -336,28 +348,24 @@ RF_forecasts <- rep(list(0), 3)
 
 RF_models <- rep(list(0), 3)
 
-for (set in 1:3) {
-  #Load training, validation and test sets
-    train <- pooled_panel %>%
-      filter(time %in% unlist(time_slices$train[set]))
-    validation <- pooled_panel %>%
-      filter(time %in% unlist(time_slices$validation[set]))
-    test <- pooled_panel %>%
-      filter(time %in% unlist(time_slices$test[set]))
-    
-  #Initialize forecasts
-    RF_forecasts[[set]] <- data.frame(
-      time = test$time,
-      forecast = rep(0, length(test$time)),
-      forecast_error = rep(0, length(test$time))
-    )
+#Load training, validation and test sets
 
-  #Train model on training set
-  
-    rf <- ranger(f, data = train, model = "pooling", index = c("stock", "time"))
-    RF_models[[set]] <- rf
-    
-  #Usually Tuning via Validation set would be here, but POLS does not need tuning
+train <- pooled_panel %>%
+  filter(time %in% timeSlices[[set]]$train)
+validation <- pooled_panel %>%
+  filter(time %in% timeSlices[[set]]$validation)
+test<- pooled_panel %>%
+  filter(time %in% timeSlices[[set]]$test)
+
+#Train Model on Training Set
+
+rf <- ranger(f, data = train, num.trees = rf_grid$ntree[1], mtry = rf_grid$mtry[1],
+             write.forest = TRUE, min.node.size = 5, splitrule = "variance")
+
+RF_models[[1]] <- 
+
+
+for (set in 1:3) {
   
   #Training Set Statistics
     RF_stats$train_MAE[set] <- mae(train$return, predict(rf))
