@@ -227,25 +227,6 @@ gen_xt <- function(A){
   return(Axt)
 }
 
-#########################################
-##Function to plot xt
-#########################################
-
-#Transforms xt series to wide format and plots it
-
-#Plot function not currently working with arrays, not too important anyway
-
-plot_xt <- function(xt){
-  
-  xt_tidy <- cbind(t = c(1:(Time)), xt)
-
-  xt_tidy <- xt_tidy %>%
-    gather(series, value, -t)
-  
-  ggplot(data = xt_tidy) +
-    geom_line(aes(x = t, y = value, colour = series))
-}
-
 #Generate a multivaraite xt
 
 xt <- gen_xt(A1)
@@ -521,7 +502,7 @@ error <- gen_error(sv = 0, 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363), 
 ##Just a recap chunk of everything that needs to be run to generate everything thus far before we move on to tuning R squared
 
 C_bar <- gen_C_bar()
-C_hat <- gen_C_hat()
+C_hat <- gen_C_hat(C_bar)
 
 #Change this to C_hat if you want to build in cross sectional correlation
 C <- gen_C(C_bar)
@@ -552,7 +533,7 @@ xt <- gen_xt(A1)
 xt_univariate <- gen_xt_univariate()
 
 #Generate the true underlying factors first
-g1_factor_panel <- gen_g_factor_panel(g1, C, xt)
+g1_factor_panel <- gen_g_factor_panel("g1", C, xt)
 
 #Then pass them through to multiply them by theta to get g()
 g1_panel <- gen_g_panel(g1_factor_panel, theta = matrix(c(0.04, 0.035, 0.01), nrow = 1))
@@ -682,7 +663,7 @@ summary(cross_fit)$r.squared
 
 panel_tune_stats <- function(return_panel, true_factor_panel) {
   #Initialize
-  tune_stats <- data.frame(time_series_rsquare = 0, annual_vol = 0, cross_section_rsquare = 0)
+  tune_stats <- data.frame(time_series_fitted.rsquare = 0, annual_vol = 0, cross_section_rsquare = 0)
   
   ########
   ## Time Series + Annual Vol
@@ -695,8 +676,8 @@ panel_tune_stats <- function(return_panel, true_factor_panel) {
     Fits <- matrix(0, Time, N)
     
     #This stores all the BETAS, NOT the constant
-    Coeff_Betas <- matrix(0, N, 3)
-    Xs_bar <- matrix(0, N, 3)
+    Coeff_Betas <- matrix(0, N, ncol(true_factor_panel))
+    Xs_bar <- matrix(0, N, ncol(true_factor_panel))
     R_bar <- matrix(0, N, 1)
     Resids <- matrix(0, Time, N)
     
@@ -735,7 +716,7 @@ panel_tune_stats <- function(return_panel, true_factor_panel) {
       annual_vol[i] <- sd(Rs) * sqrt(12)
     }
     
-  tune_stats$time_series_rsquare <- mean(Rsquared)
+  tune_stats$time_series_fitted.rsquare <- mean(Rsquared)
     
   tune_stats$annual_vol <- mean(annual_vol)
     
@@ -867,7 +848,7 @@ sim_tune <- function(sim_N, cross_corr, A_matrix, xt_multi, g_function, theta,
                      #Error Parameters
                      error_sv, error_omega, error_gamma, error_w, error_v_sd) {
 
-  sim_tune_stats <- data.frame(time_series_rsquare = rep(0, 100), annual_vol = rep(0, 100), cross_section_rsquare = rep(0, 100))
+  sim_tune_stats <- data.frame(time_series_fitted.rsquare = rep(0, 100), annual_vol = rep(0, 100), cross_section_rsquare = rep(0, 100))
 
   for (s in 1:sim_N) {
     C_bar <- gen_C_bar()
@@ -926,25 +907,30 @@ sim_tune <- function(sim_N, cross_corr, A_matrix, xt_multi, g_function, theta,
   }
   summary(sim_tune_stats)
 }
+```
 
+```{r}
+#Overall Dimensionality
+N <- 200
+P_c <- 100
+Time <- 180
 
 #Gu et al's original specfication, recreated
 sim_tune(100, cross_corr = 0, A1, xt_multi = 0, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1), 
          error_sv = 0, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
-
 sim_tune(100, cross_corr = 0, A1, xt_multi = 0, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1), 
          error_sv = 0, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
-
 #Our different specifications
 
 #G1
 
 sim_tune(100, cross_corr = 1, A1, xt_multi = 1, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1), 
+         error_sv = 0, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+sim_tune(100, cross_corr = 1, A1, xt_multi = 1, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1), 
          error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
 
 sim_tune(100, cross_corr = 1, A2, xt_multi = 1, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1), 
          error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
-
 sim_tune(100, cross_corr = 1, A3, xt_multi = 1, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1), 
          error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
 
@@ -952,10 +938,8 @@ sim_tune(100, cross_corr = 1, A3, xt_multi = 1, g_function = "g1", theta = matri
 
 sim_tune(100, cross_corr = 1, A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1), 
          error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
-
 sim_tune(100, cross_corr = 1, A2, xt_multi = 1, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1), 
          error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
-
 sim_tune(100, cross_corr = 1, A3, xt_multi = 1, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1), 
          error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
 
@@ -964,10 +948,8 @@ sim_tune(100, cross_corr = 1, A3, xt_multi = 1, g_function = "g2", theta = matri
 
 sim_tune(100, cross_corr = 1, A1, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.001), nrow = 1), 
          error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
-
 sim_tune(100, cross_corr = 1, A2, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.001), nrow = 1), 
          error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
-
 sim_tune(100, cross_corr = 1, A3, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.001), nrow = 1), 
          error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
 

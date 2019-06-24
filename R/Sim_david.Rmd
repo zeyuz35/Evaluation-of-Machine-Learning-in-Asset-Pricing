@@ -37,11 +37,11 @@ rm(list=ls())
 # #Number of Periods
 # Time <- 180
 
-N <- 200
+N <- 20
 
-P_c <- 100 
+P_c <- 10
 
-Time <- 180
+Time <- 18
 
 ```
 
