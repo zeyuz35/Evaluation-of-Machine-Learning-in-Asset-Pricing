@@ -910,6 +910,16 @@ sim_tune <- function(sim_N, cross_corr, A_matrix, xt_multi, g_function, theta,
 ```
 
 ```{r}
+# Actual Generation of the datasets
+
+
+
+```
+
+
+```{r}
+#Playing around simulation specifications
+
 #Overall Dimensionality
 N <- 200
 P_c <- 100
