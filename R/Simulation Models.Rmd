@@ -168,6 +168,7 @@ summary(POLS_models[[1]])
 #Elasticnet
 
 #Can't seem to find anything online that tunes ELN for you with specified validation sets, instead of straight-forward cross validation
+#nfold and foldid require that ELN be performed with at least 3 fold validation - not possible in our context
 #DOuble check with David maybe, on hold for now
 
 #actually same function from POLS case
