@@ -309,6 +309,9 @@ ELN_stats_mae[[1]]$model
 
 #Compute power is a real struggle, and the aim is just to get the code basis working for the moment. Very conservative grids are therefore used for now
 
+#Check out randomForestSRC for an implementation of randomForests that allows for quantile regression trees. Quantile regression use a check loss function, which is a superset of absolute error
+#forestr package doesn't seem to want to function on honours lab computers
+
 #Default ntree = 500
 #Default mtry = count(predictors/3) = 400/3 = 133
 
