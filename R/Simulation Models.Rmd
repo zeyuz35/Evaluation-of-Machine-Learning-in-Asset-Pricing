@@ -429,7 +429,307 @@ importance(rf)
 
 
 ```{r neural_networks}
-#Neural Network
+#Neural Networks
 
+set.seed(27935248)
+
+#Build neural networks with neuron numbers according to geometric pyramid rule, and ReLU activation function for all layers
+# IE Input layer > 32 neurons > 16 neurons > 8 neurons > 4 neurons > 2 neurons > output
+
+##Neural Network 1
+
+train_x <- train[4:ncol(train)]
+train_y <- train$rt
+
+validation_x <- validation[4:ncol(validation)]
+validation_y <- validation$rt
+
+# The patience parameter is the amount of epochs to check for improvement.
+early_stop <- callback_early_stopping(monitor = "val_loss", patience = 20)
+
+#It's clearer to separate these "layers" out as much as possible
+build_NN1 <- function() {
+  
+  model <- keras_model_sequential() %>%
+    # Layer 1
+    layer_dense(units = 32, input_shape = ncol(train_x)) %>%
+    layer_activation("relu") %>%
+    layer_activity_regularization(l1 = 0.001) %>%
+    layer_batch_normalization() %>%
+    # Output Layer
+    layer_dense(units = 1, activation = "linear")
+  
+  model %>% compile(
+    #MSE loss function
+    loss = "mse",
+    #We're using ADAM
+    optimizer = "adam",
+    metrics = list("mean_absolute_error", "mean_squared_error")
+  )
+  model
+}
+
+neural_network_1 <- build_NN1()
+neural_network_1 %>% summary()
+
+#Just do something straightforward for now
+
+neural_network_1 %>% fit(as.matrix(train_x), as.matrix(train_y), 
+                         epochs = 100, verbose = 1, 
+                         validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
+                         callbacks = list(early_stop))
+
+#Make predictions
+test_x <- test[4:ncol(test)]
+
+NN1_predictions <- neural_network_1 %>% predict(as.matrix(test_x))
+
+mae(test$rt, NN2_predictions)
+mse(test$rt, NN2_predictions)
+```
+
+```{r}
+# Neural Network 2
+
+train_x <- train[4:ncol(train)]
+train_y <- train$rt
+
+validation_x <- validation[4:ncol(validation)]
+validation_y <- validation$rt
+
+# The patience parameter is the amount of epochs to check for improvement.
+early_stop <- callback_early_stopping(monitor = "val_loss", patience = 20)
+
+#It's clearer to separate these "layers" out as much as possible
+build_NN2 <- function() {
+  
+  model <- keras_model_sequential() %>%
+    # Layer 1
+    layer_dense(units = 32, input_shape = ncol(train_x)) %>%
+    layer_activation("relu") %>%
+    layer_batch_normalization() %>%
+    # Layer 2
+    layer_dense(units = 16) %>%
+    layer_activation("relu") %>%
+    layer_batch_normalization() %>%
+    # Output Layer
+    layer_dense(units = 1, activation = "linear")
+  
+  model %>% compile(
+    #MSE loss function
+    loss = "mse",
+    #We're using ADAM
+    optimizer = "adam",
+    metrics = list("mean_absolute_error", "mean_squared_error")
+  )
+  model
+}
+
+neural_network_2 <- build_NN2()
+neural_network_2 %>% summary()
+
+#Just do something straightforward for now
+
+neural_network_2 %>% fit(as.matrix(train_x), as.matrix(train_y), 
+                         epochs = 100, verbose = 1, 
+                         validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
+                         callbacks = list(early_stop))
+
+#Make predictions
+test_x <- test[4:ncol(test)]
+
+NN2_predictions <- neural_network_2 %>% predict(as.matrix(test_x))
+
+mae(test$rt, NN1_predictions)
+mse(test$rt, NN1_predictions)
+```
+
+```{r}
+# Neural Network 3
+
+train_x <- train[4:ncol(train)]
+train_y <- train$rt
+
+validation_x <- validation[4:ncol(validation)]
+validation_y <- validation$rt
+
+#It's clearer to separate these "layers" out as much as possible
+build_NN3 <- function() {
+  
+  model <- keras_model_sequential() %>%
+    # Layer 1
+    layer_dense(units = 32, input_shape = ncol(train_x)) %>%
+    layer_activation("relu") %>%
+    layer_batch_normalization() %>%
+    # Layer 2
+    layer_dense(units = 16) %>%
+    layer_activation("relu") %>%
+    layer_batch_normalization() %>%
+    #Layer 3
+    layer_dense(units = 8) %>%
+    layer_activation("relu") %>%
+    layer_batch_normalization() %>%
+    # Output Layer
+    layer_dense(units = 1, activation = "linear")
+  
+  model %>% compile(
+    #MSE loss function
+    loss = "mse",
+    #We're using ADAM
+    optimizer = "adam",
+    metrics = list("mean_absolute_error", "mean_squared_error")
+  )
+  model
+}
+
+neural_network_3 <- build_NN3()
+neural_network_3 %>% summary()
+
+#Just do something straightforward for now
+
+neural_network_3 %>% fit(as.matrix(train_x), as.matrix(train_y), 
+                         epochs = 100, verbose = 1, 
+                         validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
+                         callbacks = list(early_stop))
+
+#Make predictions
+test_x <- test[4:ncol(test)]
+
+NN3_predictions <- neural_network_3 %>% predict(as.matrix(test_x))
+
+mae(test$rt, NN3_predictions)
+mse(test$rt, NN3_predictions)
+```
+
+```{r}
+# Neural Network 4
+
+train_x <- train[4:ncol(train)]
+train_y <- train$rt
+
+validation_x <- validation[4:ncol(validation)]
+validation_y <- validation$rt
+
+# The patience parameter is the amount of epochs to check for improvement.
+early_stop <- callback_early_stopping(monitor = "val_loss", patience = 20)
+
+#It's clearer to separate these "layers" out as much as possible
+build_NN4 <- function() {
+  
+  model <- keras_model_sequential() %>%
+    # Layer 1
+    layer_dense(units = 32, input_shape = ncol(train_x)) %>%
+    layer_activation("relu") %>%
+    layer_batch_normalization() %>%
+    # Layer 2
+    layer_dense(units = 16) %>%
+    layer_activation("relu") %>%
+    layer_batch_normalization() %>%
+    #Layer 3
+    layer_dense(units = 8) %>%
+    layer_activation("relu") %>%
+    layer_batch_normalization() %>%
+    #Layer 4
+    layer_dense(units = 4) %>%
+    layer_activation("relu") %>%
+    layer_batch_normalization() %>%
+    # Output Layer
+    layer_dense(units = 1, activation = "linear")
+  
+  model %>% compile(
+    #MSE loss function
+    loss = "mse",
+    #We're using ADAM
+    optimizer = "adam",
+    metrics = list("mean_absolute_error", "mean_squared_error")
+  )
+  model
+}
+
+neural_network_4 <- build_NN4()
+neural_network_4 %>% summary()
+
+#Just do something straightforward for now
+
+neural_network_4 %>% fit(as.matrix(train_x), as.matrix(train_y), 
+                         epochs = 100, verbose = 1, 
+                         validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
+                         callbacks = list(early_stop))
+
+#Make predictions
+test_x <- test[4:ncol(test)]
+
+NN4_predictions <- neural_network_4 %>% predict(as.matrix(test_x))
+
+mae(test$rt, NN4_predictions)
+mse(test$rt, NN4_predictions)
+```
+
+```{r}
+# Neural Network 5
+
+train_x <- train[4:ncol(train)]
+train_y <- train$rt
+
+validation_x <- validation[4:ncol(validation)]
+validation_y <- validation$rt
+
+# The patience parameter is the amount of epochs to check for improvement.
+early_stop <- callback_early_stopping(monitor = "val_loss", patience = 20)
+
+#It's clearer to separate these "layers" out as much as possible
+build_NN5 <- function() {
+  
+  model <- keras_model_sequential() %>%
+    # Layer 1
+    layer_dense(units = 32, input_shape = ncol(train_x)) %>%
+    layer_activation("relu") %>%
+    layer_batch_normalization() %>%
+    # Layer 2
+    layer_dense(units = 16) %>%
+    layer_activation("relu") %>%
+    layer_batch_normalization() %>%
+    #Layer 3
+    layer_dense(units = 8) %>%
+    layer_activation("relu") %>%
+    layer_batch_normalization() %>%
+    #Layer 4
+    layer_dense(units = 4) %>%
+    layer_activation("relu") %>%
+    layer_batch_normalization() %>%
+    #Layer 5
+    layer_dense(units = 2) %>%
+    layer_activation("relu") %>%
+    layer_batch_normalization() %>%
+    # Output Layer
+    layer_dense(units = 1, activation = "linear")
+  
+  model %>% compile(
+    #MSE loss function
+    loss = "mse",
+    #We're using ADAM
+    optimizer = "adam",
+    metrics = list("mean_absolute_error", "mean_squared_error")
+  )
+  model
+}
+
+neural_network_5 <- build_NN5()
+neural_network_5 %>% summary()
+
+#Just do something straightforward for now
+
+neural_network_5 %>% fit(as.matrix(train_x), as.matrix(train_y), 
+                         epochs = 100, verbose = 1, 
+                         validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
+                         callbacks = list(early_stop))
+
+#Make predictions
+test_x <- test[4:ncol(test)]
+
+NN5_predictions <- neural_network_5 %>% predict(as.matrix(test_x))
+
+mae(test$rt, NN5_predictions)
+mse(test$rt, NN5_predictions)
 ```
 
