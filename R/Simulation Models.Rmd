@@ -23,6 +23,10 @@ library(plm)
 library(Metrics)
 library(ranger)
 library(glmnetUtils)
+library(tensorflow)
+library(quantreg)
+library(randomForestSRC)
+
 
 #forestr
 # This apparently needs admin privileges to install, do this at home maybe
@@ -62,24 +66,24 @@ customTimeSlices <- function(start, end, initialWindow, horizon, test_size) {
 #Create custom time slices
 timeSlices <- customTimeSlices(start = 2, end = 181, initialWindow = 108, horizon = 12, test_size = 36)
 
-```
+#Formula Function, makes it easier for those packages with a formula interface
 
-```{r pooled_ols}
-#POLS
-
-#Use panel_g1_A1 generated from Simulation.rmd for now. Generalize it later
-
-pooled_panel <- panel_g1_A1
-
-#Expand formula manually this way because PLM is dumb and gets confused by y ~ .
-plm_formula <- function(panel){
+panel_formula <- function(panel){
   #Remove the first 3 colNames, as these correspond to the return, time and stock id
   panel_colnames <- colnames(panel)[-c(1:3)]
   f <- as.formula(c("rt ~", paste(panel_colnames, collapse = "+")))
   return(f)
 }
 
-f <- plm_formula(pooled_panel)
+#Use panel_g1_A1 generated from Simulation.rmd for now. Generalize it later
+
+pooled_panel <- panel_g1_A1
+
+f <- panel_formula(pooled_panel)
+```
+
+```{r pooled_ols}
+#POLS
 
 #Train/fit a POLS model wrt MSE
 
@@ -145,22 +149,88 @@ POLS_stats[[2]]$loss_stats
 POLS_stats[[3]]$loss_stats
 ```
 
+```{r}
+#Linear Model with MAE loss function (aka quantile regression with target quantile of 0.5)
+
+LM_MAE <- rq(f, tau = 0.5, data = train, 
+             #Play around with method if speed is problem
+             method = "br")
+
+summary(LM_MAE)
+  
+#Turning this into a function
+  
+LM_fit_mae <- function(pooled_panel, timeSlices) {
+  #Initialize Loss Function Statistics
+  LM_stats <- rep(list(0), 3)
+  
+  for (set in 1:3) {
+    LM_stats[[set]] <- list(loss_stats = data.frame(train_MAE = 0, train_MSE = 0, train_RMSE = 0, train_RSquare = 0, 
+                                                validation_MAE = 0, validation_MSE = 0, validation_RMSE = 0, validation_RSquare = 0, 
+                                                test_MAE = 0, test_MSE = 0, test_RMSE = 0, test_RSquare = 0),
+                        #Other useful things
+                        forecasts = 0,
+                        forecast_resids = 0,
+                        model = 0)
+    
+    #Load Training, validation and test sets
+    train <- pooled_panel %>%
+      filter(time %in% timeSlices[[set]]$train)
+    validation <- pooled_panel %>%
+      filter(time %in% timeSlices[[set]]$validation)
+    test<- pooled_panel %>%
+      filter(time %in% timeSlices[[set]]$test)
+    
+    #Train Model on training set
+    lm <- rq(f, data = train, tau = 0.5, method = "br")
+    
+    LM_stats[[set]]$model <- lm
+    
+    #No Tuning Needed
+    
+    #Statistics
+    #Training Set
+    LM_stats[[set]]$loss_stats$train_MAE <- mae(train$rt, predict(lm))
+    LM_stats[[set]]$loss_stats$train_MSE <- mse(train$rt, predict(lm))
+    LM_stats[[set]]$loss_stats$train_RMSE <- rmse(train$rt, predict(lm))
+    LM_stats[[set]]$loss_stats$train_RSquare <- (1 - sse(train$rt, predict(lm, newdata = train)) / sum((train$rt - mean(train$rt))^2))
+    
+    #Validation Set Statistics
+    LM_stats[[set]]$loss_stats$validation_MAE <- mae(validation$rt, predict(lm, newdata = validation))
+    LM_stats[[set]]$loss_stats$validation_MSE <- mse(validation$rt, predict(lm, newdata = validation))
+    LM_stats[[set]]$loss_stats$validation_RMSE <- rmse(validation$rt, predict(lm, newdata = validation))
+    LM_stats[[set]]$loss_stats$validation_RSquare <- (1 - sse(validation$rt, predict(lm, newdata = validation)) / sum((validation$rt - mean(validation$rt))^2))
+      
+    #Test Set Statistics
+    LM_stats[[set]]$loss_stats$test_MAE <- mae(test$rt, predict(lm, newdata = test))
+    LM_stats[[set]]$loss_stats$test_MSE <- mse(test$rt, predict(lm, newdata = test))
+    LM_stats[[set]]$loss_stats$test_RMSE <- rmse(test$rt, predict(lm, newdata = test))
+    LM_stats[[set]]$loss_stats$test_RSquare <- (1 - sse(test$rt, predict(lm, newdata = test)) / sum((test$rt - mean(test$rt))^2))
+        
+    #Forecasts
+    LM_stats[[set]]$forecasts <- predict(lm, newdata = test)
+    #Forecast Residuals
+    LM_stats[[set]]$forecast_resids <- test$rt - predict(lm, newdata = test)
+  }
+  return(LM_stats)
+}
+
+LM_mae_stats <- LM_fit_mae(pooled_panel, timeSlices)
+
+LM_mae_stats[[1]]$loss_stats
+LM_mae_stats[[2]]$loss_stats
+LM_mae_stats[[3]]$loss_stats
+
+```
+
+
+
 ```{r elastic_net}
 #Elasticnet
 
 #Can't seem to find anything online that tunes ELN for you with specified validation sets, instead of straight-forward cross validation
 #nfold and foldid require that ELN be performed with at least 3 fold validation - not possible in our context
-#DOuble check with David maybe, on hold for now
-
-#actually same function from POLS case
-eln_formula <- function(panel){
-  #Remove the first 3 colNames, as these correspond to the return, time and stock id
-  panel_colnames <- colnames(panel)[-c(1:3)]
-  f <- as.formula(c("rt ~", paste(panel_colnames, collapse = "+")))
-  return(f)
-}
-
-f <- eln_formula(pooled_panel)
+#Double check with David maybe, on hold for now
 
 #Elasticnet only has alpha and lambda to tune
 
@@ -322,15 +392,6 @@ rf_grid <- expand.grid(
 
 #Generate formula, actually same code from PLM earlier
 
-rf_formula <- function(panel){
-  #Remove the first 3 colNames, as these correspond to the return, time and stock id
-  panel_colnames <- colnames(panel)[-c(1:3)]
-  f <- as.formula(c("rt ~", paste(panel_colnames, collapse = "+")))
-  return(f)
-}
-
-f <- rf_formula(pooled_panel)
-
 #Initialize Loss Function Statistics
 
 RF_stats <- data.frame(
@@ -403,6 +464,26 @@ for (set in 1:3) {
     
 }
 
+rf_MSE <- rfsrc(f, train, ntree = 500, 
+                #Hyperparameters
+                mtry = 10,
+                nodesize = 5,
+                #Other
+                splitrule = "mse")
+
+rf_MAE <- quantileReg(f, train, ntree = 500,
+                      #Target quantile
+                      prob = 0.5)
+
+rf_MAE$quantileReg
+
+predict(rf_MSE, newdata = validation)
+
+plot(rf_MAE)
+
+predict(rf_MAE, newdata = validation)
+
+plot.variable(rf_MSE)
 ```
 
 ```{r}
@@ -484,8 +565,8 @@ test_x <- test[4:ncol(test)]
 
 NN1_predictions <- neural_network_1 %>% predict(as.matrix(test_x))
 
-mae(test$rt, NN2_predictions)
-mse(test$rt, NN2_predictions)
+mae(test$rt, NN1_predictions)
+mse(test$rt, NN1_predictions)
 ```
 
 ```{r}

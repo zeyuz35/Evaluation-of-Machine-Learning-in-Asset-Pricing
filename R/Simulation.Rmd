@@ -42,9 +42,9 @@ set.seed(27935248)
 
 #Reduce Dimensionality to make it easier to code everything up for now. We can always increase this back up later
 
-N <- 20
+N <- 200
 
-P_c <- 10
+P_c <- 100
 
 Time <- 180
 
@@ -629,12 +629,12 @@ mean(annual_vol)
 
 # Not too sure what is going on here
 
-val <- g1(C,x,theta)
-true_res <- rowSums((rt - val)^2)
-true_sst <- rowSums((rt - rowMeans(rt))^2)
-true_rRsquared <- 1 - (sum(true_res)/sum(true_sst))
-
-fitted_Rsquared <- 1 - (sum(SSR)/sum(SST))
+# val <- g1(C,x,theta)
+# true_res <- rowSums((rt - val)^2)
+# true_sst <- rowSums((rt - rowMeans(rt))^2)
+# true_rRsquared <- 1 - (sum(true_res)/sum(true_sst))
+# 
+# fitted_Rsquared <- 1 - (sum(SSR)/sum(SST))
 
 ##########################################
 # Cross-sectional R-squared
@@ -772,7 +772,7 @@ gen_predictor_z <- function(C, x){
   c_dim <- dimnames(kronecker(t(xt_set[, 1]), t(C[1, , 1]), make.dimnames = TRUE))[[2]]
   time_dim <- paste0("time_", c(1:(Time)))
   
-  z_panel <- array(0, dim = c(N, (nrow(xt)+1) * P_c, Time), dimnames = list(stock_dim, c_dim, time_dim))
+  z_panel <- array(0, dim = c(N, (nrow(xt_set)) * P_c, Time), dimnames = list(stock_dim, c_dim, time_dim))
   
   for (i in 1:N) {
     for (t in 1:Time) {
@@ -840,75 +840,17 @@ A3 <- matrix(c(
 ##########################
 
 # Simulate a specification 100 times
-sim_tune <- function(sim_N, cross_corr, A_matrix, xt_multi, g_function, theta, 
-                     #Error Parameters
-                     error_sv, error_omega, error_gamma, error_w, error_v_sd) {
 
-  sim_tune_stats <- data.frame(time_series_fitted.rsquare = rep(0, sim_N), annual_vol = rep(0, sim_N), cross_section_rsquare = rep(0, sim_N))
-
-  for (s in 1:sim_N) {
-    C_bar <- gen_C_bar()
-    C_hat <- gen_C_hat(C_bar)
-    
-    if (cross_corr == 0) {
-      C <- gen_C(C_bar)
-    }
-    else {
-      C <- gen_C(C_hat)
-    }
-    
-    if (xt_multi == 1) {
-      xt <- gen_xt(A_matrix)
-    }
-    else {
-      xt <- gen_xt_univariate()
-    }
-    
-    #Generate the true underlying factors first
-    g_factor_panel <- gen_g_factor_panel(g_function, C, xt)
-    
-    #Then pass them through to multiply them by theta to get g()
-    g_panel <- gen_g_panel(g_factor_panel, theta)
-    
-    #Generate the errors
-
-    error <- gen_error(sv = error_sv, 0.05, omega = error_omega, gamma = error_gamma, w = error_w, C, v_sd = error_v_sd)
-    
-    rt_panel <- g_panel + error
-    
-    sim_tune_stats[s,] <- panel_tune_stats(rt_panel, g_factor_panel)
-  }
-  summary(sim_tune_stats)
-}
-```
-
-```{r}
-# Actual Generation of the datasets
-
-#Overall Dimensionality
-N <- 20
-P_c <- 10
-Time <- 18
-
-sim_tune <- function(sim_N, cross_corr, A_matrix, xt_multi, g_function, theta, 
-                     #Error Parameters
-                     error_sv, error_omega, error_gamma, error_w, error_v_sd) {
+sim_panel_data <- function(sim_N, cross_corr, A_matrix, xt_multi, g_function, theta,
+                           #Error Parameters
+                           error_sv, error_omega, error_gamma, error_w, error_v_sd) {
   #Initialize
-  dataset <- list(sim_tune_stats = data.frame(time_series_fitted.rsquare = 0, 
-                                               annual_vol = 0, 
-                                               cross_section_rsquare = 0),
-                   data = 0
-                   )
+  sim_list <- LM_stats <- rep(list(0), sim_N)
   
-  dataset2 <- list(sim_tune_stats = data.frame(time_series_fitted.rsquare = 0, 
-                                               annual_vol = 0, 
-                                               cross_section_rsquare = 0),
-                   data = 0
-                   )
-  
-  datasets <- list(dataset, dataset2)
-  
-  for (s in 1:sim_N) {
+  for (sim in 1:sim_N) {
+    
+    sim_list[[sim]] <- list(panel = 0, statistics = 0)
+    
     C_bar <- gen_C_bar()
     C_hat <- gen_C_hat(C_bar)
     
@@ -925,23 +867,55 @@ sim_tune <- function(sim_N, cross_corr, A_matrix, xt_multi, g_function, theta,
     else {
       xt <- gen_xt_univariate()
     }
-      
+    
     #Generate the true underlying factors first
     g_factor_panel <- gen_g_factor_panel(g_function, C, xt)
     
     #Then pass them through to multiply them by theta to get g()
     g_panel <- gen_g_panel(g_factor_panel, theta)
-      
+    
     #Generate the errors
-  
+
     error <- gen_error(sv = error_sv, 0.05, omega = error_omega, gamma = error_gamma, w = error_w, C, v_sd = error_v_sd)
-      
+    
+    #rt panel
+    
     rt_panel <- g_panel + error
-      
-    sim_tune_stats[s,] <- panel_tune_stats(rt_panel, g_factor_panel)
+    
+    z_panel <- gen_predictor_z(C, xt)
+    
+    sim_list[[sim]]$panel <- bind_rt_predictor(rt_panel, z_panel)
+    
+    #Statistics
+    sim_list[[sim]]$statistics <- panel_tune_stats(rt_panel, g_factor_panel)
   }
+  return(sim_list)
 }
 
+#Build a function to calculate average statistics, given a list of realisations
+# Use after the previous function
+
+sim_tune_statistics <- function(sim_panel_list) {
+  sim_N <- length(sim_panel_list)
+  #Initialize
+  sim_tune_stats <- data.frame(time_series_fitted.rsquare = rep(0, sim_N),
+                               annual_vol = rep(0, sim_N),
+                               cross_section_rsquare = rep(0, sim_N))
+  for (i in 1:sim_N) {
+    sim_tune_stats[i, ] <- sim_panel_list[[i]]$statistics  
+  }
+  return(sim_tune_stats)
+}
+
+#Gu et al's original g1 design
+# THIS IS VERY COMPUTATIONALLY INTENSIVE
+# Will consider parallelizing this later
+# With only 10 realisations, the datasets are already taking 1GB in memory
+gu_et_al_g1 <- sim_panel_data(10, cross_corr = 0, A1, xt_multi = 0, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1),
+                              error_sv = 0, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+
+#Annualized volatility is spot on, but other values are not
+summary(sim_tune_statistics(gu_et_al_g1))
 ```
 
 
@@ -953,43 +927,57 @@ N <- 200
 P_c <- 100
 Time <- 180
 
-#Gu et al's original specfication, recreated
-sim_tune(100, cross_corr = 0, A1, xt_multi = 0, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1), 
-         error_sv = 0, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
-sim_tune(100, cross_corr = 0, A1, xt_multi = 0, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1), 
-         error_sv = 0, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+#Gu et al's original specfications, recreated
+gu_et_al_g1 <- sim_panel_data(10, cross_corr = 0, A1, xt_multi = 0, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1),
+                              error_sv = 0, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+summary(sim_tune_statistics(gu_et_al_g1))
+gu_et_al_g2 <- sim_panel_data(100, cross_corr = 0, A1, xt_multi = 0, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1),
+                              error_sv = 0, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+summary(sim_tune_statistics(gu_et_al_g2))
+
 #Our different specifications
 
 #G1
+g1_A1_panel <- sim_panel_data(10, cross_corr = 1, A1, xt_multi = 1, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1), 
+                           error_sv = 0, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+summary(sim_tune_statistics(g1_A1_panel))
 
-sim_tune(100, cross_corr = 1, A1, xt_multi = 1, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1), 
-         error_sv = 0, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
-sim_tune(100, cross_corr = 1, A1, xt_multi = 1, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1), 
-         error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+g1_A2_panel <- sim_panel_data(10, cross_corr = 1, A2, xt_multi = 1, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1), 
+                           error_sv = 0, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+summary(sim_tune_statistics(g1_A2_panel))
 
-sim_tune(100, cross_corr = 1, A2, xt_multi = 1, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1), 
-         error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
-sim_tune(100, cross_corr = 1, A3, xt_multi = 1, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1), 
-         error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+g1_A3_panel <- sim_panel_data(10, cross_corr = 1, A3, xt_multi = 1, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1), 
+                           error_sv = 0, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+summary(sim_tune_statistics(g1_A3_panel))
 
 #G2
 
-sim_tune(100, cross_corr = 1, A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1), 
-         error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
-sim_tune(100, cross_corr = 1, A2, xt_multi = 1, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1), 
-         error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
-sim_tune(100, cross_corr = 1, A3, xt_multi = 1, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1), 
-         error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+g2_A1_panel <- sim_panel_data(10, cross_corr = 1, A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1),
+                              error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+summary(sim_tune_statistics(g2_A1_panel))
+
+g2_A2_panel <- sim_panel_data(10, cross_corr = 1, A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1),
+                              error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+summary(sim_tune_statistics(g2_A2_panel))
+
+g2_A3_panel <- sim_panel_data(10, cross_corr = 1, A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1),
+                              error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+summary(sim_tune_statistics(g2_A3_panel))
 
 #G3
 #Remember that G3 has 4 underlying factors, adjust theta accordingly
 
-sim_tune(100, cross_corr = 1, A1, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.001), nrow = 1), 
-         error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
-sim_tune(100, cross_corr = 1, A2, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.001), nrow = 1), 
-         error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
-sim_tune(100, cross_corr = 1, A3, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.001), nrow = 1), 
-         error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+g3_A1_panel <- sim_panel_data(10, cross_corr = 1, A1, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.001), nrow = 1), 
+                              error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+summary(sim_tune_statistics(g3_A1_panel))
+
+g3_A2_panel <- sim_panel_data(10, cross_corr = 1, A1, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.001), nrow = 1), 
+                              error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+summary(sim_tune_statistics(g3_A2_panel))
+
+g3_A3_panel <- sim_panel_data(10, cross_corr = 1, A1, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.001), nrow = 1), 
+                              error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+summary(sim_tune_statistics(g3_A3_panel))
 
 ##########################################
 ## OBSERVATIONS
