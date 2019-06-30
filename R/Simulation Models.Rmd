@@ -485,7 +485,7 @@ predict(rf_MAE, newdata = validation)
 
 plot.variable(rf_MSE)
 ```
-
+## Neural Networks WRT MSE
 
 ```{r neural_networks}
 #Neural Networks
@@ -507,7 +507,7 @@ validation_y <- validation$rt
 early_stop <- callback_early_stopping(monitor = "val_loss", patience = 20)
 
 #It's clearer to separate these "layers" out as much as possible
-build_NN1 <- function() {
+build_NN1 <- function(loss_function) {
   
   model <- keras_model_sequential() %>%
     # Layer 1
@@ -520,7 +520,7 @@ build_NN1 <- function() {
   
   model %>% compile(
     #MSE loss function
-    loss = "mse",
+    loss = loss_function,
     #We're using ADAM
     optimizer = "adam",
     metrics = list("mean_absolute_error", "mean_squared_error")
@@ -528,23 +528,46 @@ build_NN1 <- function() {
   model
 }
 
-neural_network_1 <- build_NN1()
-neural_network_1 %>% summary()
+## WRT MSE
+
+neural_network_1_mse <- build_NN1("mse")
+neural_network_1_mse %>% summary()
 
 #Just do something straightforward for now
 
-neural_network_1 %>% fit(as.matrix(train_x), as.matrix(train_y), 
-                         epochs = 100, verbose = 1, 
-                         validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
-                         callbacks = list(early_stop))
+neural_network_1_mse %>% fit(as.matrix(train_x), as.matrix(train_y), 
+                             epochs = 100, verbose = 1, 
+                             validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
+                             callbacks = list(early_stop))
 
 #Make predictions
 test_x <- test[4:ncol(test)]
 
-NN1_predictions <- neural_network_1 %>% predict(as.matrix(test_x))
+NN1_mse_predictions <- neural_network_1_mse %>% predict(as.matrix(test_x))
 
-mae(test$rt, NN1_predictions)
-mse(test$rt, NN1_predictions)
+mae(test$rt, NN1_mse_predictions)
+mse(test$rt, NN1_mse_predictions)
+
+###########################################
+## WRT MAE
+
+neural_network_1_mae <- build_NN1("mae")
+neural_network_1_mae %>% summary()
+
+#Just do something straightforward for now
+
+neural_network_1_mae %>% fit(as.matrix(train_x), as.matrix(train_y), 
+                             epochs = 100, verbose = 1, 
+                             validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
+                             callbacks = list(early_stop))
+
+#Make predictions
+test_x <- test[4:ncol(test)]
+
+NN1_mae_predictions <- neural_network_1_mae %>% predict(as.matrix(test_x))
+
+mae(test$rt, NN1_mae_predictions)
+mse(test$rt, NN1_mae_predictions)
 ```
 
 ```{r}
@@ -560,7 +583,7 @@ validation_y <- validation$rt
 early_stop <- callback_early_stopping(monitor = "val_loss", patience = 20)
 
 #It's clearer to separate these "layers" out as much as possible
-build_NN2 <- function() {
+build_NN2 <- function(loss_function) {
   
   model <- keras_model_sequential() %>%
     # Layer 1
@@ -576,7 +599,7 @@ build_NN2 <- function() {
   
   model %>% compile(
     #MSE loss function
-    loss = "mse",
+    loss = loss_function,
     #We're using ADAM
     optimizer = "adam",
     metrics = list("mean_absolute_error", "mean_squared_error")
@@ -584,23 +607,46 @@ build_NN2 <- function() {
   model
 }
 
-neural_network_2 <- build_NN2()
-neural_network_2 %>% summary()
+## WRT MSE
+
+neural_network_2_mse <- build_NN2("mse")
+neural_network_2_mse %>% summary()
 
 #Just do something straightforward for now
 
-neural_network_2 %>% fit(as.matrix(train_x), as.matrix(train_y), 
-                         epochs = 100, verbose = 1, 
-                         validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
-                         callbacks = list(early_stop))
+neural_network_2_mse %>% fit(as.matrix(train_x), as.matrix(train_y), 
+                             epochs = 100, verbose = 1, 
+                             validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
+                             callbacks = list(early_stop))
 
 #Make predictions
 test_x <- test[4:ncol(test)]
 
-NN2_predictions <- neural_network_2 %>% predict(as.matrix(test_x))
+NN2_mse_predictions <- neural_network_2_mse %>% predict(as.matrix(test_x))
 
-mae(test$rt, NN1_predictions)
-mse(test$rt, NN1_predictions)
+mae(test$rt, NN1_mse_predictions)
+mse(test$rt, NN1_mse_predictions)
+
+###########################################
+## WRT MAE
+
+neural_network_2_mae <- build_NN2("mae")
+neural_network_2_mae %>% summary()
+
+#Just do something straightforward for now
+
+neural_network_2_mae %>% fit(as.matrix(train_x), as.matrix(train_y), 
+                             epochs = 100, verbose = 1, 
+                             validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
+                             callbacks = list(early_stop))
+
+#Make predictions
+test_x <- test[4:ncol(test)]
+
+NN2_mae_predictions <- neural_network_2_mae %>% predict(as.matrix(test_x))
+
+mae(test$rt, NN2_mae_predictions)
+mse(test$rt, NN2_mae_predictions)
 ```
 
 ```{r}
@@ -613,7 +659,7 @@ validation_x <- validation[4:ncol(validation)]
 validation_y <- validation$rt
 
 #It's clearer to separate these "layers" out as much as possible
-build_NN3 <- function() {
+build_NN3 <- function(loss_function) {
   
   model <- keras_model_sequential() %>%
     # Layer 1
@@ -633,7 +679,7 @@ build_NN3 <- function() {
   
   model %>% compile(
     #MSE loss function
-    loss = "mse",
+    loss = loss_function,
     #We're using ADAM
     optimizer = "adam",
     metrics = list("mean_absolute_error", "mean_squared_error")
@@ -641,23 +687,46 @@ build_NN3 <- function() {
   model
 }
 
-neural_network_3 <- build_NN3()
-neural_network_3 %>% summary()
+## WRT MSE
+
+neural_network_3_mse <- build_NN3("mse")
+neural_network_3_mse %>% summary()
 
 #Just do something straightforward for now
 
-neural_network_3 %>% fit(as.matrix(train_x), as.matrix(train_y), 
-                         epochs = 100, verbose = 1, 
-                         validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
-                         callbacks = list(early_stop))
+neural_network_3_mse %>% fit(as.matrix(train_x), as.matrix(train_y), 
+                             epochs = 100, verbose = 1, 
+                             validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
+                             callbacks = list(early_stop))
 
 #Make predictions
 test_x <- test[4:ncol(test)]
 
-NN3_predictions <- neural_network_3 %>% predict(as.matrix(test_x))
+NN3_mse_predictions <- neural_network_3_mse %>% predict(as.matrix(test_x))
 
-mae(test$rt, NN3_predictions)
-mse(test$rt, NN3_predictions)
+mae(test$rt, NN3_mse_predictions)
+mse(test$rt, NN3_mse_predictions)
+
+###########################################
+## WRT MAE
+
+neural_network_3_mae <- build_NN2("mae")
+neural_network_3_mae %>% summary()
+
+#Just do something straightforward for now
+
+neural_network_3_mae %>% fit(as.matrix(train_x), as.matrix(train_y), 
+                             epochs = 100, verbose = 1, 
+                             validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
+                             callbacks = list(early_stop))
+
+#Make predictions
+test_x <- test[4:ncol(test)]
+
+NN3_mae_predictions <- neural_network_3_mae %>% predict(as.matrix(test_x))
+
+mae(test$rt, NN3_mae_predictions)
+mse(test$rt, NN3_mae_predictions)
 ```
 
 ```{r}
@@ -673,7 +742,7 @@ validation_y <- validation$rt
 early_stop <- callback_early_stopping(monitor = "val_loss", patience = 20)
 
 #It's clearer to separate these "layers" out as much as possible
-build_NN4 <- function() {
+build_NN4 <- function(loss_function) {
   
   model <- keras_model_sequential() %>%
     # Layer 1
@@ -697,7 +766,7 @@ build_NN4 <- function() {
   
   model %>% compile(
     #MSE loss function
-    loss = "mse",
+    loss = loss_function,
     #We're using ADAM
     optimizer = "adam",
     metrics = list("mean_absolute_error", "mean_squared_error")
@@ -705,23 +774,46 @@ build_NN4 <- function() {
   model
 }
 
-neural_network_4 <- build_NN4()
-neural_network_4 %>% summary()
+## WRT MSE
+
+neural_network_4_mse <- build_NN4("mse")
+neural_network_4_mse %>% summary()
 
 #Just do something straightforward for now
 
-neural_network_4 %>% fit(as.matrix(train_x), as.matrix(train_y), 
-                         epochs = 100, verbose = 1, 
-                         validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
-                         callbacks = list(early_stop))
+neural_network_4_mse %>% fit(as.matrix(train_x), as.matrix(train_y), 
+                             epochs = 100, verbose = 1, 
+                             validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
+                             callbacks = list(early_stop))
 
 #Make predictions
 test_x <- test[4:ncol(test)]
 
-NN4_predictions <- neural_network_4 %>% predict(as.matrix(test_x))
+NN4_mse_predictions <- neural_network_4_mse %>% predict(as.matrix(test_x))
 
-mae(test$rt, NN4_predictions)
-mse(test$rt, NN4_predictions)
+mae(test$rt, NN4_mse_predictions)
+mse(test$rt, NN4_mse_predictions)
+
+###########################################
+## WRT MAE
+
+neural_network_4_mae <- build_NN2("mae")
+neural_network_4_mae %>% summary()
+
+#Just do something straightforward for now
+
+neural_network_4_mae %>% fit(as.matrix(train_x), as.matrix(train_y), 
+                             epochs = 100, verbose = 1, 
+                             validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
+                             callbacks = list(early_stop))
+
+#Make predictions
+test_x <- test[4:ncol(test)]
+
+NN4_mae_predictions <- neural_network_4_mae %>% predict(as.matrix(test_x))
+
+mae(test$rt, NN4_mae_predictions)
+mse(test$rt, NN4_mae_predictions)
 ```
 
 ```{r}
@@ -737,7 +829,7 @@ validation_y <- validation$rt
 early_stop <- callback_early_stopping(monitor = "val_loss", patience = 20)
 
 #It's clearer to separate these "layers" out as much as possible
-build_NN5 <- function() {
+build_NN5 <- function(loss_function) {
   
   model <- keras_model_sequential() %>%
     # Layer 1
@@ -765,7 +857,7 @@ build_NN5 <- function() {
   
   model %>% compile(
     #MSE loss function
-    loss = "mse",
+    loss = loss_function,
     #We're using ADAM
     optimizer = "adam",
     metrics = list("mean_absolute_error", "mean_squared_error")
@@ -773,22 +865,45 @@ build_NN5 <- function() {
   model
 }
 
-neural_network_5 <- build_NN5()
-neural_network_5 %>% summary()
+## WRT MSE
+
+neural_network_5_mse <- build_NN5("mse")
+neural_network_5_mse %>% summary()
 
 #Just do something straightforward for now
 
-neural_network_5 %>% fit(as.matrix(train_x), as.matrix(train_y), 
-                         epochs = 100, verbose = 1, 
-                         validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
-                         callbacks = list(early_stop))
+neural_network_5_mse %>% fit(as.matrix(train_x), as.matrix(train_y), 
+                             epochs = 100, verbose = 1, 
+                             validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
+                             callbacks = list(early_stop))
+
+#Make predictions
+test_x <- test[5:ncol(test)]
+
+NN5_mse_predictions <- neural_network_5_mse %>% predict(as.matrix(test_x))
+
+mae(test$rt, NN5_mse_predictions)
+mse(test$rt, NN5_mse_predictions)
+
+###########################################
+## WRT MAE
+
+neural_network_5_mae <- build_NN2("mae")
+neural_network_5_mae %>% summary()
+
+#Just do something straightforward for now
+
+neural_network_5_mae %>% fit(as.matrix(train_x), as.matrix(train_y), 
+                             epochs = 100, verbose = 1, 
+                             validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
+                             callbacks = list(early_stop))
 
 #Make predictions
 test_x <- test[4:ncol(test)]
 
-NN5_predictions <- neural_network_5 %>% predict(as.matrix(test_x))
+NN5_mae_predictions <- neural_network_5_mae %>% predict(as.matrix(test_x))
 
-mae(test$rt, NN5_predictions)
-mse(test$rt, NN5_predictions)
+mae(test$rt, NN5_mae_predictions)
+mse(test$rt, NN5_mae_predictions)
 ```
 
