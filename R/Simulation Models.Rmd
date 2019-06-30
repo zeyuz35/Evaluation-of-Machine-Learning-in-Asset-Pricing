@@ -77,28 +77,26 @@ panel_formula <- function(panel){
 
 #Use panel_g1_A1 generated from Simulation.rmd for now. Generalize it later
 
-pooled_panel <- panel_g1_A1
+pooled_panel <- gu_et_al_g1[[1]]$panel
 
 f <- panel_formula(pooled_panel)
 ```
 
 ```{r pooled_ols}
-#POLS
+#Linear model wrt MSE
 
-#Train/fit a POLS model wrt MSE
-
-POLS_fit_mse <- function(pooled_panel, timeSlices) {
+LM_fit_mse <- function(pooled_panel, timeSlices) {
   #Initialize Loss Function Statistics
-  POLS_stats <- rep(list(0), 3)
+  LM_stats <- rep(list(0), 3)
   
   for (set in 1:3) {
-    POLS_stats[[set]] <- list(loss_stats = data.frame(train_MAE = 0, train_MSE = 0, train_RMSE = 0, train_RSquare = 0, 
-                                                validation_MAE = 0, validation_MSE = 0, validation_RMSE = 0, validation_RSquare = 0, 
-                                                test_MAE = 0, test_MSE = 0, test_RMSE = 0, test_RSquare = 0),
-                        #Other useful things
-                        forecasts = 0,
-                        forecast_resids = 0,
-                        model = 0)
+    LM_stats[[set]] <- list(loss_stats = data.frame(train_MAE = 0, train_MSE = 0, train_RMSE = 0, train_RSquare = 0, 
+                                                    validation_MAE = 0, validation_MSE = 0, validation_RMSE = 0, validation_RSquare = 0, 
+                                                    test_MAE = 0, test_MSE = 0, test_RMSE = 0, test_RSquare = 0),
+                            #Other useful things
+                            forecasts = 0,
+                            forecast_resids = 0,
+                            model = 0)
     
     #Load Training, validation and test sets
     train <- pooled_panel %>%
@@ -109,44 +107,46 @@ POLS_fit_mse <- function(pooled_panel, timeSlices) {
       filter(time %in% timeSlices[[set]]$test)
     
     #Train Model on training set
-    pols <- plm(f, data = train, model = "pooling", index = c("time", "stock"))
+    lm <- lm(f, data = train)
     
-    POLS_stats[[set]]$model <- pols
+    LM_stats[[set]]$model <- lm
     
     #No Tuning Needed
     
     #Statistics
     #Training Set
-    POLS_stats[[set]]$loss_stats$train_MAE <- mae(train$rt, predict(pols))
-    POLS_stats[[set]]$loss_stats$train_MSE <- mse(train$rt, predict(pols))
-    POLS_stats[[set]]$loss_stats$train_RMSE <- rmse(train$rt, predict(pols))
-    POLS_stats[[set]]$loss_stats$train_RSquare <- (1 - sse(train$rt, predict(pols, newdata = train)) / sum((train$rt - mean(train$rt))^2))
+    LM_stats[[set]]$loss_stats$train_MAE <- mae(train$rt, predict(lm))
+    LM_stats[[set]]$loss_stats$train_MSE <- mse(train$rt, predict(lm))
+    LM_stats[[set]]$loss_stats$train_RMSE <- rmse(train$rt, predict(lm))
+    LM_stats[[set]]$loss_stats$train_RSquare <- (1 - sse(train$rt, predict(lm, newdata = train)) / sum((train$rt - mean(train$rt))^2))
     
     #Validation Set Statistics
-    POLS_stats[[set]]$loss_stats$validation_MAE <- mae(validation$rt, predict(pols, newdata = validation))
-    POLS_stats[[set]]$loss_stats$validation_MSE <- mse(validation$rt, predict(pols, newdata = validation))
-    POLS_stats[[set]]$loss_stats$validation_RMSE <- rmse(validation$rt, predict(pols, newdata = validation))
-    POLS_stats[[set]]$loss_stats$validation_RSquare <- (1 - sse(validation$rt, predict(pols, newdata = validation)) / sum((validation$rt - mean(validation$rt))^2))
+    LM_stats[[set]]$loss_stats$validation_MAE <- mae(validation$rt, predict(lm, newdata = validation))
+    LM_stats[[set]]$loss_stats$validation_MSE <- mse(validation$rt, predict(lm, newdata = validation))
+    LM_stats[[set]]$loss_stats$validation_RMSE <- rmse(validation$rt, predict(lm, newdata = validation))
+    LM_stats[[set]]$loss_stats$validation_RSquare <- (1 - sse(validation$rt, predict(lm, newdata = validation)) / sum((validation$rt - mean(validation$rt))^2))
       
     #Test Set Statistics
-    POLS_stats[[set]]$loss_stats$test_MAE <- mae(test$rt, predict(pols, newdata = test))
-    POLS_stats[[set]]$loss_stats$test_MSE <- mse(test$rt, predict(pols, newdata = test))
-    POLS_stats[[set]]$loss_stats$test_RMSE <- rmse(test$rt, predict(pols, newdata = test))
-    POLS_stats[[set]]$loss_stats$test_RSquare <- (1 - sse(test$rt, predict(pols, newdata = test)) / sum((test$rt - mean(test$rt))^2))
+    LM_stats[[set]]$loss_stats$test_MAE <- mae(test$rt, predict(lm, newdata = test))
+    LM_stats[[set]]$loss_stats$test_MSE <- mse(test$rt, predict(lm, newdata = test))
+    LM_stats[[set]]$loss_stats$test_RMSE <- rmse(test$rt, predict(lm, newdata = test))
+    LM_stats[[set]]$loss_stats$test_RSquare <- (1 - sse(test$rt, predict(lm, newdata = test)) / sum((test$rt - mean(test$rt))^2))
         
     #Forecasts
-    POLS_stats[[set]]$forecasts <- predict(pols, newdata = test)
+    LM_stats[[set]]$forecasts <- predict(lm, newdata = test)
     #Forecast Residuals
-    POLS_stats[[set]]$forecast_resids <- test$rt - predict(pols, newdata = test)
+    LM_stats[[set]]$forecast_resids <- test$rt - predict(lm, newdata = test)
   }
-  return(POLS_stats)
+  return(LM_stats)
 }
 
-POLS_stats <- POLS_fit_mse(pooled_panel, timeSlices)
+LM_stats <- LM_fit_mse(pooled_panel, timeSlices)
 
-POLS_stats[[1]]$loss_stats
-POLS_stats[[2]]$loss_stats
-POLS_stats[[3]]$loss_stats
+summary(LM_stats[[1]]$model)
+
+LM_stats[[1]]$loss_stats
+LM_stats[[2]]$loss_stats
+LM_stats[[3]]$loss_stats
 ```
 
 ```{r}
@@ -484,28 +484,6 @@ plot(rf_MAE)
 predict(rf_MAE, newdata = validation)
 
 plot.variable(rf_MSE)
-```
-
-```{r}
-#Train RF Model + tune
-rf <- ranger(f, data = train, 
-             #Hyperparameters
-             
-             #Tuning parameters
-              num.trees = 10,
-              mtry = 10,
-             
-             #No Tuning
-              #Default Min node size
-              min.node.size = 5,
-             
-             #Other
-             write.forest = TRUE,
-             importance = "impurity"
-             )
-
-importance(rf)
-
 ```
 
 

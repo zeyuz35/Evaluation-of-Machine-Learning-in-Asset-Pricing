@@ -663,7 +663,7 @@ summary(cross_fit)$r.squared
 
 panel_tune_stats <- function(return_panel, true_factor_panel) {
   #Initialize
-  tune_stats <- data.frame(time_series_fitted.rsquare = 0, annual_vol = 0, cross_section_rsquare = 0)
+  tune_stats <- data.frame(time_series_fitted.rsquare = 0, annual_vol = 0, true_rsquare = 0, cross_section_rsquare = 0)
   
   ########
   ## Time Series + Annual Vol
@@ -701,6 +701,8 @@ panel_tune_stats <- function(return_panel, true_factor_panel) {
       
       fit <- lm(Rs ~., df)
       Fits[, i] <- fit$fitted.values
+      
+      
       
       #Save all the betas except for the constant, slightly more clever way that handles different number of true factors
       Coeff_Betas[i, ] <- as.numeric(fit$coefficients[-1])
