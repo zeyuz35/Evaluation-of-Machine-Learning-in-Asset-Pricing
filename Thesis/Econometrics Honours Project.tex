@@ -219,6 +219,8 @@ The mean absolute error (MAE) is simply the average magnitude of errors. Because
 	\text{MAE} = \frac{1}{n} \sum_{j = i}^{n} |y_j - \hat{y_j}|
 \end{equation}
 
+It should be noted that minimizing the MAE criterion is equivalent to minimizing 0.5 quantile loss. 
+
 \subsubsection{Mean Squared Error and Root Mean Squared Error}
 
 The mean squared error (MSE) and root mean squared error (RMSE) are quadratic scoring methods. This means that they place higher weight on large errors. Models that minimize this metric are therefore more sensitive to outliers. 
@@ -678,7 +680,15 @@ If there is enough time and computing resources, Long Term Short Memory models, 
 \subsection{Algorithms}
 \label{Algorithms}
 
+\subsubsection{Linear Models}
+
+OLS used for fitting wrt MSE.
+
+quantreg used for fitting wrt MAE. (minimizing 0.5 quantile loss is equivalent to minimizing mae).
+
 \subsubsection{Penalized Linear}
+
+package hqreg used for
 
 \subsubsection{Classification and Regression Trees}
 
@@ -745,6 +755,8 @@ For full details of the Random Forest algorithm see \cite{breiman_random_2001}.
 \end{algorithm}
 
 \subsubsection{Neural Networks}
+
+Fit using keras package (cite)
 
 ADAM algorithm for stochastic gradient descent and learning rate shrinkage as detailed by \cite{kingma_adam:_2014}.
 

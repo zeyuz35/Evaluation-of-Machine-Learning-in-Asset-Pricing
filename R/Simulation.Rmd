@@ -15,7 +15,6 @@ library(glmnet)
 library(tidyverse)
 library(keras)
 library(ggplot2)
-library(caret)
 library(forecast)
 library(rlist)
 library(plm)
@@ -42,12 +41,11 @@ set.seed(27935248)
 
 #Reduce Dimensionality to make it easier to code everything up for now. We can always increase this back up later
 
-N <- 200
+N <- 20
 
-P_c <- 100
+P_c <- 20
 
 Time <- 180
-
 ```
 
 ```{r function_simulate_characteristics}
@@ -784,8 +782,6 @@ gen_predictor_z <- function(C, x){
   return(z_panel)
 }
 
-gen_predictor_z(C, xt)
-
 z_panel_g1_A1 <- gen_predictor_z(C, xt)
 
 #Yes bitch it's working
@@ -817,7 +813,6 @@ panel_g1_A1 <- bind_rt_predictor(rt_panel_g1_A1, z_panel_g1_A1)
 ```
 
 ```{r}
-
 ##########################
 A1 <- matrix(c(
   0.95, 0, 0,
@@ -902,6 +897,7 @@ sim_tune_statistics <- function(sim_panel_list) {
   #Initialize
   sim_tune_stats <- data.frame(time_series_fitted.rsquare = rep(0, sim_N),
                                annual_vol = rep(0, sim_N),
+                               true_rsquare = rep(0, sim_N),
                                cross_section_rsquare = rep(0, sim_N))
   for (i in 1:sim_N) {
     sim_tune_stats[i, ] <- sim_panel_list[[i]]$statistics  
@@ -916,7 +912,7 @@ sim_tune_statistics <- function(sim_panel_list) {
 gu_et_al_g1 <- sim_panel_data(10, cross_corr = 0, A1, xt_multi = 0, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1),
                               error_sv = 0, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
 
-#Annualized volatility is spot on, but other values are not
+#Annualized volatility is somewhat close (25% vs 30% specified)
 summary(sim_tune_statistics(gu_et_al_g1))
 ```
 

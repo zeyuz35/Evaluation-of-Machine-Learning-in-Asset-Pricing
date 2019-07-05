@@ -16,7 +16,6 @@ library(glmnet)
 library(tidyverse)
 library(keras)
 library(ggplot2)
-library(caret)
 library(forecast)
 library(rlist)
 library(plm)
@@ -26,12 +25,17 @@ library(glmnetUtils)
 library(tensorflow)
 library(quantreg)
 library(randomForestSRC)
+library(hqreg)
+library(devtools)
+library(forestr)
 
 
 #forestr
 # This apparently needs admin privileges to install, do this at home maybe
 # devtools::install_github("andeek/forestr")
 # devtools::install_github("andeek/rpart")
+
+# unlink("C:/R/Library/00LOCK-rpart", recursive = TRUE)
 
 set.seed(27935248)
 ```
@@ -85,7 +89,7 @@ f <- panel_formula(pooled_panel)
 ```{r pooled_ols}
 #Linear model wrt MSE
 
-LM_fit_mse <- function(pooled_panel, timeSlices) {
+LM_fit <- function(pooled_panel, timeSlices, loss_function) {
   #Initialize Loss Function Statistics
   LM_stats <- rep(list(0), 3)
   
@@ -103,11 +107,17 @@ LM_fit_mse <- function(pooled_panel, timeSlices) {
       filter(time %in% timeSlices[[set]]$train)
     validation <- pooled_panel %>%
       filter(time %in% timeSlices[[set]]$validation)
-    test<- pooled_panel %>%
+    test <- pooled_panel %>%
       filter(time %in% timeSlices[[set]]$test)
     
     #Train Model on training set
-    lm <- lm(f, data = train)
+    
+    #MSE case
+    if (loss_function == "mse") {
+      lm <- lm(f, data = train)
+    } else {
+      lm <- rq(f, data = train, tau = 0.5, method = "br")
+    }
     
     LM_stats[[set]]$model <- lm
     
@@ -115,129 +125,71 @@ LM_fit_mse <- function(pooled_panel, timeSlices) {
     
     #Statistics
     #Training Set
-    LM_stats[[set]]$loss_stats$train_MAE <- mae(train$rt, predict(lm))
-    LM_stats[[set]]$loss_stats$train_MSE <- mse(train$rt, predict(lm))
-    LM_stats[[set]]$loss_stats$train_RMSE <- rmse(train$rt, predict(lm))
-    LM_stats[[set]]$loss_stats$train_RSquare <- (1 - sse(train$rt, predict(lm, newdata = train)) / sum((train$rt - mean(train$rt))^2))
+    train_predict <- predict(lm)
+    LM_stats[[set]]$loss_stats$train_MAE <- mae(train$rt, train_predict)
+    LM_stats[[set]]$loss_stats$train_MSE <- mse(train$rt, train_predict)
+    LM_stats[[set]]$loss_stats$train_RMSE <- rmse(train$rt, train_predict)
+    LM_stats[[set]]$loss_stats$train_RSquare <- (1 - sse(train$rt, train_predict) / sum((train$rt - mean(train$rt))^2))
     
     #Validation Set Statistics
-    LM_stats[[set]]$loss_stats$validation_MAE <- mae(validation$rt, predict(lm, newdata = validation))
-    LM_stats[[set]]$loss_stats$validation_MSE <- mse(validation$rt, predict(lm, newdata = validation))
-    LM_stats[[set]]$loss_stats$validation_RMSE <- rmse(validation$rt, predict(lm, newdata = validation))
-    LM_stats[[set]]$loss_stats$validation_RSquare <- (1 - sse(validation$rt, predict(lm, newdata = validation)) / sum((validation$rt - mean(validation$rt))^2))
+    validation_predict <- predict(lm, newdata = validation)
+    LM_stats[[set]]$loss_stats$validation_MAE <- mae(validation$rt, validation_predict)
+    LM_stats[[set]]$loss_stats$validation_MSE <- mse(validation$rt, validation_predict)
+    LM_stats[[set]]$loss_stats$validation_RMSE <- rmse(validation$rt, validation_predict)
+    LM_stats[[set]]$loss_stats$validation_RSquare <- (1 - sse(validation$rt, validation_predict) / sum((validation$rt - mean(validation$rt))^2))
       
     #Test Set Statistics
-    LM_stats[[set]]$loss_stats$test_MAE <- mae(test$rt, predict(lm, newdata = test))
-    LM_stats[[set]]$loss_stats$test_MSE <- mse(test$rt, predict(lm, newdata = test))
-    LM_stats[[set]]$loss_stats$test_RMSE <- rmse(test$rt, predict(lm, newdata = test))
-    LM_stats[[set]]$loss_stats$test_RSquare <- (1 - sse(test$rt, predict(lm, newdata = test)) / sum((test$rt - mean(test$rt))^2))
+    test_predict <- predict(lm, newdata = test)
+    LM_stats[[set]]$loss_stats$test_MAE <- mae(test$rt, test_predict)
+    LM_stats[[set]]$loss_stats$test_MSE <- mse(test$rt, test_predict)
+    LM_stats[[set]]$loss_stats$test_RMSE <- rmse(test$rt, test_predict)
+    LM_stats[[set]]$loss_stats$test_RSquare <- (1 - sse(test$rt, test_predict) / sum((test$rt - mean(test$rt))^2))
         
     #Forecasts
-    LM_stats[[set]]$forecasts <- predict(lm, newdata = test)
+    LM_stats[[set]]$forecasts <- test_predict
     #Forecast Residuals
-    LM_stats[[set]]$forecast_resids <- test$rt - predict(lm, newdata = test)
+    LM_stats[[set]]$forecast_resids <- test$rt - test_predict
   }
   return(LM_stats)
 }
 
-LM_stats <- LM_fit_mse(pooled_panel, timeSlices)
+LM_stats_mse <- LM_fit(pooled_panel, timeSlices, "mse")
 
-summary(LM_stats[[1]]$model)
+LM_stats_mae <- LM_fit(pooled_panel, timeSlices, "mae")
 
-LM_stats[[1]]$loss_stats
-LM_stats[[2]]$loss_stats
-LM_stats[[3]]$loss_stats
+summary(LM_stats_mse[[1]]$model)
+
+LM_stats_mse[[1]]$loss_stats
+LM_stats_mse[[2]]$loss_stats
+LM_stats_mse[[3]]$loss_stats
+
+summary(LM_stats_mae[[1]]$model)
+
+LM_stats_mae[[1]]$loss_stats
+LM_stats_mae[[2]]$loss_stats
+LM_stats_mae[[3]]$loss_stats
 ```
 
-```{r}
-#Linear Model with MAE loss function (aka quantile regression with target quantile of 0.5)
+```{r elastic_net, eval = FALSE}
+## DO NOT RUN THIS CHUNK. ITS IMPLEMENTATION IS VERY INTENSIVE AND SLOW. NOTE EVAL = FALSE FLAG
+# KEPT HERE MAINLY FOR LEGACY PURPOSES
 
-LM_MAE <- rq(f, tau = 0.5, data = train, 
-             #Play around with method if speed is problem
-             method = "br")
+#Elasticnet WRT MSE
 
-summary(LM_MAE)
-  
-#Turning this into a function
-  
-LM_fit_mae <- function(pooled_panel, timeSlices) {
-  #Initialize Loss Function Statistics
-  LM_stats <- rep(list(0), 3)
-  
-  for (set in 1:3) {
-    LM_stats[[set]] <- list(loss_stats = data.frame(train_MAE = 0, train_MSE = 0, train_RMSE = 0, train_RSquare = 0, 
-                                                validation_MAE = 0, validation_MSE = 0, validation_RMSE = 0, validation_RSquare = 0, 
-                                                test_MAE = 0, test_MSE = 0, test_RMSE = 0, test_RSquare = 0),
-                        #Other useful things
-                        forecasts = 0,
-                        forecast_resids = 0,
-                        model = 0)
-    
-    #Load Training, validation and test sets
-    train <- pooled_panel %>%
-      filter(time %in% timeSlices[[set]]$train)
-    validation <- pooled_panel %>%
-      filter(time %in% timeSlices[[set]]$validation)
-    test<- pooled_panel %>%
-      filter(time %in% timeSlices[[set]]$test)
-    
-    #Train Model on training set
-    lm <- rq(f, data = train, tau = 0.5, method = "br")
-    
-    LM_stats[[set]]$model <- lm
-    
-    #No Tuning Needed
-    
-    #Statistics
-    #Training Set
-    LM_stats[[set]]$loss_stats$train_MAE <- mae(train$rt, predict(lm))
-    LM_stats[[set]]$loss_stats$train_MSE <- mse(train$rt, predict(lm))
-    LM_stats[[set]]$loss_stats$train_RMSE <- rmse(train$rt, predict(lm))
-    LM_stats[[set]]$loss_stats$train_RSquare <- (1 - sse(train$rt, predict(lm, newdata = train)) / sum((train$rt - mean(train$rt))^2))
-    
-    #Validation Set Statistics
-    LM_stats[[set]]$loss_stats$validation_MAE <- mae(validation$rt, predict(lm, newdata = validation))
-    LM_stats[[set]]$loss_stats$validation_MSE <- mse(validation$rt, predict(lm, newdata = validation))
-    LM_stats[[set]]$loss_stats$validation_RMSE <- rmse(validation$rt, predict(lm, newdata = validation))
-    LM_stats[[set]]$loss_stats$validation_RSquare <- (1 - sse(validation$rt, predict(lm, newdata = validation)) / sum((validation$rt - mean(validation$rt))^2))
-      
-    #Test Set Statistics
-    LM_stats[[set]]$loss_stats$test_MAE <- mae(test$rt, predict(lm, newdata = test))
-    LM_stats[[set]]$loss_stats$test_MSE <- mse(test$rt, predict(lm, newdata = test))
-    LM_stats[[set]]$loss_stats$test_RMSE <- rmse(test$rt, predict(lm, newdata = test))
-    LM_stats[[set]]$loss_stats$test_RSquare <- (1 - sse(test$rt, predict(lm, newdata = test)) / sum((test$rt - mean(test$rt))^2))
-        
-    #Forecasts
-    LM_stats[[set]]$forecasts <- predict(lm, newdata = test)
-    #Forecast Residuals
-    LM_stats[[set]]$forecast_resids <- test$rt - predict(lm, newdata = test)
-  }
-  return(LM_stats)
-}
+# Can't seem to find anything online that tunes ELN for you with specified validation sets, instead of straight-forward cross validation
+# nfold and foldid require that ELN be performed with at least 3 fold validation - not possible in our context
 
-LM_mae_stats <- LM_fit_mae(pooled_panel, timeSlices)
+# Elasticnet only has alpha and lambda to tune
 
-LM_mae_stats[[1]]$loss_stats
-LM_mae_stats[[2]]$loss_stats
-LM_mae_stats[[3]]$loss_stats
+# ELN is rather finicky and likes to generate its own sequence of lambda values during the actual fitting process. Really doesn't like specifying a singular lambda value
+# Solution: follow what the documentation says and let it find its own lambda sequence
+# Then, when supply custom grid values of lambda when actually predicting values. This can be either through exact = TRUE (refits the model with the additional lambda gridpoint), or exact = FALSE, which just uses linear interpolation
+# According to documentation, linear interpolation is very fast and is generally "good enough" anyway
 
-```
-
-
-
-```{r elastic_net}
-#Elasticnet
-
-#Can't seem to find anything online that tunes ELN for you with specified validation sets, instead of straight-forward cross validation
-#nfold and foldid require that ELN be performed with at least 3 fold validation - not possible in our context
-#Double check with David maybe, on hold for now
-
-#Elasticnet only has alpha and lambda to tune
-
-#Just keep the grid small for now to make sure everything is running
+# Just keep the grid small for now to make sure everything is running
 ELN_grid <- expand.grid(
   alpha = seq(0, 1, 0.01),
-  lambda = 10^seq(-3, 5, length.out = 50)
+  lambda = 10^seq(-2, 2, length.out = 50)
 )
 
 ######################################
@@ -248,53 +200,51 @@ ELN_grid <- expand.grid(
 # Takes a defined grid of hyperparameters, a training set, and a validation set, fits the model over the grid, and returns the models + loss statistics as a list
 # Works with both loss functions of MSE and MAE, need to specify these as "mse" or "mae" respectively
 
-ELN_model_grid <- function(ELN_grid, train, validation, loss_function) {
-  #Initialize List
+# Ideally, we would store all the model fitted over the grid. This takes up way too much memory, and because ELN is very efficiently fit anyway it's better not to store them. Relevant lines are commented out
+
+ELN_model_grid <- function(ELN_grid, train_x, train_y, validation_x, validation_y, loss_function, nlambda) {
   ELN_model_grid <- rep(list(0), nrow(ELN_grid))
   
   for (i in 1:nrow(ELN_grid)) {
-    ELN_model_grid[[i]] <- list(ELN_grid = ELN_grid[i,], model = 0, train_loss = 0, validation_loss = 0)
-    #Remember to load glmnetUtils package for a formula interface to glmnet
-    #Fit the model using grid value
-    ELN <- glmnet(formula = f, data = train, alpha = ELN_grid$alpha[i], lambda = ELN_grid$lambda[i])
-    ELN_model_grid[[i]]$model <- ELN
     
-    #MSE case
+    ELN_model_grid[[i]] <- list(ELN_grid = 0, model = 0)
+    
+    # MSE Case
     if (loss_function == "mse") {
-      #Training Error
-      ELN_model_grid[[i]]$train_loss <- mse(train$rt, predict(ELN, newdata = train))
-      #Validation Error
-      ELN_model_grid[[i]]$validation_loss <- mse(validation$rt, predict(ELN, newdata = validation))
-    }
-    #MAE case
-    else {
-      #Training Error
-      ELN_model_grid[[i]]$train_loss <- mae(train$rt, predict(ELN, newdata = train))
-      #Validation Error
-      ELN_model_grid[[i]]$validation_loss <- mae(validation$rt, predict(ELN, newdata = validation))
+      ELN <- hqreg_raw(train_x, train_y, method = "ls", alpha = ELN_grid$alpha[i], nlambda = nlambda)
+      
+      #ELN_model_grid[[i]]$model <- ELN
+      
+      ELN_model_grid[[i]]$ELN_grid <- cbind(alpha = ELN_grid$alpha[i], lambda = ELN_grid$lambda[i],
+                                            train_loss = mse(train_y, predict(ELN, train_x, lambda = ELN_grid$lambda[i])),
+                                            validation_loss = mse(validation_y, predict(ELN, validation_x, lambda = ELN_grid$lambda[i]))
+                                            )
+    } else {
+      # MAE Case
+      ELN <- hqreg_raw(train_x, train_y, method = "quantile", tau = 0.5, alpha = ELN_grid$alpha[i], nlambda = nlambda)
+      #ELN_model_grid[[i]]$model <- ELN
+
+      ELN_model_grid[[i]]$ELN_grid <- cbind(alpha = ELN_grid$alpha[i], lambda = ELN_grid$lambda[i],
+                                            train_loss = mae(train_y, predict(ELN, train_x, lambda = ELN_grid$lambda[i])),
+                                            validation_loss = mae(validation_y, predict(ELN, validation_x, lambda = ELN_grid$lambda[i]))
+                                            )
     }
   }
   return(ELN_model_grid)
 }
 
-# Given a list containing the model grid, return the "best" model according to validation loss
-# Use in conjunction with previous function
-
-get_ELN_best_tune <- function(ELN_grid, model_grid) {
-  ELN_tune_dataframe <- cbind(ELN_grid, train_loss = rep(0, nrow(ELN_grid)), validation_loss = rep(0, nrow(ELN_grid)))
-  for (i in 1:nrow(ELN_grid)) {
-    #Training Error
-    ELN_tune_dataframe$train_loss[i] <- model_grid[[i]]$train_loss
-    #Validation Error
-    ELN_tune_dataframe$validation_loss[i] <- model_grid[[i]]$validation_loss
+get_ELN_best_tune <- function(model_grid) {
+  ELN_tune_dataframe <- cbind(model_grid[[1]]$ELN_grid, list_index = 1)
+  for (i in 2:length(model_grid)) {
+    ELN_tune_dataframe <- rbind(ELN_tune_dataframe, cbind(model_grid[[i]]$ELN_grid, list_index = i))
   }
-  #Return the row index with the lowest validation loss
-  return(which.min(ELN_tune_dataframe$validation_loss))
+  ELN_tune_dataframe <- data.frame(ELN_tune_dataframe)
+  return(ELN_tune_dataframe[which.min(ELN_tune_dataframe$validation_loss), ])
 }
 
 # Final big wrapper function that gives an ELN_stats list with everything desired
 
-ELN_fit_stats <- function(ELN_grid, timeSlices, pooled_panel, loss_function) {
+ELN_fit_stats <- function(ELN_grid, nlambda, timeSlices, pooled_panel, loss_function) {
   ELN_stats <- rep(list(0), 3)
   
   for (set in 1:3) {
@@ -303,69 +253,239 @@ ELN_fit_stats <- function(ELN_grid, timeSlices, pooled_panel, loss_function) {
       filter(time %in% timeSlices[[set]]$train)
     validation <- pooled_panel %>%
       filter(time %in% timeSlices[[set]]$validation)
-    test<- pooled_panel %>%
+    test <- pooled_panel %>%
       filter(time %in% timeSlices[[set]]$test)
+    
+    train_x <- as.matrix(train[4:ncol(train)])
+    train_y <- as.matrix(train$rt)
+    validation_x <- as.matrix(validation[4:ncol(validation)])
+    validation_y <- as.matrix(validation$rt)
+    test_x <- as.matrix(test[4:ncol(test)])
+    test_y <- as.matrix(test$rt)
       
     #Get models fit over the grid of hyperparameters
-    ELN_model_grid <- ELN_model_grid(ELN_grid, train, validation, loss_function)
+    ELN_model_grid <- ELN_model_grid(ELN_grid, train_x, train_y, validation_x, validation_y, loss_function, nlambda = nlambda)
         
     #Get the best tuning parameters
-    best_model_index <- get_ELN_best_tune(ELN_grid, ELN_model_grid)
+    best_model_params <- get_ELN_best_tune(ELN_model_grid)
     
     #Initialize stats list
     ELN_stats[[set]] <- list(loss_stats = data.frame(train_MAE = 0, train_MSE = 0, train_RMSE = 0, train_RSquare = 0, 
-                         validation_MAE = 0, validation_MSE = 0, validation_RMSE = 0, validation_RSquare = 0, 
-                         test_MAE = 0, test_MSE = 0, test_RMSE = 0, test_RSquare = 0),
-                         #Other useful things
-                         forecasts = 0,
-                         forecast_resids = 0,
-                         model = 0)
+                                                     validation_MAE = 0, validation_MSE = 0, validation_RMSE = 0, validation_RSquare = 0, 
+                                                     test_MAE = 0, test_MSE = 0, test_RMSE = 0, test_RSquare = 0),
+                             #Other useful things
+                             forecasts = 0,
+                             forecast_resids = 0,
+                             model = 0)
       
     #Model
-    model <- ELN_model_grid[[best_model_index]]$model
-    ELN_stats[[set]]$model <- ELN_model_grid[[best_model_index]]$model
+    if (loss_function == "mse") {
+      model <- hqreg_raw(train_x, train_y, method = "ls", alpha = best_model_params$alpha, nlambda = nlambda)
+    } else {
+      model <- hqreg_raw(train_x, train_y, method = "quantile", tau = 0.5, alpha = best_model_params$alpha, nlambda = nlambda)
+    }
+    ELN_stats[[set]]$model <- model
       
     #Loss Stats Dataframe
     #Train
-    ELN_stats[[set]]$loss_stats$train_MAE <- mae(train$rt, predict(model, newdata = train))
-    ELN_stats[[set]]$loss_stats$train_MSE <- mse(train$rt, predict(model, newdata = train))
-    ELN_stats[[set]]$loss_stats$train_RMSE <- rmse(train$rt, predict(model, newdata = train))
-    ELN_stats[[set]]$loss_stats$train_RSquare <- (1 - sse(train$rt, predict(model, newdata = train)) / sum((train$rt - mean(train$rt))^2))
+    train_predict <- predict(model, train_x, alpha = best_model_params$alpha, lambda = best_model_params$lambda)
+    ELN_stats[[set]]$loss_stats$train_MAE <- mae(train_y, train_predict)
+    ELN_stats[[set]]$loss_stats$train_MSE <- mse(train_y, train_predict)
+    ELN_stats[[set]]$loss_stats$train_RMSE <- rmse(train_y, train_predict)
+    ELN_stats[[set]]$loss_stats$train_RSquare <- (1 - sse(train_y, train_predict) / sum((train_y - mean(train_y))^2))
         
     #Validation
-    ELN_stats[[set]]$loss_stats$validation_MAE <- mae(validation$rt, predict(model, newdata = validation))
-    ELN_stats[[set]]$loss_stats$validation_MSE <- mse(validation$rt, predict(model, newdata = validation))
-    ELN_stats[[set]]$loss_stats$validation_RMSE <- rmse(validation$rt, predict(model, newdata = validation))
-    ELN_stats[[set]]$loss_stats$validation_RSquare <- (1 - sse(validation$rt, predict(model, newdata = validation)) / sum((validation$rt - mean(validation$rt))^2))
+    valid_predict <- predict(model, validation_x, alpha = best_model_params$alpha, lambda = best_model_params$lambda)
+    ELN_stats[[set]]$loss_stats$validation_MAE <- mae(validation_y, valid_predict)
+    ELN_stats[[set]]$loss_stats$validation_MSE <- mse(validation_y, valid_predict)
+    ELN_stats[[set]]$loss_stats$validation_RMSE <- rmse(validation_y, valid_predict)
+    ELN_stats[[set]]$loss_stats$validation_RSquare <- (1 - sse(validation_y, valid_predict) / sum((validation_y - mean(validation_y))^2))
     
     #Test
-    ELN_stats[[set]]$loss_stats$test_MAE <- mae(test$rt, predict(model, newdata = test))
-    ELN_stats[[set]]$loss_stats$test_MSE <- mse(test$rt, predict(model, newdata = test))
-    ELN_stats[[set]]$loss_stats$test_RMSE <- rmse(test$rt, predict(model, newdata = test))
-    ELN_stats[[set]]$loss_stats$test_RSquare <- (1 - sse(test$rt, predict(model, newdata = test)) / sum((test$rt - mean(test$rt))^2))
+    test_predict <- predict(model, test_x, alpha = best_model_params$alpha, lambda = best_model_params$lambda)
+    ELN_stats[[set]]$loss_stats$test_MAE <- mae(test_y, test_predict)
+    ELN_stats[[set]]$loss_stats$test_MSE <- mse(test_y, test_predict)
+    ELN_stats[[set]]$loss_stats$test_RMSE <- rmse(test_y, test_predict)
+    ELN_stats[[set]]$loss_stats$test_RSquare <- (1 - sse(test_y, test_predict) / sum((test_y - mean(test_y))^2))
       
     #Forecasts
-    ELN_stats[[set]]$forecasts <- predict(model, newdata = test)
+    ELN_stats[[set]]$forecasts <- test_predict
     
     #Forecast residuals
-    ELN_stats[[set]]$forecast_resids <- test$rt - predict(model, newdata = test)
+    ELN_stats[[set]]$forecast_resids <- test_y - test_predict
   }
   return(ELN_stats)
 }
 
 #Testing if function works
-ELN_stats_mse <- ELN_fit_stats(ELN_grid, timeSlices, pooled_panel, loss_function = "mse")
 
-ELN_stats_mae <- ELN_fit_stats(ELN_grid, timeSlices, pooled_panel, loss_function = "mae")
+ELN_stats_mae <- ELN_fit_stats(ELN_grid, nlambda = 100, timeSlices, pooled_panel, loss_function = "mae")
+
+ELN_stats_mse <- ELN_fit_stats(ELN_grid, nlambda = 100, timeSlices, pooled_panel, loss_function = "mse")
+
+ELN_stats_mae[[1]]$model$alpha
+ELN_stats_mae[[2]]$model$alpha
+ELN_stats_mae[[3]]$model$alpha
+
+ELN_stats_mse[[1]]$model$alpha
+ELN_stats_mse[[2]]$model$alpha
+ELN_stats_mse[[3]]$model$alpha
+
+# Optimal alpha vlaues seem to be very unstable across folds
+```
+
+```{r elastic_net}
+# Alternative implementation for ELN
+# This is much, much faster
+# DO NOT USE THE PREVIOUS IMPLEMENTATION
+# Do not specify a grid for lambda. Instead, let the algorithm determine its own sequence of lambda
+# Method: specify only a grid for alpha.
+
+alpha_grid <- seq(0, 1, 0.01)
+
+ELN_model_grid <- function(alpha_grid, train_x, train_y, validation_x, validation_y, loss_function, nlamb) {
+  #Initialize List
+  ELN_model_grid <- rep(list(0), length(alpha_grid))
+  
+  for (i in 1:(length(alpha_grid))) {
+    
+    ELN_model_grid[[i]] <- list(ELN_grid = 0, model = 0)
+    
+    #MSE Case
+    if (loss_function == "mse") {
+      ELN <- hqreg_raw(train_x, train_y, method = "ls", alpha = alpha_grid[i], nlambda = nlamb)
+      ELN_model_grid[[i]]$model <- ELN
+    
+      ELN_model_grid[[i]]$ELN_grid <- cbind(alpha = alpha_grid[i], lambda = ELN$lambda,
+                                            train_loss = apply(predict(ELN, train_x), 2, mse, actual = train_y), 
+                                            validation_loss = apply(predict(ELN, validation_x), 2, mse, actual = validation_y))
+    } else {
+      #MAE Case
+      ELN <- hqreg_raw(train_x, train_y, method = "quantile", tau = 0.5, alpha = alpha_grid[i], nlambda = nlamb)
+      ELN_model_grid[[i]]$model <- ELN
+    
+      ELN_model_grid[[i]]$ELN_grid <- cbind(alpha = alpha_grid[i], lambda = ELN$lambda,
+                                            train_loss = apply(predict(ELN, train_x), 2, mse, actual = train_y), 
+                                            validation_loss = apply(predict(ELN, validation_x), 2, mae, actual = validation_y))
+    }
+  }
+  return(ELN_model_grid)
+}
+
+# Given a list containing the model grid, return the "best" model according to validation loss
+# Use in conjunction with previous function
+
+get_ELN_best_tune <- function(model_grid) {
+  ELN_tune_dataframe <- cbind(model_grid[[1]]$ELN_grid, list_index = 1)
+  for (i in 2:length(model_grid)) {
+    ELN_tune_dataframe <- rbind(ELN_tune_dataframe, cbind(model_grid[[i]]$ELN_grid, list_index = i))
+  }
+  ELN_tune_dataframe <- data.frame(ELN_tune_dataframe)
+  return(ELN_tune_dataframe[which.min(ELN_tune_dataframe$validation_loss), ])
+}
+
+# Final big wrapper function that gives an ELN_stats list with everything desired
+
+ELN_fit_stats <- function(alpha_grid, nlamb, timeSlices, pooled_panel, loss_function) {
+  ELN_stats <- rep(list(0), 3)
+  
+  for (set in 1:3) {
+    #Load Training, validation and test sets
+    train <- pooled_panel %>%
+      filter(time %in% timeSlices[[set]]$train)
+    validation <- pooled_panel %>%
+      filter(time %in% timeSlices[[set]]$validation)
+    test <- pooled_panel %>%
+      filter(time %in% timeSlices[[set]]$test)
+    
+    train_x <- as.matrix(train[4:ncol(train)])
+    train_y <- as.matrix(train$rt)
+    validation_x <- as.matrix(validation[4:ncol(validation)])
+    validation_y <- as.matrix(validation$rt)
+    test_x <- as.matrix(test[4:ncol(test)])
+    test_y <- as.matrix(test$rt)
+      
+    #Get models fit over the grid of hyperparameters
+    ELN_model_grid <- ELN_model_grid(alpha_grid, train_x, train_y, validation_x, validation_y, loss_function, nlamb = nlamb)
+        
+    #Get the best tuning parameters
+    best_model_params <- get_ELN_best_tune(ELN_model_grid)
+    
+    #Initialize stats list
+    ELN_stats[[set]] <- list(loss_stats = data.frame(train_MAE = 0, train_MSE = 0, train_RMSE = 0, train_RSquare = 0, 
+                                                     validation_MAE = 0, validation_MSE = 0, validation_RMSE = 0, validation_RSquare = 0, 
+                                                     test_MAE = 0, test_MSE = 0, test_RMSE = 0, test_RSquare = 0),
+                             #Other useful things
+                             forecasts = 0,
+                             forecast_resids = 0,
+                             model = 0)
+      
+    #Model
+    model <- ELN_model_grid[[best_model_params$list_index]]$model
+    ELN_stats[[set]]$model <- model
+      
+    #Loss Stats Dataframe
+    #Train
+    train_predict <- predict(model, train_x, alpha = best_model_params$alpha, lambda = best_model_params$lambda)
+    ELN_stats[[set]]$loss_stats$train_MAE <- mae(train_y, train_predict)
+    ELN_stats[[set]]$loss_stats$train_MSE <- mse(train_y, train_predict)
+    ELN_stats[[set]]$loss_stats$train_RMSE <- rmse(train_y, train_predict)
+    ELN_stats[[set]]$loss_stats$train_RSquare <- (1 - sse(train_y, train_predict) / sum((train_y - mean(train_y))^2))
+        
+    #Validation
+    valid_predict <- predict(model, validation_x, alpha = best_model_params$alpha, lambda = best_model_params$lambda)
+    ELN_stats[[set]]$loss_stats$validation_MAE <- mae(validation_y, valid_predict)
+    ELN_stats[[set]]$loss_stats$validation_MSE <- mse(validation_y, valid_predict)
+    ELN_stats[[set]]$loss_stats$validation_RMSE <- rmse(validation_y, valid_predict)
+    ELN_stats[[set]]$loss_stats$validation_RSquare <- (1 - sse(validation_y, valid_predict) / sum((validation_y - mean(validation_y))^2))
+    
+    #Test
+    test_predict <- predict(model, test_x, alpha = best_model_params$alpha, lambda = best_model_params$lambda)
+    ELN_stats[[set]]$loss_stats$test_MAE <- mae(test_y, test_predict)
+    ELN_stats[[set]]$loss_stats$test_MSE <- mse(test_y, test_predict)
+    ELN_stats[[set]]$loss_stats$test_RMSE <- rmse(test_y, test_predict)
+    ELN_stats[[set]]$loss_stats$test_RSquare <- (1 - sse(test_y, test_predict) / sum((test_y - mean(test_y))^2))
+      
+    #Forecasts
+    ELN_stats[[set]]$forecasts <- predict(model, test_x, alpha = best_model_params$alpha, lambda = best_model_params$lambda)
+    
+    #Forecast residuals
+    ELN_stats[[set]]$forecast_resids <- test_y - predict(model, test_x, alpha = best_model_params$alpha, lambda = best_model_params$lambda)
+  }
+  return(ELN_stats)
+}
+
+#Testing if function works
+
+ELN_stats_mae <- ELN_fit_stats(alpha_grid, nlamb = 100, timeSlices, pooled_panel, loss_function = "mae")
+
+ELN_stats_mse <- ELN_fit_stats(alpha_grid, nlamb = 100, timeSlices, pooled_panel, loss_function = "mse")
 
 # Seeing if different loss functions actuallly do anything (they should)
 # Note: make sure the grid is sufficiently large enough, otherwise the two different loss functions will often agree on the exact same hyperparameters
 
 ELN_stats_mse[[1]]$loss_stats$test_MSE
-ELN_stats_mse[[1]]$model
+ELN_stats_mse[[1]]$model$alpha
 
-ELN_stats_mae[[1]]$loss_stats$test_MSE
-ELN_stats_mae[[1]]$model
+ELN_stats_mse[[2]]$loss_stats$test_MSE
+ELN_stats_mse[[2]]$model$alpha
+
+ELN_stats_mse[[3]]$loss_stats$test_MSE
+ELN_stats_mse[[3]]$model$alpha
+
+ELN_stats_mae[[1]]$loss_stats$test_MAE
+ELN_stats_mae[[1]]$model$alpha
+
+ELN_stats_mae[[2]]$loss_stats$test_MAE
+ELN_stats_mae[[2]]$model$alpha
+
+ELN_stats_mae[[3]]$loss_stats$test_MAE
+ELN_stats_mae[[3]]$model$alpha
+
+# Notes
+# Mostly consistent results with the previous implementation, very minor differences in optimal alpha values chosen
+# Similarly, optimal alpha values are highly unstable (maybe did the simulation aspect wrong?)
+
 ```
 
 ```{r random_forest}
@@ -385,110 +505,183 @@ ELN_stats_mae[[1]]$model
 #Default ntree = 500
 #Default mtry = count(predictors/3) = 400/3 = 133
 
-rf_grid <- expand.grid(
-  ntree = seq(500, 1000, 1000),
-  mtry = seq(10, 100, 10)
+RF_grid <- expand.grid(
+  #ntree usually isn't tuned. Just set to max of computationally feasible
+  ntree = 100,
+  mtry = seq(10, round(ncol(pooled_panel[4:ncol(pooled_panel)])/3), 10),
+  nodesize = seq(2, 14, 2)
+  # nodedepth recommended not to be changed
+  #nodedepth = 1,
 )
 
-#Generate formula, actually same code from PLM earlier
+# Fit an RF model over the entire grid of hyperparameters
+# Ideally, we would save all the models as we computed them
+# This is very memory intensive, hence they will NOT be saved
+# Downside is that the optimal model will have to be recomputed from the optimal hyperparameters
+# Relevant lines have been commented out for now
 
-#Initialize Loss Function Statistics
-
-RF_stats <- data.frame(
-  set = c(1:3),
-  #Training
-  train_MAE = c(1:3),
-  train_MSE = c(1:3),
-  train_RMSE = c(1:3),
-  train_R2 = c(1:3),
-  #Validation
-  valid_MAE = c(1:3),
-  valid_MSE = c(1:3),
-  valid_RMSE = c(1:3),
-  valid_R2 = c(1:3),
-  #Test
-  test_MAE = c(1:3),
-  test_MSE = c(1:3),
-  test_RMSE = c(1:3),
-  test_R2 = c(1:3)
-)
-
-#Initialize Forecasts
-
-RF_forecasts <- rep(list(0), 3)
-
-#Initialize Models
-
-RF_models <- rep(list(0), 3)
-
-#Load training, validation and test sets
-
-train <- pooled_panel %>%
-  filter(time %in% timeSlices[[set]]$train)
-validation <- pooled_panel %>%
-  filter(time %in% timeSlices[[set]]$validation)
-test<- pooled_panel %>%
-  filter(time %in% timeSlices[[set]]$test)
-
-#Train Model on Training Set
-
-rf <- ranger(f, data = train, num.trees = rf_grid$ntree[1], mtry = rf_grid$mtry[1],
-             write.forest = TRUE, min.node.size = 5, splitrule = "variance")
-
-RF_models[[1]] <- 
-
-
-for (set in 1:3) {
+RF_fit_model_grid <- function(f, train, validation, RF_grid, loss_function) {
+  #Initialize List
+  RF_model_grid <- rep(list(0), nrow(RF_grid))
   
-  #Training Set Statistics
-    RF_stats$train_MAE[set] <- mae(train$return, predict(rf))
-    RF_stats$train_MSE[set] <- mse(train$return, predict(rf))
-    RF_stats$train_RMSE[set] <- rmse(train$return, predict(rf))
-    #R squared still pending, haven't figured out how to do it yet fully
+  for (i in 1:nrow(RF_grid)) {
     
-  #Validation Set Statistics
-    RF_stats$valid_MAE[set] <- mae(validation$return, predict(rf, newdata = validation))
-    RF_stats$valid_MSE[set] <- mse(validation$return, predict(rf, newdata = validation))
-    RF_stats$valid_RMSE[set] <- rmse(validation$return, predict(rf, newdata = validation))
-    #R squared still pending, haven't figured out how to do it yet fully
-  
-  #Test Set Statistics
-    RF_stats$test_MAE[set] <- mae(test$return, predict(rf, newdata = test))
-    RF_stats$test_MSE[set] <- mse(test$return, predict(rf, newdata = test))
-    RF_stats$test_RMSE[set] <- rmse(test$return, predict(rf, newdata = test))
-    #R squared still pending, haven't figured out how to do it yet fully
+    RF_model_grid[[i]] <- list(RF_grid = 0, model = 0)
     
-  #Forecasts
-    RF_forecasts[[set]]$forecast <- predict(rf, newdata = test)
-    RF_forecasts[[set]]$forecast_error <- test$return - predict(rf, newdata = test)
-    
+    #MSE Case
+    if (loss_function == "mse") {
+      RF <- rfsrc(f, train, 
+                  #Hyperparameters
+                  ntree = RF_grid$ntree[i],
+                  mtry = RF_grid$mtry[i],
+                  nodesize = RF_grid$nodesize[i],
+                  splitrule = "mse"
+                  )
+      
+      #RF_model_grid[[i]]$model <- RF
+      RF_model_grid[[i]]$RF_grid <- cbind(RF_grid[i, ],
+                                          #Train Loss
+                                          train_loss = mse(train$rt, predict(RF)$predicted),
+                                          #Validation Loss
+                                          validation_loss = mse(validation$rt, predict(RF, newdata = validation)$predicted)
+                                          )
+      
+    } else {
+      #MAE Case
+      RF <- rfsrc(f, train, 
+                  #Hyperparameters
+                  ntree = RF_grid$ntree[i],
+                  mtry = RF_grid$mtry[i],
+                  nodesize = RF_grid$nodesize[i],
+                  splitrule = "quantile.regr",
+                  prob = 0.5
+                  )
+      
+      #RF_model_grid[[i]]$model <- RF
+      RF_model_grid[[i]]$RF_grid <- cbind(RF_grid[i, ],
+                                          #Train Loss
+                                          train_loss = mae(train$rt, predict(RF)$predicted),
+                                          #Validation Loss
+                                          validation_loss = mae(validation$rt, predict(RF, newdata = validation)$predicted)
+                                          )
+    }
+  }
+  return(RF_model_grid)
 }
 
-rf_MSE <- rfsrc(f, train, ntree = 500, 
-                #Hyperparameters
-                mtry = 10,
-                nodesize = 5,
-                #Other
-                splitrule = "mse")
+#Returns the dataframe row containing the "best" hyperparameters
 
-rf_MAE <- quantileReg(f, train, ntree = 500,
-                      #Target quantile
-                      prob = 0.5)
+get_RF_best_tune <- function(RF_model_grid) {
+  RF_tune_grid <- RF_model_grid[[1]]$RF_grid
+  for (i in 2:length(RF_model_grid)) {
+    RF_tune_grid <- rbind(RF_tune_grid, RF_model_grid[[i]]$RF_grid)
+  }
+  return(RF_tune_grid[which.min(RF_tune_grid$validation_loss), ])
+}
 
-rf_MAE$quantileReg
+RF_fit_stats <- function(f, pooled_panel, RF_grid, timeSlices, loss_function) {
+  #Initialize
+  RF_stats <- rep(list(0), 3)
+  
+  #Load training, validation and test sets
+  
+  for (set in 1:3) {
+    
+    RF_stats[[set]] <- list(loss_stats = data.frame(train_MAE = 0, train_MSE = 0, train_RMSE = 0, train_RSquare = 0, 
+                                                    validation_MAE = 0, validation_MSE = 0, validation_RMSE = 0, validation_RSquare = 0, 
+                                                    test_MAE = 0, test_MSE = 0, test_RMSE = 0, test_RSquare = 0),
+                            #Other useful things
+                            forecasts = 0,
+                            forecast_resids = 0,
+                            model = 0)
+    
+    train <- pooled_panel %>%
+      filter(time %in% timeSlices[[set]]$train)
+    validation <- pooled_panel %>%
+      filter(time %in% timeSlices[[set]]$validation)
+    test <- pooled_panel %>%
+      filter(time %in% timeSlices[[set]]$test)
+    
+    #Fit on training Set over grid of hyperparameters
+    
+    model_grid <- RF_fit_model_grid(f, train, validation, RF_grid, loss_function)
+    
+    #Get the best hyperparameters
+    
+    best_model_params <- get_RF_best_tune(model_grid)
+    
+    #Compute the optimal model
+    
+    if (loss_function == "mse") {
+      model <- rfsrc(f, train, 
+                     #Hyperparameters
+                     ntree = best_model_params$ntree,
+                     mtry = best_model_params$mtry,
+                     nodesize = best_model_params$nodesize,
+                     splitrule = "mse"
+                     )
+    } else {
+      model <- rfsrc(f, train, 
+                     #Hyperparameters
+                     ntree = best_model_params$ntree,
+                     mtry = best_model_params$mtry,
+                     nodesize = best_model_params$nodesize,
+                     splitrule = "quantile.regr",
+                     prob = 0.5
+                     )
+    }
+    
+    #Train
+    train_predict <- predict(model, train, alpha = best_model_params$alpha, lambda = best_model_params$lambda)$predicted
+    RF_stats[[set]]$loss_stats$train_MAE <- mae(train$rt, train_predict)
+    RF_stats[[set]]$loss_stats$train_MSE <- mse(train$rt, train_predict)
+    RF_stats[[set]]$loss_stats$train_RMSE <- rmse(train$rt, train_predict)
+    RF_stats[[set]]$loss_stats$train_RSquare <- (1 - sse(train$rt, train_predict) / sum((train$rt - mean(train$rt))^2))
+        
+    #Validation
+    valid_predict <- predict(model, newdata = validation, alpha = best_model_params$alpha, lambda = best_model_params$lambda)$predicted
+    RF_stats[[set]]$loss_stats$validation_MAE <- mae(validation$rt, valid_predict)
+    RF_stats[[set]]$loss_stats$validation_MSE <- mse(validation$rt, valid_predict)
+    RF_stats[[set]]$loss_stats$validation_RMSE <- rmse(validation$rt, valid_predict)
+    RF_stats[[set]]$loss_stats$validation_RSquare <- (1 - sse(validation$rt, valid_predict) / sum((validation$rt - mean(validation$rt))^2))
+    
+    #Test
+    test_predict <- predict(model, newdata = test, alpha = best_model_params$alpha, lambda = best_model_params$lambda)$predicted
+    RF_stats[[set]]$loss_stats$test_MAE <- mae(test$rt, test_predict)
+    RF_stats[[set]]$loss_stats$test_MSE <- mse(test$rt, test_predict)
+    RF_stats[[set]]$loss_stats$test_RMSE <- rmse(test$rt, test_predict)
+    RF_stats[[set]]$loss_stats$test_RSquare <- (1 - sse(test$rt, test_predict) / sum((test$rt - mean(test$rt))^2))
+      
+    #Forecasts
+    RF_stats[[set]]$forecasts <- test_predict
+    
+    #Forecast residuals
+    RF_stats[[set]]$forecast_resids <- test$rt - test_predict
+  }
+  return(RF_stats)
+}
 
-predict(rf_MSE, newdata = validation)
+RF_MSE <- RF_fit_stats(f, pooled_panel, RF_grid, timeSlices, "mse")
 
-plot(rf_MAE)
+RF_MAE <- RF_fit_stats(f, pooled_panel, RF_grid, timeSlices, "mae")
 
-predict(rf_MAE, newdata = validation)
+RF_MSE[[1]]$loss_stats
+RF_MSE[[2]]$loss_stats
+RF_MSE[[3]]$loss_stats
 
-plot.variable(rf_MSE)
+RF_MAE[[1]]$loss_stats
+RF_MAE[[2]]$loss_stats
+RF_MAE[[3]]$loss_stats
+
+# Notes
+# Performance seems to be worse than other methods, quite surprising
+# Quantile trees (ie MAE) do better than MSE trees
+# Quantile trees are much more computationally intensive
 ```
 ## Neural Networks WRT MSE
 
 ```{r neural_networks}
-#Neural Networks
+# Neural Networks
 
 set.seed(27935248)
 
