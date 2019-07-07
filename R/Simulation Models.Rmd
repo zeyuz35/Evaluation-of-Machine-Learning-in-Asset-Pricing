@@ -27,7 +27,6 @@ library(quantreg)
 library(randomForestSRC)
 library(hqreg)
 library(devtools)
-library(forestr)
 
 
 #forestr
@@ -116,7 +115,8 @@ LM_fit <- function(pooled_panel, timeSlices, loss_function) {
     if (loss_function == "mse") {
       lm <- lm(f, data = train)
     } else {
-      lm <- rq(f, data = train, tau = 0.5, method = "br")
+      # Use pfn as method here for much faster computation
+      lm <- rq(f, data = train, tau = 0.5, method = "pfn")
     }
     
     LM_stats[[set]]$model <- lm
@@ -168,6 +168,8 @@ summary(LM_stats_mae[[1]]$model)
 LM_stats_mae[[1]]$loss_stats
 LM_stats_mae[[2]]$loss_stats
 LM_stats_mae[[3]]$loss_stats
+
+R2(predict(LM_stats_mse[[1]]$model, newdata = test), test$rt, form = "traditional")
 ```
 
 ```{r elastic_net, eval = FALSE}
@@ -630,6 +632,8 @@ RF_fit_stats <- function(f, pooled_panel, RF_grid, timeSlices, loss_function) {
                      prob = 0.5
                      )
     }
+    
+    RF_stats[[set]]$model <- model
     
     #Train
     train_predict <- predict(model, train, alpha = best_model_params$alpha, lambda = best_model_params$lambda)$predicted
@@ -1101,7 +1105,7 @@ neural_network_5_mse %>% fit(as.matrix(train_x), as.matrix(train_y),
                              callbacks = list(early_stop))
 
 #Make predictions
-test_x <- test[5:ncol(test)]
+test_x <- test[4:ncol(test)]
 
 NN5_mse_predictions <- neural_network_5_mse %>% predict(as.matrix(test_x))
 
@@ -1129,4 +1133,82 @@ NN5_mae_predictions <- neural_network_5_mae %>% predict(as.matrix(test_x))
 mae(test$rt, NN5_mae_predictions)
 mse(test$rt, NN5_mae_predictions)
 ```
+
+```{r}
+# Variable Importance
+# Variable Important is defined as the reduction in out of sample R squared from setting a factor's signal to 0
+
+# Using linear model for now:
+
+# Get test set
+
+test <- pooled_panel %>%
+  filter(time %in% timeSlices[[3]]$test)
+
+test_x <- test[4:ncol(test)]
+
+test_x_zero <- test_x
+test_x_zero[1] <- 0
+  
+variable_importance <- data.frame(variable = colnames(test_x)[1], importance = (
+  R2(predict(LM_stats_mae[[3]]$model, newdata = test_x), test$rt, form = "traditional") -
+    R2(predict(LM_stats_mae[[3]]$model, newdata = test_x_zero), test$rt, form = "traditional")
+  )
+)
+
+for (i in 2:ncol(test_x)) {
+  test_x_zero <- test_x
+  test_x_zero[i] <- 0
+  
+  variable_importance <- rbind(variable_importance, 
+                               data.frame(variable = colnames(test_x)[i], 
+                                          importance = (R2(predict(LM_stats_mae[[3]]$model, newdata = test_x), test$rt, form = "traditional") -
+                                                                   R2(predict(LM_stats_mae[[3]]$model, newdata = test_x_zero), test$rt, form = "traditional")
+                                                        )
+                                          )
+                               )
+  
+}
+
+ggplot(variable_importance) +
+  geom_point(aes(x = variable, y = importance)) +
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+```{r}
+# Random Forest Case (because the predict method for rfsrc is a little different to the others)
+
+test <- pooled_panel %>%
+  filter(time %in% timeSlices[[3]]$test)
+
+test_x <- test[4:ncol(test)]
+
+test_x_zero <- test_x
+test_x_zero[1] <- 0
+  
+variable_importance <- data.frame(variable = colnames(test_x)[1], importance = (
+  R2(predict(RF_MSE[[3]]$model, newdata = test_x)$predicted, test$rt, form = "traditional") -
+    R2(predict(RF_MSE[[3]]$model, newdata = test_x_zero)$predicted, test$rt, form = "traditional")
+  )
+)
+
+for (i in 2:ncol(test_x)) {
+  test_x_zero <- test_x
+  test_x_zero[i] <- 0
+  
+  variable_importance <- rbind(variable_importance, 
+                               data.frame(variable = colnames(test_x)[i], 
+                                          importance = (R2(predict(RF_MSE[[3]]$model, newdata = test_x)$predicted, test$rt, form = "traditional") -
+                                                                   R2(predict(RF_MSE[[3]]$model, newdata = test_x_zero)$predicted, test$rt, form = "traditional")
+                                                        )
+                                          )
+                               )
+  
+}
+
+ggplot(variable_importance) +
+  geom_point(aes(x = variable, y = importance)) +
+  theme(axis.text.x = element_text(angle = 90))
+```
+
 

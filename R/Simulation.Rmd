@@ -41,9 +41,9 @@ set.seed(27935248)
 
 #Reduce Dimensionality to make it easier to code everything up for now. We can always increase this back up later
 
-N <- 20
+N <- 200
 
-P_c <- 20
+P_c <- 100
 
 Time <- 180
 ```
@@ -77,7 +77,7 @@ gen_C_bar <- function(){
   
   #Lower rho values here will give higher time series correlation, and lower cross sectional r squared. New rho is just 0.5 across all stocks and all times.
   
-  rho <- rep(0.5, P_c)
+  rho <- rep(0.9, P_c)
   
   for (t in 1:(Time+1)) {
     for (j in 1:P_c) {
@@ -486,11 +486,11 @@ gen_error <- function(sv,
 }
 
 #SV version check
-error <- gen_error(sv = 1, 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363), C, v_sd = 0.05)
+error <- gen_error(sv = 1, ep_sd = 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363), C, v_sd = 0.05)
 
 #Non-SV version check
 #You'll still need to specify values for omega, gamma and w, they just won't be used
-error <- gen_error(sv = 0, 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363), C, v_sd = 0.05)
+error <- gen_error(sv = 0, ep_sd = 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363), C, v_sd = 0.05)
 
 #Both Working, yay
 
@@ -539,10 +539,10 @@ g1_panel <- gen_g_panel(g1_factor_panel, theta = matrix(c(0.04, 0.035, 0.01), nr
 #Generate the errors
 
 #SV version
-error_sv <- gen_error(sv = 1, 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363), C, v_sd = 0.05)
+error_sv <- gen_error(sv = 1, ep_sd = 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363), C, v_sd = 0.05)
 
 #Non-SV version
-error_nosv <- gen_error(sv = 0, 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363), C, v_sd = 0.05)
+error_nosv <- gen_error(sv = 0, ep_sd = 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363), C, v_sd = 0.05)
 
 #Finally generate a returns panel
 
@@ -657,9 +657,9 @@ summary(cross_fit)$r.squared
 ############################
 # Function Form
 ############################
-# Given a return series panel and its corresponding underlying true factors, return its mean individual time series R squared, mean annualized volatility, and cross sectional r squared
+# Given a return series panel, its signal (non-error component), and its corresponding underlying true factors, return its mean individual time series R squared, mean annualized volatility, cross sectional r squared and predictive r squared
 
-panel_tune_stats <- function(return_panel, true_factor_panel) {
+panel_tune_stats <- function(return_panel, signal_panel, true_factor_panel) {
   #Initialize
   tune_stats <- data.frame(time_series_fitted.rsquare = 0, annual_vol = 0, true_rsquare = 0, cross_section_rsquare = 0)
   
@@ -719,6 +719,10 @@ panel_tune_stats <- function(return_panel, true_factor_panel) {
   tune_stats$time_series_fitted.rsquare <- mean(Rsquared)
     
   tune_stats$annual_vol <- mean(annual_vol)
+  
+  #Predictive R Squared
+  
+  tune_stats$true_rsquare <- R2(signal_panel, return_panel, form = "traditional")
     
     # Not too sure what is going on here
     
@@ -743,7 +747,7 @@ panel_tune_stats <- function(return_panel, true_factor_panel) {
 
 #Works, hooray
 
-panel_tune_stats(rt_panel_g1_A1, g1_factor_panel)
+panel_tune_stats(rt_panel_g1_A1, g1_panel, g1_factor_panel)
 
 ```
 
@@ -759,8 +763,6 @@ panel_tune_stats(rt_panel_g1_A1, g1_factor_panel)
 # xt should be P_x x 1
 # c_it should be P_c x 1
 # z_it should be a P_c*(P_x + 1) x 1 vector of features
-# 
-
 
 gen_predictor_z <- function(C, x){
   
@@ -840,7 +842,7 @@ A3 <- matrix(c(
 
 sim_panel_data <- function(sim_N, cross_corr, A_matrix, xt_multi, g_function, theta,
                            #Error Parameters
-                           error_sv, error_omega, error_gamma, error_w, error_v_sd) {
+                           error_sv, error_ep_sd, error_omega, error_gamma, error_w, error_v_sd) {
   #Initialize
   sim_list <- LM_stats <- rep(list(0), sim_N)
   
@@ -873,7 +875,7 @@ sim_panel_data <- function(sim_N, cross_corr, A_matrix, xt_multi, g_function, th
     
     #Generate the errors
 
-    error <- gen_error(sv = error_sv, 0.05, omega = error_omega, gamma = error_gamma, w = error_w, C, v_sd = error_v_sd)
+    error <- gen_error(sv = error_sv, ep_sd = error_ep_sd, omega = error_omega, gamma = error_gamma, w = error_w, C, v_sd = error_v_sd)
     
     #rt panel
     
@@ -884,7 +886,7 @@ sim_panel_data <- function(sim_N, cross_corr, A_matrix, xt_multi, g_function, th
     sim_list[[sim]]$panel <- bind_rt_predictor(rt_panel, z_panel)
     
     #Statistics
-    sim_list[[sim]]$statistics <- panel_tune_stats(rt_panel, g_factor_panel)
+    sim_list[[sim]]$statistics <- panel_tune_stats(rt_panel, g_panel, g_factor_panel)
   }
   return(sim_list)
 }
@@ -910,7 +912,7 @@ sim_tune_statistics <- function(sim_panel_list) {
 # Will consider parallelizing this later
 # With only 10 realisations, the datasets are already taking 1GB in memory
 gu_et_al_g1 <- sim_panel_data(10, cross_corr = 0, A1, xt_multi = 0, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1),
-                              error_sv = 0, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+                              error_sv = 0, error_ep_sd = 0.05, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
 
 #Annualized volatility is somewhat close (25% vs 30% specified)
 summary(sim_tune_statistics(gu_et_al_g1))
@@ -926,7 +928,7 @@ P_c <- 100
 Time <- 180
 
 #Gu et al's original specfications, recreated
-gu_et_al_g1 <- sim_panel_data(10, cross_corr = 0, A1, xt_multi = 0, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1),
+gu_et_al_g1 <- sim_panel_data(100, cross_corr = 0, A1, xt_multi = 0, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1),
                               error_sv = 0, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
 summary(sim_tune_statistics(gu_et_al_g1))
 gu_et_al_g2 <- sim_panel_data(100, cross_corr = 0, A1, xt_multi = 0, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1),
@@ -936,44 +938,44 @@ summary(sim_tune_statistics(gu_et_al_g2))
 #Our different specifications
 
 #G1
-g1_A1_panel <- sim_panel_data(10, cross_corr = 1, A1, xt_multi = 1, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1), 
+g1_A1_panel <- sim_panel_data(100, cross_corr = 1, A1, xt_multi = 1, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1), 
                            error_sv = 0, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
 summary(sim_tune_statistics(g1_A1_panel))
 
-g1_A2_panel <- sim_panel_data(10, cross_corr = 1, A2, xt_multi = 1, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1), 
+g1_A2_panel <- sim_panel_data(100, cross_corr = 1, A2, xt_multi = 1, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1), 
                            error_sv = 0, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
 summary(sim_tune_statistics(g1_A2_panel))
 
-g1_A3_panel <- sim_panel_data(10, cross_corr = 1, A3, xt_multi = 1, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1), 
+g1_A3_panel <- sim_panel_data(100, cross_corr = 1, A3, xt_multi = 1, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1), 
                            error_sv = 0, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
 summary(sim_tune_statistics(g1_A3_panel))
 
 #G2
 
-g2_A1_panel <- sim_panel_data(10, cross_corr = 1, A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1),
+g2_A1_panel <- sim_panel_data(100, cross_corr = 1, A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1),
                               error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
 summary(sim_tune_statistics(g2_A1_panel))
 
-g2_A2_panel <- sim_panel_data(10, cross_corr = 1, A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1),
+g2_A2_panel <- sim_panel_data(100, cross_corr = 1, A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1),
                               error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
 summary(sim_tune_statistics(g2_A2_panel))
 
-g2_A3_panel <- sim_panel_data(10, cross_corr = 1, A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1),
+g2_A3_panel <- sim_panel_data(100, cross_corr = 1, A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1),
                               error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
 summary(sim_tune_statistics(g2_A3_panel))
 
 #G3
 #Remember that G3 has 4 underlying factors, adjust theta accordingly
 
-g3_A1_panel <- sim_panel_data(10, cross_corr = 1, A1, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.001), nrow = 1), 
+g3_A1_panel <- sim_panel_data(100, cross_corr = 1, A1, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.001), nrow = 1), 
                               error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
 summary(sim_tune_statistics(g3_A1_panel))
 
-g3_A2_panel <- sim_panel_data(10, cross_corr = 1, A1, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.001), nrow = 1), 
+g3_A2_panel <- sim_panel_data(100, cross_corr = 1, A1, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.001), nrow = 1), 
                               error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
 summary(sim_tune_statistics(g3_A2_panel))
 
-g3_A3_panel <- sim_panel_data(10, cross_corr = 1, A1, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.001), nrow = 1), 
+g3_A3_panel <- sim_panel_data(100, cross_corr = 1, A1, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.001), nrow = 1), 
                               error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
 summary(sim_tune_statistics(g3_A3_panel))
 

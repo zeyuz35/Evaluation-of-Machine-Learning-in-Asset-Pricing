@@ -37,11 +37,11 @@ rm(list=ls())
 # #Number of Periods
 # Time <- 180
 
-N <- 20
+N <- 200
 
-P_c <- 10
+P_c <- 100
 
-Time <- 18
+Time <- 180
 
 ```
 
@@ -470,7 +470,7 @@ rt<- Reg_fun+res
 
 
 
-```{r tune_rsquared_skeleton, eval = FALSE}
+```{r tune_rsquared_skeleton}
 #Tuning Cross Sectional R Squared SKELETON CODE
 
 #We want individual r squared for each stock to be 50%
