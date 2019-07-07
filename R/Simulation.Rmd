@@ -792,13 +792,13 @@ z_panel_g1_A1 <- gen_predictor_z(C, xt)
 
 bind_rt_predictor <- function(rt_panel, z_panel) {
   
-  df <- cbind(data.frame(rt_panel_g1_A1[, , 1]), time = 2, stock = paste0("stock_", c(1:N)), data.frame(z_panel_g1_A1[, , 1]))
+  df <- cbind(data.frame(rt_panel[, , 1]), time = 2, stock = paste0("stock_", c(1:N)), data.frame(z_panel[, , 1]))
 
   colnames(df)[1] <- "rt"
   row.names(df) <- NULL
   
   for (t in 2:Time) {
-    df_new <- cbind(data.frame(rt_panel_g1_A1[, , t]), time = 1+t, stock = paste0("stock_", c(1:N)), data.frame(z_panel_g1_A1[, , t]))
+    df_new <- cbind(data.frame(rt_panel[, , t]), time = 1+t, stock = paste0("stock_", c(1:N)), data.frame(z_panel[, , t]))
     colnames(df_new)[1] <- "rt"
     row.names(df_new) <- NULL
     df <- rbind(df, df_new)
