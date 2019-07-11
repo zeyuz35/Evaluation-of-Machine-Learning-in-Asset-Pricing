@@ -1,3 +1,5 @@
 *.Rdata
 R/.RData
 .Rproj.user
+R/.RData
+*.rds

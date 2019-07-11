@@ -20,6 +20,7 @@ library(rlist)
 library(plm)
 library(Metrics)
 library(ranger)
+library(caret)
 
 set.seed(27935248)
 
@@ -751,6 +752,134 @@ panel_tune_stats(rt_panel_g1_A1, g1_panel, g1_factor_panel)
 
 ```
 
+```{r tune_stats_function_alt, eval = FALSE}
+############################
+# Function Form
+############################
+# Given a return series panel, its signal (non-error component), and its corresponding underlying true factors, return its mean individual time series R squared, mean annualized volatility, cross sectional r squared and predictive r squared
+
+# Alternative approach which Gu et al may have used
+# They may have instead regressed on the entire predictor set, instead of the true factor panels
+# Never mind, this DOES NOT work at all because the dimensions of the entire predictor set > number of time periods. Ie. individual time series regression become impossible
+
+# Given a return series panel, its signal (non-error component), and a corresponding predictor set (NOT true factors), return its means individual time series R squared, mean annualized volatility, cross sectional r squared and predictive r squared
+
+panel_tune_stats <- function(return_panel, signal_panel, predictor_panel) {
+  #Initialize
+  tune_stats <- data.frame(time_series_fitted.rsquare = 0, annual_vol = 0, true_rsquare = 0, cross_section_rsquare = 0)
+  
+  ########
+  ## Time Series + Annual Vol
+  ########
+  
+    #Empty Matrices to be used
+    Rsquared <- matrix(0, N, 1)
+    SSR <- matrix(0, N, 1)
+    SST <- matrix(0, N, 1)
+    Fits <- matrix(0, Time, N)
+    
+    #This stores all the BETAS, NOT the constant
+    Coeff_Betas <- matrix(0, N, ncol(predictor_panel))
+    Xs_bar <- matrix(0, N, ncol(predictor_panel))
+    R_bar <- matrix(0, N, 1)
+    Resids <- matrix(0, Time, N)
+    
+    annual_vol <- matrix(0, N, 1)
+    
+    #Done for the g1 case for now
+    
+    #First run individual time series regressions
+    for (i in 1:N) {
+      #True Returns
+      Rs <- return_panel[i, , ]
+      R_bar[i, 1] <- mean(Rs)
+      
+      #True Factor Set
+      Xs <- t(predictor_panel[i, , ])
+      
+      #Not too sure what this is doing, not used anywhere else
+      Xs_bar[i, ] <- colMeans(Xs)
+      
+      df <- data.frame(Rs, Xs)
+      
+      fit <- lm(Rs ~., df)
+      Fits[, i] <- fit$fitted.values
+      
+      #Save all the betas except for the constant, slightly more clever way that handles different number of true factors
+      Coeff_Betas[i, ] <- as.numeric(fit$coefficients[-1])
+      
+      Resids[, i] <- fit$residuals
+      SSR[i, 1] <- sum(Resids[, i]^2)
+      SST[i, 1] <- sum((Rs-mean(Rs))^2)
+      
+      Rsquared[i, 1] <- summary(fit)$r.squared
+      
+      #annualized volatility
+      
+      annual_vol[i] <- sd(Rs) * sqrt(12)
+    }
+    
+  tune_stats$time_series_fitted.rsquare <- mean(Rsquared)
+    
+  tune_stats$annual_vol <- mean(annual_vol)
+  
+  #Predictive R Squared
+  
+  tune_stats$true_rsquare <- R2(signal_panel, return_panel, form = "traditional")
+    
+    # Not too sure what is going on here
+    
+    # val <- g1(C,x,theta)
+    # true_res <- rowSums((rt - val)^2)
+    # true_sst <- rowSums((rt - rowMeans(rt))^2)
+    # true_rRsquared <- 1 - (sum(true_res)/sum(true_sst))
+    
+    # fitted_Rsquared <- 1 - (sum(SSR)/sum(SST))
+    
+  # Cross Sectional Correlation
+    
+    R_bar <- rowMeans(return_panel)
+    df_new <- data.frame(R_bar, Coeff_Betas) 
+    
+    cross_fit <- lm(R_bar ~ Coeff_Betas, df_new) 
+    
+  tune_stats$cross_section_rsquare <- summary(cross_fit)$r.squared
+  
+  return(tune_stats)
+}
+
+#Works, hooray
+
+# Testing
+
+xt_univariate <- gen_xt_univariate()
+
+#Generate the true underlying factors first
+g1_factor_panel <- gen_g_factor_panel("g1", C, xt)
+
+#Then pass them through to multiply them by theta to get g()
+g1_panel <- gen_g_panel(g1_factor_panel, theta = matrix(c(0.04, 0.035, 0.01), nrow = 1))
+
+#Generate the errors
+
+#SV version
+error_sv <- gen_error(sv = 1, ep_sd = 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363), C, v_sd = 0.05)
+
+#Non-SV version
+error_nosv <- gen_error(sv = 0, ep_sd = 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363), C, v_sd = 0.05)
+
+#Finally generate a returns panel
+
+rt_panel_g1_A1 <- g1_panel + error_nosv
+
+# Generate a predictor panel
+
+z_panel_g1_A1 <- gen_predictor_z(C, xt)
+
+panel_tune_stats(rt_panel_g1_A1, g1_panel, z_panel_g1_A1)
+
+```
+
 ```{r function_build_predictor}
 ##############################################################################
 ##Function to build predictor set for the entire panel
@@ -919,65 +1048,90 @@ summary(sim_tune_statistics(gu_et_al_g1))
 ```
 
 
-```{r, eval = FALSE}
+```{r}
 #Playing around simulation specifications
+
+set.seed(27935248)
 
 #Overall Dimensionality
 N <- 200
 P_c <- 100
 Time <- 180
 
+#Number of realizations
+simN <- 10
+
 #Gu et al's original specfications, recreated
-gu_et_al_g1 <- sim_panel_data(100, cross_corr = 0, A1, xt_multi = 0, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1),
-                              error_sv = 0, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+gu_et_al_g1 <- sim_panel_data(simN, cross_corr = 0, A1, xt_multi = 0, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1),
+                              error_sv = 0, error_ep_sd = 0.05, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
 summary(sim_tune_statistics(gu_et_al_g1))
-gu_et_al_g2 <- sim_panel_data(100, cross_corr = 0, A1, xt_multi = 0, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1),
-                              error_sv = 0, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+saveRDS(gu_et_al_g1, file = "gut_et_al_g1.rds")
+
+gu_et_al_g2 <- sim_panel_data(simN, cross_corr = 0, A1, xt_multi = 0, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1),
+                              error_sv = 0, error_ep_sd = 0.05, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
 summary(sim_tune_statistics(gu_et_al_g2))
+saveRDS(gu_et_al_g1, file = "gut_et_al_g2.rds")
+
+#Both of their designs look reasonable enough
 
 #Our different specifications
 
 #G1
-g1_A1_panel <- sim_panel_data(100, cross_corr = 1, A1, xt_multi = 1, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1), 
-                           error_sv = 0, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+g1_A1_panel <- sim_panel_data(simN, cross_corr = 1, A1, xt_multi = 1, g_function = "g1", theta = matrix(c(0.001, 0.001, 0.001), nrow = 1), 
+                              error_sv = 1, error_ep_sd = 0.05, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
 summary(sim_tune_statistics(g1_A1_panel))
+saveRDS(gu_et_al_g1, file = "g1_A1.rds")
 
-g1_A2_panel <- sim_panel_data(100, cross_corr = 1, A2, xt_multi = 1, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1), 
-                           error_sv = 0, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+g1_A2_panel <- sim_panel_data(simN, cross_corr = 1, A2, xt_multi = 1, g_function = "g1", theta = matrix(c(0.001, 0.001, 0.001), nrow = 1), 
+                              error_sv = 1, error_ep_sd = 0.05, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
 summary(sim_tune_statistics(g1_A2_panel))
+saveRDS(gu_et_al_g1, file = "g1_A2.rds")
 
-g1_A3_panel <- sim_panel_data(100, cross_corr = 1, A3, xt_multi = 1, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1), 
-                           error_sv = 0, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+g1_A3_panel <- sim_panel_data(simN, cross_corr = 1, A3, xt_multi = 1, g_function = "g1", theta = matrix(c(0.001, 0.001, 0.001), nrow = 1), 
+                              error_sv = 1, error_ep_sd = 0.05, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
 summary(sim_tune_statistics(g1_A3_panel))
+saveRDS(gu_et_al_g1, file = "g1_A2.rds")
+
+# All of the R squared values here look way too high
 
 #G2
 
-g2_A1_panel <- sim_panel_data(100, cross_corr = 1, A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1),
-                              error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+g2_A1_panel <- sim_panel_data(simN, cross_corr = 0, A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1),
+                              error_sv = 1, error_ep_sd = 0.05, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
 summary(sim_tune_statistics(g2_A1_panel))
+saveRDS(gu_et_al_g1, file = "g2_A1.rds")
 
-g2_A2_panel <- sim_panel_data(100, cross_corr = 1, A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1),
-                              error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+g2_A2_panel <- sim_panel_data(simN, cross_corr = 0, A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1),
+                              error_sv = 1, error_ep_sd = 0.05, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
 summary(sim_tune_statistics(g2_A2_panel))
+saveRDS(gu_et_al_g1, file = "g2_A2.rds")
 
-g2_A3_panel <- sim_panel_data(100, cross_corr = 1, A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1),
-                              error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+g2_A3_panel <- sim_panel_data(simN, cross_corr = 0, A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1),
+                              error_sv = 1, error_ep_sd = 0.05, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
 summary(sim_tune_statistics(g2_A3_panel))
+saveRDS(gu_et_al_g1, file = "g2_A3.rds")
+
+# R squared values still a little too high. Cross sectional R squared has very high variance
 
 #G3
 #Remember that G3 has 4 underlying factors, adjust theta accordingly
 
-g3_A1_panel <- sim_panel_data(100, cross_corr = 1, A1, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.001), nrow = 1), 
-                              error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+g3_A1_panel <- sim_panel_data(simN, cross_corr = 0, A1, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.02), nrow = 1), 
+                              error_sv = 1, error_ep_sd = 0.05, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
 summary(sim_tune_statistics(g3_A1_panel))
+saveRDS(gu_et_al_g1, file = "g3_A1.rds")
 
-g3_A2_panel <- sim_panel_data(100, cross_corr = 1, A1, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.001), nrow = 1), 
-                              error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+g3_A2_panel <- sim_panel_data(simN, cross_corr = 0, A1, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.02), nrow = 1), 
+                              error_sv = 1, error_ep_sd = 0.05, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
 summary(sim_tune_statistics(g3_A2_panel))
+saveRDS(gu_et_al_g1, file = "g3_A2.rds")
 
-g3_A3_panel <- sim_panel_data(100, cross_corr = 1, A1, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.001), nrow = 1), 
-                              error_sv = 1, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+g3_A3_panel <- sim_panel_data(simN, cross_corr = 0, A1, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.02), nrow = 1), 
+                              error_sv = 1, error_ep_sd = 0.05, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
 summary(sim_tune_statistics(g3_A3_panel))
+saveRDS(gu_et_al_g1, file = "g3_A3.rds")
+
+# These all pretty good, except true r squared is still just a little bit high. Cross sectional R squared still has high variance
 
 ##########################################
 ## OBSERVATIONS

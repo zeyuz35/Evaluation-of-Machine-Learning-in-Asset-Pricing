@@ -27,6 +27,7 @@ library(quantreg)
 library(randomForestSRC)
 library(hqreg)
 library(devtools)
+library(caret)
 
 
 #forestr
@@ -80,7 +81,7 @@ panel_formula <- function(panel){
 
 #Use panel_g1_A1 generated from Simulation.rmd for now. Generalize it later
 
-pooled_panel <- gu_et_al_g1[[1]]$panel
+pooled_panel <- g3_A1_panel[[1]]$panel
 
 f <- panel_formula(pooled_panel)
 ```
@@ -168,8 +169,6 @@ summary(LM_stats_mae[[1]]$model)
 LM_stats_mae[[1]]$loss_stats
 LM_stats_mae[[2]]$loss_stats
 LM_stats_mae[[3]]$loss_stats
-
-R2(predict(LM_stats_mse[[1]]$model, newdata = test), test$rt, form = "traditional")
 ```
 
 ```{r elastic_net, eval = FALSE}
@@ -466,28 +465,33 @@ ELN_stats_mse <- ELN_fit_stats(alpha_grid, nlamb = 100, timeSlices, pooled_panel
 # Seeing if different loss functions actuallly do anything (they should)
 # Note: make sure the grid is sufficiently large enough, otherwise the two different loss functions will often agree on the exact same hyperparameters
 
-ELN_stats_mse[[1]]$loss_stats$test_MSE
+ELN_stats_mse[[1]]$loss_stats
 ELN_stats_mse[[1]]$model$alpha
 
-ELN_stats_mse[[2]]$loss_stats$test_MSE
+ELN_stats_mse[[2]]$loss_stats
 ELN_stats_mse[[2]]$model$alpha
 
-ELN_stats_mse[[3]]$loss_stats$test_MSE
+ELN_stats_mse[[3]]$loss_stats
 ELN_stats_mse[[3]]$model$alpha
 
-ELN_stats_mae[[1]]$loss_stats$test_MAE
+ELN_stats_mae[[1]]$loss_stats
 ELN_stats_mae[[1]]$model$alpha
 
-ELN_stats_mae[[2]]$loss_stats$test_MAE
+ELN_stats_mae[[2]]$loss_stats
 ELN_stats_mae[[2]]$model$alpha
 
-ELN_stats_mae[[3]]$loss_stats$test_MAE
+ELN_stats_mae[[3]]$loss_stats
 ELN_stats_mae[[3]]$model$alpha
 
 # Notes
 # Mostly consistent results with the previous implementation, very minor differences in optimal alpha values chosen
-# Similarly, optimal alpha values are highly unstable (maybe did the simulation aspect wrong?)
+# Similarly, optimal alpha values are highly unstable
 
+# Observations regards to data
+
+# Non linear setting
+# ELN + MSE does worse than ELN + MAE
+# Both seem to do much better as training sample increases
 ```
 
 ```{r random_forest}
@@ -509,7 +513,7 @@ ELN_stats_mae[[3]]$model$alpha
 
 RF_grid <- expand.grid(
   #ntree usually isn't tuned. Just set to max of computationally feasible
-  ntree = 100,
+  ntree = 50,
   mtry = seq(10, round(ncol(pooled_panel[4:ncol(pooled_panel)])/3), 10),
   nodesize = seq(2, 14, 2)
   # nodedepth recommended not to be changed
@@ -681,6 +685,8 @@ RF_MAE[[3]]$loss_stats
 # Performance seems to be worse than other methods, quite surprising
 # Quantile trees (ie MAE) do better than MSE trees
 # Quantile trees are much more computationally intensive
+# These will probably perform much better given a better grid search, and increasing ntrees.
+# Currently, even ntrees = 50 is really quite intensive (overnight)
 ```
 ## Neural Networks WRT MSE
 
@@ -696,10 +702,10 @@ set.seed(27935248)
 
 #Initialize
 
-nnet_stats_list <- rep(list(0), 3)
+NNet_stats <- rep(list(0), 3)
 
 for (set in 1:3) {
-  nnet_stats_list[[set]] <- list(loss_stats = data.frame(train_MAE = 0, train_MSE = 0, train_RMSE = 0, train_RSquare = 0, 
+  NNet_stats[[set]] <- list(loss_stats = data.frame(train_MAE = 0, train_MSE = 0, train_RMSE = 0, train_RSquare = 0, 
                                                 validation_MAE = 0, validation_MSE = 0, validation_RMSE = 0, validation_RSquare = 0, 
                                                 test_MAE = 0, test_MSE = 0, test_RMSE = 0, test_RSquare = 0),
                                  #Other useful things
@@ -707,19 +713,85 @@ for (set in 1:3) {
                                  forecast_resids = 0,
                                  model = 0)
     
-    #Load Training, validation and test sets
-    train <- pooled_panel %>%
-      filter(time %in% timeSlices[[set]]$train)
-    validation <- pooled_panel %>%
-      filter(time %in% timeSlices[[set]]$validation)
-    test<- pooled_panel %>%
-      filter(time %in% timeSlices[[set]]$test)
+  #Load Training, validation and test sets
+  train <- pooled_panel %>%
+    filter(time %in% timeSlices[[set]]$train)
+  validation <- pooled_panel %>%
+    filter(time %in% timeSlices[[set]]$validation)
+  test<- pooled_panel %>%
+    filter(time %in% timeSlices[[set]]$test)
     
-    #Fit the model
+  train_x <- train[4:ncol(train)]
+  train_y <- train$rt
     
+  validation_x <- validation[4:ncol(validation)]
+  validation_y <- validation$rt
+    
+  test_x <- test[4:ncol(test)]
+  test_y <- test$rt
+    
+  # Fit the model
+  # The patience parameter is the amount of epochs to check for improvement.
+  early_stop <- callback_early_stopping(monitor = "val_loss", patience = 20)
+    
+  #It's clearer to separate these "layers" out as much as possible
+  build_NN1 <- function(loss_function) {
+      
+    model <- keras_model_sequential() %>%
+      # Layer 1
+      layer_dense(units = 32, input_shape = ncol(train_x)) %>%
+      layer_activation("relu") %>%
+      layer_activity_regularization(l1 = 0.001) %>%
+      layer_batch_normalization() %>%
+      # Output Layer
+      layer_dense(units = 1, activation = "linear")
+      
+    model %>% compile(
+      #MSE loss function
+      loss = loss_function,
+      #We're using ADAM
+      optimizer = "adam",
+      metrics = list("mean_absolute_error", "mean_squared_error")
+    )
+    model
+  }
+    
+  neural_network_1_mse <- build_NN1("mse")
+  neural_network_1_mse %>% fit(as.matrix(train_x), as.matrix(train_y), 
+                               epochs = 100, verbose = 1, 
+                               validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
+                               callbacks = list(early_stop))
+  #Train
+  train_predict <- neural_network_1_mse %>% predict(as.matrix(train_x))
+  NNet_stats[[set]]$loss_stats$train_MAE <- mae(train$rt, train_predict)
+  NNet_stats[[set]]$loss_stats$train_MSE <- mse(train$rt, train_predict)
+  NNet_stats[[set]]$loss_stats$train_RMSE <- rmse(train$rt, train_predict)
+  NNet_stats[[set]]$loss_stats$train_RSquare <- (1 - sse(train$rt, train_predict) / sum((train$rt - mean(train$rt))^2))
+        
+  #Validation
+  valid_predict <- neural_network_1_mse %>% predict(as.matrix(validation_x))
+  NNet_stats[[set]]$loss_stats$validation_MAE <- mae(validation$rt, valid_predict)
+  NNet_stats[[set]]$loss_stats$validation_MSE <- mse(validation$rt, valid_predict)
+  NNet_stats[[set]]$loss_stats$validation_RMSE <- rmse(validation$rt, valid_predict)
+  NNet_stats[[set]]$loss_stats$validation_RSquare <- (1 - sse(validation$rt, valid_predict) / sum((validation$rt - mean(validation$rt))^2))
+    
+  #Test
+  test_predict <- neural_network_1_mse %>% predict(as.matrix(test_x))
+  NNet_stats[[set]]$loss_stats$test_MAE <- mae(test$rt, test_predict)
+  NNet_stats[[set]]$loss_stats$test_MSE <- mse(test$rt, test_predict)
+  NNet_stats[[set]]$loss_stats$test_RMSE <- rmse(test$rt, test_predict)
+  NNet_stats[[set]]$loss_stats$test_RSquare <- (1 - sse(test$rt, test_predict) / sum((test$rt - mean(test$rt))^2))
+      
+  #Forecasts
+  NNet_stats[[set]]$forecasts <- test_predict
+    
+  #Forecast residuals
+  NNet_stats[[set]]$forecast_resids <- test$rt - test_predict
 }
 
-
+NNet_stats[[1]]$loss_stats
+NNet_stats[[2]]$loss_stats
+NNet_stats[[3]]$loss_stats
 
 ```
 
@@ -795,6 +867,9 @@ NN1_mae_predictions <- neural_network_1_mae %>% predict(as.matrix(test_x))
 
 mae(test$rt, NN1_mae_predictions)
 mse(test$rt, NN1_mae_predictions)
+
+R2(NN1_mae_predictions, test$rt, form = "traditional")
+R2(NN1_mse_predictions, test$rt, form = "traditional")
 ```
 
 ```{r}
@@ -874,6 +949,9 @@ NN2_mae_predictions <- neural_network_2_mae %>% predict(as.matrix(test_x))
 
 mae(test$rt, NN2_mae_predictions)
 mse(test$rt, NN2_mae_predictions)
+
+R2(NN2_mae_predictions, test$rt, form = "traditional")
+R2(NN2_mse_predictions, test$rt, form = "traditional")
 ```
 
 ```{r}
@@ -937,7 +1015,7 @@ mse(test$rt, NN3_mse_predictions)
 ###########################################
 ## WRT MAE
 
-neural_network_3_mae <- build_NN2("mae")
+neural_network_3_mae <- build_NN3("mae")
 neural_network_3_mae %>% summary()
 
 #Just do something straightforward for now
@@ -1024,7 +1102,7 @@ mse(test$rt, NN4_mse_predictions)
 ###########################################
 ## WRT MAE
 
-neural_network_4_mae <- build_NN2("mae")
+neural_network_4_mae <- build_NN4("mae")
 neural_network_4_mae %>% summary()
 
 #Just do something straightforward for now
@@ -1053,7 +1131,7 @@ validation_x <- validation[4:ncol(validation)]
 validation_y <- validation$rt
 
 # The patience parameter is the amount of epochs to check for improvement.
-early_stop <- callback_early_stopping(monitor = "val_loss", patience = 20)
+early_stop <- callback_early_stopping(monitor = "val_loss", patience = 10)
 
 #It's clearer to separate these "layers" out as much as possible
 build_NN5 <- function(loss_function) {
@@ -1062,22 +1140,27 @@ build_NN5 <- function(loss_function) {
     # Layer 1
     layer_dense(units = 32, input_shape = ncol(train_x)) %>%
     layer_activation("relu") %>%
+    layer_activity_regularization(l1 = 0.001) %>%
     layer_batch_normalization() %>%
     # Layer 2
     layer_dense(units = 16) %>%
     layer_activation("relu") %>%
+    layer_activity_regularization(l1 = 0.001) %>%
     layer_batch_normalization() %>%
     #Layer 3
     layer_dense(units = 8) %>%
     layer_activation("relu") %>%
+    layer_activity_regularization(l1 = 0.001) %>%
     layer_batch_normalization() %>%
     #Layer 4
     layer_dense(units = 4) %>%
     layer_activation("relu") %>%
+    layer_activity_regularization(l1 = 0.001) %>%
     layer_batch_normalization() %>%
     #Layer 5
     layer_dense(units = 2) %>%
     layer_activation("relu") %>%
+    layer_activity_regularization(l1 = 0.001) %>%
     layer_batch_normalization() %>%
     # Output Layer
     layer_dense(units = 1, activation = "linear")
@@ -1115,7 +1198,7 @@ mse(test$rt, NN5_mse_predictions)
 ###########################################
 ## WRT MAE
 
-neural_network_5_mae <- build_NN2("mae")
+neural_network_5_mae <- build_NN5("mae")
 neural_network_5_mae %>% summary()
 
 #Just do something straightforward for now
@@ -1132,6 +1215,9 @@ NN5_mae_predictions <- neural_network_5_mae %>% predict(as.matrix(test_x))
 
 mae(test$rt, NN5_mae_predictions)
 mse(test$rt, NN5_mae_predictions)
+
+R2(NN5_mae_predictions, test$rt, form = "traditional")
+R2(NN5_mse_predictions, test$rt, form = "traditional")
 ```
 
 ```{r}
