@@ -22,6 +22,15 @@ library(Metrics)
 library(ranger)
 library(caret)
 
+#Parallel Computing
+library(foreach)
+library(doFuture)
+#Registering
+# Change this to the number of cores you are willing to spare
+# Honours lab computers have 12 logical cores, i5 at home has 4 logical cores
+registerDoFuture()
+plan(multisession)
+
 set.seed(27935248)
 
 #Change everything so that it is in terms of arrays instead of lists
@@ -748,6 +757,8 @@ panel_tune_stats <- function(return_panel, signal_panel, true_factor_panel) {
 
 #Works, hooray
 
+#Ignore these values, panel hasn't been done properly yet
+
 panel_tune_stats(rt_panel_g1_A1, g1_panel, g1_factor_panel)
 
 ```
@@ -756,6 +767,9 @@ panel_tune_stats(rt_panel_g1_A1, g1_panel, g1_factor_panel)
 ############################
 # Function Form
 ############################
+
+# DO NOT RUN, DOES NOT WORK
+
 # Given a return series panel, its signal (non-error component), and its corresponding underlying true factors, return its mean individual time series R squared, mean annualized volatility, cross sectional r squared and predictive r squared
 
 # Alternative approach which Gu et al may have used
@@ -967,7 +981,94 @@ A3 <- matrix(c(
 )
 ##########################
 
-# Simulate a specification 100 times
+# Parallel implementation of simulation design
+# This is absolutely amazing, finishes 100 simulations in less than 5 minutes
+
+sim_panel_data_parallel <- function(sim_N, cross_corr, A_matrix, xt_multi, g_function, theta,
+                                    #Error Parameters
+                                    error_sv, error_ep_sd, error_omega, error_gamma, error_w, error_v_sd) {
+  sim_list <- foreach(i = (1:sim_N)) %dopar% {
+    
+    sim <- list(panel = 0, statistics = 0)
+    
+    C_bar <- gen_C_bar()
+    C_hat <- gen_C_hat(C_bar)
+    
+    if (cross_corr == 0) {
+      C <- gen_C(C_bar)
+    }
+    else {
+      C <- gen_C(C_hat)
+    }
+    
+    if (xt_multi == 1) {
+      xt <- gen_xt(A_matrix)
+    }
+    else {
+      xt <- gen_xt_univariate()
+    }
+    
+    #Generate the true underlying factors first
+    g_factor_panel <- gen_g_factor_panel(g_function, C, xt)
+    
+    #Then pass them through to multiply them by theta to get g()
+    g_panel <- gen_g_panel(g_factor_panel, theta)
+    
+    #Generate the errors
+    error <- gen_error(sv = error_sv, ep_sd = error_ep_sd, omega = error_omega, gamma = error_gamma, w = error_w, C, v_sd = error_v_sd)
+    
+    #rt panel
+    rt_panel <- g_panel + error
+    
+    z_panel <- gen_predictor_z(C, xt)
+    
+    sim$panel <- bind_rt_predictor(rt_panel, z_panel)
+    
+    sim$statistics <- panel_tune_stats(rt_panel, g_panel, g_factor_panel)
+    
+    sim
+  }
+  return(sim_list)
+}
+
+# This function is very straightforward and does not need to be parallelized
+# Run this after generating the data from the previous function (see example right below)
+
+sim_tune_statistics <- function(sim_panel_list) {
+  sim_N <- length(sim_panel_list)
+  #Initialize
+  sim_tune_stats <- data.frame(time_series_fitted.rsquare = rep(0, sim_N),
+                               annual_vol = rep(0, sim_N),
+                               true_rsquare = rep(0, sim_N),
+                               cross_section_rsquare = rep(0, sim_N))
+  for (i in 1:sim_N) {
+    sim_tune_stats[i, ] <- sim_panel_list[[i]]$statistics  
+  }
+  return(sim_tune_stats)
+}
+
+gu_et_al_g1 <- sim_panel_data_parallel(100, cross_corr = 0, A1, xt_multi = 0, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1),
+                                       error_sv = 0, error_ep_sd = 0.05, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+
+gu_et_al_g2 <- sim_panel_data_parallel(100, cross_corr = 0, A1, xt_multi = 0, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1),
+                                       error_sv = 0, error_ep_sd = 0.05, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+
+summary(sim_tune_statistics(gu_et_al_g1))
+
+summary(sim_tune_statistics(gu_et_al_g2))
+
+# Observations
+
+# You need a reasonably large number of simulations in order to gauge these designs
+# Turning the simulation number from 10 to 100 does yield some changes
+# Gu et al's design doesn't seem to be replicable
+# True r squared (predictive r squared) is somewhat close to what they specified
+```
+
+```{r, eval = FALSE}
+
+# Deprecated, old way implementation using standard for loops
+# Was too slow, kept for reference
 
 sim_panel_data <- function(sim_N, cross_corr, A_matrix, xt_multi, g_function, theta,
                            #Error Parameters
@@ -1020,7 +1121,7 @@ sim_panel_data <- function(sim_N, cross_corr, A_matrix, xt_multi, g_function, th
   return(sim_list)
 }
 
-#Build a function to calculate average statistics, given a list of realisations
+# Build a function to calculate average statistics, given a list of realisations
 # Use after the previous function
 
 sim_tune_statistics <- function(sim_panel_list) {
@@ -1048,7 +1149,7 @@ summary(sim_tune_statistics(gu_et_al_g1))
 ```
 
 
-```{r}
+```{r, eval = FALSE}
 #Playing around simulation specifications
 
 set.seed(27935248)
