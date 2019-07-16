@@ -26,15 +26,12 @@ library(randomForestSRC)
 library(hqreg)
 library(caret)
 
-
-#forestr
-# This apparently needs admin privileges to install, do this at home maybe
-# devtools::install_github("andeek/forestr")
-# devtools::install_github("andeek/rpart")
-
-# unlink("C:/R/Library/00LOCK-rpart", recursive = TRUE)
-
-set.seed(27935248)
+#Parallel Computing
+library(foreach)
+library(doFuture)
+#Registering
+registerDoFuture()
+plan(multisession)
 ```
 
 ```{r train_valid_test}
@@ -166,6 +163,15 @@ summary(LM_stats_mae[[1]]$model)
 LM_stats_mae[[1]]$loss_stats
 LM_stats_mae[[2]]$loss_stats
 LM_stats_mae[[3]]$loss_stats
+
+# Observations
+# These don't do too badly on linear data
+# They identify significant factors correctly, as long as a very small significance value is used
+
+# Fail completely on extremely non-linear data
+# Thinks all factors are important
+# In sample r squared values are somewhat high
+# Absolutely atrocious validation and test r squared (both effectively test sets here)
 ```
 
 ```{r elastic_net, eval = FALSE}
@@ -416,11 +422,15 @@ ELN_fit_stats <- function(alpha_grid, nlamb, timeSlices, pooled_panel, loss_func
                              #Other useful things
                              forecasts = 0,
                              forecast_resids = 0,
-                             model = 0)
+                             model = 0,
+                             hyperparams = 0)
       
     #Model
     model <- ELN_model_grid[[best_model_params$list_index]]$model
     ELN_stats[[set]]$model <- model
+    
+    #Hyperparameters
+    ELN_stats[[set]]$hyperparams <- best_model_params
       
     #Loss Stats Dataframe
     #Train
@@ -486,7 +496,7 @@ ELN_stats_mae[[3]]$model$alpha
 
 # Observations regards to data
 
-# Non linear setting
+# g3 Non linear setting
 # ELN + MSE does worse than ELN + MAE
 # Both seem to do much better as training sample increases
 ```
@@ -596,7 +606,8 @@ RF_fit_stats <- function(f, pooled_panel, RF_grid, timeSlices, loss_function) {
                             #Other useful things
                             forecasts = 0,
                             forecast_resids = 0,
-                            model = 0)
+                            model = 0,
+                            hyperparameters = 0)
     
     train <- pooled_panel %>%
       filter(time %in% timeSlices[[set]]$train)
@@ -612,6 +623,7 @@ RF_fit_stats <- function(f, pooled_panel, RF_grid, timeSlices, loss_function) {
     #Get the best hyperparameters
     
     best_model_params <- get_RF_best_tune(model_grid)
+    RF_stats[[set]]$hyperparameters <- best_model_params
     
     #Compute the optimal model
     
@@ -621,7 +633,8 @@ RF_fit_stats <- function(f, pooled_panel, RF_grid, timeSlices, loss_function) {
                      ntree = best_model_params$ntree,
                      mtry = best_model_params$mtry,
                      nodesize = best_model_params$nodesize,
-                     splitrule = "mse"
+                     splitrule = "mse",
+                     bootstrap = "by.root", samptype = "swr"
                      )
     } else {
       model <- rfsrc(f, train, 
@@ -630,7 +643,8 @@ RF_fit_stats <- function(f, pooled_panel, RF_grid, timeSlices, loss_function) {
                      mtry = best_model_params$mtry,
                      nodesize = best_model_params$nodesize,
                      splitrule = "quantile.regr",
-                     prob = 0.5
+                     prob = 0.5,
+                     bootstrap = "by.root", samptype = "swr"
                      )
     }
     
@@ -1225,35 +1239,53 @@ R2(NN5_mse_predictions, test$rt, form = "traditional")
 
 # Get test set
 
-test <- pooled_panel %>%
-  filter(time %in% timeSlices[[3]]$test)
-
-test_x <- test[4:ncol(test)]
-
-test_x_zero <- test_x
-test_x_zero[1] <- 0
+lm_variable_importance <- function(pooled_panel, timeSlices, model_fit_stats) {
+  variable_importance_list <- rep(list(0), 3)
   
-variable_importance <- data.frame(variable = colnames(test_x)[1], importance = (
-  R2(predict(LM_stats_mae[[3]]$model, newdata = test_x), test$rt, form = "traditional") -
-    R2(predict(LM_stats_mae[[3]]$model, newdata = test_x_zero), test$rt, form = "traditional")
-  )
-)
-
-for (i in 2:ncol(test_x)) {
-  test_x_zero <- test_x
-  test_x_zero[i] <- 0
-  
-  variable_importance <- rbind(variable_importance, 
-                               data.frame(variable = colnames(test_x)[i], 
-                                          importance = (R2(predict(LM_stats_mae[[3]]$model, newdata = test_x), test$rt, form = "traditional") -
-                                                                   R2(predict(LM_stats_mae[[3]]$model, newdata = test_x_zero), test$rt, form = "traditional")
-                                                        )
-                                          )
-                               )
-  
+  for (set in 1:3) {
+    test <- pooled_panel %>%
+      filter(time %in% timeSlices[[set]]$test)
+    
+    test_x <- test[4:ncol(test)]
+    
+    test_x_zero <- test_x
+    test_x_zero[1] <- 0
+      
+    variable_importance <- data.frame(variable = colnames(test_x)[1], importance = (
+      R2(predict(model_fit_stats[[set]]$model, newdata = test_x), test$rt, form = "traditional") -
+        R2(predict(model_fit_stats[[set]]$model, newdata = test_x_zero), test$rt, form = "traditional")
+      )
+    )
+    
+    for (i in 2:ncol(test_x)) {
+      test_x_zero <- test_x
+      test_x_zero[i] <- 0
+      
+      variable_importance <- rbind(variable_importance, 
+                                   data.frame(variable = colnames(test_x)[i], 
+                                              importance = (R2(predict(model_fit_stats[[set]]$model, newdata = test_x), test$rt, form = "traditional") -
+                                                                       R2(predict(model_fit_stats[[set]]$model, newdata = test_x_zero), test$rt, form = "traditional")
+                                                            )
+                                              )
+                                   )
+      
+    }
+    variable_importance_list[[set]] <- variable_importance
+  }
+  variable_importance_list
 }
 
-ggplot(variable_importance) +
+lm_mae_importance <- lm_variable_importance(pooled_panel, timeSlices, LM_stats_mae)
+
+lm_mae_importance[[1]] %>%
+  arrange(importance)
+
+lm_mse_importance <- lm_variable_importance(pooled_panel, timeSlices, LM_stats_mse)
+
+lm_mse_importance[[1]] %>%
+  arrange(importance)
+
+ggplot(variable_importance_list[[1]]) +
   geom_point(aes(x = variable, y = importance)) +
   theme(axis.text.x = element_text(angle = 90))
 ```
