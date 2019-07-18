@@ -1165,7 +1165,7 @@ gu_et_al_g1 <- sim_panel_data(simN,
                               error_sv = 0, error_ep_sd = 0.05, 
                               error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
 summary(sim_tune_statistics(gu_et_al_g1))
-saveRDS(gu_et_al_g1, file = "gut_et_al_g1.rds")
+saveRDS(gu_et_al_g1, file = "gu_et_al_g1.rds")
 rm(gu_et_al_g1)
 
 gu_et_al_g2 <- sim_panel_data(simN, 
@@ -1174,7 +1174,7 @@ gu_et_al_g2 <- sim_panel_data(simN,
                               error_sv = 0, error_ep_sd = 0.05, 
                               error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
 summary(sim_tune_statistics(gu_et_al_g2))
-saveRDS(gu_et_al_g1, file = "gut_et_al_g2.rds")
+saveRDS(gu_et_al_g1, file = "gu_et_al_g2.rds")
 rm(gu_et_al_g2)
 
 ##################################
