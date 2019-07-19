@@ -11,7 +11,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ##Load Libraries
 ################
 
-library(glmnet)
 library(tidyverse)
 library(keras)
 library(ggplot2)
@@ -103,7 +102,6 @@ gen_C_bar <- function(rho_a, rho_b){
 #######################################
 
 gen_W <- function(){
-  
   #Generate Lambda Matrix first
   
   Lambda <- matrix(
@@ -740,7 +738,7 @@ panel_tune_stats <- function(return_panel, signal_panel, true_factor_panel) {
     
     # fitted_Rsquared <- 1 - (sum(SSR)/sum(SST))
     
-  # Cross Sectional Correlation
+  # Cross Sectional R squared
     
     R_bar <- rowMeans(return_panel)
     df_new <- data.frame(R_bar, Coeff_Betas) 
@@ -751,108 +749,6 @@ panel_tune_stats <- function(return_panel, signal_panel, true_factor_panel) {
   
   return(tune_stats)
 }
-```
-
-```{r tune_stats_function_alt, eval = FALSE}
-############################
-# Function Form
-############################
-
-# DO NOT RUN, DOES NOT WORK
-
-# Given a return series panel, its signal (non-error component), and its corresponding underlying true factors, return its mean individual time series R squared, mean annualized volatility, cross sectional r squared and predictive r squared
-
-# Alternative approach which Gu et al may have used
-# They may have instead regressed on the entire predictor set, instead of the true factor panels
-# Never mind, this DOES NOT work at all because the dimensions of the entire predictor set > number of time periods. Ie. individual time series regression become impossible
-
-# Given a return series panel, its signal (non-error component), and a corresponding predictor set (NOT true factors), return its means individual time series R squared, mean annualized volatility, cross sectional r squared and predictive r squared
-
-panel_tune_stats <- function(return_panel, signal_panel, predictor_panel) {
-  #Initialize
-  tune_stats <- data.frame(time_series_fitted.rsquare = 0, annual_vol = 0, true_rsquare = 0, cross_section_rsquare = 0)
-  
-  ########
-  ## Time Series + Annual Vol
-  ########
-  
-    #Empty Matrices to be used
-    Rsquared <- matrix(0, N, 1)
-    SSR <- matrix(0, N, 1)
-    SST <- matrix(0, N, 1)
-    Fits <- matrix(0, Time, N)
-    
-    #This stores all the BETAS, NOT the constant
-    Coeff_Betas <- matrix(0, N, ncol(predictor_panel))
-    Xs_bar <- matrix(0, N, ncol(predictor_panel))
-    R_bar <- matrix(0, N, 1)
-    Resids <- matrix(0, Time, N)
-    
-    annual_vol <- matrix(0, N, 1)
-    
-    #Done for the g1 case for now
-    
-    #First run individual time series regressions
-    for (i in 1:N) {
-      #True Returns
-      Rs <- return_panel[i, , ]
-      R_bar[i, 1] <- mean(Rs)
-      
-      #True Factor Set
-      Xs <- t(predictor_panel[i, , ])
-      
-      #Not too sure what this is doing, not used anywhere else
-      Xs_bar[i, ] <- colMeans(Xs)
-      
-      df <- data.frame(Rs, Xs)
-      
-      fit <- lm(Rs ~., df)
-      Fits[, i] <- fit$fitted.values
-      
-      #Save all the betas except for the constant, slightly more clever way that handles different number of true factors
-      Coeff_Betas[i, ] <- as.numeric(fit$coefficients[-1])
-      
-      Resids[, i] <- fit$residuals
-      SSR[i, 1] <- sum(Resids[, i]^2)
-      SST[i, 1] <- sum((Rs-mean(Rs))^2)
-      
-      Rsquared[i, 1] <- summary(fit)$r.squared
-      
-      #annualized volatility
-      
-      annual_vol[i] <- sd(Rs) * sqrt(12)
-    }
-    
-  tune_stats$time_series_fitted.rsquare <- mean(Rsquared)
-    
-  tune_stats$annual_vol <- mean(annual_vol)
-  
-  #Predictive R Squared
-  
-  tune_stats$true_rsquare <- R2(signal_panel, return_panel, form = "traditional")
-    
-    # Not too sure what is going on here
-    
-    # val <- g1(C,x,theta)
-    # true_res <- rowSums((rt - val)^2)
-    # true_sst <- rowSums((rt - rowMeans(rt))^2)
-    # true_rRsquared <- 1 - (sum(true_res)/sum(true_sst))
-    
-    # fitted_Rsquared <- 1 - (sum(SSR)/sum(SST))
-    
-  # Cross Sectional Correlation
-    
-    R_bar <- rowMeans(return_panel)
-    df_new <- data.frame(R_bar, Coeff_Betas) 
-    
-    cross_fit <- lm(R_bar ~ Coeff_Betas, df_new) 
-    
-  tune_stats$cross_section_rsquare <- summary(cross_fit)$r.squared
-  
-  return(tune_stats)
-}
-
-#Works, hooray
 
 # Testing
 
@@ -878,10 +774,9 @@ rt_panel_g1_A1 <- g1_panel + error_nosv
 
 # Generate a predictor panel
 
-z_panel_g1_A1 <- gen_predictor_z(C, xt)
+# z_panel_g1_A1 <- gen_predictor_z(C, xt)
 
-panel_tune_stats(rt_panel_g1_A1, g1_panel, z_panel_g1_A1)
-
+panel_tune_stats(rt_panel_g1_A1, g1_panel, g1_factor_panel)
 ```
 
 ```{r function_build_predictor}
@@ -1019,6 +914,7 @@ sim_panel_data <- function(sim_N,
     
     sim$panel <- bind_rt_predictor(rt_panel, z_panel)
     
+    #Statistics
     sim$statistics <- panel_tune_stats(rt_panel, g_panel, g_factor_panel)
     
     sim
@@ -1143,6 +1039,31 @@ gu_et_al_g1 <- sim_panel_data(10, cross_corr = 0, A1, xt_multi = 0, g_function =
 summary(sim_tune_statistics(gu_et_al_g1))
 ```
 
+```{r, eval = FALSE}
+# Debug
+#Overall Dimensionality
+N <- 200
+P_c <- 100
+Time <- 180
+
+#Number of realizations
+simN <- 4
+
+char_rho_a = 0.9 
+char_rho_b = 0.1
+cross_corr = 0
+xt_multi = 0
+g_function = "g1"
+theta = matrix(c(0.02, 0.02, 0.02), nrow = 1)
+error_sv = 0
+error_ep_sd = 0.05
+error_omega = -0.736
+error_gamma = 0.9
+error_w = sqrt(0.363)
+error_v_sd = 0.05
+
+```
+
 
 ```{r, eval = FALSE}
 #Playing around simulation specifications
@@ -1155,12 +1076,12 @@ P_c <- 100
 Time <- 180
 
 #Number of realizations
-simN <- 30
+simN <- 4
 
 #Gu et al's original specfications, recreated
 
 gu_et_al_g1 <- sim_panel_data(simN, 
-                              char_rho_a = 0.9, char_rho_b = 0.1,
+                              char_rho_a = 0.9, char_rho_b = 1,
                               cross_corr = 0, A1, xt_multi = 0, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1),
                               error_sv = 0, error_ep_sd = 0.05, 
                               error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)

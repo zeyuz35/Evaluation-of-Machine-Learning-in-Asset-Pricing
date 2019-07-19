@@ -12,7 +12,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ##Load Libraries
 ################
 
-library(glmnet)
 library(tidyverse)
 library(keras)
 library(ggplot2)
