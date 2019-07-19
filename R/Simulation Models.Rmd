@@ -73,9 +73,9 @@ panel_formula <- function(panel){
   return(f)
 }
 
-#Use panel_g1_A1 generated from Simulation.rmd for now. Generalize it later
+# Change data specifcation here
 
-pooled_panel <- g3_A1_panel[[1]]$panel
+pooled_panel <- g1_A1_panel[[1]]$panel
 
 f <- panel_formula(pooled_panel)
 ```
@@ -165,13 +165,7 @@ LM_stats_mae[[2]]$loss_stats
 LM_stats_mae[[3]]$loss_stats
 
 # Observations
-# These don't do too badly on linear data
-# They identify significant factors correctly, as long as a very small significance value is used
 
-# Fail completely on extremely non-linear data
-# Thinks all factors are important
-# In sample r squared values are somewhat high
-# Absolutely atrocious validation and test r squared (both effectively test sets here)
 ```
 
 ```{r elastic_net, eval = FALSE}
@@ -423,14 +417,14 @@ ELN_fit_stats <- function(alpha_grid, nlamb, timeSlices, pooled_panel, loss_func
                              forecasts = 0,
                              forecast_resids = 0,
                              model = 0,
-                             hyperparams = 0)
+                             hyperparameters = 0)
       
     #Model
     model <- ELN_model_grid[[best_model_params$list_index]]$model
     ELN_stats[[set]]$model <- model
     
     #Hyperparameters
-    ELN_stats[[set]]$hyperparams <- best_model_params
+    ELN_stats[[set]]$hyperparameters <- best_model_params
       
     #Loss Stats Dataframe
     #Train
@@ -709,535 +703,289 @@ set.seed(27935248)
 #Build neural networks with neuron numbers according to geometric pyramid rule, and ReLU activation function for all layers
 # IE Input layer > 32 neurons > 16 neurons > 8 neurons > 4 neurons > 2 neurons > output
 
-##Neural Network 1
+##Neural Network generalized
 
-#Initialize
-
-NNet_stats <- rep(list(0), 3)
-
-for (set in 1:3) {
-  NNet_stats[[set]] <- list(loss_stats = data.frame(train_MAE = 0, train_MSE = 0, train_RMSE = 0, train_RSquare = 0, 
-                                                validation_MAE = 0, validation_MSE = 0, validation_RMSE = 0, validation_RSquare = 0, 
-                                                test_MAE = 0, test_MSE = 0, test_RMSE = 0, test_RSquare = 0),
-                                 #Other useful things
-                                 forecasts = 0,
-                                 forecast_resids = 0,
-                                 model = 0)
-    
-  #Load Training, validation and test sets
-  train <- pooled_panel %>%
-    filter(time %in% timeSlices[[set]]$train)
-  validation <- pooled_panel %>%
-    filter(time %in% timeSlices[[set]]$validation)
-  test<- pooled_panel %>%
-    filter(time %in% timeSlices[[set]]$test)
-    
-  train_x <- train[4:ncol(train)]
-  train_y <- train$rt
-    
-  validation_x <- validation[4:ncol(validation)]
-  validation_y <- validation$rt
-    
-  test_x <- test[4:ncol(test)]
-  test_y <- test$rt
-    
-  # Fit the model
-  # The patience parameter is the amount of epochs to check for improvement.
-  early_stop <- callback_early_stopping(monitor = "val_loss", patience = 20)
-    
-  #It's clearer to separate these "layers" out as much as possible
-  build_NN1 <- function(loss_function) {
+NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_function, batch_size, patience) {
+  #Initialize
+  
+  NNet_stats <- rep(list(0), 3)
+  
+  for (set in 1:3) {
+    NNet_stats[[set]] <- list(loss_stats = data.frame(train_MAE = 0, train_MSE = 0, train_RMSE = 0, train_RSquare = 0, 
+                                                      validation_MAE = 0, validation_MSE = 0, validation_RMSE = 0, validation_RSquare = 0, 
+                                                      test_MAE = 0, test_MSE = 0, test_RMSE = 0, test_RSquare = 0),
+                              #Other useful things
+                              forecasts = 0,
+                              forecast_resids = 0,
+                              model = 0)
       
-    model <- keras_model_sequential() %>%
-      # Layer 1
-      layer_dense(units = 32, input_shape = ncol(train_x)) %>%
-      layer_activation("relu") %>%
-      layer_activity_regularization(l1 = 0.001) %>%
-      layer_batch_normalization() %>%
-      # Output Layer
-      layer_dense(units = 1, activation = "linear")
+    #Load Training, validation and test sets
+    train <- pooled_panel %>%
+      filter(time %in% timeSlices[[set]]$train)
+    validation <- pooled_panel %>%
+      filter(time %in% timeSlices[[set]]$validation)
+    test<- pooled_panel %>%
+      filter(time %in% timeSlices[[set]]$test)
       
-    model %>% compile(
-      #MSE loss function
-      loss = loss_function,
-      #We're using ADAM
-      optimizer = "adam",
-      metrics = list("mean_absolute_error", "mean_squared_error")
-    )
-    model
-  }
+    train_x <- train[4:ncol(train)]
+    train_y <- train$rt
+      
+    validation_x <- validation[4:ncol(validation)]
+    validation_y <- validation$rt
+      
+    test_x <- test[4:ncol(test)]
+    test_y <- test$rt
+      
+    # Fit the model
+    # The patience parameter is the amount of epochs to check for improvement.
+    # Gu et al don't say what their early stopping parameter p is
+    early_stop <- callback_early_stopping(monitor = "val_loss", patience = patience, restore_best_weights = TRUE)
     
-  neural_network_1_mse <- build_NN1("mse")
-  neural_network_1_mse %>% fit(as.matrix(train_x), as.matrix(train_y), 
-                               epochs = 100, verbose = 1, 
-                               validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
-                               callbacks = list(early_stop))
-  #Train
-  train_predict <- neural_network_1_mse %>% predict(as.matrix(train_x))
-  NNet_stats[[set]]$loss_stats$train_MAE <- mae(train$rt, train_predict)
-  NNet_stats[[set]]$loss_stats$train_MSE <- mse(train$rt, train_predict)
-  NNet_stats[[set]]$loss_stats$train_RMSE <- rmse(train$rt, train_predict)
-  NNet_stats[[set]]$loss_stats$train_RSquare <- (1 - sse(train$rt, train_predict) / sum((train$rt - mean(train$rt))^2))
+    build_NN <- function(hidden_layers, loss_function) {
         
-  #Validation
-  valid_predict <- neural_network_1_mse %>% predict(as.matrix(validation_x))
-  NNet_stats[[set]]$loss_stats$validation_MAE <- mae(validation$rt, valid_predict)
-  NNet_stats[[set]]$loss_stats$validation_MSE <- mse(validation$rt, valid_predict)
-  NNet_stats[[set]]$loss_stats$validation_RMSE <- rmse(validation$rt, valid_predict)
-  NNet_stats[[set]]$loss_stats$validation_RSquare <- (1 - sse(validation$rt, valid_predict) / sum((validation$rt - mean(validation$rt))^2))
-    
-  #Test
-  test_predict <- neural_network_1_mse %>% predict(as.matrix(test_x))
-  NNet_stats[[set]]$loss_stats$test_MAE <- mae(test$rt, test_predict)
-  NNet_stats[[set]]$loss_stats$test_MSE <- mse(test$rt, test_predict)
-  NNet_stats[[set]]$loss_stats$test_RMSE <- rmse(test$rt, test_predict)
-  NNet_stats[[set]]$loss_stats$test_RSquare <- (1 - sse(test$rt, test_predict) / sum((test$rt - mean(test$rt))^2))
+      if (hidden_layers == 1) {
+        
+        model <- keras_model_sequential() %>%
+        
+        # Layer 1
+        layer_dense(units = 32, input_shape = ncol(train_x)) %>%
+          layer_activation("relu") %>%
+          layer_activity_regularization(l1 = 0.01) %>%
+          layer_batch_normalization() %>%
+        # Output Layer
+          layer_dense(units = 1, activation = "linear")
+        
+      } else if (hidden_layers == 2) {
+        
+        model <- keras_model_sequential() %>%
+          
+        # Layer 1
+        layer_dense(units = 32, input_shape = ncol(train_x)) %>%
+          layer_activation("relu") %>%
+          layer_activity_regularization(l1 = 0.01) %>%
+          layer_batch_normalization() %>%
+        # Layer 2
+        layer_dense(units = 16) %>%
+          layer_activation("relu") %>%
+          layer_activity_regularization(l1 = 0.01) %>%
+          layer_batch_normalization() %>%
+        # Output Layer
+        layer_dense(units = 1, activation = "linear")
+          
+      } else if (hidden_layers == 3) {
+          
+        model <- keras_model_sequential() %>%
+          
+        # Layer 1
+        layer_dense(units = 32, input_shape = ncol(train_x)) %>%
+          layer_activation("relu") %>%
+          layer_activity_regularization(l1 = 0.01) %>%
+          layer_batch_normalization() %>%
+        # Layer 2
+        layer_dense(units = 16) %>%
+          layer_activation("relu") %>%
+          layer_activity_regularization(l1 = 0.01) %>%
+          layer_batch_normalization() %>%
+        #Layer 3
+        layer_dense(units = 8) %>%
+          layer_activation("relu") %>%
+          layer_activity_regularization(l1 = 0.01) %>%
+          layer_batch_normalization() %>%
+        # Output Layer
+        layer_dense(units = 1, activation = "linear")
+          
+      } else if (hidden_layers == 4) {
+          
+        model <- keras_model_sequential() %>%
+        
+        # Layer 1
+        layer_dense(units = 32, input_shape = ncol(train_x)) %>%
+          layer_activation("relu") %>%
+          layer_activity_regularization(l1 = 0.01) %>%
+          layer_batch_normalization() %>%
+        # Layer 2
+        layer_dense(units = 16) %>%
+          layer_activation("relu") %>%
+          layer_activity_regularization(l1 = 0.01) %>%
+          layer_batch_normalization() %>%
+        #Layer 3
+        layer_dense(units = 8) %>%
+          layer_activation("relu") %>%
+          layer_activity_regularization(l1 = 0.01) %>%
+          layer_batch_normalization() %>%
+        #Layer 4
+        layer_dense(units = 4) %>%
+          layer_activation("relu") %>%
+          layer_activity_regularization(l1 = 0.01) %>%
+          layer_batch_normalization() %>%
+        # Output Layer
+        layer_dense(units = 1, activation = "linear")
+          
+      } else {
+        
+        model <- keras_model_sequential() %>%
+        
+        # Layer 1
+        layer_dense(units = 32, input_shape = ncol(train_x)) %>%
+          layer_activation("relu") %>%
+          layer_activity_regularization(l1 = 0.01) %>%
+          layer_batch_normalization() %>%
+        # Layer 2
+        layer_dense(units = 16) %>%
+          layer_activation("relu") %>%
+          layer_activity_regularization(l1 = 0.01) %>%
+          layer_batch_normalization() %>%
+        #Layer 3
+        layer_dense(units = 8) %>%
+          layer_activation("relu") %>%
+          layer_activity_regularization(l1 = 0.01) %>%
+          layer_batch_normalization() %>%
+        #Layer 4
+        layer_dense(units = 4) %>%
+          layer_activation("relu") %>%
+          layer_activity_regularization(l1 = 0.01) %>%
+          layer_batch_normalization() %>%
+        #Layer 5
+        layer_dense(units = 2) %>%
+          layer_activation("relu") %>%
+          layer_activity_regularization(l1 = 0.01) %>%
+          layer_batch_normalization() %>%
+        # Output Layer
+        layer_dense(units = 1, activation = "linear")
+          
+      }
+      model %>% compile(
+        loss = loss_function,
+        optimizer = "adam",
+        metrics = list("mae", "mse")
+      )
+      model
+    }
       
-  #Forecasts
-  NNet_stats[[set]]$forecasts <- test_predict
+    neural_network <- build_NN(hidden_layers, loss_function)
     
-  #Forecast residuals
-  NNet_stats[[set]]$forecast_resids <- test$rt - test_predict
+    # Other options used throughout the neural network fitting process are specified here
+    # Namely, batch size
+    # In general, larger batch sizes result in faster progress in training, but don't always converge as fast. Smaller batch sizes train slower, but can converge faster.
+    # Default batch size is 32
+    neural_network %>% fit(as.matrix(train_x), as.matrix(train_y), 
+                           batch_size = batch_size, epochs = 100, verbose = 1, 
+                           validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
+                           callbacks = list(early_stop))
+    
+    #Model
+    NNet_stats[[set]]$model <- neural_network
+    
+    #Train
+    train_predict <- neural_network %>% predict(as.matrix(train_x))
+    
+    NNet_stats[[set]]$loss_stats$train_MAE <- mae(train$rt, train_predict)
+    NNet_stats[[set]]$loss_stats$train_MSE <- mse(train$rt, train_predict)
+    NNet_stats[[set]]$loss_stats$train_RMSE <- rmse(train$rt, train_predict)
+    NNet_stats[[set]]$loss_stats$train_RSquare <- (1 - sse(train$rt, train_predict) / sum((train$rt - mean(train$rt))^2))
+          
+    #Validation
+    valid_predict <- neural_network %>% predict(as.matrix(validation_x))
+    
+    NNet_stats[[set]]$loss_stats$validation_MAE <- mae(validation$rt, valid_predict)
+    NNet_stats[[set]]$loss_stats$validation_MSE <- mse(validation$rt, valid_predict)
+    NNet_stats[[set]]$loss_stats$validation_RMSE <- rmse(validation$rt, valid_predict)
+    NNet_stats[[set]]$loss_stats$validation_RSquare <- (1 - sse(validation$rt, valid_predict) / sum((validation$rt - mean(validation$rt))^2))
+      
+    #Test
+    test_predict <- neural_network %>% predict(as.matrix(test_x))
+    
+    NNet_stats[[set]]$loss_stats$test_MAE <- mae(test$rt, test_predict)
+    NNet_stats[[set]]$loss_stats$test_MSE <- mse(test$rt, test_predict)
+    NNet_stats[[set]]$loss_stats$test_RMSE <- rmse(test$rt, test_predict)
+    NNet_stats[[set]]$loss_stats$test_RSquare <- (1 - sse(test$rt, test_predict) / sum((test$rt - mean(test$rt))^2))
+        
+    #Forecasts
+    NNet_stats[[set]]$forecasts <- test_predict
+      
+    #Forecast residuals
+    NNet_stats[[set]]$forecast_resids <- test$rt - test_predict
+  }
+  NNet_stats
 }
 
-NNet_stats[[1]]$loss_stats
-NNet_stats[[2]]$loss_stats
-NNet_stats[[3]]$loss_stats
-
-```
-
-```{r}
-train_x <- train[4:ncol(train)]
-train_y <- train$rt
-
-validation_x <- validation[4:ncol(validation)]
-validation_y <- validation$rt
-
-# The patience parameter is the amount of epochs to check for improvement.
-early_stop <- callback_early_stopping(monitor = "val_loss", patience = 20)
-
-#It's clearer to separate these "layers" out as much as possible
-build_NN1 <- function(loss_function) {
-  
-  model <- keras_model_sequential() %>%
-    # Layer 1
-    layer_dense(units = 32, input_shape = ncol(train_x)) %>%
-    layer_activation("relu") %>%
-    layer_activity_regularization(l1 = 0.001) %>%
-    layer_batch_normalization() %>%
-    # Output Layer
-    layer_dense(units = 1, activation = "linear")
-  
-  model %>% compile(
-    #MSE loss function
-    loss = loss_function,
-    #We're using ADAM
-    optimizer = "adam",
-    metrics = list("mean_absolute_error", "mean_squared_error")
-  )
-  model
-}
-
-## WRT MSE
-
-neural_network_1_mse <- build_NN1("mse")
-neural_network_1_mse %>% summary()
-
-#Just do something straightforward for now
-
-neural_network_1_mse %>% fit(as.matrix(train_x), as.matrix(train_y), 
-                             epochs = 100, verbose = 1, 
-                             validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
-                             callbacks = list(early_stop))
-
-#Make predictions
-test_x <- test[4:ncol(test)]
-
-NN1_mse_predictions <- neural_network_1_mse %>% predict(as.matrix(test_x))
-
-mae(test$rt, NN1_mse_predictions)
-mse(test$rt, NN1_mse_predictions)
-
-###########################################
-## WRT MAE
-
-neural_network_1_mae <- build_NN1("mae")
-neural_network_1_mae %>% summary()
-
-#Just do something straightforward for now
-
-neural_network_1_mae %>% fit(as.matrix(train_x), as.matrix(train_y), 
-                             epochs = 100, verbose = 1, 
-                             validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
-                             callbacks = list(early_stop))
-
-#Make predictions
-test_x <- test[4:ncol(test)]
-
-NN1_mae_predictions <- neural_network_1_mae %>% predict(as.matrix(test_x))
+NNet_1_mse_stats <- NNet_fit_stats(pooled_panel, timeSlices, 1, "mse", batch_size = 512, 5)
+NNet_1_mae_stats <- NNet_fit_stats(pooled_panel, timeSlices, 1, "mae", batch_size = 512, 5)
 
-mae(test$rt, NN1_mae_predictions)
-mse(test$rt, NN1_mae_predictions)
-
-R2(NN1_mae_predictions, test$rt, form = "traditional")
-R2(NN1_mse_predictions, test$rt, form = "traditional")
-```
-
-```{r}
-# Neural Network 2
-
-train_x <- train[4:ncol(train)]
-train_y <- train$rt
-
-validation_x <- validation[4:ncol(validation)]
-validation_y <- validation$rt
-
-# The patience parameter is the amount of epochs to check for improvement.
-early_stop <- callback_early_stopping(monitor = "val_loss", patience = 20)
-
-#It's clearer to separate these "layers" out as much as possible
-build_NN2 <- function(loss_function) {
-  
-  model <- keras_model_sequential() %>%
-    # Layer 1
-    layer_dense(units = 32, input_shape = ncol(train_x)) %>%
-    layer_activation("relu") %>%
-    layer_batch_normalization() %>%
-    # Layer 2
-    layer_dense(units = 16) %>%
-    layer_activation("relu") %>%
-    layer_batch_normalization() %>%
-    # Output Layer
-    layer_dense(units = 1, activation = "linear")
-  
-  model %>% compile(
-    #MSE loss function
-    loss = loss_function,
-    #We're using ADAM
-    optimizer = "adam",
-    metrics = list("mean_absolute_error", "mean_squared_error")
-  )
-  model
-}
-
-## WRT MSE
-
-neural_network_2_mse <- build_NN2("mse")
-neural_network_2_mse %>% summary()
-
-#Just do something straightforward for now
-
-neural_network_2_mse %>% fit(as.matrix(train_x), as.matrix(train_y), 
-                             epochs = 100, verbose = 1, 
-                             validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
-                             callbacks = list(early_stop))
-
-#Make predictions
-test_x <- test[4:ncol(test)]
-
-NN2_mse_predictions <- neural_network_2_mse %>% predict(as.matrix(test_x))
-
-mae(test$rt, NN1_mse_predictions)
-mse(test$rt, NN1_mse_predictions)
-
-###########################################
-## WRT MAE
-
-neural_network_2_mae <- build_NN2("mae")
-neural_network_2_mae %>% summary()
-
-#Just do something straightforward for now
-
-neural_network_2_mae %>% fit(as.matrix(train_x), as.matrix(train_y), 
-                             epochs = 100, verbose = 1, 
-                             validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
-                             callbacks = list(early_stop))
-
-#Make predictions
-test_x <- test[4:ncol(test)]
-
-NN2_mae_predictions <- neural_network_2_mae %>% predict(as.matrix(test_x))
-
-mae(test$rt, NN2_mae_predictions)
-mse(test$rt, NN2_mae_predictions)
-
-R2(NN2_mae_predictions, test$rt, form = "traditional")
-R2(NN2_mse_predictions, test$rt, form = "traditional")
-```
-
-```{r}
-# Neural Network 3
-
-train_x <- train[4:ncol(train)]
-train_y <- train$rt
-
-validation_x <- validation[4:ncol(validation)]
-validation_y <- validation$rt
-
-#It's clearer to separate these "layers" out as much as possible
-build_NN3 <- function(loss_function) {
-  
-  model <- keras_model_sequential() %>%
-    # Layer 1
-    layer_dense(units = 32, input_shape = ncol(train_x)) %>%
-    layer_activation("relu") %>%
-    layer_batch_normalization() %>%
-    # Layer 2
-    layer_dense(units = 16) %>%
-    layer_activation("relu") %>%
-    layer_batch_normalization() %>%
-    #Layer 3
-    layer_dense(units = 8) %>%
-    layer_activation("relu") %>%
-    layer_batch_normalization() %>%
-    # Output Layer
-    layer_dense(units = 1, activation = "linear")
-  
-  model %>% compile(
-    #MSE loss function
-    loss = loss_function,
-    #We're using ADAM
-    optimizer = "adam",
-    metrics = list("mean_absolute_error", "mean_squared_error")
-  )
-  model
-}
-
-## WRT MSE
-
-neural_network_3_mse <- build_NN3("mse")
-neural_network_3_mse %>% summary()
-
-#Just do something straightforward for now
-
-neural_network_3_mse %>% fit(as.matrix(train_x), as.matrix(train_y), 
-                             epochs = 100, verbose = 1, 
-                             validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
-                             callbacks = list(early_stop))
-
-#Make predictions
-test_x <- test[4:ncol(test)]
-
-NN3_mse_predictions <- neural_network_3_mse %>% predict(as.matrix(test_x))
-
-mae(test$rt, NN3_mse_predictions)
-mse(test$rt, NN3_mse_predictions)
-
-###########################################
-## WRT MAE
-
-neural_network_3_mae <- build_NN3("mae")
-neural_network_3_mae %>% summary()
-
-#Just do something straightforward for now
-
-neural_network_3_mae %>% fit(as.matrix(train_x), as.matrix(train_y), 
-                             epochs = 100, verbose = 1, 
-                             validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
-                             callbacks = list(early_stop))
-
-#Make predictions
-test_x <- test[4:ncol(test)]
-
-NN3_mae_predictions <- neural_network_3_mae %>% predict(as.matrix(test_x))
-
-mae(test$rt, NN3_mae_predictions)
-mse(test$rt, NN3_mae_predictions)
-```
-
-```{r}
-# Neural Network 4
-
-train_x <- train[4:ncol(train)]
-train_y <- train$rt
-
-validation_x <- validation[4:ncol(validation)]
-validation_y <- validation$rt
-
-# The patience parameter is the amount of epochs to check for improvement.
-early_stop <- callback_early_stopping(monitor = "val_loss", patience = 20)
-
-#It's clearer to separate these "layers" out as much as possible
-build_NN4 <- function(loss_function) {
-  
-  model <- keras_model_sequential() %>%
-    # Layer 1
-    layer_dense(units = 32, input_shape = ncol(train_x)) %>%
-    layer_activation("relu") %>%
-    layer_batch_normalization() %>%
-    # Layer 2
-    layer_dense(units = 16) %>%
-    layer_activation("relu") %>%
-    layer_batch_normalization() %>%
-    #Layer 3
-    layer_dense(units = 8) %>%
-    layer_activation("relu") %>%
-    layer_batch_normalization() %>%
-    #Layer 4
-    layer_dense(units = 4) %>%
-    layer_activation("relu") %>%
-    layer_batch_normalization() %>%
-    # Output Layer
-    layer_dense(units = 1, activation = "linear")
-  
-  model %>% compile(
-    #MSE loss function
-    loss = loss_function,
-    #We're using ADAM
-    optimizer = "adam",
-    metrics = list("mean_absolute_error", "mean_squared_error")
-  )
-  model
-}
-
-## WRT MSE
-
-neural_network_4_mse <- build_NN4("mse")
-neural_network_4_mse %>% summary()
-
-#Just do something straightforward for now
-
-neural_network_4_mse %>% fit(as.matrix(train_x), as.matrix(train_y), 
-                             epochs = 100, verbose = 1, 
-                             validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
-                             callbacks = list(early_stop))
-
-#Make predictions
-test_x <- test[4:ncol(test)]
-
-NN4_mse_predictions <- neural_network_4_mse %>% predict(as.matrix(test_x))
-
-mae(test$rt, NN4_mse_predictions)
-mse(test$rt, NN4_mse_predictions)
-
-###########################################
-## WRT MAE
-
-neural_network_4_mae <- build_NN4("mae")
-neural_network_4_mae %>% summary()
-
-#Just do something straightforward for now
-
-neural_network_4_mae %>% fit(as.matrix(train_x), as.matrix(train_y), 
-                             epochs = 100, verbose = 1, 
-                             validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
-                             callbacks = list(early_stop))
-
-#Make predictions
-test_x <- test[4:ncol(test)]
-
-NN4_mae_predictions <- neural_network_4_mae %>% predict(as.matrix(test_x))
-
-mae(test$rt, NN4_mae_predictions)
-mse(test$rt, NN4_mae_predictions)
-```
-
-```{r}
-# Neural Network 5
-
-train_x <- train[4:ncol(train)]
-train_y <- train$rt
-
-validation_x <- validation[4:ncol(validation)]
-validation_y <- validation$rt
-
-# The patience parameter is the amount of epochs to check for improvement.
-early_stop <- callback_early_stopping(monitor = "val_loss", patience = 10)
-
-#It's clearer to separate these "layers" out as much as possible
-build_NN5 <- function(loss_function) {
-  
-  model <- keras_model_sequential() %>%
-    # Layer 1
-    layer_dense(units = 32, input_shape = ncol(train_x)) %>%
-    layer_activation("relu") %>%
-    layer_activity_regularization(l1 = 0.001) %>%
-    layer_batch_normalization() %>%
-    # Layer 2
-    layer_dense(units = 16) %>%
-    layer_activation("relu") %>%
-    layer_activity_regularization(l1 = 0.001) %>%
-    layer_batch_normalization() %>%
-    #Layer 3
-    layer_dense(units = 8) %>%
-    layer_activation("relu") %>%
-    layer_activity_regularization(l1 = 0.001) %>%
-    layer_batch_normalization() %>%
-    #Layer 4
-    layer_dense(units = 4) %>%
-    layer_activation("relu") %>%
-    layer_activity_regularization(l1 = 0.001) %>%
-    layer_batch_normalization() %>%
-    #Layer 5
-    layer_dense(units = 2) %>%
-    layer_activation("relu") %>%
-    layer_activity_regularization(l1 = 0.001) %>%
-    layer_batch_normalization() %>%
-    # Output Layer
-    layer_dense(units = 1, activation = "linear")
-  
-  model %>% compile(
-    #MSE loss function
-    loss = loss_function,
-    #We're using ADAM
-    optimizer = "adam",
-    metrics = list("mean_absolute_error", "mean_squared_error")
-  )
-  model
-}
-
-## WRT MSE
-
-neural_network_5_mse <- build_NN5("mse")
-neural_network_5_mse %>% summary()
-
-#Just do something straightforward for now
-
-neural_network_5_mse %>% fit(as.matrix(train_x), as.matrix(train_y), 
-                             epochs = 100, verbose = 1, 
-                             validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
-                             callbacks = list(early_stop))
-
-#Make predictions
-test_x <- test[4:ncol(test)]
-
-NN5_mse_predictions <- neural_network_5_mse %>% predict(as.matrix(test_x))
-
-mae(test$rt, NN5_mse_predictions)
-mse(test$rt, NN5_mse_predictions)
-
-###########################################
-## WRT MAE
-
-neural_network_5_mae <- build_NN5("mae")
-neural_network_5_mae %>% summary()
-
-#Just do something straightforward for now
-
-neural_network_5_mae %>% fit(as.matrix(train_x), as.matrix(train_y), 
-                             epochs = 100, verbose = 1, 
-                             validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
-                             callbacks = list(early_stop))
-
-#Make predictions
-test_x <- test[4:ncol(test)]
-
-NN5_mae_predictions <- neural_network_5_mae %>% predict(as.matrix(test_x))
-
-mae(test$rt, NN5_mae_predictions)
-mse(test$rt, NN5_mae_predictions)
-
-R2(NN5_mae_predictions, test$rt, form = "traditional")
-R2(NN5_mse_predictions, test$rt, form = "traditional")
+NNet_1_mse_stats[[1]]$loss_stats
+NNet_1_mse_stats[[2]]$loss_stats
+NNet_1_mse_stats[[3]]$loss_stats
+
+NNet_1_mae_stats[[1]]$loss_stats
+NNet_1_mae_stats[[2]]$loss_stats
+NNet_1_mae_stats[[3]]$loss_stats
+
+##
+
+NNet_2_mse_stats <- NNet_fit_stats(pooled_panel, timeSlices, 2, "mse", batch_size = 512, 10)
+NNet_2_mae_stats <- NNet_fit_stats(pooled_panel, timeSlices, 2, "mae", batch_size = 512, 10)
+
+NNet_2_mse_stats[[1]]$loss_stats
+NNet_2_mse_stats[[2]]$loss_stats
+NNet_2_mse_stats[[3]]$loss_stats
+
+NNet_2_mae_stats[[1]]$loss_stats
+NNet_2_mae_stats[[2]]$loss_stats
+NNet_2_mae_stats[[3]]$loss_stats
+
+##
+
+NNet_3_mse_stats <- NNet_fit_stats(pooled_panel, timeSlices, 3, "mse", batch_size = 512, 10)
+NNet_3_mae_stats <- NNet_fit_stats(pooled_panel, timeSlices, 3, "mae", batch_size = 512, 10)
+
+NNet_3_mse_stats[[1]]$loss_stats
+NNet_3_mse_stats[[2]]$loss_stats
+NNet_3_mse_stats[[3]]$loss_stats
+
+NNet_3_mae_stats[[1]]$loss_stats
+NNet_3_mae_stats[[2]]$loss_stats
+NNet_3_mae_stats[[3]]$loss_stats
+
+##
+
+NNet_4_mse_stats <- NNet_fit_stats(pooled_panel, timeSlices, 4, "mse", batch_size = 32, 30)
+NNet_4_mae_stats <- NNet_fit_stats(pooled_panel, timeSlices, 4, "mae", batch_size = 32, 10)
+
+NNet_4_mse_stats[[1]]$loss_stats
+NNet_4_mse_stats[[2]]$loss_stats
+NNet_4_mse_stats[[3]]$loss_stats
+
+NNet_4_mae_stats[[1]]$loss_stats
+NNet_4_mae_stats[[2]]$loss_stats
+NNet_4_mae_stats[[3]]$loss_stats
+
+##
+
+NNet_5_mse_stats <- NNet_fit_stats(pooled_panel, timeSlices, 5, "mse", batch_size = 32, 30)
+NNet_5_mae_stats <- NNet_fit_stats(pooled_panel, timeSlices, 5, "mae", batch_size = 32, 20)
+
+NNet_5_mse_stats[[1]]$loss_stats
+NNet_5_mse_stats[[2]]$loss_stats
+NNet_5_mse_stats[[3]]$loss_stats
+
+NNet_5_mae_stats[[1]]$loss_stats
+NNet_5_mae_stats[[2]]$loss_stats
+NNet_5_mae_stats[[3]]$loss_stats
+
+# Other general observations
+# Increasing the number of layers is NOT good. Neural Network 5 has validation loss graphs that do not look right at all
+
+# Neural Networks WRT MAE are not good for highly non-linear specifications
+# Very unstable out of sample r squared values
 ```
 
 ```{r}
 # Variable Importance
 # Variable Important is defined as the reduction in out of sample R squared from setting a factor's signal to 0
 
-# Using linear model for now:
+# Unfortunately all models have slightly different predict methods for their respective model objects, so unless we want to mess with that (no), we'll have to do slightly different VI functions for all different models
 
-# Get test set
+# Linear Model
 
 lm_variable_importance <- function(pooled_panel, timeSlices, model_fit_stats) {
   variable_importance_list <- rep(list(0), 3)
@@ -1250,22 +998,24 @@ lm_variable_importance <- function(pooled_panel, timeSlices, model_fit_stats) {
     
     test_x_zero <- test_x
     test_x_zero[1] <- 0
+    
+    original_R2 <- R2(predict(model_fit_stats[[set]]$model, newdata = test_x), test$rt, form = "traditional")
+    
+    new_R2 <- R2(predict(model_fit_stats[[set]]$model, newdata = test_x_zero), test$rt, form = "traditional")
       
-    variable_importance <- data.frame(variable = colnames(test_x)[1], importance = (
-      R2(predict(model_fit_stats[[set]]$model, newdata = test_x), test$rt, form = "traditional") -
-        R2(predict(model_fit_stats[[set]]$model, newdata = test_x_zero), test$rt, form = "traditional")
-      )
-    )
+    variable_importance <- data.frame(variable = colnames(test_x)[1], importance = (original_R2 - new_R2))
     
     for (i in 2:ncol(test_x)) {
       test_x_zero <- test_x
       test_x_zero[i] <- 0
       
+      original_R2 <- R2(predict(model_fit_stats[[set]]$model, newdata = test_x), test$rt, form = "traditional")
+    
+      new_R2 <- R2(predict(model_fit_stats[[set]]$model, newdata = test_x_zero), test$rt, form = "traditional")
+      
       variable_importance <- rbind(variable_importance, 
                                    data.frame(variable = colnames(test_x)[i], 
-                                              importance = (R2(predict(model_fit_stats[[set]]$model, newdata = test_x), test$rt, form = "traditional") -
-                                                                       R2(predict(model_fit_stats[[set]]$model, newdata = test_x_zero), test$rt, form = "traditional")
-                                                            )
+                                              importance = (original_R2 - new_R2)
                                               )
                                    )
       
@@ -1274,6 +1024,8 @@ lm_variable_importance <- function(pooled_panel, timeSlices, model_fit_stats) {
   }
   variable_importance_list
 }
+
+# Testing Linear Model
 
 lm_mae_importance <- lm_variable_importance(pooled_panel, timeSlices, LM_stats_mae)
 
@@ -1285,45 +1037,121 @@ lm_mse_importance <- lm_variable_importance(pooled_panel, timeSlices, LM_stats_m
 lm_mse_importance[[1]] %>%
   arrange(importance)
 
-ggplot(variable_importance_list[[1]]) +
-  geom_point(aes(x = variable, y = importance)) +
-  theme(axis.text.x = element_text(angle = 90))
-```
+# Penalized Linear Model Variable Importance
 
-```{r}
-# Random Forest Case (because the predict method for rfsrc is a little different to the others)
-
-test <- pooled_panel %>%
-  filter(time %in% timeSlices[[3]]$test)
-
-test_x <- test[4:ncol(test)]
-
-test_x_zero <- test_x
-test_x_zero[1] <- 0
+ELN_variable_importance <- function(pooled_panel, timeSlices, model_fit_stats) {
+  variable_importance_list <- rep(list(0), 3)
   
-variable_importance <- data.frame(variable = colnames(test_x)[1], importance = (
-  R2(predict(RF_MSE[[3]]$model, newdata = test_x)$predicted, test$rt, form = "traditional") -
-    R2(predict(RF_MSE[[3]]$model, newdata = test_x_zero)$predicted, test$rt, form = "traditional")
-  )
-)
-
-for (i in 2:ncol(test_x)) {
-  test_x_zero <- test_x
-  test_x_zero[i] <- 0
-  
-  variable_importance <- rbind(variable_importance, 
-                               data.frame(variable = colnames(test_x)[i], 
-                                          importance = (R2(predict(RF_MSE[[3]]$model, newdata = test_x)$predicted, test$rt, form = "traditional") -
-                                                                   R2(predict(RF_MSE[[3]]$model, newdata = test_x_zero)$predicted, test$rt, form = "traditional")
-                                                        )
-                                          )
-                               )
-  
+  for (set in 1:3) {
+    test <- pooled_panel %>%
+      filter(time %in% timeSlices[[set]]$test)
+    
+    test_x <- test[4:ncol(test)]
+    
+    test_x_zero <- test_x
+    test_x_zero[1] <- 0
+      
+    original_R2 <- R2(predict(model_fit_stats[[set]]$model, newdata = test_x, lambda = model_fit_stats[[set]]$hyperparameters$lambda), test$rt, form = "traditional")
+    
+    new_R2 <- R2(predict(model_fit_stats[[set]]$model, newdata = test_x_zero, lambda = model_fit_stats[[set]]$hyperparameters$lambda), test$rt, form = "traditional")
+    
+    variable_importance <- data.frame(variable = colnames(test_x)[1], importance = (original_R2 - new_R2))
+    
+    for (i in 2:ncol(test_x)) {
+      test_x_zero <- test_x
+      test_x_zero[i] <- 0
+      
+      original_R2 <- R2(predict(model_fit_stats[[set]]$model, newdata = test_x, lambda = model_fit_stats[[set]]$hyperparameters$lambda), test$rt, form = "traditional")
+    
+      new_R2 <- R2(predict(model_fit_stats[[set]]$model, newdata = test_x_zero, lambda = model_fit_stats[[set]]$hyperparameters$lambda), test$rt, form = "traditional")
+      
+      variable_importance <- rbind(variable_importance, 
+                                   data.frame(variable = colnames(test_x)[i], 
+                                              importance = (original_R2 - new_R2), test$rt, form = "traditional")                                   )
+      
+    }
+    variable_importance_list[[set]] <- variable_importance
+  }
+  variable_importance_list
 }
 
-ggplot(variable_importance) +
-  geom_point(aes(x = variable, y = importance)) +
-  theme(axis.text.x = element_text(angle = 90))
+# Random Forest Variable Importance
+
+RF_variable_importance <- function(pooled_panel, timeSlices, model_fit_stats) {
+  variable_importance_list <- rep(list(0), 3)
+  
+  for (set in 1:3) {
+    test <- pooled_panel %>%
+      filter(time %in% timeSlices[[set]]$test)
+    
+    test_x <- test[4:ncol(test)]
+    
+    test_x_zero <- test_x
+    test_x_zero[1] <- 0
+    
+    original_R2 <- R2(predict(model_fit_stats[[set]]$model, newdata = test_x)$predicted, test$rt, form = "traditional")
+    
+    new_R2 <- R2(predict(model_fit_stats[[set]]$model, newdata = test_x_zero)$predicted, test$rt, form = "traditional")
+      
+    variable_importance <- data.frame(variable = colnames(test_x)[1], importance = (original_R2 - new_R2))
+    
+    for (i in 2:ncol(test_x)) {
+      test_x_zero <- test_x
+      test_x_zero[i] <- 0
+      
+      original_R2 <- R2(predict(model_fit_stats[[set]]$model, newdata = test_x)$predicted, test$rt, form = "traditional")
+    
+      new_R2 <- R2(predict(model_fit_stats[[set]]$model, newdata = test_x_zero)$predicted, test$rt, form = "traditional")
+      
+      variable_importance <- rbind(variable_importance, 
+                                   data.frame(variable = colnames(test_x)[i], 
+                                              importance = (original_R2 - new_R2)
+                                   )
+      )
+    }
+    variable_importance_list[[set]] <- variable_importance
+  }
+  variable_importance_list
+}
+
+# Neural Network Variable Importance
+
+NNet_variable_importance <- function(pooled_panel, timeSlices, model_fit_stats) {
+  variable_importance_list <- rep(list(0), 3)
+  
+  for (set in 1:3) {
+    test <- pooled_panel %>%
+      filter(time %in% timeSlices[[set]]$test)
+    
+    test_x <- test[4:ncol(test)]
+    
+    test_x_zero <- test_x
+    test_x_zero[1] <- 0
+      
+    variable_importance <- data.frame(variable = colnames(test_x)[1], importance = (
+      R2(predict(model_fit_stats[[set]]$model, newdata = test_x)$predicted, test$rt, form = "traditional") -
+        R2(predict(model_fit_stats[[set]]$model, newdata = test_x_zero)$predicted, test$rt, form = "traditional")
+      )
+    )
+    
+    for (i in 2:ncol(test_x)) {
+      test_x_zero <- test_x
+      test_x_zero[i] <- 0
+      
+      variable_importance <- rbind(variable_importance, 
+                                   data.frame(variable = colnames(test_x)[i], 
+                                              importance = (R2(predict(model_fit_stats[[set]]$model, newdata = test_x)$predicted, test$rt, form = "traditional") -
+                                                                       R2(predict(model_fit_stats[[set]]$model, newdata = test_x_zero)$predicted, test$rt, form = "traditional")
+                                                            )
+                                              )
+                                   )
+      
+    }
+    variable_importance_list[[set]] <- variable_importance
+  }
+  variable_importance_list
+}
+
 ```
 
 
