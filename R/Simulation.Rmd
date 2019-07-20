@@ -117,6 +117,10 @@ gen_W <- function(){
   #Turn B into a correlation matrix
   
   W <- cor(B)
+  
+  #This is just a mechaism to reduce the amount of correlation
+  
+  W[W != 1] <- W[W != 1]^2
   return(W)
 }
 
@@ -814,8 +818,6 @@ gen_predictor_z <- function(C, x){
 
 z_panel_g1_A1 <- gen_predictor_z(C, xt)
 
-#Yes bitch it's working
-
 # Bind Returns and Predictor Sets Together into one 2D dataframe, ready to be used for training models
 
 bind_rt_predictor <- function(rt_panel, z_panel) {
@@ -1040,8 +1042,8 @@ summary(sim_tune_statistics(gu_et_al_g1))
 ```
 
 ```{r, eval = FALSE}
-# Debug
-#Overall Dimensionality
+# Debug section for when something breaks, ignore
+# Overall Dimensionality
 N <- 200
 P_c <- 100
 Time <- 180
@@ -1170,14 +1172,12 @@ summary(sim_tune_statistics(g2_A3_panel))
 saveRDS(g2_A3_panel, file = "g2_A3.rds")
 rm(g2_A3_panel)
 
-# R squared values still a little too high. Cross sectional R squared has very high variance
-
 #G3
 #Remember that G3 has 4 underlying factors, adjust theta accordingly
 
 g3_A1_panel <- sim_panel_data(simN, 
                               char_rho_a = 0.5, char_rho_b = 1,
-                              cross_corr = 1, A1, xt_multi = 1, g_function = "g3", theta = matrix(c(0.015, 0.015, 0.015, 0.02), nrow = 1), 
+                              cross_corr = 0, A1, xt_multi = 0, g_function = "g3", theta = matrix(c(0.015, 0.015, 0.015, 0.02), nrow = 1), 
                               error_sv = 1, error_ep_sd = 0.05, 
                               error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
 summary(sim_tune_statistics(g3_A1_panel))

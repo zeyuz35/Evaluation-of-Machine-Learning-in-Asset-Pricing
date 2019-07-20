@@ -342,7 +342,7 @@ ELN_stats_mse[[3]]$model$alpha
 # This is much, much faster
 # DO NOT USE THE PREVIOUS IMPLEMENTATION
 # Do not specify a grid for lambda. Instead, let the algorithm determine its own sequence of lambda
-# Method: specify only a grid for alpha.
+# Method: specify only a grid for alpha. For each grid value of alpha, fit an ELN model and let LARS determine a suitable path of lambdas. Produce validation error statistics for each alpha and lambda value. Use the best combination for the final model
 
 alpha_grid <- seq(0, 1, 0.01)
 
@@ -914,7 +914,7 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
   NNet_stats
 }
 
-NNet_1_mse_stats <- NNet_fit_stats(pooled_panel, timeSlices, 1, "mse", batch_size = 32, 20)
+NNet_1_mse_stats <- NNet_fit_stats(pooled_panel, timeSlices, 1, "mse", batch_size = 512, 20)
 NNet_1_mae_stats <- NNet_fit_stats(pooled_panel, timeSlices, 1, "mae", batch_size = 64, 10)
 
 NNet_1_mse_stats[[1]]$loss_stats
@@ -1119,7 +1119,7 @@ RF_variable_importance <- function(pooled_panel, timeSlices, model_fit_stats) {
   variable_importance_list
 }
 
-# Neural Network Variable Importance TODO
+# Neural Network Variable Importance TODO, NOT YET WORKING
 
 NNet_variable_importance <- function(pooled_panel, timeSlices, model_fit_stats) {
   variable_importance_list <- rep(list(0), 3)
