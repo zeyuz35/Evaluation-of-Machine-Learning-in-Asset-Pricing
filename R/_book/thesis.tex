@@ -1,0 +1,94 @@
+% This is a LaTeX thesis template for Monash University.
+% to be used with Rmarkdown
+% This template was produced by Rob Hyndman
+% Version: 6 September 2016
+
+\documentclass{monashthesis}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Add any LaTeX packages and other preamble here if required
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\author{Joe Bloggs}
+\title{Thesis title}
+\studentid{12345678}
+\def\degreetitle{Bachelor of Commerce (Honours)}
+% Add subject and keywords below
+\hypersetup{
+     %pdfsubject={The Subject},
+     %pdfkeywords={Some Keywords},
+     pdfauthor={Joe Bloggs},
+     pdftitle={Thesis title},
+     pdfproducer={Bookdown with LaTeX}
+}
+
+
+\bibliography{thesisrefs}
+
+\begin{document}
+
+\pagenumbering{roman}
+
+\titlepage
+
+{\setstretch{1.2}\sf\tighttoc\doublespacing}
+
+\clearpage\pagenumbering{arabic}\setcounter{page}{0}
+
+\hypertarget{ch:intro}{%
+\chapter{Introduction}\label{ch:intro}}
+
+Placeholder
+
+\hypertarget{rmarkdown}{%
+\section{Rmarkdown}\label{rmarkdown}}
+
+\hypertarget{data}{%
+\section{Data}\label{data}}
+
+\hypertarget{figures}{%
+\section{Figures}\label{figures}}
+
+\hypertarget{results-from-analyses}{%
+\section{Results from analyses}\label{results-from-analyses}}
+
+\hypertarget{tables}{%
+\section{Tables}\label{tables}}
+
+\hypertarget{sec:expsmooth}{%
+\chapter{Exponential Smoothing}\label{sec:expsmooth}}
+
+\hypertarget{organizing-your-ideas}{%
+\section{Organizing your ideas}\label{organizing-your-ideas}}
+
+Imagine you are writing for your fellow Honours students. Topics that are well-known to them do not have to be included here. But things that they may not know about should be included. Resist the temptation to discuss everything you've read in the last year.
+
+Do not organize your chapter around the papers you have read with one section per paper. Instead, you should organize your chapters around themes, and within each theme provide a story explaining the development of ideas. It is usually helpful to plan out a table of contents first with major section headings.
+
+When you are discussing results from several papers or books, you will need to adopt a common notation to ensure your chapter makes sense. Do not use different notation for the same thing.
+
+\hypertarget{citations}{%
+\section{Citations}\label{citations}}
+
+All citations should be done using markdown notation as shown below. This way, your bibliography will be compiled automatically and correctly.
+
+Exponential smoothing was originally developed in the late 1950s \autocite{Brown59,Brown63,Holt57,Winters60}. Because of their computational simplicity and interpretability, they became widely used in practice.
+
+Empirical studies by \textcite{MH79} and \textcite{Metal82} found little difference in forecast accuracy between exponential smoothing and ARIMA models. This made the family of exponential smoothing procedures an attractive proposition \autocite[see][]{CKOS01}.
+
+The methods were less popular in academic circles until \textcite{OKS97} introduced a state space formulation of some of the methods, which was extended in \textcite{HKSG02} to cover the full range of exponential smoothing methods.
+
+\appendix
+
+\hypertarget{additional-stuff}{%
+\chapter{Additional stuff}\label{additional-stuff}}
+
+You might put some computer output here, or maybe additional tables.
+
+Note that line 5 must appear before your first appendix. But other appendices can just start like any other chapter.
+
+\printbibliography[heading=bibintoc]
+
+
+
+\end{document}

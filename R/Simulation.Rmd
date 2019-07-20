@@ -116,7 +116,7 @@ gen_W <- function(){
   
   #Turn B into a correlation matrix
   
-  W <- diag(B)^(-1/2)*B*diag(B)^(-1/2)
+  W <- cor(B)
   return(W)
 }
 
