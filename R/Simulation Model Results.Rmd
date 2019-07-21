@@ -1,0 +1,93 @@
+---
+title: "Simulation Model Results"
+author: "Ze Yu Zhong"
+date: "21/07/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+################
+##Load Libraries
+################
+
+library(tidyverse)
+library(keras)
+library(ggplot2)
+library(forecast)
+library(rlist)
+library(plm)
+library(Metrics)
+library(ranger)
+library(caret)
+
+#Parallel Computing
+library(foreach)
+library(doFuture)
+#Registering
+registerDoFuture()
+plan(multisession)
+
+set.seed(27935248)
+```
+
+```{r}
+# Load Datasets
+
+# Set how many realizations of datasets you wish to process
+
+# Actual Function
+# This function takes a dataset and:
+# Runs all possible models across mse and mae loss functions, does NOT save the models (for memory efficiency), and saves the loss statistics, actual forecasts, forecast residuals, and variable importance metrics into a list object
+
+# Initialize List Object
+
+
+# Load Dataset
+
+pooled_panel
+  
+# Linear Models
+LM_stats_mse <- LM_fit(pooled_panel, timeSlices, "mse")
+
+LM_stats_mae <- LM_fit(pooled_panel, timeSlices, "mae")
+  
+# Penalized Linear Models
+ELN_stats_mae <- ELN_fit_stats(alpha_grid, nlamb = 100, timeSlices, pooled_panel, loss_function = "mae")
+
+ELN_stats_mse <- ELN_fit_stats(alpha_grid, nlamb = 100, timeSlices, pooled_panel, loss_function = "mse")
+
+# Random Forests
+RF_MSE <- RF_fit_stats(f, pooled_panel, RF_grid, timeSlices, "mse")
+
+RF_MAE <- RF_fit_stats(f, pooled_panel, RF_grid, timeSlices, "mae")
+
+# Neural Networks
+
+NNet_1_mse_stats <- NNet_fit_stats(pooled_panel, timeSlices, 1, "mse", batch_size = 32, 20)
+
+NNet_1_mae_stats <- NNet_fit_stats(pooled_panel, timeSlices, 1, "mse", batch_size = 32, 20)
+
+
+NNet_2_mse_stats <- NNet_fit_stats(pooled_panel, timeSlices, 2, "mse", batch_size = 32, 20)
+NNet_2_mae_stats <- NNet_fit_stats(pooled_panel, timeSlices, 2, "mse", batch_size = 32, 20)
+
+NNet_3_mse_stats <- NNet_fit_stats(pooled_panel, timeSlices, 3, "mse", batch_size = 32, 20)
+NNet_3_mae_stats <- NNet_fit_stats(pooled_panel, timeSlices, 3, "mse", batch_size = 32, 20)
+
+NNet_4_mse_stats <- NNet_fit_stats(pooled_panel, timeSlices, 4, "mse", batch_size = 32, 20)
+NNet_4_mae_stats <- NNet_fit_stats(pooled_panel, timeSlices, 4, "mse", batch_size = 32, 20)
+
+NNet_5_mse_stats <- NNet_fit_stats(pooled_panel, timeSlices, 5, "mse", batch_size = 32, 20)
+NNet_5_mae_stats <- NNet_fit_stats(pooled_panel, timeSlices, 5, "mse", batch_size = 32, 20)
+```
+
+```{r}
+# Functions to process the raw loss statistics from earlier and create neat tables
+
+# Functions to visualize variable importance metrics from earlier
+
+# Functions to do Diebold Mariano Tests using forecast residuals from earlier
+```
+
+

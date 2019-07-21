@@ -85,6 +85,142 @@ pooled_panel <- gu_et_al_g1[[1]]$panel
 f <- panel_formula(pooled_panel)
 ```
 
+```{r}
+# Variable Importance Metric Functions
+# Given a single model and test set, return a variable importance dataframe (don't bother sorting them now)
+# Note that a training set is NOT needed because this is to be called AFTER the model is fit
+# These functions were originally written after the actul fitting functions were
+# These are used by the fitting functions, so they need to be declared before them
+
+# Similarly, different functions are needed for all model types because all the model objects have slightly different predict methods
+
+################################################
+# Linear Model
+LM_variable_importance <- function(test, timeSlices, lm_model) {
+  test_x <- test[4:ncol(test)]
+  
+  test_x_zero <- test_x
+  test_x_zero[1] <- 0
+    
+  original_R2 <- R2(predict(lm_model, newdata = test_x), test$rt, form = "traditional")
+    
+  new_R2 <- R2(predict(lm_model, newdata = test_x_zero), test$rt, form = "traditional")
+      
+  variable_importance <- data.frame(variable = colnames(test_x)[1], importance = (original_R2 - new_R2))
+    
+  for (i in 2:ncol(test_x)) {
+    test_x_zero <- test_x
+    test_x_zero[i] <- 0
+      
+    original_R2 <- R2(predict(lm_model, newdata = test_x), test$rt, form = "traditional")
+    
+    new_R2 <- R2(predict(lm_model, newdata = test_x_zero), test$rt, form = "traditional")
+      
+    variable_importance <- rbind(variable_importance, 
+                                 data.frame(variable = colnames(test_x)[i], 
+                                            importance = (original_R2 - new_R2)
+                                            )
+                                 )
+      
+  }
+  return(variable_importance)
+}
+
+# Penalized Linear Model
+
+ELN_variable_importance <- function(test, timeSlices, eln_model, alpha, lambda) {
+  test_x <- as.matrix(test[4:ncol(test)])
+    
+  test_x_zero <- test_x
+  test_x_zero[1] <- 0
+  text_x_zero <- as.matrix(test_x_zero)
+      
+  original_R2 <- R2(predict(eln_model, test_x, alpha = alpha, lambda = lambda), test$rt, form = "traditional")
+    
+  new_R2 <- R2(predict(eln_model, test_x_zero, alpha = alpha, lambda = lambda), test$rt, form = "traditional")
+    
+  variable_importance <- data.frame(variable = colnames(test_x)[1], importance = (original_R2 - new_R2))
+    
+  for (i in 2:ncol(test_x)) {
+    test_x_zero <- test_x
+    test_x_zero[i] <- 0
+      
+    original_R2 <- R2(predict(eln_model, test_x, alpha = alpha, lambda = lambda), test$rt, form = "traditional")
+    
+    new_R2 <- R2(predict(eln_model, test_x_zero, alpha = alpha, lambda = lambda), test$rt, form = "traditional")
+      
+    variable_importance <- rbind(variable_importance, 
+                                 data.frame(variable = colnames(test_x)[i], 
+                                            importance = (original_R2 - new_R2))
+                                 )
+  }
+  return(variable_importance)
+}
+
+# Random Forest
+
+RF_variable_importance <- function(test, timeSlices, rf_model) {
+  test_x <- test[4:ncol(test)]
+    
+  test_x_zero <- test_x
+  test_x_zero[1] <- 0
+    
+  original_R2 <- R2(predict(rf_model, newdata = test_x)$predicted, test$rt, form = "traditional")
+    
+  new_R2 <- R2(predict(rf_model, newdata = test_x_zero)$predicted, test$rt, form = "traditional")
+      
+  variable_importance <- data.frame(variable = colnames(test_x)[1], importance = (original_R2 - new_R2))
+    
+  for (i in 2:ncol(test_x)) {
+    test_x_zero <- test_x
+    test_x_zero[i] <- 0
+      
+    original_R2 <- R2(predict(rf_model, newdata = test_x)$predicted, test$rt, form = "traditional")
+    
+    new_R2 <- R2(predict(rf_model, newdata = test_x_zero)$predicted, test$rt, form = "traditional")
+      
+    variable_importance <- rbind(variable_importance, 
+                                 data.frame(variable = colnames(test_x)[i], 
+                                            importance = (original_R2 - new_R2)
+                                )
+    )
+  }
+  return(variable_importance)
+}
+
+# Neural Network
+
+NNet_variable_importance <- function(test, timeSlices, nnet_model) {
+  test_x <- test[4:ncol(test)]
+  
+  test_x_zero <- test_x
+  test_x_zero[1] <- 0
+    
+  original_R2 <- R2(predict(nnet_model, as.matrix(test_x)), test$rt, form = "traditional")
+    
+  new_R2 <- R2(predict(nnet_model, as.matrix(test_x_zero)), test$rt, form = "traditional")
+      
+  variable_importance <- data.frame(variable = colnames(test_x)[1], importance = (original_R2 - new_R2))
+    
+  for (i in 2:ncol(test_x)) {
+    test_x_zero <- test_x
+    test_x_zero[i] <- 0
+      
+    original_R2 <- R2(predict(nnet_model, as.matrix(test_x)), test$rt, form = "traditional")
+    
+    new_R2 <- R2(predict(nnet_model, as.matrix(test_x_zero)), test$rt, form = "traditional")
+      
+    variable_importance <- rbind(variable_importance, 
+                                 data.frame(variable = colnames(test_x)[i], 
+                                            importance = (original_R2 - new_R2)
+                                            )
+                                 )
+      
+  }
+  return(variable_importance)
+}
+```
+
 ```{r pooled_ols}
 #Linear model wrt MSE
 
@@ -99,7 +235,9 @@ LM_fit <- function(pooled_panel, timeSlices, loss_function) {
                             #Other useful things
                             forecasts = 0,
                             forecast_resids = 0,
-                            model = 0)
+                            model = 0,
+                            #Variable Importance
+                            variable_importance = 0)
     
     #Load Training, validation and test sets
     train <- pooled_panel %>%
@@ -149,6 +287,8 @@ LM_fit <- function(pooled_panel, timeSlices, loss_function) {
     LM_stats[[set]]$forecasts <- test_predict
     #Forecast Residuals
     LM_stats[[set]]$forecast_resids <- test$rt - test_predict
+    #Variable Importance
+    LM_stats[[set]]$variable_importance <- LM_variable_importance(test, timeSlices, lm)
   }
   return(LM_stats)
 }
@@ -160,6 +300,8 @@ LM_stats_mae <- LM_fit(pooled_panel, timeSlices, "mae")
 LM_stats_mse[[1]]$loss_stats
 LM_stats_mse[[2]]$loss_stats
 LM_stats_mse[[3]]$loss_stats
+
+LM_stats_mse[[1]]$variable_importance %>% arrange(desc(importance))
 
 LM_stats_mae[[1]]$loss_stats
 LM_stats_mae[[2]]$loss_stats
@@ -422,7 +564,8 @@ ELN_fit_stats <- function(alpha_grid, nlamb, timeSlices, pooled_panel, loss_func
                              forecasts = 0,
                              forecast_resids = 0,
                              model = 0,
-                             hyperparameters = 0)
+                             hyperparameters = 0,
+                             variable_importance = 0)
       
     #Model
     model <- ELN_model_grid[[best_model_params$list_index]]$model
@@ -458,6 +601,9 @@ ELN_fit_stats <- function(alpha_grid, nlamb, timeSlices, pooled_panel, loss_func
     
     #Forecast residuals
     ELN_stats[[set]]$forecast_resids <- test_y - predict(model, test_x, alpha = best_model_params$alpha, lambda = best_model_params$lambda)
+    
+    #Variable Importance
+    ELN_stats[[set]]$variable_importance <- ELN_variable_importance(test, timeSlices, model, alpha = best_model_params$alpha, lambda = best_model_params$lambda)
   }
   return(ELN_stats)
 }
@@ -480,6 +626,9 @@ ELN_stats_mse[[2]]$model$alpha
 ELN_stats_mse[[3]]$loss_stats
 ELN_stats_mse[[3]]$model$alpha
 
+ELN_stats_mse[[1]]$variable_importance %>% arrange(desc(importance))
+ELN_stats_mse[[1]]$model
+
 ELN_stats_mae[[1]]$loss_stats
 ELN_stats_mae[[1]]$model$alpha
 
@@ -492,12 +641,7 @@ ELN_stats_mae[[3]]$model$alpha
 # Notes
 # Mostly consistent results with the previous implementation, very minor differences in optimal alpha values chosen
 # Similarly, optimal alpha values are highly unstable
-
-# Observations regards to data
-
-# g3 Non linear setting
-# ELN + MSE does worse than ELN + MAE
-# Both seem to do much better as training sample increases
+# Variable importance methodology doesn't seem to work
 ```
 
 ```{r random_forest}
@@ -984,7 +1128,9 @@ NNet_5_mae_stats[[3]]$loss_stats
 # Very unstable out of sample r squared values
 ```
 
-```{r}
+```{r, eval = FALSE}
+# Deprecated but still works, kept for legacy purposes
+# New approach which makes everything neater: calculate variable importance metrics inside the model_fit_stats functions
 # Variable Importance
 # Variable Important is defined as the reduction in out of sample R squared from setting a factor's signal to 0
 
@@ -1039,7 +1185,7 @@ lm_mae_importance[[1]] %>%
 
 lm_mse_importance <- lm_variable_importance(pooled_panel, timeSlices, LM_stats_mse)
 
-lm_mse_importance[[1]] %>%
+lm_mse_importance[[2]] %>%
   arrange(importance)
 
 # Penalized Linear Model Variable Importance
@@ -1156,7 +1302,9 @@ NNet_variable_importance <- function(pooled_panel, timeSlices, model_fit_stats) 
   }
   variable_importance_list
 }
-
 ```
+
+
+
 
 
