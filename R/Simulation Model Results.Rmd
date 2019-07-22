@@ -39,6 +39,9 @@ set.seed(27935248)
 # Actual Function
 # This function takes a dataset and:
 # Runs all possible models across mse and mae loss functions, does NOT save the models (for memory efficiency), and saves the loss statistics, actual forecasts, forecast residuals, and variable importance metrics into a list object
+# Fairly straightforward, as the model_fit functions from before do everything for you already
+# Ie acts as a very big wrapper/for loop
+# Note that a lot number of the models are not multithreaded, so a foreach loop will be used so that batches of realizations can be run
 
 # Initialize List Object
 
@@ -49,25 +52,20 @@ pooled_panel
   
 # Linear Models
 LM_stats_mse <- LM_fit(pooled_panel, timeSlices, "mse")
-
 LM_stats_mae <- LM_fit(pooled_panel, timeSlices, "mae")
   
 # Penalized Linear Models
 ELN_stats_mae <- ELN_fit_stats(alpha_grid, nlamb = 100, timeSlices, pooled_panel, loss_function = "mae")
-
 ELN_stats_mse <- ELN_fit_stats(alpha_grid, nlamb = 100, timeSlices, pooled_panel, loss_function = "mse")
 
 # Random Forests
 RF_MSE <- RF_fit_stats(f, pooled_panel, RF_grid, timeSlices, "mse")
-
 RF_MAE <- RF_fit_stats(f, pooled_panel, RF_grid, timeSlices, "mae")
 
 # Neural Networks
 
 NNet_1_mse_stats <- NNet_fit_stats(pooled_panel, timeSlices, 1, "mse", batch_size = 32, 20)
-
 NNet_1_mae_stats <- NNet_fit_stats(pooled_panel, timeSlices, 1, "mse", batch_size = 32, 20)
-
 
 NNet_2_mse_stats <- NNet_fit_stats(pooled_panel, timeSlices, 2, "mse", batch_size = 32, 20)
 NNet_2_mae_stats <- NNet_fit_stats(pooled_panel, timeSlices, 2, "mse", batch_size = 32, 20)

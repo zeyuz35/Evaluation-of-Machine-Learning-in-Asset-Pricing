@@ -145,7 +145,8 @@ He_Kelly_Manela_Factors_monthly_RAW <- read_csv("data/factors/He_Kelly_Manela_Fa
 # Not too sure what "workhorse" factors are, this is just the 5 factors for now as it seems like a superset of all of their factors
 F_F_Research_Data_5_Factors_2x3_RAW <- read_csv("data/factors/F-F_Research_Data_5_Factors_2x3.csv",
                                                 skip = 3, n_max = 671) %>%
-  rename(Time = X1)
+  mutate(Time = as.yearmon(as.character(X1), "%Y%m")) %>%
+  select(-X1)
 ```
 
 ```{r}

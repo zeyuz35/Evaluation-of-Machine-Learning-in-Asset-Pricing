@@ -109,17 +109,15 @@ gen_W <- function(){
   )
   
   #Use Lambda to create B matrix
-  
   B <- (Lambda) %*% t(Lambda)
-  B <- B + 1/10*diag(nrow = nrow(B))
+  B <- B + 2/10*diag(nrow = nrow(B))
   
-  #Turn B into a correlation matrix
+  # B is now a positive semi definite matrix
+  # It is therefore a valid covariance matrix
   
-  W <- cor(B)
-  
-  #This is just a mechaism to reduce the amount of correlation
-  
-  W[W != 1] <- W[W != 1]^2
+  #Decompose it via cholesky to give the lower triangle matrix
+  # R by defualt gives the upper triangle, therefore it needs to be transposed
+  W <- t(chol(B))
   return(W)
 }
 
