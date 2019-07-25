@@ -35,162 +35,50 @@ set.seed(27935248)
 
 ```{r}
 # Load RAW data
+# This is about ~ 3GB in size in total
+datashare_RAW <- read_csv("data/datashare/datashare.csv",
+                          # Always make sure to force col_types so that read_csv doesn't assume weird stuff
+                          col_types = cols(.default = "d"))
 
-# 17 Industry Portfolios
-X17_Industry_Portfolios_RAW <- read_csv("data/test_assets/17_Industry_Portfolios.CSV", 
-                                        skip = 11, n_max = 1115, na = c("99.99", "999")) %>%
-  rename(Time = X1)
+datashare <- datashare_RAW %>%
+  mutate(Time = as.yearmon(as.character(DATE), "%Y%m%d")) #%>%
+  #select(-DATE)
 
-# 25 Portfolios formed on Size and Book to Market Ratio
-X25_Portfolios_5x5_RAW <- read_csv("data/test_assets/25_Portfolios_5x5.csv",
-                                   skip = 15, n_max = 1115, na = c("99.99", "999")) %>%
-  rename(Time = X1)
+# Load RAW Welch Goyal Data
+# Note that Gu et al only used:
+# Dividend price ratio dp, earnings price ratio ep, book to market ratio bm,
+# net equity expansion ntis, Treasury bill rate tbl, term spread tms,
+# Default spread dfy, stock variance svar
+PredictorData2017_RAW <- read_excel("data/factors/PredictorData2017.xlsx", 
+                                    na = "NaN")
 
-# 25 Portfolios formed on Size and Market Accrual
-X25_Portfolios_ME_AC_5x5_RAW <- read_csv("data/test_assets/25_Portfolios_ME_AC_5x5.csv",
-                                         skip = 18, n_max = 671, na = c("99.99", "999")) %>%
-  rename(Time = X1)
-
-# 25 Portfolios formed on Market Size and Beta
-X25_Portfolios_ME_BETA_5x5_RAW <- read_csv("data/test_assets/25_Portfolios_ME_BETA_5x5.csv",
-                                       skip = 16, n_max = 671, na = c("99.99", "999")) %>%
-  rename(Time = X1)
-
-# 25 Portfolios formed on Market Size and Momentum (aka priors)
-X25_Portfolios_ME_Prior_12_2_RAW <- read_csv("data/test_assets/25_Portfolios_ME_Prior_12_2.csv",
-                                             skip = 11, n_max = 1109, na = c("99.99", "999")) %>%
-  rename(Time = X1)
-
-# 35 Portfolios formed on Market Size and Net Issuance
-# Special Note: on Fama/French Website it's called 25 portfolios, but actually has 35 portfolios
-X25_Portfolios_ME_NI_5x5_RAW <- read_csv("data/test_assets/25_Portfolios_ME_NI_5x5.csv",
-                                         skip = 18, n_max = 671, na = c("99.99", "999")) %>%
-  rename(Time = X1)
-
-# 25 Portfolios formed on Operating Profitability and Investment
-X25_Portfolios_OP_INV_5x5_RAW <- read_csv("data/test_assets/25_Portfolios_OP_INV_5x5.csv",
-                                      skip = 18, n_max = 671, na = c("99.99", "999")) %>%
-  rename(Time = X1)
-
-# 25 Portfolios formed on Market Size and Variance
-X25_Portfolios_ME_VAR_5x5_RAW <- read_csv("data/test_assets/25_Portfolios_ME_VAR_5x5.csv",
-                                      skip = 19, n_max = 671, na = c("99.99", "999")) %>%
-  rename(Time = X1)
-
-# Using full join from dplyr to join all of these together
-# This only takes up ~1MB in memory currently
-Test_Assets_RAW <- X17_Industry_Portfolios_RAW %>%
-  full_join(X25_Portfolios_5x5_RAW, by = "Time") %>%
-  full_join(X25_Portfolios_ME_AC_5x5_RAW, by = "Time") %>%
-  full_join(X25_Portfolios_ME_BETA_5x5_RAW, by = "Time") %>%
-  full_join(X25_Portfolios_ME_Prior_12_2_RAW, by = "Time") %>%
-  full_join(X25_Portfolios_ME_NI_5x5_RAW, by = "Time") %>%
-  full_join(X25_Portfolios_OP_INV_5x5_RAW, by = "Time") %>%
-  full_join(X25_Portfolios_ME_VAR_5x5_RAW, by = "Time")
-
-# This needs to be joined with our factor set later, so for conevenience we'll convert the Time variable into yearmon format
-Test_Assets_RAW$Time <- as.yearmon(as.character(Test_Assets_RAW$Time), "%Y%m")
-  
-```
-
-```{r}
-# Load RAW factor Sets
-
-########################
-# AQR Factors
-########################
-
-# These unfortunately all have the exact same colnames despite being different factors
-# Change the format to factor_originalcolname
-# E.g. BAB_USA, HML_Devil_USA, QMJ_USA, etc
-
-# Betting Against Beta
-Betting_Against_Beta_Equity_Factors_Monthly_RAW <- read_excel("data/factors/Betting Against Beta Equity Factors Monthly.xlsx", 
-                                                              sheet = "BAB Factors", skip = 18) %>%
-  mutate(Time = as.yearmon(as.character(DATE), "%m/%d/%Y")) %>%
-  select(-DATE)
-
-# HMl Devil
-The_Devil_in_HMLs_Details_Factors_Monthly_RAW <- read_excel("data/factors/The Devil in HMLs Details Factors Monthly.xlsx", 
-                                                            sheet = "HML Devil", skip = 18) %>%
-  mutate(Time = as.yearmon(as.character(DATE), "%m/%d/%Y")) %>%
-  select(-DATE)
-
-# Quality Minus Junk
-Quality_Minus_Junk_Factors_Monthly_RAW <- read_excel("data/factors/Quality Minus Junk Factors Monthly.xlsx", 
-                                                     sheet = "QMJ Factors", skip = 18) %>%
-  mutate(Time = as.yearmon(as.character(DATE), "%m/%d/%Y")) %>%
-  select(-DATE)
-
-#######################
-#Pastor and Stambuagh Liquidity
-#######################
-liq_data_1962_2018_RAW <- read_delim("data/factors/liq_data_1962_2018.txt", 
-                                     "\t", escape_double = FALSE, na = "-99", 
-                                     trim_ws = TRUE, skip = 10) %>%
-  mutate( Time = as.yearmon(as.character(`% Month`), "%Y%m")) %>%
-  select(-`% Month`)
-
-########################
-# He et al Intermediary Asset Pricing Factors
-########################
-# By far the cleanest data
-He_Kelly_Manela_Factors_monthly_RAW <- read_csv("data/factors/He_Kelly_Manela_Factors/He_Kelly_Manela_Factors_monthly.csv") %>%
+PredictorData2017 <- PredictorData2017_RAW %>%
   mutate(Time = as.yearmon(as.character(yyyymm), "%Y%m")) %>%
-  select(-yyyymm)
+  select(-yyyymm) %>%
+  # Dividend price ratio is the difference between the log of dividends and the log of prices.
+  mutate(dp = abs(log(D12) - log(Index))) %>%
+  # earnings price ratio is the difference between the log of earnings and the log of prices.
+  mutate(ep = abs(log(E12) - log(Index))) %>%
+  # Term Spread is the difference between long term yield on gov bonds and treasury bills
+  mutate(tms = lty - tbl) %>%
+  # Default spread is the difference betwen difference between BAA and AAA-rated corporate bond yields
+  mutate(dfy = abs(BAA - AAA)) %>%
+  # Rename b/m to bm
+  rename(bm = `b/m`)
 
-########################
-# Fama French Workhorse Factor
-########################
-# Not too sure what "workhorse" factors are, this is just the 5 factors for now as it seems like a superset of all of their factors
-F_F_Research_Data_5_Factors_2x3_RAW <- read_csv("data/factors/F-F_Research_Data_5_Factors_2x3.csv",
-                                                skip = 3, n_max = 671) %>%
-  mutate(Time = as.yearmon(as.character(X1), "%Y%m")) %>%
-  select(-X1)
+# Subset so that we have the predictors we actually care about
+macro_predictors <- PredictorData2017 %>%
+  select(Time, dp, ep, bm, ntis, tbl, tms, dfy, svar)
+  
+
+#Summary Statistics
+
+length(unique(datashare$permno))
+# There are 29892 unique stocks to begin with
+# There are 94 lagged characteristics/factors
+
+# It seems as though that data is only fully available for some stocks in the dataset
+# Absolutely no clue how Gu et al dealt with missing data issues
+df_10006 <- datashare %>%
+  filter(permno == 10006)
 ```
-
-```{r}
-##############################
-# Building our own Factor Sets
-##############################
-```
-
-
-
-```{r}
-# Datasets have differing number of rows due to data availability
-# Therefore easier to clean each dataset individually, then rbind them at the end
-
-# Make Raw data tidy
-# All data is in the same format, so it's neater to code this up in terms of a function
-
-fama_french_tidy <- function(dataframe) {
-  dataframe <- dataframe %>%
-    gather("Portfolio", "Return", -Time)
-  dataframe$Time <- as.yearmon(as.character(dataframe$Time), "%Y%m")
-  return(dataframe)
-}
-
-X17_Industry_Portfolios <- fama_french_tidy(X17_Industry_Portfolios_RAW)
-X25_Portfolios_5x5 <- fama_french_tidy(X25_Portfolios_5x5_RAW)
-X25_Portfolios_ME_AC_5x5 <- fama_french_tidy(X25_Portfolios_ME_AC_5x5_RAW)
-X25_Portfolios_ME_BETA_5x5 <- fama_french_tidy(X25_Portfolios_ME_BETA_5x5_RAW)
-X25_Portfolios_ME_Prior_12_2 <- fama_french_tidy(X25_Portfolios_ME_Prior_12_2_RAW)
-X25_Portfolios_ME_NI_5x5 <- fama_french_tidy(X25_Portfolios_ME_NI_5x5_RAW)
-X25_Portfolios_OP_INV_5x5 <- fama_french_tidy(X25_Portfolios_OP_INV_5x5_RAW)
-X25_Portfolios_ME_VAR_5x5 <- fama_french_tidy(X25_Portfolios_ME_VAR_5x5_RAW)
-
-#rbind all the tidy portfolios together
-
-Real_Panel_Dataset <- rbind(X17_Industry_Portfolios,
-                            X25_Portfolios_5x5,
-                            X25_Portfolios_ME_AC_5x5,
-                            X25_Portfolios_ME_BETA_5x5,
-                            X25_Portfolios_ME_Prior_12_2,
-                            X25_Portfolios_ME_NI_5x5,
-                            X25_Portfolios_OP_INV_5x5,
-                            X25_Portfolios_ME_VAR_5x5)
-
-```
-
-

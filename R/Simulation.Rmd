@@ -793,7 +793,7 @@ panel_tune_stats(rt_panel_g1_A1, g1_panel, g1_factor_panel)
 # Given a return series panel, its signal (non-error component), and its corresponding factors (that are NOT interacted with xt), return its mean individual time series R squared, mean annualized volatility, cross sectional r squared and predictive r squared
 # This is easy, because the factor panel not interacted with xt is just the C panel
 
-panel_tune_stats <- function(return_panel, signal_panel, factor_panel, g_function) {
+panel_tune_stats <- function(return_panel, signal_panel, factor_panel) {
   #Initialize
   tune_stats <- data.frame(time_series_fitted.rsquare = 0, annual_vol = 0, true_rsquare = 0, cross_section_rsquare = 0)
   factor_panel <- factor_panel[, , -1]
@@ -809,7 +809,7 @@ panel_tune_stats <- function(return_panel, signal_panel, factor_panel, g_functio
     Fits <- matrix(0, Time, N)
     
     #This stores all the BETAS, NOT the constant
-    Coeff_Betas <- matrix(0, N, 3)
+    Coeff_Betas <- matrix(0, N, 4)
     Xs_bar <- matrix(0, N, ncol(factor_panel))
     R_bar <- matrix(0, N, 1)
     Resids <- matrix(0, Time, N)
@@ -836,18 +836,8 @@ panel_tune_stats <- function(return_panel, signal_panel, factor_panel, g_functio
       # Save all the betas except for the constant, slightly more clever way that handles different number of true factors
       # Save Only the betas of the true factors (to achieve lower cross sectional r squared)
       # Due to the way they set up the predictor set, it does not actually have some of the exact factors
-      # Both cases are actually the same then, whoops
-      # g1 case
-      # c1, c2, and c3*xt
-      if (g_function == "g1") {
-        Coeff_Betas[i, ] <- as.numeric(fit$coefficients[2, 3, 4, 104])
-      }
-      # g2 case
-      # c1, c2
-      else {
-        Coeff_Betas[i, ] <- as.numeric(fit$coefficients[2, 3, 4, 104])
-      }
       
+      Coeff_Betas[i, ] <- as.numeric(fit$coefficients[1:4])
       
       Resids[, i] <- fit$residuals
       SSR[i, 1] <- sum(Resids[, i]^2)
@@ -915,7 +905,7 @@ rt_panel_g1_A1 <- g1_panel + error_nosv
 
 # z_panel_g1_A1 <- gen_predictor_z(C, xt)
 
-panel_tune_stats(rt_panel_g1_A1, g1_panel, g1_factor_panel)
+panel_tune_stats(rt_panel_g1_A1, g1_panel, C)
 ```
 
 ```{r function_build_predictor}
@@ -1054,10 +1044,10 @@ sim_panel_data <- function(sim_N,
     # Statistics
     
     # Old way
-    sim$statistics <- panel_tune_stats(rt_panel, g_panel, g_factor_panel)
+    # sim$statistics <- panel_tune_stats(rt_panel, g_panel, g_factor_panel)
     
     # New Alternative
-    # sim$statistics <- panel_tune_stats(rt_panel, g_panel, C, g_function)
+    sim$statistics <- panel_tune_stats(rt_panel, g_panel, C)
     
     sim
   }
@@ -1218,7 +1208,7 @@ P_c <- 100
 Time <- 180
 
 #Number of realizations
-simN <- 30
+simN <- 10
 
 #Gu et al's original specfications, recreated
 
