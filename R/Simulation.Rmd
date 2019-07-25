@@ -81,12 +81,15 @@ gen_C_bar <- function(rho_a, rho_b){
   #Initialize am empty array with i, j, t indexing
   
   C_bar <- array(data = 0, dim = c(N, P_c, (Time+2)), dimnames = list(stock_dim, c_dim, time_dim))
-
+  
+  # Not stated in Gu et al's paper, but found in their source code
+  # the error term here should be normally distributed with (1-rho^2) variance
+  # This results in a much smaller error term in general
   rho <- runif(P_c, rho_a, rho_b)
   
   for (t in 1:(Time+1)) {
     for (j in 1:P_c) {
-      C_bar[, j, t+1] <- C_bar[, j, t] * rho[j] + rnorm(N, 0, 1)
+      C_bar[, j, t+1] <- C_bar[, j, t] * rho[j] + rnorm(N, 0, sqrt(1-rho[j]^2))
     }
   }
   
@@ -110,7 +113,7 @@ gen_W <- function(){
   
   #Use Lambda to create B matrix
   B <- (Lambda) %*% t(Lambda)
-  B <- B + 2/10*diag(nrow = nrow(B))
+  B <- B + 1/10*diag(nrow = nrow(B))
   
   # B is now a positive semi definite matrix
   # It is therefore a valid covariance matrix
@@ -174,9 +177,13 @@ C_hat <- gen_C_hat(C_bar)
 
 #No Cross Sectional Correlation
 C <- gen_C(C_bar)
+# We can check this via the following that there is indeed very low levels of correlation among factors
+# cor(C[, , 1])
 
 # Cross Sectional Correlation
-#C <- gen_C(C_hat)
+C <- gen_C(C_hat)
+# We can similarly check this via the the following that there is a much larger degree correlation among factors
+# cor(C[, , 1])
 ```
 
 ```{r function_generate_xt_multivariate}
@@ -240,7 +247,8 @@ xt <- gen_xt(A1)
 ```
 
 ```{r function_univariate_xt}
-#xt function, just for simplicity
+# Gu et al's univariate xt series
+# We could make this take an A matrix and make it reduce down, but that's a little bit too complex for no real payoff
 
 gen_xt_univariate <- function(){
   
@@ -250,12 +258,11 @@ gen_xt_univariate <- function(){
   #Initialize
   xt <- array(0, dim = c(1, 1, Time), dimnames = list(c("row"), x_dim, time_dim))
   rho <- 0.95
-  ut_sd <- sqrt(1 -rho^2)
   
-  xt[1, 1, 1] <- rnorm(1, mean = 0, sd = ut_sd)
+  xt[1, 1, 1] <- rnorm(1, mean = 0, sd = sqrt(1 - rho^2))
   
   for (t in 2:(Time)) {
-    xt[1, 1, t] <- xt[t-1]*rho + rnorm(1, mean = 0, sd = ut_sd)
+    xt[1, 1, t] <- xt[t-1]*rho + rnorm(1, mean = 0, sd = sqrt(1 - rho^2))
   }
   
   return(xt)
@@ -689,8 +696,6 @@ panel_tune_stats <- function(return_panel, signal_panel, true_factor_panel) {
     
     annual_vol <- matrix(0, N, 1)
     
-    #Done for the g1 case for now
-    
     #First run individual time series regressions
     for (i in 1:N) {
       #True Returns
@@ -710,6 +715,139 @@ panel_tune_stats <- function(return_panel, signal_panel, true_factor_panel) {
       
       #Save all the betas except for the constant, slightly more clever way that handles different number of true factors
       Coeff_Betas[i, ] <- as.numeric(fit$coefficients[-1])
+      
+      Resids[, i] <- fit$residuals
+      SSR[i, 1] <- sum(Resids[, i]^2)
+      SST[i, 1] <- sum((Rs-mean(Rs))^2)
+      
+      Rsquared[i, 1] <- summary(fit)$r.squared
+      
+      #annualized volatility
+      
+      annual_vol[i] <- sd(Rs) * sqrt(12)
+    }
+    
+  tune_stats$time_series_fitted.rsquare <- mean(Rsquared)
+    
+  tune_stats$annual_vol <- mean(annual_vol)
+  
+  #Predictive R Squared
+  
+  tune_stats$true_rsquare <- R2(signal_panel, return_panel, form = "traditional")
+    
+    # David's approach at doing true (predictive) r squared
+    
+    # val <- g1(C,x,theta)
+    # true_res <- rowSums((rt - val)^2)
+    # true_sst <- rowSums((rt - rowMeans(rt))^2)
+    # true_rRsquared <- 1 - (sum(true_res)/sum(true_sst))
+    
+    # fitted_Rsquared <- 1 - (sum(SSR)/sum(SST))
+    
+  # Cross Sectional R squared
+    
+    R_bar <- rowMeans(return_panel)
+    df_new <- data.frame(R_bar, Coeff_Betas) 
+    
+    cross_fit <- lm(R_bar ~ Coeff_Betas, df_new) 
+    
+  tune_stats$cross_section_rsquare <- summary(cross_fit)$r.squared
+  
+  return(tune_stats)
+}
+
+# Testing
+
+xt_univariate <- gen_xt_univariate()
+
+#Generate the true underlying factors first
+g1_factor_panel <- gen_g_factor_panel("g1", C, xt)
+
+#Then pass them through to multiply them by theta to get g()
+g1_panel <- gen_g_panel(g1_factor_panel, theta = matrix(c(0.04, 0.035, 0.01), nrow = 1))
+
+#Generate the errors
+
+#SV version
+error_sv <- gen_error(sv = 1, ep_sd = 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363), C, v_sd = 0.05)
+
+#Non-SV version
+error_nosv <- gen_error(sv = 0, ep_sd = 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363), C, v_sd = 0.05)
+
+#Finally generate a returns panel
+
+rt_panel_g1_A1 <- g1_panel + error_nosv
+
+# Generate a predictor panel
+
+# z_panel_g1_A1 <- gen_predictor_z(C, xt)
+
+panel_tune_stats(rt_panel_g1_A1, g1_panel, g1_factor_panel)
+```
+
+```{r tune_stats_function_alternative, eval = FALSE}
+############################
+# Function Form
+############################
+# Alternative method
+# Given a return series panel, its signal (non-error component), and its corresponding factors (that are NOT interacted with xt), return its mean individual time series R squared, mean annualized volatility, cross sectional r squared and predictive r squared
+# This is easy, because the factor panel not interacted with xt is just the C panel
+
+panel_tune_stats <- function(return_panel, signal_panel, factor_panel, g_function) {
+  #Initialize
+  tune_stats <- data.frame(time_series_fitted.rsquare = 0, annual_vol = 0, true_rsquare = 0, cross_section_rsquare = 0)
+  factor_panel <- factor_panel[, , -1]
+  
+  ########
+  ## Time Series + Annual Vol
+  ########
+  
+    #Empty Matrices to be used
+    Rsquared <- matrix(0, N, 1)
+    SSR <- matrix(0, N, 1)
+    SST <- matrix(0, N, 1)
+    Fits <- matrix(0, Time, N)
+    
+    #This stores all the BETAS, NOT the constant
+    Coeff_Betas <- matrix(0, N, 3)
+    Xs_bar <- matrix(0, N, ncol(factor_panel))
+    R_bar <- matrix(0, N, 1)
+    Resids <- matrix(0, Time, N)
+    
+    annual_vol <- matrix(0, N, 1)
+    
+    #First run individual time series regressions
+    for (i in 1:N) {
+      #True Returns
+      Rs <- return_panel[i, , ]
+      R_bar[i, 1] <- mean(Rs)
+      
+      #True Factor Set
+      Xs <- t(factor_panel[i, , ])
+      
+      #Not too sure what this is doing, not used anywhere else
+      Xs_bar[i, ] <- colMeans(Xs)
+      
+      df <- data.frame(Rs, Xs)
+      
+      fit <- lm(Rs ~., df)
+      Fits[, i] <- fit$fitted.values
+      
+      # Save all the betas except for the constant, slightly more clever way that handles different number of true factors
+      # Save Only the betas of the true factors (to achieve lower cross sectional r squared)
+      # Due to the way they set up the predictor set, it does not actually have some of the exact factors
+      # Both cases are actually the same then, whoops
+      # g1 case
+      # c1, c2, and c3*xt
+      if (g_function == "g1") {
+        Coeff_Betas[i, ] <- as.numeric(fit$coefficients[2, 3, 4, 104])
+      }
+      # g2 case
+      # c1, c2
+      else {
+        Coeff_Betas[i, ] <- as.numeric(fit$coefficients[2, 3, 4, 104])
+      }
+      
       
       Resids[, i] <- fit$residuals
       SSR[i, 1] <- sum(Resids[, i]^2)
@@ -913,8 +1051,13 @@ sim_panel_data <- function(sim_N,
     
     sim$panel <- bind_rt_predictor(rt_panel, z_panel)
     
-    #Statistics
+    # Statistics
+    
+    # Old way
     sim$statistics <- panel_tune_stats(rt_panel, g_panel, g_factor_panel)
+    
+    # New Alternative
+    # sim$statistics <- panel_tune_stats(rt_panel, g_panel, C, g_function)
     
     sim
   }
@@ -1075,7 +1218,7 @@ P_c <- 100
 Time <- 180
 
 #Number of realizations
-simN <- 4
+simN <- 30
 
 #Gu et al's original specfications, recreated
 

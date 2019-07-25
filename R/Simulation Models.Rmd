@@ -81,6 +81,8 @@ pooled_panel <- g3_A1_panel[[1]]$panel
 
 pooled_panel <- gu_et_al_g1[[1]]$panel
 
+pooled_panel <- gu_et_al_g2[[1]]$panel
+
 f <- panel_formula(pooled_panel)
 ```
 
@@ -305,13 +307,13 @@ LM_stats_mse[[3]]$loss_stats
 
 LM_stats_mse[[1]]$variable_importance %>% arrange(desc(importance))
 
+summary(LM_stats_mse[[1]]$model)
+
 LM_stats_mae[[1]]$loss_stats
 LM_stats_mae[[2]]$loss_stats
 LM_stats_mae[[3]]$loss_stats
 
 summary(LM_stats_mae[[1]]$model)
-
-summary(LM_stats_mse[[1]]$model)
 
 # Observations
 
