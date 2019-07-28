@@ -32,8 +32,11 @@
 \BOOKMARK [2][-]{subsection.3.2}{Model}{section.3}% 32
 \BOOKMARK [1][-]{section.4}{Results}{}% 33
 \BOOKMARK [1][-]{section.5}{Appendix}{}% 34
-\BOOKMARK [2][-]{subsection.5.1}{Algorithms}{section.5}% 35
-\BOOKMARK [3][-]{subsubsection.5.1.1}{Penalized Linear}{subsection.5.1}% 36
-\BOOKMARK [3][-]{subsubsection.5.1.2}{Classification and Regression Trees}{subsection.5.1}% 37
-\BOOKMARK [3][-]{subsubsection.5.1.3}{Random Forest}{subsection.5.1}% 38
-\BOOKMARK [3][-]{subsubsection.5.1.4}{Neural Networks}{subsection.5.1}% 39
+\BOOKMARK [2][-]{subsection.5.1}{Data}{section.5}% 35
+\BOOKMARK [2][-]{subsection.5.2}{Algorithms}{section.5}% 36
+\BOOKMARK [3][-]{subsubsection.5.2.1}{Linear Models}{subsection.5.2}% 37
+\BOOKMARK [3][-]{subsubsection.5.2.2}{Penalized Linear}{subsection.5.2}% 38
+\BOOKMARK [3][-]{subsubsection.5.2.3}{Classification and Regression Trees}{subsection.5.2}% 39
+\BOOKMARK [3][-]{subsubsection.5.2.4}{Random Forest}{subsection.5.2}% 40
+\BOOKMARK [3][-]{subsubsection.5.2.5}{Neural Networks}{subsection.5.2}% 41
+\BOOKMARK [3][-]{subsubsection.5.2.6}{Tuning of Simulated Datasets}{subsection.5.2}% 42

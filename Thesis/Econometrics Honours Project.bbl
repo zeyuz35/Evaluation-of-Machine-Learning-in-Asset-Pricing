@@ -1,9 +1,48 @@
-\begin{thebibliography}{32}
+\begin{thebibliography}{64}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
 
 \bibitem[{Ang and Bekaert(2006)}]{ang_stock_2006}
 Ang, A., Bekaert, G., 2006. Stock return predictability: {Is} it there? The
   Review of Financial Studies 20, 651--707.
+
+\bibitem[{Ang et~al.(2006)Ang, Hodrick, Xing, and
+  Zhang}]{ang_cross-section_2006}
+Ang, A., Hodrick, R.~J., Xing, Y., Zhang, X., 2006. The {Cross}-{Section} of
+  {Volatility} and {Expected} {Returns}. The Journal of Finance 61, 259--299.
+
+\bibitem[{Asness et~al.(2000)Asness, Porter, and
+  Stevens}]{asness_predicting_2000}
+Asness, C.~S., Porter, R.~B., Stevens, R.~L., 2000. Predicting stock returns
+  using industry-relative firm characteristics. Available at SSRN 213872 .
+
+\bibitem[{Balakrishnan et~al.(2010)Balakrishnan, Bartov, and
+  Faurel}]{balakrishnan_post_2010}
+Balakrishnan, K., Bartov, E., Faurel, L., 2010. Post loss/profit announcement
+  drift. Journal of Accounting and Economics 50, 20--41.
+
+\bibitem[{Bali et~al.(2011)Bali, Cakici, and Whitelaw}]{bali_maxing_2011}
+Bali, T.~G., Cakici, N., Whitelaw, R.~F., 2011. Maxing out: {Stocks} as
+  lotteries and the cross-section of expected returns. Journal of Financial
+  Economics 99, 427--446.
+
+\bibitem[{Bandyopadhyay et~al.(2010)Bandyopadhyay, Huang, and
+  Wirjanto}]{bandyopadhyay_accrual_2010}
+Bandyopadhyay, S.~P., Huang, A.~G., Wirjanto, T.~S., 2010. The {Accrual}
+  {Volatility} {Anomaly} p.~57.
+
+\bibitem[{Banz(1981)}]{banz_relationship_1981}
+Banz, R.~W., 1981. The relationship between return and market value of common
+  stocks. Journal of financial economics 9, 3--18.
+
+\bibitem[{Basu(1977)}]{basu_investment_1977}
+Basu, S., 1977. Investment performance of common stocks in relation to their
+  price-earnings ratios: {A} test of the efficient market hypothesis. The
+  journal of Finance 32, 663--682.
+
+\bibitem[{Belo et~al.(2014)Belo, Lin, and Bazdresch}]{belo_labor_2014}
+Belo, F., Lin, X., Bazdresch, S., 2014. Labor hiring, investment, and stock
+  return predictability in the cross section. Journal of Political Economy 122,
+  129--177.
 
 \bibitem[{Breiman(1984)}]{breiman_classification_1984}
 Breiman, L., 1984. Classification and {Regression} {Trees}. Routledge.
@@ -11,23 +50,61 @@ Breiman, L., 1984. Classification and {Regression} {Trees}. Routledge.
 \bibitem[{Breiman(2001)}]{breiman_random_2001}
 Breiman, L., 2001. Random forests. Machine learning 45, 5--32.
 
+\bibitem[{Brown and Rowe(2007)}]{brown_productivity_2007}
+Brown, D.~P., Rowe, B., 2007. The productivity premium in equity returns.
+  Available at SSRN 993467 .
+
+\bibitem[{Chandrashekar and Rao(2009)}]{chandrashekar_productivity_2009}
+Chandrashekar, S., Rao, R.~K., 2009. The productivity of corporate cash
+  holdings and the cross-section of expected stock returns. McCombs Research
+  Paper Series No. FIN-03-09 .
+
+\bibitem[{Chen and Zhang(2010)}]{chen_better_2010}
+Chen, L., Zhang, L., 2010. A better three-factor model that explains more
+  anomalies. Journal of Finance 65, 563--595.
+
+\bibitem[{Chordia et~al.(2001)Chordia, Subrahmanyam, and
+  Anshuman}]{chordia_trading_2001}
+Chordia, T., Subrahmanyam, A., Anshuman, V.~R., 2001. Trading activity and
+  expected stock returns. Journal of Financial Economics 59, 3--32.
+
 \bibitem[{Choromanska et~al.(2014)Choromanska, Henaff, Mathieu, Arous, and
   LeCun}]{choromanska_loss_2014}
 Choromanska, A., Henaff, M., Mathieu, M., Arous, G.~B., LeCun, Y., 2014. The
   {Loss} {Surfaces} of {Multilayer} {Networks}. arXiv:1412.0233 [cs] ArXiv:
   1412.0233.
 
+\bibitem[{Cochrane(2005)}]{cochrane_asset_2005}
+Cochrane, J.~H., 2005. Asset pricing. Princeton Univ. Press, Princeton, NJ,
+  rev. ed ed., oCLC: 265653065.
+
 \bibitem[{Cochrane(2011)}]{cochrane_presidential_2011}
 Cochrane, J.~H., 2011. Presidential {Address}: {Discount} {Rates}. The Journal
   of Finance 66, 1047--1108.
+
+\bibitem[{Cooper et~al.(2008)Cooper, Gulen, and Schill}]{cooper_asset_2008}
+Cooper, M.~J., Gulen, H., Schill, M.~J., 2008. Asset {Growth} and the
+  {Cross}-{Section} of {Stock} {Returns}. The Journal of Finance 63,
+  1609--1651.
+
+\bibitem[{Datar et~al.(1998)Datar, Naik, and Radcliffe}]{datar_liquidity_1998}
+Datar, V.~T., Naik, N.~Y., Radcliffe, R., 1998. Liquidity and stock returns:
+  {An} alternative test. Journal of Financial Markets 1, 203--219.
 
 \bibitem[{Diebold and Mariano(2002)}]{diebold_comparing_2002}
 Diebold, F.~X., Mariano, R.~S., 2002. Comparing predictive accuracy. Journal of
   Business \& economic statistics 20, 134--144.
 
+\bibitem[{Eberhart et~al.(2004)Eberhart, Maxwell, and
+  Siddique}]{eberhart_examination_2004}
+Eberhart, A.~C., Maxwell, W.~F., Siddique, A.~R., 2004. An examination of
+  long-term abnormal stock returns and operating performance following {R}\&{D}
+  increases. The Journal of Finance 59, 623--650.
+
 \bibitem[{Feng et~al.(2019)Feng, Giglio, and Xiu}]{feng_taming_2019}
-Feng, G., Giglio, S., Xiu, D., 2019. Taming the factor zoo: {A} test of new
-  factors. Tech. rep., National Bureau of Economic Research.
+Feng, G., Giglio, S., Xiu, D., 2019. Taming the {Factor} {Zoo}: {A} {Test} of
+  {New} {Factors}. Tech. Rep. w25481, National Bureau of Economic Research,
+  Cambridge, MA.
 
 \bibitem[{Feng et~al.(2018)Feng, He, and Polson}]{feng_deep_2018}
 Feng, G., He, J., Polson, N.~G., 2018. Deep {Learning} for {Predicting} {Asset}
@@ -38,6 +115,10 @@ Feng, G., He, J., Polson, N.~G., 2018. Deep {Learning} for {Predicting} {Asset}
 Freyberger, J., Neuhierl, A., Weber, M., 2017. Dissecting characteristics
   nonparametrically. Tech. rep., National Bureau of Economic Research.
 
+\bibitem[{Gettleman and Marks(2006)}]{gettleman_acceleration_2006}
+Gettleman, E., Marks, J.~M., 2006. Acceleration strategies. Tech. rep., Working
+  Paper, Seton Hall Univeristy.
+
 \bibitem[{Goetzmann and Jorion(1993)}]{goetzmann_testing_1993}
 Goetzmann, W.~N., Jorion, P., 1993. Testing the predictive power of dividend
   yields. The Journal of Finance 48, 663--679.
@@ -46,9 +127,18 @@ Goetzmann, W.~N., Jorion, P., 1993. Testing the predictive power of dividend
 Goyal, A., Welch, I., 2003. Predicting the equity premium with dividend ratios.
   Management Science 49, 639--654.
 
+\bibitem[{Green et~al.(2013)Green, Hand, and Zhang}]{green_supraview_2013}
+Green, J., Hand, J. R.~M., Zhang, X.~F., 2013. The supraview of return
+  predictive signals. Review of Accounting Studies 18, 692--730.
+
 \bibitem[{Gu et~al.(2018)Gu, Kelly, and Xiu}]{gu_empirical_2018}
 Gu, S., Kelly, B., Xiu, D., 2018. Empirical asset pricing via machine learning.
   Tech. rep., National Bureau of Economic Research.
+
+\bibitem[{Hafzalla et~al.(2011)Hafzalla, Lundholm, and Matthew
+  Van~Winkle}]{hafzalla_percent_2011}
+Hafzalla, N., Lundholm, R., Matthew Van~Winkle, E., 2011. Percent accruals. The
+  Accounting Review 86, 209--236.
 
 \bibitem[{Hansen and Salamon(1990)}]{hansen_neural_1990}
 Hansen, L.~K., Salamon, P., 1990. Neural network ensembles. IEEE Transactions
@@ -83,14 +173,27 @@ Hoerl, A.~E., Kennard, R.~W., 1970. Ridge regression: {Biased} estimation for
 Hornik, K., Stinchcombe, M., White, H., 1989. Multilayer feedforward networks
   are universal approximators. Neural networks 2, 359--366.
 
+\bibitem[{Hou and Robinson(2006)}]{hou_industry_2006}
+Hou, K., Robinson, D.~T., 2006. Industry concentration and average stock
+  returns. The Journal of Finance 61, 1927--1956.
+
 \bibitem[{Hsu and Kalesnik(2014)}]{hsu_finding_2014}
 Hsu, J., Kalesnik, V., 2014. Finding smart beta in the factor zoo. Research
   Affiliates (July) .
+
+\bibitem[{Huang(2009)}]{huang_cross_2009}
+Huang, A.~G., 2009. The cross section of cashflow volatility and expected stock
+  returns. Journal of Empirical Finance 16, 409--429.
 
 \bibitem[{Ioffe and Szegedy(2015)}]{ioffe_batch_2015}
 Ioffe, S., Szegedy, C., 2015. Batch normalization: {Accelerating} deep network
   training by reducing internal covariate shift. arXiv preprint
   arXiv:1502.03167 .
+
+\bibitem[{Jegadeesh and Titman(1993)}]{jegadeesh_returns_1993}
+Jegadeesh, N., Titman, S., 1993. Returns to buying winners and selling losers:
+  {Implications} for stock market efficiency. The Journal of finance 48,
+  65--91.
 
 \bibitem[{Kingma and Ba(2014)}]{kingma_adam:_2014}
 Kingma, D.~P., Ba, J., 2014. Adam: {A} method for stochastic optimization.
@@ -103,13 +206,32 @@ Kozak, S., Nagel, S., Santosh, S., 2017. Shrinking the cross section. Tech.
 \bibitem[{Lecun et~al.(2015)Lecun, Bengio, and Hinton}]{lecun_deep_2015}
 Lecun, Y., Bengio, Y., Hinton, G., 2015. Deep learning. Nature 521, 436--444.
 
+\bibitem[{Lerman et~al.(2008)Lerman, Livnat, and
+  Mendenhall}]{lerman_high-volume_2008}
+Lerman, A., Livnat, J., Mendenhall, R.~R., 2008. The {High}-{Volume} {Return}
+  {Premium} and {Post}-{Earnings} {Announcement} {Drift}. SSRN Electronic
+  Journal .
+
 \bibitem[{Lettau and Ludvigson(2001)}]{lettau_consumption_2001}
 Lettau, M., Ludvigson, S., 2001. Consumption, {Aggregate} {Wealth}, and
   {Expected} {Stock} {Returns}. The Journal of Finance 56, 815--849.
 
+\bibitem[{Lev and Ohlson(1982)}]{lev_market-based_1982}
+Lev, B., Ohlson, J.~A., 1982. Market-based empirical research in accounting:
+  {A} review, interpretation, and extension. Journal of Accounting research pp.
+  249--322.
+
 \bibitem[{Masters(1993)}]{masters_practical_1993}
 Masters, T., 1993. Practical {Neural} {Network} {Recipes} in {C}++. Morgan
   Kaufmann, google-Books-ID: 7Ez\_Pq0sp2EC.
+
+\bibitem[{Novy-Marx(2013)}]{novy-marx_other_2013}
+Novy-Marx, R., 2013. The other side of value: {The} gross profitability
+  premium. Journal of Financial Economics 108, 1--28.
+
+\bibitem[{Pontiff and Woodgate(2008)}]{pontiff_share_2008}
+Pontiff, J., Woodgate, A., 2008. Share issuance and cross-sectional returns.
+  The Journal of Finance 63, 921--945.
 
 \bibitem[{Ramachandran et~al.(2017)Ramachandran, Zoph, and
   Le}]{ramachandran_searching_2017}
@@ -120,9 +242,37 @@ Ramachandran, P., Zoph, B., Le, Q.~V., 2017. Searching for {Activation}
 Rapach, D., Zhou, G., 2013. Forecasting {Stock} {Returns}. In: {\em Handbook of
   {Economic} {Forecasting}\/}, Elsevier, vol.~2, pp. 328--383.
 
+\bibitem[{Richardson et~al.(2005)Richardson, Sloan, Soliman, and
+  Tuna}]{richardson_accrual_2005}
+Richardson, S.~A., Sloan, R.~G., Soliman, M.~T., Tuna, I., 2005. Accrual
+  reliability, earnings persistence and stock prices. Journal of accounting and
+  economics 39, 437--485.
+
+\bibitem[{Rosenberg et~al.(1985)Rosenberg, Reid, and
+  Lanstein}]{rosenberg_persuasive_1985}
+Rosenberg, B., Reid, K., Lanstein, R., 1985. Persuasive evidence of market
+  inefficiency. The Journal of Portfolio Management 11, 9--16.
+
 \bibitem[{Schwert(2003)}]{schwert_anomalies_2003}
 Schwert, G.~W., 2003. Anomalies and market efficiency. Handbook of the
   Economics of Finance 1, 939--974.
+
+\bibitem[{Sloan(1996)}]{sloan_stock_1996}
+Sloan, R.~G., 1996. Do {Stock} {Prices} {Fully} {Reflect} {Information} in
+  {Accruals} and {Cash} {Flows} about {Future} {Earnings}? The Accounting
+  Review 71, 289--315.
+
+\bibitem[{Soliman(2008)}]{soliman_use_2008}
+Soliman, M.~T., 2008. The use of {DuPont} analysis by market participants. The
+  Accounting Review 83, 823--853.
+
+\bibitem[{Thomas and Zhang(2011)}]{thomas_tax_2011}
+Thomas, J., Zhang, F.~X., 2011. Tax expense momentum. Journal of Accounting
+  Research 49, 791--821.
+
+\bibitem[{Thomas and Zhang(2002)}]{thomas_inventory_2002}
+Thomas, J.~K., Zhang, H., 2002. Inventory changes and future returns. Review of
+  Accounting Studies 7, 163--187.
 
 \bibitem[{Tibshirani(1996)}]{tibshirani_regression_1996}
 Tibshirani, R., 1996. Regression shrinkage and selection via the lasso. Journal

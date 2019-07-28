@@ -234,15 +234,15 @@ gen_xt <- function(A){
     # sd here used to be 1
     # Changed it to something much lower and consistent with Gu et al
     ut <- rnorm(3, mean = 0, sd = sqrt(1 - 0.95^2))
-    Axt[, , t] <- Axt[, , t-1] + ut
+    Axt[, , t] <- A %*% Axt[, , t-1] + ut
   }
   Axt <- Axt[, , -1]
   return(Axt)
 }
 
-#Generate a multivaraite xt
+# Generate a multivaraite xt
 
-xt <- gen_xt(A1)
+# xt <- gen_xt(A1)
 
 ```
 
@@ -256,21 +256,20 @@ gen_xt_univariate <- function(){
   time_dim <- paste0("time_", c(1:(Time)))
   
   #Initialize
-  xt <- array(0, dim = c(1, 1, Time), dimnames = list(c("row"), x_dim, time_dim))
+  xt <- array(0, dim = c(1, Time), dimnames = list(x_dim, time_dim))
   rho <- 0.95
   
-  xt[1, 1, 1] <- rnorm(1, mean = 0, sd = sqrt(1 - rho^2))
+  xt[1, 1] <- rnorm(1, mean = 0, sd = sqrt(1 - rho^2))
   
   for (t in 2:(Time)) {
-    xt[1, 1, t] <- xt[t-1]*rho + rnorm(1, mean = 0, sd = sqrt(1 - rho^2))
+    xt[1, t] <- xt[t-1]*rho + rnorm(1, mean = 0, sd = sqrt(1 - rho^2))
   }
-  
   return(xt)
 }
 
-#Generate a univariate xt
+# Generate a univariate xt
 
-xt_univariate <- gen_xt_univariate()
+# xt_univariate <- gen_xt_univariate()
 
 ```
 
@@ -307,8 +306,8 @@ gen_g_factor_panel <- function(g_function, C, x) {
     for (i in 1:N) {
       for (t in 1:Time) {
         #Univariate xt Case
-        if (ncol(x) == 1) {
-          g_factor_panel[i, , t] <- matrix(c(C[i, 1, t], C[i, 2, t], C[i, 3, t] * x[1, , t]), nrow = 1)
+        if (nrow(x) == 1) {
+          g_factor_panel[i, , t] <- matrix(c(C[i, 1, t], C[i, 2, t], C[i, 3, t] * x[, t]), nrow = 1)
         }
         #Multivariate xt Case
         else {
@@ -330,8 +329,8 @@ gen_g_factor_panel <- function(g_function, C, x) {
     for (i in 1:N) {
       for (t in 1:Time) {
         #Univariate xt Case
-        if (ncol(x) == 1) {
-          g_factor_panel[i, , t] <- matrix(c(C[i, 1, t]^2, C[i, 1, t]*C[i, 2, t], sign(C[i, 3, t] * x[1, 1, t])), nrow = 1)
+        if (nrow(x) == 1) {
+          g_factor_panel[i, , t] <- matrix(c(C[i, 1, t]^2, C[i, 1, t]*C[i, 2, t], sign(C[i, 3, t] * x[, t])), nrow = 1)
         }
         #Multivariate xt Case
         else {
@@ -381,8 +380,8 @@ gen_g_factor_panel <- function(g_function, C, x) {
     for (i in 1:N) {
       for (t in 1:Time) {
         #Univariate xt Case
-        if (ncol(x) == 1) {
-          g_factor_panel[i, , t] <- matrix(c(C[i, 1, t], C[i, 2, t], C[i, 3, t] * x[1, , t]), nrow = 1)
+        if (nrow(x) == 1) {
+          g_factor_panel[i, , t] <- matrix(c(C[i, 1, t], C[i, 2, t], C[i, 3, t] * x[, t]), nrow = 1)
         }
         #Multivariate xt Case
         else {
@@ -397,13 +396,13 @@ gen_g_factor_panel <- function(g_function, C, x) {
 #test this
 #working, yay
 
-g1_factor_panel <- gen_g_factor_panel("g1", C, xt)
+# g1_factor_panel <- gen_g_factor_panel("g1", C, xt)
 
-g2_factor_panel <- gen_g_factor_panel("g2", C, xt)
+# g2_factor_panel <- gen_g_factor_panel("g2", C, xt)
 
-g3_factor_panel <- gen_g_factor_panel("g3", C, xt)
+# g3_factor_panel <- gen_g_factor_panel("g3", C, xt)
 
-g4_factor_panel <- gen_g_factor_panel("g4", C, xt)
+# g4_factor_panel <- gen_g_factor_panel("g4", C, xt)
 
 #################################
 ## Generate an panel of g(), given a panel of g factors and theta
@@ -421,7 +420,7 @@ gen_g_panel <- function(g_factor, theta) {
   return(g_panel)
 }
 
-g1_panel <- gen_g_panel(g1_factor_panel, theta = matrix(c(0.02, 0.02, 0.02), nrow = 1))
+# g1_panel <- gen_g_panel(g1_factor_panel, theta = matrix(c(0.02, 0.02, 0.02), nrow = 1))
 ```
 
 ```{r function_return_equation}
@@ -501,17 +500,17 @@ gen_error <- function(sv,
 }
 
 #SV version check
-error <- gen_error(sv = 1, ep_sd = 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363), C, v_sd = 0.05)
+# error <- gen_error(sv = 1, ep_sd = 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363), C, v_sd = 0.05)
 
 #Non-SV version check
 #You'll still need to specify values for omega, gamma and w, they just won't be used
-error <- gen_error(sv = 0, ep_sd = 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363), C, v_sd = 0.05)
+# error <- gen_error(sv = 0, ep_sd = 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363), C, v_sd = 0.05)
 
 #Both Working, yay
 
 ```
 
-```{r}
+```{r, eval = FALSE}
 ##Just a recap chunk of everything that needs to be run to generate everything thus far before we move on to tuning R squared
 
 C_bar <- gen_C_bar(rho_a = 0.9, rho_b = 1)
@@ -758,31 +757,31 @@ panel_tune_stats <- function(return_panel, signal_panel, true_factor_panel) {
 
 # Testing
 
-xt_univariate <- gen_xt_univariate()
+# xt_univariate <- gen_xt_univariate()
 
-#Generate the true underlying factors first
-g1_factor_panel <- gen_g_factor_panel("g1", C, xt)
+# Generate the true underlying factors first
+# g1_factor_panel <- gen_g_factor_panel("g1", C, xt)
 
 #Then pass them through to multiply them by theta to get g()
-g1_panel <- gen_g_panel(g1_factor_panel, theta = matrix(c(0.04, 0.035, 0.01), nrow = 1))
+# g1_panel <- gen_g_panel(g1_factor_panel, theta = matrix(c(0.04, 0.035, 0.01), nrow = 1))
 
 #Generate the errors
 
 #SV version
-error_sv <- gen_error(sv = 1, ep_sd = 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363), C, v_sd = 0.05)
+# error_sv <- gen_error(sv = 1, ep_sd = 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363), C, v_sd = 0.05)
 
 #Non-SV version
-error_nosv <- gen_error(sv = 0, ep_sd = 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363), C, v_sd = 0.05)
+# error_nosv <- gen_error(sv = 0, ep_sd = 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363), C, v_sd = 0.05)
 
 #Finally generate a returns panel
 
-rt_panel_g1_A1 <- g1_panel + error_nosv
+# rt_panel_g1_A1 <- g1_panel + error_nosv
 
 # Generate a predictor panel
 
 # z_panel_g1_A1 <- gen_predictor_z(C, xt)
 
-panel_tune_stats(rt_panel_g1_A1, g1_panel, g1_factor_panel)
+# panel_tune_stats(rt_panel_g1_A1, g1_panel, g1_factor_panel)
 ```
 
 ```{r tune_stats_function_alternative, eval = FALSE}
@@ -913,7 +912,9 @@ panel_tune_stats(rt_panel_g1_A1, g1_panel, C)
 ##Function to build predictor set for the entire panel
 ##############################################################################
 
-#Kronecker product
+######################
+# Kronecker product
+######################
 
 # Calculated with z_it = (1, xt)' \otimes c_it
 
@@ -941,7 +942,45 @@ gen_predictor_z <- function(C, x){
   return(z_panel)
 }
 
-z_panel_g1_A1 <- gen_predictor_z(C, xt)
+# Test
+# z_panel_g1_A1 <- gen_predictor_z(C, xt_univariate)
+
+##############
+# Two way
+##############
+# Different z panel which instead returns all two way interaction terms from a base of all xt and c factors
+
+gen_predictor_z_twoway <- function(C, x){
+  
+  stock_dim <- paste0("stock_", c(1:N))
+  time_dim <- paste0("time_", c(1:(Time)))
+  
+  z_panel_base <- array(0, dim = c(N, P_c + nrow(x), Time), dimnames = list(stock_dim, append(dimnames(x)[[1]], dimnames(C)[[2]]), time_dim))
+  z_panel_twoway <- array(0, dim = c(N, (P_c + nrow(x)) + choose(P_c + nrow(x), 2), Time), 
+                          dimnames = list(stock_dim, rep(1, (P_c + nrow(x)) + choose(P_c + nrow(x), 2)), time_dim)
+  )
+  
+  for (t in 1:Time) {
+    # The key here is to realise that array fills data through the 1st dimension, then the second, etc
+    # Therefore, we can easily get an xt panel matrix in the desired format by simply transposing the result
+    z_panel_base[, , t] <- cbind(t(array(rep(x[, t], N), dim = c(nrow(x), N), dimnames = list(dimnames(x)[[1]], stock_dim))), C[, , t])
+  }
+  
+  dmy <- dummyVars(~.^2, data = z_panel_base[, , t])
+  
+  dimnames(z_panel_twoway)[[2]] <- dimnames(predict(dmy, newdata = z_panel_base[, , t]))[[2]]
+  
+  for (t in 1:Time) {
+    z_panel_twoway[, , t] <- predict(dmy, newdata = z_panel_base[, , t])
+  }
+  
+  z_panel_twoway
+}
+
+# Test
+# Caution: this approach requires A LOT of memory
+
+# z_panel_twoway_g1_A1 <- gen_predictor_z_twoway(C, xt)
 
 # Bind Returns and Predictor Sets Together into one 2D dataframe, ready to be used for training models
 
@@ -963,7 +1002,10 @@ bind_rt_predictor <- function(rt_panel, z_panel) {
 
 #test
 
-panel_g1_A1 <- bind_rt_predictor(rt_panel_g1_A1, z_panel_g1_A1)
+# panel_g1_A1 <- bind_rt_predictor(rt_panel_g1_A1, z_panel_g1_A1)
+
+# Note that this dataframe is very similar in size to the original array
+# panel_twoway_g1_A1 <- bind_rt_predictor(rt_panel_g1_A1, z_panel_twoway_g1_A1)
 
 #With that... DONE WITH THIS PART OF THE PROJECT
 
@@ -1000,7 +1042,8 @@ sim_panel_data <- function(sim_N,
                            char_rho_a, char_rho_b,
                            cross_corr, A_matrix, xt_multi, g_function, theta,
                            #Error Parameters
-                           error_sv, error_ep_sd, error_omega, error_gamma, error_w, error_v_sd) {
+                           error_sv, error_ep_sd, error_omega, error_gamma, error_w, error_v_sd,
+                           predictor_format) {
   sim_list <- foreach(i = (1:sim_N)) %dopar% {
     
     # Set Seed for each worker so that it is reproducible
@@ -1037,17 +1080,24 @@ sim_panel_data <- function(sim_N,
     #rt panel
     rt_panel <- g_panel + error
     
-    z_panel <- gen_predictor_z(C, xt)
-    
-    sim$panel <- bind_rt_predictor(rt_panel, z_panel)
+    # Alternative twoway Specification
+    if (predictor_format == "twoway") {
+      z_panel <- gen_predictor_z_twoway(C, xt)
+      sim$panel <- bind_rt_predictor(rt_panel, z_panel)
+    }
+    # Original Kronecker specification (set up in else so that it's the default)
+    else {
+      z_panel <- gen_predictor_z(C, xt)
+      sim$panel <- bind_rt_predictor(rt_panel, z_panel)
+    }
     
     # Statistics
     
     # Old way
-    # sim$statistics <- panel_tune_stats(rt_panel, g_panel, g_factor_panel)
+    sim$statistics <- panel_tune_stats(rt_panel, g_panel, g_factor_panel)
     
     # New Alternative
-    sim$statistics <- panel_tune_stats(rt_panel, g_panel, C)
+    # sim$statistics <- panel_tune_stats(rt_panel, g_panel, C)
     
     sim
   }
@@ -1171,7 +1221,7 @@ gu_et_al_g1 <- sim_panel_data(10, cross_corr = 0, A1, xt_multi = 0, g_function =
 summary(sim_tune_statistics(gu_et_al_g1))
 ```
 
-```{r, eval = FALSE}
+```{r debug, eval = FALSE}
 # Debug section for when something breaks, ignore
 # Overall Dimensionality
 N <- 200
@@ -1182,7 +1232,7 @@ Time <- 180
 simN <- 4
 
 char_rho_a = 0.9 
-char_rho_b = 0.1
+char_rho_b = 1
 cross_corr = 0
 xt_multi = 0
 g_function = "g1"
@@ -1194,6 +1244,48 @@ error_gamma = 0.9
 error_w = sqrt(0.363)
 error_v_sd = 0.05
 
+C_bar <- gen_C_bar(char_rho_a, char_rho_b)
+    C_hat <- gen_C_hat(C_bar)
+    
+    if (cross_corr == 0) {
+      C <- gen_C(C_bar)
+    }
+    else {
+      C <- gen_C(C_hat)
+    }
+    
+    if (xt_multi == 1) {
+      xt <- gen_xt(A_matrix)
+    }
+    else {
+      xt <- gen_xt_univariate()
+    }
+    
+    #Generate the true underlying factors first
+    g_factor_panel <- gen_g_factor_panel(g_function, C, xt)
+    
+    #Then pass them through to multiply them by theta to get g()
+    g_panel <- gen_g_panel(g_factor_panel, theta)
+    
+    #Generate the errors
+    error <- gen_error(sv = error_sv, ep_sd = error_ep_sd, omega = error_omega, gamma = error_gamma, w = error_w, C, v_sd = error_v_sd)
+    
+    #rt panel
+    rt_panel <- g_panel + error
+    
+    # Alternative twoway Specification
+    if (predictor_format == "twoway") {
+      z_panel <- gen_predictor_z(C, xt)
+      panel <- bind_rt_predictor(rt_panel, z_panel)
+    }
+    # Original Kronecker specification (set up in else so that it's the default)
+    else {
+      z_panel <- gen_predictor_z(C, xt)
+      sim$panel <- bind_rt_predictor(rt_panel, z_panel)
+    }
+
+    panel_tune_stats(rt_panel, g_panel, C)
+    
 ```
 
 
@@ -1208,15 +1300,18 @@ P_c <- 100
 Time <- 180
 
 #Number of realizations
-simN <- 10
+simN <- 4
 
 #Gu et al's original specfications, recreated
+# Special Note: the twoway specification is very very memory intensive during the actual generation process
+# This means that R will be calling gc() alot, contributing to very slow computational speeds
 
 gu_et_al_g1 <- sim_panel_data(simN, 
                               char_rho_a = 0.9, char_rho_b = 1,
                               cross_corr = 0, A1, xt_multi = 0, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1),
                               error_sv = 0, error_ep_sd = 0.05, 
-                              error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+                              error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05,
+                              predictor_format = "twoway")
 summary(sim_tune_statistics(gu_et_al_g1))
 saveRDS(gu_et_al_g1, file = "gu_et_al_g1.rds")
 rm(gu_et_al_g1)
@@ -1225,7 +1320,8 @@ gu_et_al_g2 <- sim_panel_data(simN,
                               char_rho_a = 0.9, char_rho_b = 1,
                               cross_corr = 0, A1, xt_multi = 0, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1),
                               error_sv = 0, error_ep_sd = 0.05, 
-                              error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+                              error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05,
+                              predictor_format = "twoway")
 summary(sim_tune_statistics(gu_et_al_g2))
 saveRDS(gu_et_al_g1, file = "gu_et_al_g2.rds")
 rm(gu_et_al_g2)

@@ -86,7 +86,7 @@ pooled_panel <- gu_et_al_g2[[1]]$panel
 f <- panel_formula(pooled_panel)
 ```
 
-```{r}
+```{r variable_importance_functions}
 # Variable Importance Metric Functions
 # Given a single model and test set, return a variable importance dataframe (don't bother sorting them now)
 # Note that a training set is NOT needed because this is to be called AFTER the model is fit

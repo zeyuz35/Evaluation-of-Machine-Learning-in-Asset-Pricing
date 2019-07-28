@@ -22,6 +22,7 @@ library(caret)
 library(readr)
 library(zoo)
 library(readxl)
+library(Matrix)
 
 #Parallel Computing
 library(foreach)
@@ -34,17 +35,58 @@ set.seed(27935248)
 ```
 
 ```{r}
-# Load RAW data
+#################################################
+# Load RAW data courtesy of Gu et al
+#################################################
 # This is about ~ 3GB in size in total
 datashare_RAW <- read_csv("data/datashare/datashare.csv",
                           # Always make sure to force col_types so that read_csv doesn't assume weird stuff
                           col_types = cols(.default = "d"))
 
-datashare <- datashare_RAW %>%
-  mutate(Time = as.yearmon(as.character(DATE), "%Y%m%d")) #%>%
-  #select(-DATE)
+individual_factor_names <- colnames(datashare_RAW)[3:96]
 
+datashare <- datashare_RAW %>%
+  mutate(Time = as.yearmon(as.character(DATE), "%Y%m%d")) %>%
+  select(-DATE) %>%
+  # Convert sic2 codes to factor
+  mutate(sic2 = as.factor(sic2)) %>%
+  # Reorder
+  select(Time, permno, everything())
+
+# Check how many IDs there are
+# There are 74, consistent with Gu et al
+unique(datashare$sic2)
+
+# Generate 74 characteristics dummy variables
+dmy <- dummyVars(" ~ sic2", data = datashare)
+sic2_frame <- data.frame(predict(dmy, newdata = datashare))
+# Check Dimensions
+# 74 dummy variables as required
+dim(sic2_frame)
+
+# sic2_frame is now ready to be combined to the entire predictor set at the end
+# Wiat, not too sure about this yet because Gu et al later later a singular sic2 importance metric
+# What they probably did: pass sic2 to model fitting functions as a singular factor vector, which then applied model matrix to it
+# This way, they can simply change the values of this vector to 0 and calculate variable importance
+
+# Summary Statistics
+
+length(unique(datashare$permno))
+# There are 29892 unique stocks to begin with
+# There are 94 lagged characteristics/factors
+
+# Export stock IDs so that we can query WRDS returns
+datashare_stock_ids <- unique(datashare$permno)
+write.csv(datashare_stock_ids, file = "datashare_stock_ids.csv")
+
+# It seems as though that data is only fully available for some stocks in the dataset
+# Absolutely no clue how Gu et al dealt with missing data issues
+df_10006 <- datashare %>%
+  filter(permno == 10006)
+
+####################################################
 # Load RAW Welch Goyal Data
+####################################################
 # Note that Gu et al only used:
 # Dividend price ratio dp, earnings price ratio ep, book to market ratio bm,
 # net equity expansion ntis, Treasury bill rate tbl, term spread tms,
@@ -55,30 +97,68 @@ PredictorData2017_RAW <- read_excel("data/factors/PredictorData2017.xlsx",
 PredictorData2017 <- PredictorData2017_RAW %>%
   mutate(Time = as.yearmon(as.character(yyyymm), "%Y%m")) %>%
   select(-yyyymm) %>%
-  # Dividend price ratio is the difference between the log of dividends and the log of prices.
+  # Dividend price ratio is the difference between the log of dividends and the log of prices
+  # Note that log(D12) - log(Index) is negative which doesn't make sense as a ratio
   mutate(dp = abs(log(D12) - log(Index))) %>%
-  # earnings price ratio is the difference between the log of earnings and the log of prices.
+  # earnings price ratio is the difference between the log of earnings and the log of prices
+  # Note that log(E12) - log(Index) is negative which doesn't make sense as a ratio
   mutate(ep = abs(log(E12) - log(Index))) %>%
   # Term Spread is the difference between long term yield on gov bonds and treasury bills
   mutate(tms = lty - tbl) %>%
-  # Default spread is the difference betwen difference between BAA and AAA-rated corporate bond yields
+  # Default spread is the difference between BAA and AAA-rated corporate bond yields
   mutate(dfy = abs(BAA - AAA)) %>%
   # Rename b/m to bm
   rename(bm = `b/m`)
 
 # Subset so that we have the predictors we actually care about
+# Note that some of these by default have the same names as those in the individual factor set
+# Therefore, prefix them with macro_ to make it clearer
+# Also filter out all the entries that are not in the datashare dataset as they can't be used (Note that this also takes care of all missing values in this dataset)
 macro_predictors <- PredictorData2017 %>%
-  select(Time, dp, ep, bm, ntis, tbl, tms, dfy, svar)
-  
+  select(Time, dp, ep, bm, ntis, tbl, tms, dfy, svar) %>%
+  rename_at(vars(-Time), function(x) paste0("macro_", x)) %>%
+  filter(Time >= min(datashare$Time) & Time <= max(datashare$Time)) %>%
+  # Add constant term so we can apply kronecker product later
+  mutate(constant = 1) %>%
+  # Reorder
+  select(Time, constant, everything())
 
-#Summary Statistics
+#############################
+# Combining everything
+#############################
+# macro predictors \kronecker individual factors (excluding ids)
+# Kronecker product approach is waaay too involved. It would require sorting everything back into array form (i, j, t) and applying kronecker function to each individual stock's panel, as was the case with simulation
+# Unlike the simulation code though, here we are starting from a panel dataframe which is significantly harder to turn back into an array
+# Alternative approach: generate the individual factors * macro factors as a separate dataframe via model matrix (or similar), then combine them back together
+# Remember that kronecker would give us constant*individual factors + individual factors*macro factors
+# This EXCLUDES macro factors by themselves
 
-length(unique(datashare$permno))
-# There are 29892 unique stocks to begin with
-# There are 94 lagged characteristics/factors
+macro_factor_names <- colnames(select(macro_predictors, -Time))
+individual_factor_names <- colnames(select(datashare, -permno, -Time, -sic2))
 
-# It seems as though that data is only fully available for some stocks in the dataset
-# Absolutely no clue how Gu et al dealt with missing data issues
-df_10006 <- datashare %>%
-  filter(permno == 10006)
+interaction_terms <- rep(list(0), length(macro_factor_names))
+
+for (i in 1:length(macro_factor_names)) {
+  interaction_terms[[i]] <- paste(macro_factor_names[i], individual_factor_names, sep = ":", collapse = " + ")
+}
+
+f <- as.formula(c("~ ", paste(interaction_terms, collapse = "+")))
+
+combined <- full_join(macro_predictors, datashare)
+
+# Memory issues. This interaction matrix is way too large
+interaction_matrix <- sparse.model.matrix(f, model.frame(~., combined))
+dmy <- dummyVars(f, data = combined)
+
+# This keeps all the NAs in data, but takes up way too much memory and therefore doesn't work
+interaction_matrix <- sparse.model.matrix(f, model.frame(~., combined, na.action=na.pass))
+
+macro_matrix <- macro_predictors %>%
+  select(-Time) %>%
+  as.matrix()
+datashare_matrix <- datashare %>%
+  select(-Time, -permno, -sic2) %>%
+  as.matrix()
+
+combined_matrix <- kronecker(macro_matrix, datashare_matrix, make.dimnames = TRUE)
 ```
