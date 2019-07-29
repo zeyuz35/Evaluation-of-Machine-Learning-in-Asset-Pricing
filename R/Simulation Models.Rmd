@@ -74,6 +74,7 @@ panel_formula <- function(panel){
 # Change data specifcation here
 
 pooled_panel <- g1_A1_panel[[1]]$panel
+pooled_panel <- g1_A2_panel[[1]]$panel
 
 pooled_panel <- g2_A1_panel[[1]]$panel
 
