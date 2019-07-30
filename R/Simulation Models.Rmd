@@ -226,6 +226,115 @@ NNet_variable_importance <- function(test, timeSlices, nnet_model) {
 }
 ```
 
+```{r variable_importance_functions_foreach}
+# Foreach parallel implementation of previous section
+# There are a LOT of predictors to inerate over and often this is the bottleneck for the model fitting procedure
+# Therefore, use these parallel implementations if possible
+# Also, the code is noticeably neater
+
+# Variable Importance Metric Functions
+# Given a single model and test set, return a variable importance dataframe (don't bother sorting them now)
+# Note that a training set is NOT needed because this is to be called AFTER the model is fit
+# These functions were originally written after the actul fitting functions were
+# These are used by the fitting functions, so they need to be declared before them
+
+# Similarly, different functions are needed for all model types because all the model objects have slightly different predict methods
+
+################################################
+# Linear Model
+LM_variable_importance <- function(test, timeSlices, lm_model) {
+  test_x <- test[4:ncol(test)]
+  
+  variable_importance_df <- foreach(i = (1:ncol(test_x)), .combine = "rbind") %dopar% {
+    test_x_zero <- test_x
+    test_x_zero[, i] <- 0
+    
+    original_R2 <- R2(predict(lm_model, newdata = test_x), test$rt, form = "traditional")
+    
+    new_R2 <- R2(predict(lm_model, newdata = test_x_zero), test$rt, form = "traditional")
+    
+    variable_importance <- data.frame(variable = colnames(test_x)[i], importance = (original_R2 - new_R2))
+    
+    variable_importance
+  }
+  variable_importance_df
+}
+
+# Penalized Linear Model
+
+ELN_variable_importance <- function(test, timeSlices, eln_model, alpha, lambda) {
+  test_x <- as.matrix(test[4:ncol(test)])
+  
+  variable_importance_df <- foreach(i = (1:ncol(test_x)), .combine = "rbind") %dopar% {
+    test_x_zero <- test_x
+    test_x_zero[, i] <- 0
+    
+    original_R2 <- R2(predict(eln_model, test_x, alpha = alpha, lambda = lambda), test$rt, form = "traditional")
+    
+    new_R2 <- R2(predict(eln_model, test_x_zero, alpha = alpha, lambda = lambda), test$rt, form = "traditional")
+    
+    variable_importance <- data.frame(variable = colnames(test_x)[i], importance = (original_R2 - new_R2))
+    
+    variable_importance
+  }
+  variable_importance_df
+}
+
+# Random Forest
+
+RF_variable_importance <- function(test, timeSlices, rf_model) {
+  test_x <- test[4:ncol(test)]
+  
+  variable_importance_df <- foreach(i = (1:ncol(test_x)), .combine = "rbind") %dopar% {
+    test_x_zero <- test_x
+    test_x_zero[, i] <- 0
+    
+    original_R2 <- R2(predict(rf_model, newdata = test_x)$predicted, test$rt, form = "traditional")
+    
+    new_R2 <- R2(predict(rf_model, newdata = test_x_zero)$predicted, test$rt, form = "traditional")
+    
+    variable_importance <- data.frame(variable = colnames(test_x)[i], importance = (original_R2 - new_R2))
+                                      
+    variable_importance
+  }
+variable_importance_df
+}
+
+# Neural Network
+
+NNet_variable_importance <- function(test, timeSlices, nnet_model) {
+  test_x <- as.matrix(test[4:ncol(test)])
+  test_x_zero <- test_x
+  test_x_zero[, 1] <- 0
+  
+  test_x <- as.matrix(test_x)
+  text_x_zero <- as.matrix(test_x_zero)
+    
+  original_R2 <- R2(predict(nnet_model, as.matrix(test_x)), test$rt, form = "traditional")
+    
+  new_R2 <- R2(predict(nnet_model, as.matrix(test_x_zero)), test$rt, form = "traditional")
+      
+  variable_importance <- data.frame(variable = colnames(test_x)[1], importance = (original_R2 - new_R2))
+    
+  for (i in 2:ncol(test_x)) {
+    test_x_zero <- test_x
+    test_x_zero[, i] <- 0
+      
+    original_R2 <- R2(predict(nnet_model, as.matrix(test_x)), test$rt, form = "traditional")
+    
+    new_R2 <- R2(predict(nnet_model, as.matrix(test_x_zero)), test$rt, form = "traditional")
+      
+    variable_importance <- rbind(variable_importance, 
+                                 data.frame(variable = colnames(test_x)[i], 
+                                            importance = (original_R2 - new_R2)
+                                            )
+                                 )
+      
+  }
+  return(variable_importance)
+}
+```
+
 ```{r pooled_ols}
 #Linear model wrt MSE
 
@@ -307,6 +416,8 @@ LM_stats_mse[[2]]$loss_stats
 LM_stats_mse[[3]]$loss_stats
 
 LM_stats_mse[[1]]$variable_importance %>% arrange(desc(importance))
+LM_stats_mse[[2]]$variable_importance %>% arrange(desc(importance))
+LM_stats_mse[[3]]$variable_importance %>% arrange(desc(importance))
 
 summary(LM_stats_mse[[1]]$model)
 
@@ -490,6 +601,7 @@ ELN_stats_mse[[3]]$model$alpha
 # DO NOT USE THE PREVIOUS IMPLEMENTATION
 # Do not specify a grid for lambda. Instead, let the algorithm determine its own sequence of lambda
 # Method: specify only a grid for alpha. For each grid value of alpha, fit an ELN model and let LARS determine a suitable path of lambdas. Produce validation error statistics for each alpha and lambda value. Use the best combination for the final model
+# 
 
 alpha_grid <- seq(0, 1, 0.01)
 
@@ -520,6 +632,37 @@ ELN_model_grid <- function(alpha_grid, train_x, train_y, validation_x, validatio
     }
   }
   return(ELN_model_grid)
+  
+}
+
+# Foreach implementation of above function
+# This is much much faster
+
+ELN_model_grid <- function(alpha_grid, train_x, train_y, validation_x, validation_y, loss_function, nlamb) {
+  
+  ELN_model_grid_list <- foreach(i = (1:length(alpha_grid))) %dopar% {
+    ELN_model_grid <- list(ELN_grid = 0, model = 0)
+    
+    #MSE Case
+    if (loss_function == "mse") {
+      ELN <- hqreg_raw(train_x, train_y, method = "ls", alpha = alpha_grid[i], nlambda = nlamb)
+      ELN_model_grid$model <- ELN
+    
+      ELN_model_grid$ELN_grid <- cbind(alpha = alpha_grid[i], lambda = ELN$lambda,
+                                       train_loss = apply(predict(ELN, train_x), 2, mse, actual = train_y), 
+                                       validation_loss = apply(predict(ELN, validation_x), 2, mse, actual = validation_y))
+    } else {
+      #MAE Case
+      ELN <- hqreg_raw(train_x, train_y, method = "quantile", tau = 0.5, alpha = alpha_grid[i], nlambda = nlamb)
+      ELN_model_grid$model <- ELN
+    
+      ELN_model_grid$ELN_grid <- cbind(alpha = alpha_grid[i], lambda = ELN$lambda,
+                                       train_loss = apply(predict(ELN, train_x), 2, mse, actual = train_y), 
+                                       validation_loss = apply(predict(ELN, validation_x), 2, mae, actual = validation_y))
+    }
+    ELN_model_grid
+  }
+  ELN_model_grid_list
 }
 
 # Given a list containing the model grid, return the "best" model according to validation loss
@@ -613,13 +756,91 @@ ELN_fit_stats <- function(alpha_grid, nlamb, timeSlices, pooled_panel, loss_func
   return(ELN_stats)
 }
 
+# Foreach implementation of above function
+
+ELN_fit_stats <- function(alpha_grid, nlamb, timeSlices, pooled_panel, loss_function) {
+  
+    ELN_stats_list <- foreach(set = (1:3)) %dopar% {
+    #Load Training, validation and test sets
+    train <- pooled_panel %>%
+      filter(time %in% timeSlices[[set]]$train)
+    validation <- pooled_panel %>%
+      filter(time %in% timeSlices[[set]]$validation)
+    test <- pooled_panel %>%
+      filter(time %in% timeSlices[[set]]$test)
+    
+    train_x <- as.matrix(train[4:ncol(train)])
+    train_y <- as.matrix(train$rt)
+    validation_x <- as.matrix(validation[4:ncol(validation)])
+    validation_y <- as.matrix(validation$rt)
+    test_x <- as.matrix(test[4:ncol(test)])
+    test_y <- as.matrix(test$rt)
+      
+    #Get models fit over the grid of hyperparameters
+    ELN_model_grid <- ELN_model_grid(alpha_grid, train_x, train_y, validation_x, validation_y, loss_function, nlamb = nlamb)
+        
+    #Get the best tuning parameters
+    best_model_params <- get_ELN_best_tune(ELN_model_grid)
+    
+    #Initialize stats list
+    ELN_stats <- list(loss_stats = data.frame(train_MAE = 0, train_MSE = 0, train_RMSE = 0, train_RSquare = 0, 
+                                              validation_MAE = 0, validation_MSE = 0, validation_RMSE = 0, validation_RSquare = 0, 
+                                              test_MAE = 0, test_MSE = 0, test_RMSE = 0, test_RSquare = 0),
+                      #Other useful things
+                      forecasts = 0,
+                      forecast_resids = 0,
+                      model = 0,
+                      hyperparameters = 0,
+                      variable_importance = 0)
+      
+    #Model
+    model <- ELN_model_grid[[best_model_params$list_index]]$model
+    ELN_stats$model <- model
+    
+    #Hyperparameters
+    ELN_stats$hyperparameters <- best_model_params
+      
+    #Loss Stats Dataframe
+    #Train
+    train_predict <- predict(model, train_x, alpha = best_model_params$alpha, lambda = best_model_params$lambda)
+    ELN_stats$loss_stats$train_MAE <- mae(train_y, train_predict)
+    ELN_stats$loss_stats$train_MSE <- mse(train_y, train_predict)
+    ELN_stats$loss_stats$train_RMSE <- rmse(train_y, train_predict)
+    ELN_stats$loss_stats$train_RSquare <- (1 - sse(train_y, train_predict) / sum((train_y - mean(train_y))^2))
+        
+    #Validation
+    valid_predict <- predict(model, validation_x, alpha = best_model_params$alpha, lambda = best_model_params$lambda)
+    ELN_stats$loss_stats$validation_MAE <- mae(validation_y, valid_predict)
+    ELN_stats$loss_stats$validation_MSE <- mse(validation_y, valid_predict)
+    ELN_stats$loss_stats$validation_RMSE <- rmse(validation_y, valid_predict)
+    ELN_stats$loss_stats$validation_RSquare <- (1 - sse(validation_y, valid_predict) / sum((validation_y - mean(validation_y))^2))
+    
+    #Test
+    test_predict <- predict(model, test_x, alpha = best_model_params$alpha, lambda = best_model_params$lambda)
+    ELN_stats$loss_stats$test_MAE <- mae(test_y, test_predict)
+    ELN_stats$loss_stats$test_MSE <- mse(test_y, test_predict)
+    ELN_stats$loss_stats$test_RMSE <- rmse(test_y, test_predict)
+    ELN_stats$loss_stats$test_RSquare <- (1 - sse(test_y, test_predict) / sum((test_y - mean(test_y))^2))
+      
+    #Forecasts
+    ELN_stats$forecasts <- predict(model, test_x, alpha = best_model_params$alpha, lambda = best_model_params$lambda)
+    
+    #Forecast residuals
+    ELN_stats$forecast_resids <- test_y - predict(model, test_x, alpha = best_model_params$alpha, lambda = best_model_params$lambda)
+    
+    #Variable Importance
+    ELN_stats$variable_importance <- ELN_variable_importance(test, timeSlices, model, alpha = best_model_params$alpha, lambda = best_model_params$lambda)
+    
+    ELN_stats
+  }
+  ELN_stats_list
+}
+
 #Testing if function works
 
 ELN_stats_mae <- ELN_fit_stats(alpha_grid, nlamb = 100, timeSlices, pooled_panel, loss_function = "mae")
 
 ELN_stats_mse <- ELN_fit_stats(alpha_grid, nlamb = 100, timeSlices, pooled_panel, loss_function = "mse")
-
-# Seeing if different loss functions actuallly do anything (they should)
 
 ELN_stats_mse[[1]]$loss_stats
 ELN_stats_mse[[1]]$model$alpha
@@ -643,9 +864,20 @@ ELN_stats_mae[[2]]$model$alpha
 ELN_stats_mae[[3]]$loss_stats
 ELN_stats_mae[[3]]$model$alpha
 
+ELN_stats_mae[[1]]$variable_importance %>% arrange(desc(importance))
+ELN_stats_mae[[2]]$variable_importance %>% arrange(desc(importance))
+ELN_stats_mae[[3]]$variable_importance %>% arrange(desc(importance))
+
 # Notes
 # Mostly consistent results with the previous implementation, very minor differences in optimal alpha values chosen
 # Similarly, optimal alpha values are highly unstable
+# Does not seem to particularly different between MAE and MSE versions
+
+# Moving from A1 to A2
+# LM struggles greatly with more complex A matrix specifications
+# However, ELN actually does quite well in spite of this
+# It actuallyhas higher R squared values than the true r squared, presumbaly indicating that it is somehow capturing the SV error structure
+# In general, it seems that ELN is choosing very parsimonious representations (look at variable importance metrics that are at 0)
 ```
 
 ```{r random_forest}
@@ -672,8 +904,8 @@ ELN_stats_mae[[3]]$model$alpha
 RF_grid <- expand.grid(
   #ntree usually isn't tuned. Just set to max of computationally feasible
   ntree = 50,
-  mtry = seq(10, round(ncol(pooled_panel[4:ncol(pooled_panel)])/3), 10),
-  nodesize = seq(2, 14, 2)
+  mtry = seq(10, round(ncol(pooled_panel[4:ncol(pooled_panel)])/3), 20)
+  #nodesize = seq(2, 14, 2)
   # nodedepth recommended not to be changed
   #nodedepth = 1,
 )
@@ -682,7 +914,9 @@ RF_grid <- expand.grid(
 # Ideally, we would save all the models as we computed them
 # This is very memory intensive, hence they will NOT be saved
 # Downside is that the optimal model will have to be recomputed from the optimal hyperparameters
-# Relevant lines have been commented out for now
+
+# Special Note: variable importance using a standard for loop (not parallelized) here is very computationally intensive
+# ALWAYS make sure that the parallelized version fo RF variable importance is used
 
 RF_fit_model_grid <- function(f, train, validation, RF_grid, loss_function) {
   #Initialize List
@@ -758,7 +992,8 @@ RF_fit_stats <- function(f, pooled_panel, RF_grid, timeSlices, loss_function) {
                             forecasts = 0,
                             forecast_resids = 0,
                             model = 0,
-                            hyperparameters = 0)
+                            hyperparameters = 0,
+                            variable_importance = 0)
     
     train <- pooled_panel %>%
       filter(time %in% timeSlices[[set]]$train)
@@ -827,6 +1062,9 @@ RF_fit_stats <- function(f, pooled_panel, RF_grid, timeSlices, loss_function) {
     
     #Forecast residuals
     RF_stats[[set]]$forecast_resids <- test$rt - test_predict
+    
+    #Variable Importance
+    RF_stats[[set]]$variable_importance <- RF_variable_importance(test, timeSlices, model)
   }
   return(RF_stats)
 }
@@ -839,6 +1077,8 @@ RF_MSE[[1]]$loss_stats
 RF_MSE[[2]]$loss_stats
 RF_MSE[[3]]$loss_stats
 
+RF_MSE[[1]]$variable_importance %>% arrange(desc(importance))
+
 RF_MAE[[1]]$loss_stats
 RF_MAE[[2]]$loss_stats
 RF_MAE[[3]]$loss_stats
@@ -849,6 +1089,10 @@ RF_MAE[[3]]$loss_stats
 # Quantile trees are much more computationally intensive
 # These will probably perform much better given a better grid search, and increasing ntrees.
 # Currently, even ntrees = 50 is really quite intensive (overnight)
+# This is much more manageable on the honours computers (approx 30 minutes)
+
+# Other notes
+# 
 ```
 ## Neural Networks WRT MSE
 

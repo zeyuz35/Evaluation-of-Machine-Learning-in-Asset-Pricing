@@ -39,6 +39,7 @@ set.seed(27935248)
 # Load RAW data courtesy of Gu et al
 #################################################
 # This is about ~ 3GB in size in total
+# Note that because the honours lab computers don't have their own hard drives (files are stored on some network location), this initial loading processis very slow (bottlenecked by network speed)
 datashare_RAW <- read_csv("data/datashare/datashare.csv",
                           # Always make sure to force col_types so that read_csv doesn't assume weird stuff
                           col_types = cols(.default = "d"))
@@ -68,6 +69,57 @@ dim(sic2_frame)
 # Wiat, not too sure about this yet because Gu et al later later a singular sic2 importance metric
 # What they probably did: pass sic2 to model fitting functions as a singular factor vector, which then applied model matrix to it
 # This way, they can simply change the values of this vector to 0 and calculate variable importance
+
+# Dealing with Missing characteristics
+# Function to impute missing characteristics with their CROSS SECTIONAL median (as with gu et al) or mean (conventional) for each stock
+# THIS FUNCTION WORKS PROPERLY, HOWEVER THE DATASET HAS TOO MUCH MISSING DATA
+# Many of the earlier cross sections are completely missing any sort of data for some characteristics
+# This means that it is impossible to impute a cross sectional mean/median
+# Don't know how Gu et al did this
+
+# Function to calculate cross sectional medians/means from panel dataset
+# Assumes that the dataset has a "Time" column
+# doFuture has a maxsize default of around 500 MB
+# This smaller than our dataset, so make sure to set it
+
+# Setting doFuture maxsize to 3GB
+
+#options(future.globals.maxSize = 3e+9)
+
+cross_sectional_values <- function(dataset, impute_type) {
+  
+  time_periods <- length(unique(dataset$Time))
+  
+  cross_sectional_values_df <- foreach(t = (min(dataset$Time):max(dataset$Time)), .combine = "rbind") %dopar% {
+    
+    dataset_cross_section <- dataset %>%
+      filter(Time == t)
+    
+    # Mean Case
+    if (impute_type == "mean") {
+      cross_sectional_values <- apply(dataset_cross_section, 2, mean, na.rm = TRUE)
+    }
+    # Median Case
+    else {
+      cross_sectional_values <- apply(dataset_cross_section, 2, median, na.rm = TRUE)
+    }
+    cross_sectional_values
+  }
+  cross_sectional_values_df
+}
+
+cross_sectional_values(datashare, impute_type = "mean")
+
+cross_section_1 <- datashare %>%
+  filter(Time == min(datashare$Time))
+
+impute_missing_characteristics <- function(dataset) {
+  
+  # For each time period, compute the medians or mean for each column
+  
+  
+  
+}
 
 # Summary Statistics
 
