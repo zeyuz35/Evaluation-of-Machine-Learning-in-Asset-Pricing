@@ -426,6 +426,10 @@ LM_stats_mae[[1]]$loss_stats
 LM_stats_mae[[2]]$loss_stats
 LM_stats_mae[[3]]$loss_stats
 
+LM_stats_mae[[1]]$variable_importance %>% arrange(desc(importance))
+LM_stats_mae[[2]]$variable_importance %>% arrange(desc(importance))
+LM_stats_mae[[3]]$variable_importance %>% arrange(desc(importance))
+
 summary(LM_stats_mae[[1]]$model)
 
 # Observations
