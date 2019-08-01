@@ -19,6 +19,7 @@ library(rlist)
 library(Metrics)
 library(ranger)
 library(caret)
+library(tseries)
 
 #Parallel Computing
 library(foreach)
@@ -36,18 +37,10 @@ set.seed(27935248)
 #####################################
 
 #Number of stocks
-# N <- 200
-# #Number of characteristics that underly true model
-# P_c <- 100
-# #Number of Periods
-# Time <- 180
-
-#Reduce Dimensionality to make it easier to code everything up for now. We can always increase this back up later
-
 N <- 200
-
+# #Number of characteristics that underly true model
 P_c <- 100
-
+# #Number of Periods
 Time <- 180
 ```
 
@@ -119,7 +112,7 @@ gen_W <- function(){
   # It is therefore a valid covariance matrix
   
   #Decompose it via cholesky to give the lower triangle matrix
-  # R by defualt gives the upper triangle, therefore it needs to be transposed
+  # R by default gives the upper triangle, therefore it needs to be transposed
   W <- t(chol(B))
   return(W)
 }
@@ -240,9 +233,9 @@ A2 <- matrix(c(
 )
 
 A3 <- matrix(c(
-  0.80, 0.04, 0.01,
-  0.2, 0.90, -0.3,
-  0.01, -0.3, -0.80),
+  0.95, 0.04, 0.01,
+  0.04, 0.90, -0.3,
+  0.01, -0.3, -0.95),
   nrow = 3, ncol = 3
 )
 
@@ -292,9 +285,16 @@ acf(xt[1, ], lag.max = 90)
 acf(xt[2, ], lag.max = 90)
 acf(xt[3, ], lag.max = 90)
 
-pacf(xt[1, ], lag.max = 90)
-pacf(xt[2, ], lag.max = 90)
-pacf(xt[3, ], lag.max = 90)
+#KPSS Tests
+#Unit root tests tend to have very low power, often fail to detect unit roots even even on random walks, or detect unit roots when there are no unit roots (high AR parameter)
+
+kpss.test(xt[1, ], null = c("Level", "Trend"), lshort = TRUE)
+kpss.test(xt[2, ], null = c("Level", "Trend"), lshort = TRUE)
+kpss.test(xt[3, ], null = c("Level", "Trend"), lshort = TRUE)
+
+#pacf(xt[1, ], lag.max = 90)
+#pacf(xt[2, ], lag.max = 90)
+#pacf(xt[3, ], lag.max = 90)
 
 
 ```
@@ -1377,9 +1377,9 @@ A2 <- matrix(c(
 )
 
 A3 <- matrix(c(
-  0.80, 0.04, 0.01,
-  0.2, 0.90, -0.3,
-  0.01, -0.3, -0.80),
+  0.95, 0.04, 0.01,
+  0.04, 0.90, -0.3,
+  0.01, -0.3, -0.95),
   nrow = 3, ncol = 3
 )
 
@@ -1414,7 +1414,7 @@ rm(gu_et_al_g2)
 #G1
 g1_A1_panel <- sim_panel_data(simN, 
                               char_rho_a = 0.5, char_rho_b = 1,
-                              cross_corr = 1, A1, xt_multi = 1, g_function = "g1", theta = matrix(c(0.007, 0.007, 0.007), nrow = 1), 
+                              cross_corr = 0, A1, xt_multi = 1, g_function = "g1", theta = matrix(c(0.007, 0.007, 0.007), nrow = 1), 
                               error_sv = 1, error_ep_sd = 0.05, 
                               error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05,
                               predictor_format = "kronecker")
@@ -1427,7 +1427,7 @@ rm(g1_A1_panel)
 
 g1_A2_panel <- sim_panel_data(simN, 
                               char_rho_a = 0.5, char_rho_b = 1,
-                              cross_corr = 1, A2, xt_multi = 1, g_function = "g1", theta = matrix(c(0.007, 0.007, 0.007), nrow = 1), 
+                              cross_corr = 0, A2, xt_multi = 1, g_function = "g1", theta = matrix(c(0.007, 0.007, 0.007), nrow = 1), 
                               error_sv = 1, error_ep_sd = 0.05, 
                               error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05,
                               predictor_format = "kronecker")
@@ -1439,7 +1439,7 @@ rm(g1_A2_panel)
 
 g1_A3_panel <- sim_panel_data(simN, 
                               char_rho_a = 0.5, char_rho_b = 1,
-                              cross_corr = 1, A3, xt_multi = 1, g_function = "g1", theta = matrix(c(0.007, 0.007, 0.007), nrow = 1), 
+                              cross_corr = 0, A3, xt_multi = 1, g_function = "g1", theta = matrix(c(0.007, 0.007, 0.007), nrow = 1), 
                               error_sv = 1, error_ep_sd = 0.05, 
                               error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05,
                               predictor_format = "kronecker")

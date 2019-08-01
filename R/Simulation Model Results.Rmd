@@ -37,7 +37,8 @@ set.seed(27935248)
 # Set how many realizations of datasets you wish to process
 # Going with 30 for now as this is the rule of thumb for a sufficiently large sample
 
-batch_process_range <- c(1:30)
+#batch_process_range <- c(1:30)
+batch_process_range <- c(1:1)
 
 # Actual Function
 # This function takes a dataset and:
@@ -46,47 +47,117 @@ batch_process_range <- c(1:30)
 # Ie acts as a very big wrapper/for loop
 # Note that a lot number of the models are not multithreaded, so a foreach loop will be used so that batches of realizations can be run
 
-# Initialize List Object
-
-
-# Load Dataset
-
-pooled_panel <- dataset_list[[1]]$panel
+fit_all_models <- function(dataset_list, batch_process_range,
+                           # Logical arguments specifying which models you want to fit
+                           # This is useful if you don't want to fit some of the most intensive methods such as RF and Neural Networks
+                           LM, ELN, RF, NNet) {
+  # Initialize List
+  simulation_results_list <- rep(list(0), length(batch_process_range))
   
-# Linear Models
-LM_stats_mse <- LM_fit(pooled_panel, timeSlices, "mse")
-LM_stats_mae <- LM_fit(pooled_panel, timeSlices, "mae")
-  
-# Penalized Linear Models
-ELN_stats_mae <- ELN_fit_stats(alpha_grid, nlamb = 100, timeSlices, pooled_panel, loss_function = "mae")
-ELN_stats_mse <- ELN_fit_stats(alpha_grid, nlamb = 100, timeSlices, pooled_panel, loss_function = "mse")
+  for (batch in (batch_process_range)) {
+    
+    simulation_results_list[[batch]] <- list(
+      # Panel Statistics
+      Dataset_stats = 0, 
+      # Models
+      LM_MSE = 0, LM_MAE = 0,
+      ELN_MSE = 0, ELN_MAE = 0,
+      RF_MSE = 0, RF_MAE = 0,
+      # Neural Networks
+      NN1_MSE = 0, NN1_MAE = 0,
+      NN2_MSE = 0, NN2_MAE = 0,
+      NN3_MSE = 0, NN3_MAE = 0,
+      NN4_MSE = 0, NN4_MAE = 0,
+      NN5_MSE = 0, NN5_MAE = 0
+    )
+    
+    # Load Dataset
+    pooled_panel <- dataset_list[[batch]]$panel
+    simulation_results_list[[batch]]$Dataset_stats <- dataset_list[[batch]]$statistics
+    
+    timeSlices <- customTimeSlices(start = 2, end = 181, initialWindow = 108, horizon = 12, test_size = 36)
+    
+    f <- panel_formula(pooled_panel)
+    
+    if (LM == 1) {
+      # Linear Models
+      simulation_results_list[[batch]]$LM_MSE <- LM_fit(pooled_panel, timeSlices, "mse")
+      simulation_results_list[[batch]]$LM_MAE <- LM_fit(pooled_panel, timeSlices, "mae")
+    }
+    
+    if (ELN == 1) {
+      # Penalized Linear Models
+    
+      alpha_grid <- seq(0, 1, 0.01)
+      
+      simulation_results_list[[batch]]$ELN_MAE <- ELN_fit_stats(alpha_grid, nlamb = 100, timeSlices, pooled_panel, loss_function = "mae")
+      simulation_results_list[[batch]]$ELN_MSE <- ELN_fit_stats(alpha_grid, nlamb = 100, timeSlices, pooled_panel, loss_function = "mse")
+    }
+    
+    if (RF == 1) {
+      # Random Forests
+      RF_grid <- expand.grid(
+      #ntree usually isn't tuned. Just set to max of computationally feasible
+      ntree = 50,
+      mtry = seq(10, round(ncol(pooled_panel[4:ncol(pooled_panel)])/3), 20)
+      #nodesize = seq(2, 14, 2)
+      # nodedepth recommended not to be changed
+      #nodedepth = 1
+      )
+    
+      simulation_results_list[[batch]]$RF_MSE <- RF_fit_stats(f, pooled_panel, RF_grid, timeSlices, "mse")
+      simulation_results_list[[batch]]$RF_MAE <- RF_fit_stats(f, pooled_panel, RF_grid, timeSlices, "mae")
+    }
+      
+    if (NNet == 1) {
+      # Neural Networks
+      # Commented for now because honours lab computers don't have keras/tensorflow
+      
+      simulation_results_list[[batch]]$NN1_MSE <- NNet_fit_stats(pooled_panel, timeSlices, 1, "mse", batch_size = 32, 20)
+      simulation_results_list[[batch]]$NN1_MAE <- NNet_fit_stats(pooled_panel, timeSlices, 1, "mae", batch_size = 32, 20)
+    
+      simulation_results_list[[batch]]$NN2_MSE <- NNet_fit_stats(pooled_panel, timeSlices, 2, "mse", batch_size = 32, 20)
+      simulation_results_list[[batch]]$NN2_MAE <- NNet_fit_stats(pooled_panel, timeSlices, 2, "mse", batch_size = 32, 20)
+    
+      simulation_results_list[[batch]]$NN3_MSE <- NNet_fit_stats(pooled_panel, timeSlices, 3, "mse", batch_size = 32, 20)
+      simulation_results_list[[batch]]$NN3_MAE <- NNet_fit_stats(pooled_panel, timeSlices, 3, "mse", batch_size = 32, 20)
+    
+      simulation_results_list[[batch]]$NN4_MSE <- NNet_fit_stats(pooled_panel, timeSlices, 4, "mse", batch_size = 32, 20)
+      simulation_results_list[[batch]]$NN4_MAE <- NNet_fit_stats(pooled_panel, timeSlices, 4, "mse", batch_size = 32, 20)
+    
+      simulation_results_list[[batch]]$NN5_MSE <- NNet_fit_stats(pooled_panel, timeSlices, 5, "mse", batch_size = 32, 20)
+      simulation_results_list[[batch]]$NN5_MAE <- NNet_fit_stats(pooled_panel, timeSlices, 5, "mse", batch_size = 32, 20)
+    }
+  }
+  simulation_results_list
+}
 
-# Random Forests
-RF_MSE <- RF_fit_stats(f, pooled_panel, RF_grid, timeSlices, "mse")
-RF_MAE <- RF_fit_stats(f, pooled_panel, RF_grid, timeSlices, "mae")
+g1_A1 <- fit_all_models(g1_A1_panel, batch_process_range, LM = 1, ELN = 1, RF = 0, NNet = 0)
+g1_A2 <- fit_all_models(g1_A2_panel, batch_process_range, LM = 1, ELN = 1, RF = 0, NNet = 0)
+g1_A3 <- fit_all_models(g1_A3_panel, batch_process_range, LM = 1, ELN = 1, RF = 0, NNet = 0)
 
-# Neural Networks
+g2_A1 <- fit_all_models(g2_A1_panel, batch_process_range, LM = 1, ELN = 1, RF = 0, NNet = 0)
+g2_A2 <- fit_all_models(g2_A2_panel, batch_process_range, LM = 1, ELN = 1, RF = 0, NNet = 0)
+g2_A3 <- fit_all_models(g2_A3_panel, batch_process_range, LM = 1, ELN = 1, RF = 0, NNet = 0)
 
-NNet_1_mse_stats <- NNet_fit_stats(pooled_panel, timeSlices, 1, "mse", batch_size = 32, 20)
-NNet_1_mae_stats <- NNet_fit_stats(pooled_panel, timeSlices, 1, "mse", batch_size = 32, 20)
-
-NNet_2_mse_stats <- NNet_fit_stats(pooled_panel, timeSlices, 2, "mse", batch_size = 32, 20)
-NNet_2_mae_stats <- NNet_fit_stats(pooled_panel, timeSlices, 2, "mse", batch_size = 32, 20)
-
-NNet_3_mse_stats <- NNet_fit_stats(pooled_panel, timeSlices, 3, "mse", batch_size = 32, 20)
-NNet_3_mae_stats <- NNet_fit_stats(pooled_panel, timeSlices, 3, "mse", batch_size = 32, 20)
-
-NNet_4_mse_stats <- NNet_fit_stats(pooled_panel, timeSlices, 4, "mse", batch_size = 32, 20)
-NNet_4_mae_stats <- NNet_fit_stats(pooled_panel, timeSlices, 4, "mse", batch_size = 32, 20)
-
-NNet_5_mse_stats <- NNet_fit_stats(pooled_panel, timeSlices, 5, "mse", batch_size = 32, 20)
-NNet_5_mae_stats <- NNet_fit_stats(pooled_panel, timeSlices, 5, "mse", batch_size = 32, 20)
+g3_A1 <- fit_all_models(g3_A1_panel, batch_process_range, LM = 1, ELN = 1, RF = 0, NNet = 0)
+g3_A2 <- fit_all_models(g3_A2_panel, batch_process_range, LM = 1, ELN = 1, RF = 0, NNet = 0)
+g3_A3 <- fit_all_models(g3_A3_panel, batch_process_range, LM = 1, ELN = 1, RF = 0, NNet = 0)
 ```
 
 ```{r}
 # Functions to process the raw loss statistics from earlier and create neat tables
 
 # Functions to visualize variable importance metrics from earlier
+
+combined_importance <- data.frame(
+  rbind(data.frame(cbind(g1_A2[[1]]$LM_MSE[[1]]$variable_importance, model = "LM_MSE")),
+        data.frame(cbind(g1_A2[[1]]$LM_MSE[[1]]$variable_importance, model = "LM_MAE"))
+))
+
+library(forcats)
+ggplot(combined_importance %>% filter(importance > 0.01) %>% mutate(variable = fct_reorder(variable, importance))) +
+  geom_tile(aes(x = model, y = variable, alpha = importance, fill = importance))
 
 # Functions to do Diebold Mariano Tests using forecast residuals from earlier
 ```

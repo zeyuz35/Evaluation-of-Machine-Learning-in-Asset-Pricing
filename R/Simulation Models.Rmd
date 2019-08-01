@@ -35,6 +35,8 @@ plan(multisession)
 ```{r train_valid_test}
 #Create Training + Test Sets
 
+# Gu et al set a training, validation and test sample equal in length for their simulations. Not the most sensible idea
+
 #$T = 180$ monthly periods corresponds to 15 years. The training sample was set to start from $T = 108$ or 9 years, a validation set 1 year in length. The last 3 years were reserved as a test set never to be used for validation or training.
 
 #This means that there are only 3 sample periods to train on, yay
@@ -83,8 +85,6 @@ pooled_panel <- g3_A1_panel[[1]]$panel
 pooled_panel <- gu_et_al_g1[[1]]$panel
 
 pooled_panel <- gu_et_al_g2[[1]]$panel
-
-f <- panel_formula(pooled_panel)
 ```
 
 ```{r variable_importance_functions, eval = FALSE}
@@ -98,7 +98,7 @@ f <- panel_formula(pooled_panel)
 
 ################################################
 # Linear Model
-LM_variable_importance <- function(test, timeSlices, lm_model) {
+LM_variable_importance <- function(test, lm_model) {
   test_x <- test[4:ncol(test)]
   
   test_x_zero <- test_x
@@ -130,7 +130,7 @@ LM_variable_importance <- function(test, timeSlices, lm_model) {
 
 # Penalized Linear Model
 
-ELN_variable_importance <- function(test, timeSlices, eln_model, alpha, lambda) {
+ELN_variable_importance <- function(test, eln_model, alpha, lambda) {
   test_x <- as.matrix(test[4:ncol(test)])
   test_x_zero <- test_x
   test_x_zero[, 1] <- 0
@@ -162,7 +162,7 @@ ELN_variable_importance <- function(test, timeSlices, eln_model, alpha, lambda) 
 
 # Random Forest
 
-RF_variable_importance <- function(test, timeSlices, rf_model) {
+RF_variable_importance <- function(test, rf_model) {
   test_x <- test[4:ncol(test)]
     
   test_x_zero <- test_x
@@ -304,35 +304,22 @@ variable_importance_df
 # Neural Network
 
 NNet_variable_importance <- function(test, nnet_model) {
-  test_x <- as.matrix(test[4:ncol(test)])
-  test_x_zero <- test_x
-  test_x_zero[, 1] <- 0
   
-  test_x <- as.matrix(test_x)
-  text_x_zero <- as.matrix(test_x_zero)
-    
-  original_R2 <- R2(predict(nnet_model, as.matrix(test_x)), test$rt, form = "traditional")
-    
-  new_R2 <- R2(predict(nnet_model, as.matrix(test_x_zero)), test$rt, form = "traditional")
-      
-  variable_importance <- data.frame(variable = colnames(test_x)[1], importance = (original_R2 - new_R2))
-    
-  for (i in 2:ncol(test_x)) {
+  test_x <- as.matrix(test[4:ncol(test)])
+  
+  variable_importance_df <- foreach(i = (1:ncol(test_x)), .combine = "rbind") %dopar% {
     test_x_zero <- test_x
     test_x_zero[, i] <- 0
-      
+    
     original_R2 <- R2(predict(nnet_model, as.matrix(test_x)), test$rt, form = "traditional")
     
     new_R2 <- R2(predict(nnet_model, as.matrix(test_x_zero)), test$rt, form = "traditional")
-      
-    variable_importance <- rbind(variable_importance, 
-                                 data.frame(variable = colnames(test_x)[i], 
-                                            importance = (original_R2 - new_R2)
-                                            )
-                                 )
-      
+        
+    variable_importance <- data.frame(variable = colnames(test_x)[i], importance = (original_R2 - new_R2))
+    
+    variable_importance
   }
-  return(variable_importance)
+variable_importance_df
 }
 ```
 
@@ -342,6 +329,8 @@ NNet_variable_importance <- function(test, nnet_model) {
 LM_fit <- function(pooled_panel, timeSlices, loss_function) {
   #Initialize Loss Function Statistics
   LM_stats <- rep(list(0), 3)
+  
+  f <- panel_formula(pooled_panel)
   
   for (set in 1:3) {
     LM_stats[[set]] <- list(loss_stats = data.frame(train_MAE = 0, train_MSE = 0, train_RMSE = 0, train_RSquare = 0, 
@@ -756,89 +745,9 @@ ELN_fit_stats <- function(alpha_grid, nlamb, timeSlices, pooled_panel, loss_func
     ELN_stats[[set]]$forecast_resids <- test_y - predict(model, test_x, alpha = best_model_params$alpha, lambda = best_model_params$lambda)
     
     #Variable Importance
-    ELN_stats[[set]]$variable_importance <- ELN_variable_importance(test, timeSlices, model, alpha = best_model_params$alpha, lambda = best_model_params$lambda)
+    ELN_stats[[set]]$variable_importance <- ELN_variable_importance(test, model, alpha = best_model_params$alpha, lambda = best_model_params$lambda)
   }
   return(ELN_stats)
-}
-
-# Foreach implementation of above function
-
-ELN_fit_stats <- function(alpha_grid, nlamb, timeSlices, pooled_panel, loss_function) {
-  
-    ELN_stats_list <- foreach(set = (1:3)) %dopar% {
-    #Load Training, validation and test sets
-    train <- pooled_panel %>%
-      filter(time %in% timeSlices[[set]]$train)
-    validation <- pooled_panel %>%
-      filter(time %in% timeSlices[[set]]$validation)
-    test <- pooled_panel %>%
-      filter(time %in% timeSlices[[set]]$test)
-    
-    train_x <- as.matrix(train[4:ncol(train)])
-    train_y <- as.matrix(train$rt)
-    validation_x <- as.matrix(validation[4:ncol(validation)])
-    validation_y <- as.matrix(validation$rt)
-    test_x <- as.matrix(test[4:ncol(test)])
-    test_y <- as.matrix(test$rt)
-      
-    #Get models fit over the grid of hyperparameters
-    ELN_model_grid <- ELN_model_grid(alpha_grid, train_x, train_y, validation_x, validation_y, loss_function, nlamb = nlamb)
-        
-    #Get the best tuning parameters
-    best_model_params <- get_ELN_best_tune(ELN_model_grid)
-    
-    #Initialize stats list
-    ELN_stats <- list(loss_stats = data.frame(train_MAE = 0, train_MSE = 0, train_RMSE = 0, train_RSquare = 0, 
-                                              validation_MAE = 0, validation_MSE = 0, validation_RMSE = 0, validation_RSquare = 0, 
-                                              test_MAE = 0, test_MSE = 0, test_RMSE = 0, test_RSquare = 0),
-                      #Other useful things
-                      forecasts = 0,
-                      forecast_resids = 0,
-                      model = 0,
-                      hyperparameters = 0,
-                      variable_importance = 0)
-      
-    #Model
-    model <- ELN_model_grid[[best_model_params$list_index]]$model
-    ELN_stats$model <- model
-    
-    #Hyperparameters
-    ELN_stats$hyperparameters <- best_model_params
-      
-    #Loss Stats Dataframe
-    #Train
-    train_predict <- predict(model, train_x, alpha = best_model_params$alpha, lambda = best_model_params$lambda)
-    ELN_stats$loss_stats$train_MAE <- mae(train_y, train_predict)
-    ELN_stats$loss_stats$train_MSE <- mse(train_y, train_predict)
-    ELN_stats$loss_stats$train_RMSE <- rmse(train_y, train_predict)
-    ELN_stats$loss_stats$train_RSquare <- (1 - sse(train_y, train_predict) / sum((train_y - mean(train_y))^2))
-        
-    #Validation
-    valid_predict <- predict(model, validation_x, alpha = best_model_params$alpha, lambda = best_model_params$lambda)
-    ELN_stats$loss_stats$validation_MAE <- mae(validation_y, valid_predict)
-    ELN_stats$loss_stats$validation_MSE <- mse(validation_y, valid_predict)
-    ELN_stats$loss_stats$validation_RMSE <- rmse(validation_y, valid_predict)
-    ELN_stats$loss_stats$validation_RSquare <- (1 - sse(validation_y, valid_predict) / sum((validation_y - mean(validation_y))^2))
-    
-    #Test
-    test_predict <- predict(model, test_x, alpha = best_model_params$alpha, lambda = best_model_params$lambda)
-    ELN_stats$loss_stats$test_MAE <- mae(test_y, test_predict)
-    ELN_stats$loss_stats$test_MSE <- mse(test_y, test_predict)
-    ELN_stats$loss_stats$test_RMSE <- rmse(test_y, test_predict)
-    ELN_stats$loss_stats$test_RSquare <- (1 - sse(test_y, test_predict) / sum((test_y - mean(test_y))^2))
-      
-    #Forecasts
-    ELN_stats$forecasts <- predict(model, test_x, alpha = best_model_params$alpha, lambda = best_model_params$lambda)
-    
-    #Forecast residuals
-    ELN_stats$forecast_resids <- test_y - predict(model, test_x, alpha = best_model_params$alpha, lambda = best_model_params$lambda)
-    
-    #Variable Importance
-    ELN_stats$variable_importance <- ELN_variable_importance(test, timeSlices, model, alpha = best_model_params$alpha, lambda = best_model_params$lambda)
-    
-    ELN_stats
-  }
-  ELN_stats_list
 }
 
 #Testing if function works
@@ -982,9 +891,11 @@ get_RF_best_tune <- function(RF_model_grid) {
   return(RF_tune_grid[which.min(RF_tune_grid$validation_loss), ])
 }
 
-RF_fit_stats <- function(f, pooled_panel, RF_grid, timeSlices, loss_function) {
+RF_fit_stats <- function(pooled_panel, RF_grid, timeSlices, loss_function) {
   #Initialize
   RF_stats <- rep(list(0), 3)
+  
+  f <- panel_formula(pooled_panel)
   
   #Load training, validation and test sets
   
