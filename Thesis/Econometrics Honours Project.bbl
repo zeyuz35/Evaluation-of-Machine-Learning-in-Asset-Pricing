@@ -1,5 +1,30 @@
-\begin{thebibliography}{64}
+\begin{thebibliography}{97}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+
+\bibitem[{Abarbanell and Bushee(1998)}]{abarbanell_abnormal_1998}
+Abarbanell, J.~S., Bushee, B.~J., 1998. Abnormal returns to a fundamental
+  analysis strategy. Accounting Review pp. 19--45.
+
+\bibitem[{Ali et~al.(2003)Ali, Hwang, and Trombley}]{ali_arbitrage_2003}
+Ali, A., Hwang, L.-S., Trombley, M.~A., 2003. Arbitrage risk and the
+  book-to-market anomaly. Journal of Financial Economics 69, 355--373.
+
+\bibitem[{Almeida and Campello(2007)}]{almeida_financial_2007}
+Almeida, H., Campello, M., 2007. Financial constraints, asset tangibility, and
+  corporate investment. The Review of Financial Studies 20, 1429--1460.
+
+\bibitem[{Amihud(2002)}]{amihud_illiquidity_2002}
+Amihud, Y., 2002. Illiquidity and stock returns: cross-section and time-series
+  effects. Journal of financial markets 5, 31--56.
+
+\bibitem[{Amihud and Mendelson(1989)}]{amihud_effects_1989}
+Amihud, Y., Mendelson, H., 1989. The effects of beta, bid-ask spread, residual
+  risk, and size on stock returns. The Journal of Finance 44, 479--486.
+
+\bibitem[{Anderson and Garcia-Feijóo(2006)}]{anderson_empirical_2006}
+Anderson, C.~W., Garcia-Feijóo, L., 2006. Empirical evidence on capital
+  investment, growth options, and security returns. The Journal of Finance 61,
+  171--194.
 
 \bibitem[{Ang and Bekaert(2006)}]{ang_stock_2006}
 Ang, A., Bekaert, G., 2006. Stock return predictability: {Is} it there? The
@@ -27,12 +52,22 @@ Bali, T.~G., Cakici, N., Whitelaw, R.~F., 2011. Maxing out: {Stocks} as
 
 \bibitem[{Bandyopadhyay et~al.(2010)Bandyopadhyay, Huang, and
   Wirjanto}]{bandyopadhyay_accrual_2010}
-Bandyopadhyay, S.~P., Huang, A.~G., Wirjanto, T.~S., 2010. The {Accrual}
-  {Volatility} {Anomaly} p.~57.
+Bandyopadhyay, S.~P., Huang, A.~G., Wirjanto, T.~S., 2010. The accrual
+  volatility anomaly. Unpublished Manuscript, University of Waterloo .
 
 \bibitem[{Banz(1981)}]{banz_relationship_1981}
 Banz, R.~W., 1981. The relationship between return and market value of common
   stocks. Journal of financial economics 9, 3--18.
+
+\bibitem[{Barbee~Jr et~al.(1996)Barbee~Jr, Mukherji, and
+  Raines}]{barbee_jr_salesprice_1996}
+Barbee~Jr, W.~C., Mukherji, S., Raines, G.~A., 1996. Do sales–price and
+  debt–equity explain stock returns better than book–market and firm size?
+  Financial Analysts Journal 52, 56--60.
+
+\bibitem[{Barth et~al.(1999)Barth, Elliott, and Finn}]{barth_market_1999}
+Barth, M.~E., Elliott, J.~A., Finn, M.~W., 1999. Market rewards associated with
+  patterns of increasing earnings. Journal of Accounting Research 37, 387--413.
 
 \bibitem[{Basu(1977)}]{basu_investment_1977}
 Basu, S., 1977. Investment performance of common stocks in relation to their
@@ -43,6 +78,15 @@ Basu, S., 1977. Investment performance of common stocks in relation to their
 Belo, F., Lin, X., Bazdresch, S., 2014. Labor hiring, investment, and stock
   return predictability in the cross section. Journal of Political Economy 122,
   129--177.
+
+\bibitem[{Bhandari(1988)}]{bhandari_debt/equity_1988}
+Bhandari, L.~C., 1988. Debt/equity ratio and expected common stock returns:
+  {Empirical} evidence. The journal of finance 43, 507--528.
+
+\bibitem[{Brandt et~al.(2008)Brandt, Kishore, Santa-Clara, and
+  Venkatachalam}]{brandt_earnings_2008}
+Brandt, M.~W., Kishore, R., Santa-Clara, P., Venkatachalam, M., 2008. Earnings
+  announcements are full of surprises. SSRN eLibrary .
 
 \bibitem[{Breiman(1984)}]{breiman_classification_1984}
 Breiman, L., 1984. Classification and {Regression} {Trees}. Routledge.
@@ -91,6 +135,11 @@ Cooper, M.~J., Gulen, H., Schill, M.~J., 2008. Asset {Growth} and the
 Datar, V.~T., Naik, N.~Y., Radcliffe, R., 1998. Liquidity and stock returns:
   {An} alternative test. Journal of Financial Markets 1, 203--219.
 
+\bibitem[{Desai et~al.(2004)Desai, Rajgopal, and
+  Venkatachalam}]{desai_value-glamour_2004}
+Desai, H., Rajgopal, S., Venkatachalam, M., 2004. Value-glamour and accruals
+  mispricing: {One} anomaly or two? The Accounting Review 79, 355--385.
+
 \bibitem[{Diebold and Mariano(2002)}]{diebold_comparing_2002}
 Diebold, F.~X., Mariano, R.~S., 2002. Comparing predictive accuracy. Journal of
   Business \& economic statistics 20, 134--144.
@@ -100,6 +149,24 @@ Diebold, F.~X., Mariano, R.~S., 2002. Comparing predictive accuracy. Journal of
 Eberhart, A.~C., Maxwell, W.~F., Siddique, A.~R., 2004. An examination of
   long-term abnormal stock returns and operating performance following {R}\&{D}
   increases. The Journal of Finance 59, 623--650.
+
+\bibitem[{Eisfeldt and Papanikolaou(2013)}]{eisfeldt_organization_2013}
+Eisfeldt, A.~L., Papanikolaou, D., 2013. Organization capital and the
+  cross-section of expected returns. The Journal of Finance 68, 1365--1406.
+
+\bibitem[{Fairfield et~al.(2003)Fairfield, Whisenant, and
+  Yohn}]{fairfield_accrued_2003}
+Fairfield, P.~M., Whisenant, J.~S., Yohn, T.~L., 2003. Accrued earnings and
+  growth: {Implications} for future profitability and market mispricing. The
+  accounting review 78, 353--371.
+
+\bibitem[{Fama and French(2015)}]{fama_five-factor_2015}
+Fama, E.~F., French, K.~R., 2015. A five-factor asset pricing model. Journal of
+  financial economics 116, 1--22.
+
+\bibitem[{Fama and MacBeth(1973)}]{fama_risk_1973}
+Fama, E.~F., MacBeth, J.~D., 1973. Risk, return, and equilibrium: {Empirical}
+  tests. Journal of political economy 81, 607--636.
 
 \bibitem[{Feng et~al.(2019)Feng, Giglio, and Xiu}]{feng_taming_2019}
 Feng, G., Giglio, S., Xiu, D., 2019. Taming the {Factor} {Zoo}: {A} {Test} of
@@ -135,6 +202,11 @@ Green, J., Hand, J. R.~M., Zhang, X.~F., 2013. The supraview of return
 Gu, S., Kelly, B., Xiu, D., 2018. Empirical asset pricing via machine learning.
   Tech. rep., National Bureau of Economic Research.
 
+\bibitem[{Guo et~al.(2006)Guo, Lev, and Shi}]{guo_explaining_2006}
+Guo, R.-J., Lev, B., Shi, C., 2006. Explaining the {Short}-and {Long}-{Term}
+  {IPO} {Anomalies} in the {US} by {R}\&{D}. Journal of Business Finance \&
+  Accounting 33, 550--579.
+
 \bibitem[{Hafzalla et~al.(2011)Hafzalla, Lundholm, and Matthew
   Van~Winkle}]{hafzalla_percent_2011}
 Hafzalla, N., Lundholm, R., Matthew Van~Winkle, E., 2011. Percent accruals. The
@@ -168,14 +240,32 @@ Hastie, T., Tibshirani, R., Friedman, J.~H., 2009. The elements of statistical
 Hoerl, A.~E., Kennard, R.~W., 1970. Ridge regression: {Biased} estimation for
   nonorthogonal problems. Technometrics 12, 55--67.
 
+\bibitem[{Holthausen and Larcker(1992)}]{holthausen_prediction_1992}
+Holthausen, R.~W., Larcker, D.~F., 1992. The prediction of stock returns using
+  financial statement information. Journal of accounting and economics 15,
+  373--411.
+
+\bibitem[{Hong and Kacperczyk(2009)}]{hong_price_2009}
+Hong, H., Kacperczyk, M., 2009. The price of sin: {The} effects of social norms
+  on markets. Journal of Financial Economics 93, 15--36.
+
 \bibitem[{Hornik et~al.(1989)Hornik, Stinchcombe, and
   White}]{hornik_multilayer_1989}
 Hornik, K., Stinchcombe, M., White, H., 1989. Multilayer feedforward networks
   are universal approximators. Neural networks 2, 359--366.
 
+\bibitem[{Hou and Moskowitz(2005)}]{hou_market_2005}
+Hou, K., Moskowitz, T.~J., 2005. Market frictions, price delay, and the
+  cross-section of expected returns. The Review of Financial Studies 18,
+  981--1020.
+
 \bibitem[{Hou and Robinson(2006)}]{hou_industry_2006}
 Hou, K., Robinson, D.~T., 2006. Industry concentration and average stock
   returns. The Journal of Finance 61, 1927--1956.
+
+\bibitem[{Hou et~al.(2015)Hou, Xue, and Zhang}]{hou_digesting_2015}
+Hou, K., Xue, C., Zhang, L., 2015. Digesting {Anomalies}: {An} {Investment}
+  {Approach}. Review of Financial Studies 28, 650--705.
 
 \bibitem[{Hsu and Kalesnik(2014)}]{hsu_finding_2014}
 Hsu, J., Kalesnik, V., 2014. Finding smart beta in the factor zoo. Research
@@ -190,10 +280,18 @@ Ioffe, S., Szegedy, C., 2015. Batch normalization: {Accelerating} deep network
   training by reducing internal covariate shift. arXiv preprint
   arXiv:1502.03167 .
 
+\bibitem[{Jegadeesh(1990)}]{jegadeesh_evidence_1990}
+Jegadeesh, N., 1990. Evidence of predictable behavior of security returns. The
+  Journal of finance 45, 881--898.
+
 \bibitem[{Jegadeesh and Titman(1993)}]{jegadeesh_returns_1993}
 Jegadeesh, N., Titman, S., 1993. Returns to buying winners and selling losers:
   {Implications} for stock market efficiency. The Journal of finance 48,
   65--91.
+
+\bibitem[{Jiang et~al.(2005)Jiang, Lee, and Zhang}]{jiang_information_2005}
+Jiang, G., Lee, C.~M., Zhang, Y., 2005. Information uncertainty and expected
+  returns. Review of Accounting Studies 10, 185--221.
 
 \bibitem[{Kingma and Ba(2014)}]{kingma_adam:_2014}
 Kingma, D.~P., Ba, J., 2014. Adam: {A} method for stochastic optimization.
@@ -221,13 +319,50 @@ Lev, B., Ohlson, J.~A., 1982. Market-based empirical research in accounting:
   {A} review, interpretation, and extension. Journal of Accounting research pp.
   249--322.
 
+\bibitem[{Litzenberger and Ramaswamy(1982)}]{litzenberger_effects_1982}
+Litzenberger, R.~H., Ramaswamy, K., 1982. The effects of dividends on common
+  stock prices tax effects or information effects? The Journal of Finance 37,
+  429--443.
+
+\bibitem[{Liu(2006)}]{liu_liquidity-augmented_2006}
+Liu, W., 2006. A liquidity-augmented capital asset pricing model. Journal of
+  financial Economics 82, 631--671.
+
 \bibitem[{Masters(1993)}]{masters_practical_1993}
 Masters, T., 1993. Practical {Neural} {Network} {Recipes} in {C}++. Morgan
   Kaufmann, google-Books-ID: 7Ez\_Pq0sp2EC.
 
+\bibitem[{Michaely et~al.(1995)Michaely, Thaler, and
+  Womack}]{michaely_price_1995}
+Michaely, R., Thaler, R.~H., Womack, K.~L., 1995. Price reactions to dividend
+  initiations and omissions: {Overreaction} or drift? The Journal of Finance
+  50, 573--608.
+
+\bibitem[{Mohanram(2005)}]{mohanram_separating_2005}
+Mohanram, P.~S., 2005. Separating winners from losers among lowbook-to-market
+  stocks using financial statement analysis. Review of accounting studies 10,
+  133--170.
+
+\bibitem[{Moskowitz and Grinblatt(1999)}]{moskowitz_industries_1999}
+Moskowitz, T.~J., Grinblatt, M., 1999. Do industries explain momentum? The
+  Journal of finance 54, 1249--1290.
+
 \bibitem[{Novy-Marx(2013)}]{novy-marx_other_2013}
 Novy-Marx, R., 2013. The other side of value: {The} gross profitability
   premium. Journal of Financial Economics 108, 1--28.
+
+\bibitem[{Ou and Penman(1989)}]{ou_financial_1989}
+Ou, J.~A., Penman, S.~H., 1989. Financial statement analysis and the prediction
+  of stock returns. Journal of accounting and economics 11, 295--329.
+
+\bibitem[{Palazzo(2012)}]{palazzo_cash_2012}
+Palazzo, B., 2012. Cash holdings, risk, and expected returns. Journal of
+  Financial Economics 104, 162--185.
+
+\bibitem[{Piotroski(2000)}]{piotroski_value_2000}
+Piotroski, J.~D., 2000. Value investing: {The} use of historical financial
+  statement information to separate winners from losers. Journal of Accounting
+  Research 38, 1--52.
 
 \bibitem[{Pontiff and Woodgate(2008)}]{pontiff_share_2008}
 Pontiff, J., Woodgate, A., 2008. Share issuance and cross-sectional returns.
@@ -277,6 +412,18 @@ Thomas, J.~K., Zhang, H., 2002. Inventory changes and future returns. Review of
 \bibitem[{Tibshirani(1996)}]{tibshirani_regression_1996}
 Tibshirani, R., 1996. Regression shrinkage and selection via the lasso. Journal
   of the Royal Statistical Society: Series B (Methodological) 58, 267--288.
+
+\bibitem[{Titman et~al.(2004)Titman, Wei, and Xie}]{titman_capital_2004}
+Titman, S., Wei, K.~J., Xie, F., 2004. Capital investments and stock returns.
+  Journal of financial and Quantitative Analysis 39, 677--700.
+
+\bibitem[{Tuzel(2010)}]{tuzel_corporate_2010}
+Tuzel, S., 2010. Corporate real estate holdings and the cross-section of stock
+  returns. The Review of Financial Studies 23, 2268--2302.
+
+\bibitem[{Valta(2016)}]{valta_strategic_2016}
+Valta, P., 2016. Strategic default, debt structure, and stock returns. Journal
+  of Financial and Quantitative Analysis 51, 197--229.
 
 \bibitem[{Welch and Goyal(2008)}]{welch_comprehensive_2008}
 Welch, I., Goyal, A., 2008. A {Comprehensive} {Look} at {The} {Empirical}

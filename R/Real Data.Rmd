@@ -66,7 +66,7 @@ sic2_frame <- data.frame(predict(dmy, newdata = datashare))
 dim(sic2_frame)
 
 # sic2_frame is now ready to be combined to the entire predictor set at the end
-# Wiat, not too sure about this yet because Gu et al later later a singular sic2 importance metric
+# Wait, not too sure about this yet because Gu et al later later a singular sic2 importance metric
 # What they probably did: pass sic2 to model fitting functions as a singular factor vector, which then applied model matrix to it
 # This way, they can simply change the values of this vector to 0 and calculate variable importance
 
@@ -80,7 +80,7 @@ dim(sic2_frame)
 # Function to calculate cross sectional medians/means from panel dataset
 # Assumes that the dataset has a "Time" column
 # doFuture has a maxsize default of around 500 MB
-# This smaller than our dataset, so make sure to set it
+# This smaller than our dataset, so make sure to set it to something large
 
 # Setting doFuture maxsize to 3GB
 
@@ -170,8 +170,6 @@ macro_predictors <- PredictorData2017 %>%
   select(Time, dp, ep, bm, ntis, tbl, tms, dfy, svar) %>%
   rename_at(vars(-Time), function(x) paste0("macro_", x)) %>%
   filter(Time >= min(datashare$Time) & Time <= max(datashare$Time)) %>%
-  # Add constant term so we can apply kronecker product later
-  mutate(constant = 1) %>%
   # Reorder
   select(Time, constant, everything())
 

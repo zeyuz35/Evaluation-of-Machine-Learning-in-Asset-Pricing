@@ -35,6 +35,9 @@ set.seed(27935248)
 # Load Datasets
 
 # Set how many realizations of datasets you wish to process
+# Going with 30 for now as this is the rule of thumb for a sufficiently large sample
+
+batch_process_range <- c(1:30)
 
 # Actual Function
 # This function takes a dataset and:
@@ -48,7 +51,7 @@ set.seed(27935248)
 
 # Load Dataset
 
-pooled_panel
+pooled_panel <- dataset_list[[1]]$panel
   
 # Linear Models
 LM_stats_mse <- LM_fit(pooled_panel, timeSlices, "mse")

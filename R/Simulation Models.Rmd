@@ -87,7 +87,7 @@ pooled_panel <- gu_et_al_g2[[1]]$panel
 f <- panel_formula(pooled_panel)
 ```
 
-```{r variable_importance_functions}
+```{r variable_importance_functions, eval = FALSE}
 # Variable Importance Metric Functions
 # Given a single model and test set, return a variable importance dataframe (don't bother sorting them now)
 # Note that a training set is NOT needed because this is to be called AFTER the model is fit
@@ -242,10 +242,11 @@ NNet_variable_importance <- function(test, timeSlices, nnet_model) {
 
 ################################################
 # Linear Model
-LM_variable_importance <- function(test, timeSlices, lm_model) {
+LM_variable_importance <- function(test, lm_model) {
   test_x <- test[4:ncol(test)]
   
-  variable_importance_df <- foreach(i = (1:ncol(test_x)), .combine = "rbind") %dopar% {
+  # Specify .packages = "quantreg" here as it seems it isn't supported and therefore is missed by doFuture
+  variable_importance_df <- foreach(i = (1:ncol(test_x)), .combine = "rbind", .packages = "quantreg") %dopar% {
     test_x_zero <- test_x
     test_x_zero[, i] <- 0
     
@@ -262,7 +263,7 @@ LM_variable_importance <- function(test, timeSlices, lm_model) {
 
 # Penalized Linear Model
 
-ELN_variable_importance <- function(test, timeSlices, eln_model, alpha, lambda) {
+ELN_variable_importance <- function(test, eln_model, alpha, lambda) {
   test_x <- as.matrix(test[4:ncol(test)])
   
   variable_importance_df <- foreach(i = (1:ncol(test_x)), .combine = "rbind") %dopar% {
@@ -282,7 +283,7 @@ ELN_variable_importance <- function(test, timeSlices, eln_model, alpha, lambda) 
 
 # Random Forest
 
-RF_variable_importance <- function(test, timeSlices, rf_model) {
+RF_variable_importance <- function(test, rf_model) {
   test_x <- test[4:ncol(test)]
   
   variable_importance_df <- foreach(i = (1:ncol(test_x)), .combine = "rbind") %dopar% {
@@ -302,7 +303,7 @@ variable_importance_df
 
 # Neural Network
 
-NNet_variable_importance <- function(test, timeSlices, nnet_model) {
+NNet_variable_importance <- function(test, nnet_model) {
   test_x <- as.matrix(test[4:ncol(test)])
   test_x_zero <- test_x
   test_x_zero[, 1] <- 0
@@ -377,7 +378,7 @@ LM_fit <- function(pooled_panel, timeSlices, loss_function) {
     
     #Statistics
     #Training Set
-    train_predict <- predict(lm)
+    train_predict <- predict(lm, newdata = train)
     LM_stats[[set]]$loss_stats$train_MAE <- mae(train$rt, train_predict)
     LM_stats[[set]]$loss_stats$train_MSE <- mse(train$rt, train_predict)
     LM_stats[[set]]$loss_stats$train_RMSE <- rmse(train$rt, train_predict)
@@ -402,7 +403,7 @@ LM_fit <- function(pooled_panel, timeSlices, loss_function) {
     #Forecast Residuals
     LM_stats[[set]]$forecast_resids <- test$rt - test_predict
     #Variable Importance
-    LM_stats[[set]]$variable_importance <- LM_variable_importance(test, timeSlices, lm)
+    LM_stats[[set]]$variable_importance <- LM_variable_importance(test, lm)
   }
   return(LM_stats)
 }
