@@ -52,7 +52,10 @@ datashare <- datashare_RAW %>%
   # Convert sic2 codes to factor
   mutate(sic2 = as.factor(sic2)) %>%
   # Reorder
-  select(Time, permno, everything())
+  select(Time, permno, everything()) %>%
+  # Filter so that only much recent data is used
+  # Not too sure which exact periods, but for now, 2000 to 2015
+  filter(Time >= as.yearmon("2000-01") & Time <= as.yearmon("2015-01"))
 
 # Check how many IDs there are
 # There are 74, consistent with Gu et al
@@ -88,38 +91,35 @@ dim(sic2_frame)
 
 cross_sectional_values <- function(dataset, impute_type) {
   
-  time_periods <- length(unique(dataset$Time))
+  time_periods <- unique(dataset$Time)
   
-  cross_sectional_values_df <- foreach(t = (min(dataset$Time):max(dataset$Time)), .combine = "rbind") %dopar% {
+  cross_sectional_values_df <- foreach(t = 1:length(time_periods), .combine = "rbind") %dopar% {
     
     dataset_cross_section <- dataset %>%
-      filter(Time == t)
+      filter(Time == time_periods[t])
     
     # Mean Case
     if (impute_type == "mean") {
-      cross_sectional_values <- apply(dataset_cross_section, 2, mean, na.rm = TRUE)
+      cross_sectional_values <- dataset_cross_section %>% 
+        select(-sic2) %>% 
+        summarize_all(mean, na.rm = TRUE) %>%
+        mutate(Time = as.yearmon(Time))
     }
     # Median Case
     else {
-      cross_sectional_values <- apply(dataset_cross_section, 2, median, na.rm = TRUE)
+      cross_sectional_values <- dataset_cross_section %>% 
+        select(-sic2) %>% 
+        summarize_all(median, na.rm = TRUE) %>%
+        mutate(Time = as.yearmon(Time))
     }
     cross_sectional_values
   }
   cross_sectional_values_df
 }
 
-cross_sectional_values(datashare, impute_type = "mean")
+test <- cross_sectional_values(datashare, impute_type = "mean")
 
-cross_section_1 <- datashare %>%
-  filter(Time == min(datashare$Time))
 
-impute_missing_characteristics <- function(dataset) {
-  
-  # For each time period, compute the medians or mean for each column
-  
-  
-  
-}
 
 # Summary Statistics
 
