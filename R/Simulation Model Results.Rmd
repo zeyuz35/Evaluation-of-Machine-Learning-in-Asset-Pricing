@@ -13,6 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
 library(keras)
+library(quantreg)
 library(ggplot2)
 library(forecast)
 library(rlist)
@@ -21,7 +22,6 @@ library(Metrics)
 library(ranger)
 library(caret)
 library(forcats)
-library(multDM)
 
 #Parallel Computing
 library(foreach)
@@ -118,36 +118,39 @@ fit_all_models <- function(dataset_list, batch_process_range,
       # Neural Networks
       # Commented for now because honours lab computers don't have keras/tensorflow
       
-      simulation_results_list[[batch]]$NN1_MSE <- NNet_fit_stats(pooled_panel, timeSlices, 1, "mse", batch_size = 32, 20)
-      simulation_results_list[[batch]]$NN1_MAE <- NNet_fit_stats(pooled_panel, timeSlices, 1, "mae", batch_size = 32, 20)
+      batch_size <- 32
+      patience <- 30
+      
+      simulation_results_list[[batch]]$NN1_MSE <- NNet_fit_stats(pooled_panel, timeSlices, 1, "mse", batch_size = batch_size, patience = patience)
+      simulation_results_list[[batch]]$NN1_MAE <- NNet_fit_stats(pooled_panel, timeSlices, 1, "mae", batch_size = batch_size, patience = patience)
     
-      simulation_results_list[[batch]]$NN2_MSE <- NNet_fit_stats(pooled_panel, timeSlices, 2, "mse", batch_size = 32, 20)
-      simulation_results_list[[batch]]$NN2_MAE <- NNet_fit_stats(pooled_panel, timeSlices, 2, "mse", batch_size = 32, 20)
+      simulation_results_list[[batch]]$NN2_MSE <- NNet_fit_stats(pooled_panel, timeSlices, 2, "mse", batch_size = batch_size, patience = patience)
+      simulation_results_list[[batch]]$NN2_MAE <- NNet_fit_stats(pooled_panel, timeSlices, 2, "mae", batch_size = batch_size, patience = patience)
     
-      simulation_results_list[[batch]]$NN3_MSE <- NNet_fit_stats(pooled_panel, timeSlices, 3, "mse", batch_size = 32, 20)
-      simulation_results_list[[batch]]$NN3_MAE <- NNet_fit_stats(pooled_panel, timeSlices, 3, "mse", batch_size = 32, 20)
+      simulation_results_list[[batch]]$NN3_MSE <- NNet_fit_stats(pooled_panel, timeSlices, 3, "mse", batch_size = batch_size, patience = patience)
+      simulation_results_list[[batch]]$NN3_MAE <- NNet_fit_stats(pooled_panel, timeSlices, 3, "mae", batch_size = batch_size, patience = patience)
     
-      simulation_results_list[[batch]]$NN4_MSE <- NNet_fit_stats(pooled_panel, timeSlices, 4, "mse", batch_size = 32, 20)
-      simulation_results_list[[batch]]$NN4_MAE <- NNet_fit_stats(pooled_panel, timeSlices, 4, "mse", batch_size = 32, 20)
+      simulation_results_list[[batch]]$NN4_MSE <- NNet_fit_stats(pooled_panel, timeSlices, 4, "mse", batch_size = batch_size, patience = patience)
+      simulation_results_list[[batch]]$NN4_MAE <- NNet_fit_stats(pooled_panel, timeSlices, 4, "mae", batch_size = batch_size, patience = patience)
     
-      simulation_results_list[[batch]]$NN5_MSE <- NNet_fit_stats(pooled_panel, timeSlices, 5, "mse", batch_size = 32, 20)
-      simulation_results_list[[batch]]$NN5_MAE <- NNet_fit_stats(pooled_panel, timeSlices, 5, "mse", batch_size = 32, 20)
+      simulation_results_list[[batch]]$NN5_MSE <- NNet_fit_stats(pooled_panel, timeSlices, 5, "mse", batch_size = batch_size, patience = patience)
+      simulation_results_list[[batch]]$NN5_MAE <- NNet_fit_stats(pooled_panel, timeSlices, 5, "mae", batch_size = batch_size, patience = patience)
     }
   }
   simulation_results_list
 }
 
-g1_A1 <- fit_all_models(g1_A1_panel, batch_process_range, LM = 1, ELN = 1, RF = 0, NNet = 0)
-g1_A2 <- fit_all_models(g1_A2_panel, batch_process_range, LM = 1, ELN = 1, RF = 0, NNet = 0)
-g1_A3 <- fit_all_models(g1_A3_panel, batch_process_range, LM = 1, ELN = 1, RF = 0, NNet = 0)
+g1_A1 <- fit_all_models(g1_A1_panel, batch_process_range, LM = 1, ELN = 0, RF = 0, NNet = 0)
+g1_A2 <- fit_all_models(g1_A2_panel, batch_process_range, LM = 1, ELN = 0, RF = 0, NNet = 0)
+g1_A3 <- fit_all_models(g1_A3_panel, batch_process_range, LM = 1, ELN = 0, RF = 0, NNet = 0)
 
-g2_A1 <- fit_all_models(g2_A1_panel, batch_process_range, LM = 1, ELN = 1, RF = 0, NNet = 0)
-g2_A2 <- fit_all_models(g2_A2_panel, batch_process_range, LM = 1, ELN = 1, RF = 0, NNet = 0)
-g2_A3 <- fit_all_models(g2_A3_panel, batch_process_range, LM = 1, ELN = 1, RF = 0, NNet = 0)
+g2_A1 <- fit_all_models(g2_A1_panel, batch_process_range, LM = 1, ELN = 0, RF = 0, NNet = 0)
+g2_A2 <- fit_all_models(g2_A2_panel, batch_process_range, LM = 1, ELN = 0, RF = 0, NNet = 0)
+g2_A3 <- fit_all_models(g2_A3_panel, batch_process_range, LM = 1, ELN = 0, RF = 0, NNet = 0)
 
-g3_A1 <- fit_all_models(g3_A1_panel, batch_process_range, LM = 1, ELN = 1, RF = 0, NNet = 0)
-g3_A2 <- fit_all_models(g3_A2_panel, batch_process_range, LM = 1, ELN = 1, RF = 0, NNet = 0)
-g3_A3 <- fit_all_models(g3_A3_panel, batch_process_range, LM = 1, ELN = 1, RF = 0, NNet = 0)
+g3_A1 <- fit_all_models(g3_A1_panel, batch_process_range, LM = 1, ELN = 0, RF = 0, NNet = 1)
+g3_A2 <- fit_all_models(g3_A2_panel, batch_process_range, LM = 1, ELN = 0, RF = 0, NNet = 0)
+g3_A3 <- fit_all_models(g3_A3_panel, batch_process_range, LM = 1, ELN = 0, RF = 0, NNet = 0)
 ```
 
 ```{r}
@@ -156,35 +159,65 @@ g3_A3 <- fit_all_models(g3_A3_panel, batch_process_range, LM = 1, ELN = 1, RF = 
 # Functions to visualize variable importance metrics from earlier
 
 combined_importance <- data.frame(
-  rbind(data.frame(cbind(g1_A2[[1]]$LM_MSE[[1]]$variable_importance, model = "LM_MSE")),
-        data.frame(cbind(g1_A2[[1]]$LM_MSE[[1]]$variable_importance, model = "LM_MAE")),
-        data.frame(cbind(g1_A2[[1]]$LM_MSE[[1]]$variable_importance, model = "ELN_MAE")),
-        data.frame(cbind(g1_A2[[1]]$LM_MSE[[1]]$variable_importance, model = "ELN_MSE"))
+  rbind(data.frame(cbind(g1_A1[[1]]$LM_MSE[[1]]$variable_importance, model = "LM_MSE")),
+        data.frame(cbind(g1_A1[[1]]$LM_MSE[[1]]$variable_importance, model = "LM_MAE")),
+        # Elastic Net
+        #data.frame(cbind(g1_A1[[1]]$LM_MSE[[1]]$variable_importance, model = "ELN_MAE")),
+        #data.frame(cbind(g1_A1[[1]]$LM_MSE[[1]]$variable_importance, model = "ELN_MSE")),
+        # Neural Networks
+        data.frame(cbind(g1_A1[[1]]$NN1_MSE[[1]]$variable_importance, model = "NN1_MSE")),
+        data.frame(cbind(g1_A1[[1]]$NN1_MAE[[1]]$variable_importance, model = "NN1_MAE")),
+        data.frame(cbind(g1_A1[[1]]$NN2_MSE[[1]]$variable_importance, model = "NN2_MSE")),
+        data.frame(cbind(g1_A1[[1]]$NN2_MAE[[1]]$variable_importance, model = "NN2_MAE")),
+        data.frame(cbind(g1_A1[[1]]$NN3_MSE[[1]]$variable_importance, model = "NN3_MSE")),
+        data.frame(cbind(g1_A1[[1]]$NN3_MAE[[1]]$variable_importance, model = "NN3_MAE")),
+        data.frame(cbind(g1_A1[[1]]$NN4_MSE[[1]]$variable_importance, model = "NN4_MSE")),
+        data.frame(cbind(g1_A1[[1]]$NN4_MAE[[1]]$variable_importance, model = "NN4_MAE")),
+        data.frame(cbind(g1_A1[[1]]$NN5_MSE[[1]]$variable_importance, model = "NN5_MSE")),
+        data.frame(cbind(g1_A1[[1]]$NN5_MAE[[1]]$variable_importance, model = "NN5_MAE"))
 )) %>%
   # Calculates the relative importance of each factor within each model
   group_by(model) %>%
   mutate(importance = importance/sum(importance))
 
-
-ggplot(combined_importance %>% filter(importance > 0.01) %>% mutate(variable = fct_reorder(variable, importance))) +
+ggplot(combined_importance %>% filter(importance > 0.04) %>% mutate(variable = fct_reorder(variable, importance))) +
   geom_tile(aes(x = model, y = variable, alpha = importance))
+
+combined_loss_stats <- data.frame(
+  rbind(data.frame(cbind(g1_A1[[1]]$LM_MSE[[1]]$loss_stats, model = "LM_MSE")),
+        data.frame(cbind(g1_A1[[1]]$LM_MAE[[1]]$loss_stats, model = "LM_MAE")),
+        # Neural Networks
+        data.frame(cbind(g1_A1[[1]]$NN1_MSE[[1]]$loss_stats, model = "NN1_MSE")),
+        data.frame(cbind(g1_A1[[1]]$NN1_MAE[[1]]$loss_stats, model = "NN1_MAE")),
+        data.frame(cbind(g1_A1[[1]]$NN2_MSE[[1]]$loss_stats, model = "NN2_MSE")),
+        data.frame(cbind(g1_A1[[1]]$NN2_MAE[[1]]$loss_stats, model = "NN2_MAE")),
+        data.frame(cbind(g1_A1[[1]]$NN3_MSE[[1]]$loss_stats, model = "NN3_MSE")),
+        data.frame(cbind(g1_A1[[1]]$NN3_MAE[[1]]$loss_stats, model = "NN3_MAE")),
+        data.frame(cbind(g1_A1[[1]]$NN4_MSE[[1]]$loss_stats, model = "NN4_MSE")),
+        data.frame(cbind(g1_A1[[1]]$NN4_MAE[[1]]$loss_stats, model = "NN4_MAE")),
+        data.frame(cbind(g1_A1[[1]]$NN5_MSE[[1]]$loss_stats, model = "NN5_MSE")),
+        data.frame(cbind(g1_A1[[1]]$NN5_MAE[[1]]$loss_stats, model = "NN5_MAE"))
+  )
+)
+
+combined_loss_stats
 
 # Functions to do Diebold Mariano Tests using forecast residuals from earlier
 
-# Build a matrix of forecasts with columns corresponding to time index, rows corresponding to different models
 
-cbind(matrix(g1_A2[[1]]$LM_MSE[[1]]$forecasts),  matrix(g1_A2[[1]]$LM_MAE[[1]]$forecasts))
-
-test <- g1_A2_panel[[1]]$panel %>% filter(time %in% timeSlices[[1]]$test)
-
-diebold_test <- MDM.test(realized = test$rt, 
-                         evaluated = t(cbind(matrix(g1_A2[[1]]$LM_MSE[[1]]$forecasts), 
-                                             matrix(g1_A2[[1]]$LM_MAE[[1]]$forecasts),
-                                             matrix(g1_A2[[1]]$ELN_MSE[[1]]$forecasts),
-                                             matrix(g1_A2[[1]]$ELN_MAE[[1]]$forecasts))),
-                         q = 10, loss.type = "SE")
-
-diebold_test
 ```
 
+```{r}
+g1_A1[[1]]$LM_MSE[[1]]$loss_stats
+g1_A2[[1]]$LM_MSE[[1]]$loss_stats
+g1_A3[[1]]$LM_MSE[[1]]$loss_stats
+
+g2_A1[[1]]$LM_MSE[[1]]$loss_stats
+g2_A2[[1]]$LM_MSE[[1]]$loss_stats
+g2_A3[[1]]$LM_MSE[[1]]$loss_stats
+
+g3_A1[[1]]$LM_MSE[[1]]$loss_stats
+g3_A2[[1]]$LM_MSE[[1]]$loss_stats
+g3_A3[[1]]$LM_MSE[[1]]$loss_stats
+```
 

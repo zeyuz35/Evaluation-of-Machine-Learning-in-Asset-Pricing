@@ -654,24 +654,6 @@ The importance of each predictor $j$ is denoted as $VI_j$, and is defined as the
 
 \section{Study}
 
-\subsection{Data}
-
-\rhs{A large part of this section can be done now}
-
-We mimic the data procedure of \cite{gu_empirical_2018}. This means that we obtain the dataset provided by Gu on his website. This dataset contains 94 stock level characteristics: 61 updated annually, 13 updated quarterly and 20 updated monthly. In addition, 74 industry dummies corresponding the the first two digits of the Standard Industrial Classification (SIC) codes are included. 
-
-We then follow \cite{gu_empirical_2018} and construct eight macroeconomic factors following the variable definitions in \cite{welch_comprehensive_2008}: dividend-price ratio (dp), earnings-price ratio (ep), book-to-market ratio (bm), net equity expansion (ntis), Treasury-bill rate (tbl), term spread (tms), default spread (dfy) and stock variance (svar).
-
-The full details of these factors are available in table X.
-
-Throughout all methods and analysis we define the basline set of covariates as:
-
-\begin{equation}
-	z_{i,t} = (1, x_t)' \otimes c_{i, t}
-\end{equation}
-
-where $c_{i,t}$ is a $P_c$ matrix of characteristics for each stock $i$, and $(1, x_t)'$ is a $P_x \times 1$ vector of macroecnomic predictors. $z_{i,t}$ is therefore a $P_x P_c$ vector of features for predicting individual stock returns and includes interactions between stock level characteristics and macroeconomic variables. The total number of covariates in this baseline set is $94 \times (8 + 1) + 74 = 920$.
-
 
 
 \subsection{Model}
@@ -684,134 +666,251 @@ All machine learning methods are designed to approximate the empirical model \( 
 
 where \( c_{i,t} \) is a \( P_c \times 1 \) matrix of characteristics for each stock \(i\), and \(x_t\) is a $P_x \times 1$ vector of macroeconomic predictors (and are this common to all stocks, including a constant). $z_{i,t}$ is a $P \times 1$ vector of features for predicting individual stock returns ($P = P_cP_x$) and includes interactions between individual characteristics and macroeconomic characteristics. 
 
-\section{Results}
+\section{Simulation Results}
 
-All work has been and will be done in R.
+When the underlying data generating process is linear with no cross sectional correlation we see that the linear and penalized linear models offer the best performance. Random forests and neural networks offer performance that is not too far behind, and it is likely due to these models overfitting the training and validation sets, thus generalizing more poorly to the test set. In terms of variable importance, the linear and penalized linear models are able to consistently pick out the correct factors in the DGP, while the random forests and neural networks cannot.
 
-Work is currently being done on tuning the simulated datasets.
+When the underlying data generating process becomes somewhat more non-linear (g2 specification), we start to see the linear and penalized linear models suffering in performance. 
 
-If there is enough time and computing resources, Long Term Short Memory models, an extension of neural networks which includes the output of a neural network trained on previous data, will also be evaluated.
+Moving to even more non linear DGPs (g3), the limitations of linear and penalized linear models becomes more apparent.
+
+Once cross sectional correlation across factors is introduced into the DGP however, all models perform significantly worse. 
+
+\section{Empirical Data}
+
+We mimic the data procedure of \cite{gu_empirical_2018}. This means that we obtain the dataset provided by Gu on his website. This dataset contains 94 stock level characteristics: 61 updated annually, 13 updated quarterly and 20 updated monthly. In addition, 74 industry dummies corresponding the the first two digits of the Standard Industrial Classification (SIC) codes are included. 
+
+We then follow \cite{gu_empirical_2018} and construct eight macroeconomic factors following the variable definitions in \cite{welch_comprehensive_2008}: dividend-price ratio (dp), earnings-price ratio (ep), book-to-market ratio (bm), net equity expansion (ntis), Treasury-bill rate (tbl), term spread (tms), default spread (dfy) and stock variance (svar).
+
+The full details of these factors are available in table X.
+
+Throughout all methods and analysis we define the basline set of covariates as:
+
+\begin{equation}
+z_{i,t} = (1, x_t)' \otimes c_{i, t}
+\end{equation}
+
+where $c_{i,t}$ is a $P_c$ matrix of characteristics for each stock $i$, and $(1, x_t)'$ is a $P_x \times 1$ vector of macroeconomic predictors. $z_{i,t}$ is therefore a $P_x P_c$ vector of features for predicting individual stock returns and includes interactions between stock level characteristics and macroeconomic variables. The total number of covariates in this baseline set is $94 \times (8 + 1) + 74 = 920$.
+
+There exists a significant amount of missing data in the dataset, and any missing characteristics are imputed with their cross sectional means. 
+
+\section{Empirical Data Results}
 
 \section{Appendix}
 
 \subsection{Data}
 
+\begin{landscape}
 \begin{table}
 	\caption{Stock Level Characteristics, data collected are in \citep{green_supraview_2013}}
 	\begin{center}
-		\begin{longtable}{lllllllll} \hline \hline
-			No. & Acronym & Firm Characteristic & Paper's Author(s) & Year & Type & Data Source & Frequency \\ \hline \hline
+		\begin{longtable}{llllllll} \hline 
+			No. & Acronym & Firm Characteristic & Author(s) & Type & Data Source & Frequency \\ \hline
 			\endfirsthead
-			No. & Acronym & Firm Characteristic & Paper's Author(s) & Year & Type & Data Source & Frequency \\ \hline \hline
+			\hline 
 			\endhead
-			\endfoot
+			\hline
 			\endlastfoot
-			1 & absacc & Absolute Accruals & \cite{bandyopadhyay_accrual_2010} & year & Continuous & Compustat & Annual \\
-			2 & acc & Working capital accruals & \cite{sloan_stock_1996} & year & Continuous & Compustat & Annual \\
-			3 & aeavol & Abnormal earnings announcement volume & \cite{lerman_high-volume_2008} & year & Continuous & Compustat & Quarterly \\
-			4 & age & \# years since first Compustat coverage & \cite{jiang_information_2005} & year & Continuous & Compustat & Annual \\
-			5 & agr & Asset growth & \cite{cooper_asset_2008} & year & Continuous & Compustat & Annual \\
-			6 & baspread & Bid-ask spread & \cite{amihud_effects_1989} & year & Continuous & Compustat & Monthly \\
-			7 & beta & Beta & \cite{fama_risk_1973} & year & Continuous & Compustat & Monthly \\
-			8 & betasq & Beta squared & \cite{fama_risk_1973} & year & Continuous & Compustat & Monthly \\
-			9 & bm & Book-to-market & \cite{rosenberg_persuasive_1985} & year & Continuous & Compustat & Annual \\
-			10 & bm\_ia & Industry-adjusted book to market & \cite{asness_predicting_2000} & year & Continuous & Compustat & Quarterly \\
+			1 & absacc & Absolute Accruals & 
+				\cite{bandyopadhyay_accrual_2010} & Continuous & Compustat & Annual \\
+			2 & acc & Working capital accruals & 
+				\cite{sloan_stock_1996} & Continuous & Compustat & Annual \\
+			3 & aeavol & Abnormal earnings announcement volume & 
+				\cite{lerman_high-volume_2008} & Continuous & Compustat & Quarterly \\
+			4 & age & \# years since first Compustat coverage & 
+				\cite{jiang_information_2005} & Continuous & Compustat & Annual \\
+			5 & agr & Asset growth & 
+				\cite{cooper_asset_2008} & Continuous & Compustat & Annual \\
+			6 & baspread & Bid-ask spread & 
+				\cite{amihud_effects_1989} & Continuous & Compustat & Monthly \\
+			7 & beta & Beta & 
+				\cite{fama_risk_1973} & Continuous & Compustat & Monthly \\
+			8 & betasq & Beta squared & 
+				\cite{fama_risk_1973} & Continuous & Compustat & Monthly \\
+			9 & bm & Book-to-market & 
+				\cite{rosenberg_persuasive_1985} & Continuous & Compustat & Annual \\
+			10 & bm\_ia & Industry-adjusted book to market & 
+				\cite{asness_predicting_2000} & Continuous & Compustat & Quarterly \\
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			11 & cash & Cash holdings & \cite{palazzo_cash_2012} & year & Continuous & Compustat & Annual \\
-			12 & cashdebt & Cashflow to debt & \cite{ou_financial_1989} & year & Continuous & Compustat & Annual \\
-			13 & cashpr & Cash productivity & \cite{chandrashekar_productivity_2009} & year & Continuous & Compustat & Annual \\
-			14 & cfp & Cashflow to price ratio & \cite{desai_value-glamour_2004} & year & Continuous & Compustat & Annual \\
-			15 & cfp\_ia & Industry-adjusted cashfow to price ratio & \cite{asness_predicting_2000} & year & Continuous & Compustat & Annual \\
-			16 & chatoia & Industry-adjusted change in asset turnover & \cite{soliman_use_2008} & year & Continuous & Compustat & Annual \\
-			17 & chcsho & Change in shares outstanding & \cite{pontiff_share_2008} & year & Continuous & Compustat & Annual \\
-			18 & chempia & Industry-adjusted change in employee & \cite{asness_predicting_2000} & year & Continuous & Compustat & Annual \\
-			19 & chinv & Change in inventory & \cite{thomas_inventory_2002} & year & Continuous & Compustat & Annual \\
+			11 & cash & Cash holdings & 
+				\cite{palazzo_cash_2012} & Continuous & Compustat & Annual \\
+			12 & cashdebt & Cashflow to debt & 
+				\cite{ou_financial_1989} & Continuous & Compustat & Annual \\
+			13 & cashpr & Cash productivity & 
+				\cite{chandrashekar_productivity_2009} & Continuous & Compustat & Annual \\
+			14 & cfp & Cashflow to price ratio & 
+				\cite{desai_value-glamour_2004} & Continuous & Compustat & Annual \\
+			15 & cfp\_ia & Industry-adjusted cashfow to price ratio & 
+				\cite{asness_predicting_2000} & Continuous & Compustat & Annual \\
+			16 & chatoia & Industry-adjusted change in asset turnover & 
+				\cite{soliman_use_2008} & Continuous & Compustat & Annual \\
+			17 & chcsho & Change in shares outstanding & 
+				\cite{pontiff_share_2008} & Continuous & Compustat & Annual \\
+			18 & chempia & Industry-adjusted change in employee & 
+				\cite{asness_predicting_2000} & Continuous & Compustat & Annual \\
+			19 & chinv & Change in inventory & 
+				\cite{thomas_inventory_2002} & Continuous & Compustat & Annual \\
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			20 & chmom & Change in 6-month momentum & \cite{gettleman_acceleration_2006} & year & Continuous & Compustat & Monthly \\
-			21 & chpmia & Industry-adjusted change in profit margin & \cite{soliman_use_2008} & year & Continuous & Compustat & Annual \\
-			22 & chtx & Change in tax expense & \cite{thomas_tax_2011} & year & Continuous & Compustat & Quarterly \\
-			23 & cinvest & Corporate investment & \cite{titman_capital_2004} & year & Continuous & Compustat & Quarterly \\
-			24 & convind & Convertible debt indicator & \cite{valta_strategic_2016} & year & Dummy & Compustat & Annual \\
-			25 & currat & Current ratio & \cite{ou_financial_1989} & year & Continuous & Compustat & Annual \\
-			26 & depr & Depreciation / PP\&E & \cite{holthausen_prediction_1992} & year & Continuous & Compustat & Annual \\
-			27 & divi & Dividend initiation & \cite{michaely_price_1995} & year & Dummy & Compustat & Annual \\
-			28 & divo & Dividend omission & \cite{michaely_price_1995} & year & Dummy & Compustat & Annual \\
-			29 & dolvol & Dollar trading volume & \cite{chordia_trading_2001} & year & Continuous & Compustat & Monthly \\
+			20 & chmom & Change in 6-month momentum & 
+				\cite{gettleman_acceleration_2006} & Continuous & Compustat & Monthly \\
+			21 & chpmia & Industry-adjusted change in profit margin & 
+				\cite{soliman_use_2008} & Continuous & Compustat & Annual \\
+			22 & chtx & Change in tax expense & 
+				\cite{thomas_tax_2011} & Continuous & Compustat & Quarterly \\
+			23 & cinvest & Corporate investment & 
+				\cite{titman_capital_2004} & Continuous & Compustat & Quarterly \\
+			24 & convind & Convertible debt indicator & 
+				\cite{valta_strategic_2016} & Dummy & Compustat & Annual \\
+			25 & currat & Current ratio & 
+				\cite{ou_financial_1989} & Continuous & Compustat & Annual \\
+			26 & depr & Depreciation / PP\&E & 
+				\cite{holthausen_prediction_1992} & Continuous & Compustat & Annual \\
+			27 & divi & Dividend initiation & 
+				\cite{michaely_price_1995} & Dummy & Compustat & Annual \\
+			28 & divo & Dividend omission & 
+				\cite{michaely_price_1995} & Dummy & Compustat & Annual \\
+			29 & dolvol & Dollar trading volume & 
+				\cite{chordia_trading_2001} & Continuous & Compustat & Monthly \\
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			30 & dy & Dividend to price & \cite{litzenberger_effects_1982} & year & Continuous & Compustat & Annual \\
-			31 & ear & Earnings announcement return & \cite{brandt_earnings_2008} & year & Continuous & Compustat & Quarterly \\ \hline
-			32 & egr & Growth in common shareholder eq & \cite{richardson_accrual_2005} & year & Continuous & Compustat & Annual \\
-			33 & ep & Earnings to price & \cite{basu_investment_1977} & year & Continuous & Compustat & Annual \\
-			34 & gma & Gross profitability & \cite{novy-marx_other_2013} & year & Continuous & Compustat & Annual \\
-			35 & grCAPX & Growth in capital expenditures & \cite{anderson_empirical_2006} & year & Continuous & Compustat & Annual \\
-			36 & grltnoa & Growth in long term net operating assets & \cite{fairfield_accrued_2003} & year & Continuous & Compustat & Annual \\
-			37 & herf & Industry sales concentration & \cite{hou_industry_2006} & year & Continuous & Compustat & Annual \\
-			38 & hire & Employee growth rate & \cite{belo_labor_2014} & year & Continuous & Compustat & Annual \\
-			39 & idiovol & Idiosyncratic return volatility & \cite{ali_arbitrage_2003} & year & Continuous & Compustat & Monthly \\
+			30 & dy & Dividend to price & 
+				\cite{litzenberger_effects_1982} & Continuous & Compustat & Annual \\
+			31 & ear & Earnings announcement return & 
+				\cite{brandt_earnings_2008} & Continuous & Compustat & Quarterly \\ \hline
+			32 & egr & Growth in common shareholder eq & 
+				\cite{richardson_accrual_2005} & Continuous & Compustat & Annual \\
+			33 & ep & Earnings to price & 
+				\cite{basu_investment_1977} & Continuous & Compustat & Annual \\
+			34 & gma & Gross profitability & 
+				\cite{novy-marx_other_2013} & Continuous & Compustat & Annual \\
+			35 & grCAPX & Growth in capital expenditures & 
+				\cite{anderson_empirical_2006} & Continuous & Compustat & Annual \\
+			36 & grltnoa & Growth in long term net operating assets & 
+				\cite{fairfield_accrued_2003} & Continuous & Compustat & Annual \\
+			37 & herf & Industry sales concentration & 
+				\cite{hou_industry_2006} & Continuous & Compustat & Annual \\
+			38 & hire & Employee growth rate & 
+				\cite{belo_labor_2014} & Continuous & Compustat & Annual \\
+			39 & idiovol & Idiosyncratic return volatility & 
+				\cite{ali_arbitrage_2003} & Continuous & Compustat & Monthly \\
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			40 & ill & Illiquidity & \cite{amihud_illiquidity_2002} & year & Continuous & Compustat & Monthly \\
-			41 & indmom & Industry momentum & \cite{moskowitz_industries_1999} & year & Continuous & Compustat & Monthly \\
-			42 & invest & Capital expenditures and inventory & \cite{chen_better_2010} & year & Continuous & Compustat & Annual \\
-			43 & lev & Leverage & \cite{bhandari_debt/equity_1988} & year & Continuous & Compustat & Annual \\
-			44 & lgr & Growth in long-term debt & \cite{richardson_accrual_2005} & year & Continuous & Compustat & Annual \\
-			45 & maxret & Maximum daily return & \cite{bali_maxing_2011} & year & Continuous & Compustat & Monthly \\
-			46 & mom12m & 12-month momentum & \cite{jegadeesh_evidence_1990} & year & Continuous & Compustat & Monthly \\
-			47 & mom1 & 1-month momentum & \cite{jegadeesh_returns_1993} & year & Continuous & Compustat & Monthly \\
-			48 & mom36m & 36-month momentum & \cite{jegadeesh_returns_1993} & year & Continuous & Compustat & Monthly \\
-			49 & mom6m & 6-month momentum & \cite{jegadeesh_returns_1993} & year & Continuous & Compustat & Monthly \\
+			40 & ill & Illiquidity & 
+				\cite{amihud_illiquidity_2002} & Continuous & Compustat & Monthly \\
+			41 & indmom & Industry momentum & 
+				\cite{moskowitz_industries_1999} & Continuous & Compustat & Monthly \\
+			42 & invest & Capital expenditures and inventory & 
+				\cite{chen_better_2010} & Continuous & Compustat & Annual \\
+			43 & lev & Leverage & 
+				\cite{bhandari_debt/equity_1988} & Continuous & Compustat & Annual \\
+			44 & lgr & Growth in long-term debt & 
+				\cite{richardson_accrual_2005} & Continuous & Compustat & Annual \\
+			45 & maxret & Maximum daily return & 
+				\cite{bali_maxing_2011} & Continuous & Compustat & Monthly \\
+			46 & mom12m & 12-month momentum & 
+				\cite{jegadeesh_evidence_1990} & Continuous & Compustat & Monthly \\
+			47 & mom1 & 1-month momentum & 
+				\cite{jegadeesh_returns_1993} & Continuous & Compustat & Monthly \\
+			48 & mom36m & 36-month momentum & 
+				\cite{jegadeesh_returns_1993} & Continuous & Compustat & Monthly \\
+			49 & mom6m & 6-month momentum & 
+				\cite{jegadeesh_returns_1993} & Continuous & Compustat & Monthly \\
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			50 & ms & Financial statement score & \cite{mohanram_separating_2005} & year & Continuous & Compustat & Quarterly \\
-			51 & mvel1 & Size & \cite{banz_relationship_1981} & year & Continuous & Compustat & Monthly \\
-			52 & mve\_ia & Industry-adjusted size & \cite{asness_predicting_2000} & year & Continuous & Compustat & Annual \\
-			53 & nincr & Number of earnings increases & \cite{barth_market_1999} & year & Categorical & Compustat & Quarterly \\
-			54 & operprof & Operating profitability & \cite{fama_five-factor_2015} & year & Continuous & Compustat & Annual \\
-			55 & orgcap & Organizational capital & \cite{eisfeldt_organization_2013} & year & Continuous & Compustat & Annual \\
-			56 & pchcapx\_ia & Industry adjusted \% change in capital expenditures & \cite{abarbanell_abnormal_1998} & year & Continuous & Compustat & Annual \\
-			57 & pchcurrat & \% change in current ratio & \cite{ou_financial_1989} & year & Continuous & Compustat & Annual \\
-			58 & pchdepr & \% change in depreciation & \cite{holthausen_prediction_1992} & year & Continuous & Compustat & Annual \\
-			59 & pchgm\_pchsale & \% change in gross margin - \% change in sales & \cite{abarbanell_abnormal_1998} & year & Continuous & Compustat & Annual \\ \hline
+			50 & ms & Financial statement score & 
+				\cite{mohanram_separating_2005} & Continuous & Compustat & Quarterly \\
+			51 & mvel1 & Size & 
+				\cite{banz_relationship_1981} & Continuous & Compustat & Monthly \\
+			52 & mve\_ia & Industry-adjusted size & 
+				\cite{asness_predicting_2000} & Continuous & Compustat & Annual \\
+			53 & nincr & Number of earnings increases & 
+				\cite{barth_market_1999} & Categorical & Compustat & Quarterly \\
+			54 & operprof & Operating profitability & 
+				\cite{fama_five-factor_2015} & Continuous & Compustat & Annual \\
+			55 & orgcap & Organizational capital & 
+				\cite{eisfeldt_organization_2013} & Continuous & Compustat & Annual \\
+			56 & pchcapx\_ia & Industry adjusted \% change in capital expenditures & 
+				\cite{abarbanell_abnormal_1998} & Continuous & Compustat & Annual \\
+			57 & pchcurrat & \% change in current ratio & 
+				\cite{ou_financial_1989} & Continuous & Compustat & Annual \\
+			58 & pchdepr & \% change in depreciation & 
+				\cite{holthausen_prediction_1992} & Continuous & Compustat & Annual \\
+			59 & pchgm\_pchsale & \% change in gross margin - \% change in sales & 
+				\cite{abarbanell_abnormal_1998} & Continuous & Compustat & Annual \\ \hline
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			60 & pchquick & \% change in quick ratio & \cite{ou_financial_1989} & year & Continuous & Compustat & Annual \\
-			61 & pchsale\_pchinvt & \% change in sales - \% change in inventory & \cite{abarbanell_abnormal_1998} & year & Continuous & Compustat & Annual \\
-			62 & pchsale\_pchrect & \% change in sales - \% change in A/R & \cite{abarbanell_abnormal_1998} & year & Continuous & Compustat & Annual \\
-			63 & pchsale\_pchxsga & \% change in sales - \% change in SG&A & \cite{abarbanell_abnormal_1998} & year & Continuous & Compustat & Annual \\
-			64 & pchsaleinv & \% change sales-to-inventory & \cite{ou_financial_1989} & year & Continuous & Compustat & Annual \\
-			65 & pctacc & Percent accruals & \cite{hafzalla_percent_2011} & year & Continuous & Compustat & Annual \\
-			66 & pricedelay & Price delay & \cite{hou_market_2005} & year & Continuous & Compustat & Monthly \\
-			67 & ps & Financial statements score & \cite{piotroski_value_2000} & year & Categorical & Compustat & Annual \\
-			68 & quick & Quick ratio & \cite{ou_financial_1989} & year & Continuous & Compustat & Annual \\
-			69 & rd & R\&D increase & \cite{eberhart_examination_2004} & year & Continuous & Compustat & Annual \\ \hline
+			60 & pchquick & \% change in quick ratio & 
+				\cite{ou_financial_1989} & Continuous & Compustat & Annual \\
+			61 & pchsale\_pchinvt & \% change in sales - \% change in inventory & 
+				\cite{abarbanell_abnormal_1998} & Continuous & Compustat & Annual \\
+			62 & pchsale\_pchrect & \% change in sales - \% change in A/R & 
+				\cite{abarbanell_abnormal_1998} & Continuous & Compustat & Annual \\
+			63 & pchsale\_pchxsga & \% change in sales - \% change in SG&A & 
+				\cite{abarbanell_abnormal_1998} & Continuous & Compustat & Annual \\
+			64 & pchsaleinv & \% change sales-to-inventory & 
+				\cite{ou_financial_1989} & Continuous & Compustat & Annual \\
+			65 & pctacc & Percent accruals & 
+				\cite{hafzalla_percent_2011} & Continuous & Compustat & Annual \\
+			66 & pricedelay & Price delay & 
+				\cite{hou_market_2005} & Continuous & Compustat & Monthly \\
+			67 & ps & Financial statements score & 
+				\cite{piotroski_value_2000} & Categorical & Compustat & Annual \\
+			68 & quick & Quick ratio & 
+				\cite{ou_financial_1989} & Continuous & Compustat & Annual \\
+			69 & rd & R\&D increase & 
+				\cite{eberhart_examination_2004} & Continuous & Compustat & Annual \\ \hline
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			70 & rd\_mve & R\&D to market capitalization & \cite{guo_explaining_2006} & year & Continuous & Compustat & Annual \\
-			71 & rd\_sale & R\&D to sales & \cite{guo_explaining_2006} & year & Continuous & Compustat & Annual \\
-			72 & realestate & Real estate holdings & \cite{tuzel_corporate_2010} & year & Continuous & Compustat & Annual \\
-			73 & retvol & Return volatility & \cite{ang_cross-section_2006} & year & Continuous & Compustat & Monthly \\
-			74 & roaq & Return on assets & \cite{balakrishnan_post_2010} & year & Continuous & Compustat & Quarterly \\
-			75 & roavol & Earnings volatility & cite & year & Continuous & Compustat & Quarterly \\
-			76 & roeq & Return on equity & \cite{hou_digesting_2015} & year & Continuous & Compustat & Quarterly \\
-			77 & roic & Return on invested capital & \cite{brown_productivity_2007} & year & Continuous & Compustat & Annual \\
-			78 & rsup & Revenue surprise & cite & year & Continuous & Compustat & Quarterly \\
-			79 & salecash & Sales to cash & \cite{ou_financial_1989} & year & Continuous & Compustat & Annual \\ \hline
+			70 & rd\_mve & R\&D to market capitalization & 
+				\cite{guo_explaining_2006} & Continuous & Compustat & Annual \\
+			71 & rd\_sale & R\&D to sales & 
+				\cite{guo_explaining_2006} & Continuous & Compustat & Annual \\
+			72 & realestate & Real estate holdings & 
+				\cite{tuzel_corporate_2010} & Continuous & Compustat & Annual \\
+			73 & retvol & Return volatility & 
+				\cite{ang_cross-section_2006} & Continuous & Compustat & Monthly \\
+			74 & roaq & Return on assets & 
+				\cite{balakrishnan_post_2010} & Continuous & Compustat & Quarterly \\
+			75 & roavol & Earnings volatility & 
+				cite & Continuous & Compustat & Quarterly \\
+			76 & roeq & Return on equity & 
+				\cite{hou_digesting_2015} & Continuous & Compustat & Quarterly \\
+			77 & roic & Return on invested capital & 
+				\cite{brown_productivity_2007} & Continuous & Compustat & Annual \\
+			78 & rsup & Revenue surprise & 
+				cite & Continuous & Compustat & Quarterly \\
+			79 & salecash & Sales to cash & 
+				\cite{ou_financial_1989} & Continuous & Compustat & Annual \\ \hline
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			80 & saleinv & Sales to inventory & \cite{ou_financial_1989} & year & Continuous & Compustat & Annual \\
-			81 & salerec & Sales to receivables & \cite{ou_financial_1989} & year & Continuous & Compustat & Annual \\
-			82 & secured & Secured debt & \cite{valta_strategic_2016} & year & Continuous & Compustat & Annual \\
-			83 & securedind & Secured debt indicator & \cite{valta_strategic_2016} & year & Dummy & Compustat & Annual \\
-			84 & sgr & Sales growth & \cite{barbee_jr_salesprice_1996} & year & Continuous & Compustat & Annual \\
-			85 & sin & Sin stocks & \cite{hong_price_2009} & year & Dummy & Compustat & Annual \\
-			86 & sp & Sales to price &  & year & Continuous & Compustat & Annual \\
-			87 & std\_dolvol & Volatility of liquidity (dollar trading volume) & \cite{chordia_trading_2001} & year & Continuous & Compustat & Annual \\
-			88 & std\_turn & Volatility of liquidity (share turnover) & \cite{chordia_trading_2001} & year & Continuous & Compustat & Monthly \\
-			89 & stdacc & Accrual volatility & \cite{bandyopadhyay_accrual_2010} & year & Continuous & Compustat & Monthly \\ \hline
+			80 & saleinv & Sales to inventory & 
+				\cite{ou_financial_1989} & Continuous & Compustat & Annual \\
+			81 & salerec & Sales to receivables & 
+				\cite{ou_financial_1989} & Continuous & Compustat & Annual \\
+			82 & secured & Secured debt & 
+				\cite{valta_strategic_2016} & Continuous & Compustat & Annual \\
+			83 & securedind & Secured debt indicator & \cite{valta_strategic_2016} & Dummy & Compustat & Annual \\
+			84 & sgr & Sales growth & 
+				\cite{barbee_jr_salesprice_1996} & Continuous & Compustat & Annual \\
+			85 & sin & Sin stocks & 
+				\cite{hong_price_2009} & Dummy & Compustat & Annual \\
+			86 & sp & Sales to price & 
+				cite & Continuous & Compustat & Annual \\
+			87 & std\_dolvol & Volatility of liquidity (dollar trading volume) & 
+				\cite{chordia_trading_2001} & Continuous & Compustat & Annual \\
+			88 & std\_turn & Volatility of liquidity (share turnover) & 
+				\cite{chordia_trading_2001} & Continuous & Compustat & Monthly \\
+			89 & stdacc & Accrual volatility & 
+				\cite{bandyopadhyay_accrual_2010} & Continuous & Compustat & Monthly \\ \hline
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			90 & stdcf & Cashflow volatility & \cite{huang_cross_2009} & year & Continuous & Compustat & Quarterly \\
-			91 & tang & Debt capacity/rm tangibility & \cite{almeida_financial_2007} & year & Continuous & Compustat & Quarterly \\
-			92 & tb & Tax income to book income & \cite{lev_market-based_1982} & year & Continuous & Compustat & Annual \\
-			93 & turn & Share turnover & \cite{datar_liquidity_1998} & year & Continuous & Compustat & Monthly \\
-			94 & zerotrade & Zero trading days & \cite{liu_liquidity-augmented_2006} & year & Continuous & Compustat & Monthly \\	
+			90 & stdcf & Cashflow volatility & 
+				\cite{huang_cross_2009} & Continuous & Compustat & Quarterly \\
+			91 & tang & Debt capacity/rm tangibility & 
+				\cite{almeida_financial_2007} & Continuous & Compustat & Quarterly \\
+			92 & tb & Tax income to book income & 
+				\cite{lev_market-based_1982} & Continuous & Compustat & Annual \\
+			93 & turn & Share turnover & 
+				\cite{datar_liquidity_1998} & Continuous & Compustat & Monthly \\
+			94 & zerotrade & Zero trading days & 
+				\cite{liu_liquidity-augmented_2006} & Continuous & Compustat & Monthly \\	
 		\end{longtable}
 	\end{center}
 \end{table}
+\end{landscape}
 
 \begin{table}
 	\caption{Macroeconomic Factors}
@@ -952,7 +1051,7 @@ Batch Normalization Algorithm as detailed by \cite{ioffe_batch_2015}.
 
 \subsubsection{Tuning of Simulated Datasets}
 
-The simulated datasets were tuned according to three statistics: average individual time series R squared, average annualized volatility, and cross sectional R squared. 
+The simulated datasets were tuned according to the following statistics: average individual time series R squared, average annualized volatility, and cross sectional R squared, and true/predictive R squared.
 
 The methodology for evaluating average time series R squared and cross sectional R squared is consistent with that detailed by \cite{cochrane_asset_2005}. The steps are reproduced here for reference; for complete details refer to \cite{cochrane_asset_2005}.
 
@@ -962,15 +1061,18 @@ First evaluate the following OLS model:
 	R_{it} = a_i + \beta_i' f_{it} + \epsilon_{it} 
 \end{equation}
 
-where $f_{it}$ represents the \textit{true} factors in the returns process. The corresponding R-squared value for this time series regression is calculated across all stocks and averaged.
+where $f_{it}$ represents the \textit{true} factors in the returns process. The corresponding R-squared value for this time series regression is calculated across all stocks and averaged to yield the average time series R-Squared. 
 
-A cross ssectional regression for the risk premia is then run across assets of average returns on the factor coefficients:
+A cross sectional regression for the risk premia is then run across assets of average returns on the factor coefficients:
 
 \begin{equation}
 	\bar{R_{it}} = \alpha_i = \beta_i' \lambda
 \end{equation}
 
-where the $\beta_i'$ are the estimated coefficients from the time series regressions earlier.
+where the $\beta_i'$ are the estimated coefficients from each time series regressions run previously. The corresponding R squared for this regression is the cross sectional R squared.
+
+The true R squared is a measure of signal to noise ratio i.e. how much of the returns data is due to 
+This is simply calculated by running a pooled ordinary least squares regression on the entire panel, using the underlying g() as the "predictions.' The resulting R squared value is therefore a measure of how much of the panel can be explained by the g() term exclusive of any noise or error terms.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%BIBLIOGRAPHY

@@ -1358,7 +1358,7 @@ P_c <- 100
 Time <- 180
 
 #Number of realizations
-simN <- 30
+simN <- 4
 
 # A matrices
 
@@ -1414,7 +1414,7 @@ rm(gu_et_al_g2)
 #G1
 g1_A1_panel <- sim_panel_data(simN, 
                               char_rho_a = 0.5, char_rho_b = 1,
-                              cross_corr = 0, A1, xt_multi = 1, g_function = "g1", theta = matrix(c(0.007, 0.007, 0.007), nrow = 1), 
+                              cross_corr = 0, A1, xt_multi = 1, g_function = "g1", theta = matrix(c(0.015, 0.015, 0.015), nrow = 1), 
                               error_sv = 1, error_ep_sd = 0.05, 
                               error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05,
                               predictor_format = "kronecker")
@@ -1427,7 +1427,7 @@ rm(g1_A1_panel)
 
 g1_A2_panel <- sim_panel_data(simN, 
                               char_rho_a = 0.5, char_rho_b = 1,
-                              cross_corr = 0, A2, xt_multi = 1, g_function = "g1", theta = matrix(c(0.007, 0.007, 0.007), nrow = 1), 
+                              cross_corr = 0, A2, xt_multi = 1, g_function = "g1", theta = matrix(c(0.008, 0.008, 0.008), nrow = 1), 
                               error_sv = 1, error_ep_sd = 0.05, 
                               error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05,
                               predictor_format = "kronecker")
@@ -1454,7 +1454,7 @@ rm(g1_A3_panel)
 
 g2_A1_panel <- sim_panel_data(simN, 
                               char_rho_a = 0.5, char_rho_b = 1,
-                              cross_corr = 1, A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1),
+                              cross_corr = 0, A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1),
                               error_sv = 1, error_ep_sd = 0.05, 
                               error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05,
                               predictor_format = "kronecker")
@@ -1467,7 +1467,7 @@ rm(g2_A1_panel)
 
 g2_A2_panel <- sim_panel_data(simN, 
                               char_rho_a = 0.5, char_rho_b = 1,
-                              cross_corr = 1, A2, xt_multi = 1, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1),
+                              cross_corr = 0, A2, xt_multi = 1, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1),
                               error_sv = 1, error_ep_sd = 0.05, 
                               error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05,
                               predictor_format = "kronecker")
@@ -1477,7 +1477,7 @@ rm(g2_A2_panel)
 
 g2_A3_panel <- sim_panel_data(simN, 
                               char_rho_a = 0.5, char_rho_b = 1,
-                              cross_corr = 1, A3, xt_multi = 1, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1),
+                              cross_corr = 0, A3, xt_multi = 1, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1),
                               error_sv = 1, error_ep_sd = 0.05, 
                               error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05,
                               predictor_format = "kronecker")
@@ -1490,7 +1490,7 @@ rm(g2_A3_panel)
 
 g3_A1_panel <- sim_panel_data(simN, 
                               char_rho_a = 0.5, char_rho_b = 1,
-                              cross_corr = 0, A1, xt_multi = 0, g_function = "g3", theta = matrix(c(0.015, 0.015, 0.015, 0.02), nrow = 1), 
+                              cross_corr = 0, A1, xt_multi = 1, g_function = "g3", theta = matrix(c(0.015, 0.015, 0.015, 0.02), nrow = 1), 
                               error_sv = 1, error_ep_sd = 0.05, 
                               error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05,
                               predictor_format = "kronecker")
@@ -1500,7 +1500,7 @@ rm(g3_A1_panel)
 
 g3_A2_panel <- sim_panel_data(simN, 
                               char_rho_a = 0.5, char_rho_b = 1,
-                              cross_corr = 1, A2, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.02), nrow = 1), 
+                              cross_corr = 0, A2, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.02), nrow = 1), 
                               error_sv = 1, error_ep_sd = 0.05, 
                               error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05,
                               predictor_format = "kronecker")
@@ -1510,7 +1510,7 @@ rm(g3_A2_panel)
 
 g3_A3_panel <- sim_panel_data(simN, 
                               char_rho_a = 0.5, char_rho_b = 1,
-                              cross_corr = 1, A3, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.02), nrow = 1), 
+                              cross_corr = 0, A3, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.02), nrow = 1), 
                               error_sv = 1, error_ep_sd = 0.05, 
                               error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05,
                               predictor_format = "kronecker")

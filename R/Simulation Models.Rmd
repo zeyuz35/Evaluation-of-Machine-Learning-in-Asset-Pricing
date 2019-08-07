@@ -73,18 +73,8 @@ panel_formula <- function(panel){
   return(f)
 }
 
-# Change data specifcation here
-
 pooled_panel <- g1_A1_panel[[1]]$panel
-pooled_panel <- g1_A2_panel[[1]]$panel
 
-pooled_panel <- g2_A1_panel[[1]]$panel
-
-pooled_panel <- g3_A1_panel[[1]]$panel
-
-pooled_panel <- gu_et_al_g1[[1]]$panel
-
-pooled_panel <- gu_et_al_g2[[1]]$panel
 ```
 
 ```{r variable_importance_functions, eval = FALSE}
@@ -302,24 +292,55 @@ variable_importance_df
 }
 
 # Neural Network
+# Unfortunately it seems that the tensorflow/keras backend does not work with foreach, so a standard for loop is needed instead
+
+# Foreach implementation, commented out for reference
+# NNet_variable_importance <- function(test, nnet_model) {
+#   
+#   test_x <- test[4:ncol(test)]
+#   
+#   variable_importance_df <- foreach(i = (1:ncol(test_x)), .combine = "rbind", .packages = c("keras", "tensorflow")) %dopar% {
+#     test_x_zero <- test_x
+#     test_x_zero[, i] <- 0
+#     
+#     original_R2 <- R2(predict(nnet_model, as.matrix(test_x)), test$rt, form = "traditional")
+#     
+#     new_R2 <- R2(predict(nnet_model, as.matrix(test_x_zero)), test$rt, form = "traditional")
+#         
+#     variable_importance <- data.frame(variable = colnames(test_x)[i], importance = (original_R2 - new_R2))
+#     
+#     variable_importance
+#   }
+# variable_importance_df
+# }
 
 NNet_variable_importance <- function(test, nnet_model) {
-  
   test_x <- as.matrix(test[4:ncol(test)])
-  
-  variable_importance_df <- foreach(i = (1:ncol(test_x)), .combine = "rbind") %dopar% {
+  test_x_zero <- test_x
+  test_x_zero[, 1] <- 0
+    
+  original_R2 <- R2(predict(nnet_model, as.matrix(test_x)), test$rt, form = "traditional")
+    
+  new_R2 <- R2(predict(nnet_model, as.matrix(test_x_zero)), test$rt, form = "traditional")
+      
+  variable_importance <- data.frame(variable = colnames(test_x)[1], importance = (original_R2 - new_R2))
+    
+  for (i in 2:ncol(test_x)) {
     test_x_zero <- test_x
     test_x_zero[, i] <- 0
-    
+      
     original_R2 <- R2(predict(nnet_model, as.matrix(test_x)), test$rt, form = "traditional")
     
     new_R2 <- R2(predict(nnet_model, as.matrix(test_x_zero)), test$rt, form = "traditional")
-        
-    variable_importance <- data.frame(variable = colnames(test_x)[i], importance = (original_R2 - new_R2))
-    
-    variable_importance
+      
+    variable_importance <- rbind(variable_importance, 
+                                 data.frame(variable = colnames(test_x)[i], 
+                                            importance = (original_R2 - new_R2)
+                                            )
+                                 )
+      
   }
-variable_importance_df
+  return(variable_importance)
 }
 ```
 
@@ -397,31 +418,31 @@ LM_fit <- function(pooled_panel, timeSlices, loss_function) {
   return(LM_stats)
 }
 
-LM_stats_mse <- LM_fit(pooled_panel, timeSlices, "mse")
-
-LM_stats_mae <- LM_fit(pooled_panel, timeSlices, "mae")
-
-LM_stats_mse[[1]]$loss_stats
-LM_stats_mse[[2]]$loss_stats
-LM_stats_mse[[3]]$loss_stats
-
-LM_stats_mse[[1]]$variable_importance %>% arrange(desc(importance))
-LM_stats_mse[[2]]$variable_importance %>% arrange(desc(importance))
-LM_stats_mse[[3]]$variable_importance %>% arrange(desc(importance))
-
-summary(LM_stats_mse[[1]]$model)
-
-LM_stats_mae[[1]]$loss_stats
-LM_stats_mae[[2]]$loss_stats
-LM_stats_mae[[3]]$loss_stats
-
-LM_stats_mae[[1]]$variable_importance %>% arrange(desc(importance))
-LM_stats_mae[[2]]$variable_importance %>% arrange(desc(importance))
-LM_stats_mae[[3]]$variable_importance %>% arrange(desc(importance))
-
-summary(LM_stats_mae[[1]]$model)
-
-# Observations
+# LM_stats_mse <- LM_fit(pooled_panel, timeSlices, "mse")
+# 
+# LM_stats_mae <- LM_fit(pooled_panel, timeSlices, "mae")
+# 
+# LM_stats_mse[[1]]$loss_stats
+# LM_stats_mse[[2]]$loss_stats
+# LM_stats_mse[[3]]$loss_stats
+# 
+# LM_stats_mse[[1]]$variable_importance %>% arrange(desc(importance))
+# LM_stats_mse[[2]]$variable_importance %>% arrange(desc(importance))
+# LM_stats_mse[[3]]$variable_importance %>% arrange(desc(importance))
+# 
+# summary(LM_stats_mse[[1]]$model)
+# 
+# LM_stats_mae[[1]]$loss_stats
+# LM_stats_mae[[2]]$loss_stats
+# LM_stats_mae[[3]]$loss_stats
+# 
+# LM_stats_mae[[1]]$variable_importance %>% arrange(desc(importance))
+# LM_stats_mae[[2]]$variable_importance %>% arrange(desc(importance))
+# LM_stats_mae[[3]]$variable_importance %>% arrange(desc(importance))
+# 
+# summary(LM_stats_mae[[1]]$model)
+# 
+# # Observations
 
 ```
 
@@ -752,35 +773,35 @@ ELN_fit_stats <- function(alpha_grid, nlamb, timeSlices, pooled_panel, loss_func
 
 #Testing if function works
 
-ELN_stats_mae <- ELN_fit_stats(alpha_grid, nlamb = 100, timeSlices, pooled_panel, loss_function = "mae")
-
-ELN_stats_mse <- ELN_fit_stats(alpha_grid, nlamb = 100, timeSlices, pooled_panel, loss_function = "mse")
-
-ELN_stats_mse[[1]]$loss_stats
-ELN_stats_mse[[1]]$model$alpha
-
-ELN_stats_mse[[2]]$loss_stats
-ELN_stats_mse[[2]]$model$alpha
-
-ELN_stats_mse[[3]]$loss_stats
-ELN_stats_mse[[3]]$model$alpha
-
-ELN_stats_mse[[1]]$variable_importance %>% arrange(desc(importance))
-ELN_stats_mse[[2]]$variable_importance %>% arrange(desc(importance))
-ELN_stats_mse[[3]]$variable_importance %>% arrange(desc(importance))
-
-ELN_stats_mae[[1]]$loss_stats
-ELN_stats_mae[[1]]$model$alpha
-
-ELN_stats_mae[[2]]$loss_stats
-ELN_stats_mae[[2]]$model$alpha
-
-ELN_stats_mae[[3]]$loss_stats
-ELN_stats_mae[[3]]$model$alpha
-
-ELN_stats_mae[[1]]$variable_importance %>% arrange(desc(importance))
-ELN_stats_mae[[2]]$variable_importance %>% arrange(desc(importance))
-ELN_stats_mae[[3]]$variable_importance %>% arrange(desc(importance))
+# ELN_stats_mae <- ELN_fit_stats(alpha_grid, nlamb = 100, timeSlices, pooled_panel, loss_function = "mae")
+# 
+# ELN_stats_mse <- ELN_fit_stats(alpha_grid, nlamb = 100, timeSlices, pooled_panel, loss_function = "mse")
+# 
+# ELN_stats_mse[[1]]$loss_stats
+# ELN_stats_mse[[1]]$model$alpha
+# 
+# ELN_stats_mse[[2]]$loss_stats
+# ELN_stats_mse[[2]]$model$alpha
+# 
+# ELN_stats_mse[[3]]$loss_stats
+# ELN_stats_mse[[3]]$model$alpha
+# 
+# ELN_stats_mse[[1]]$variable_importance %>% arrange(desc(importance))
+# ELN_stats_mse[[2]]$variable_importance %>% arrange(desc(importance))
+# ELN_stats_mse[[3]]$variable_importance %>% arrange(desc(importance))
+# 
+# ELN_stats_mae[[1]]$loss_stats
+# ELN_stats_mae[[1]]$model$alpha
+# 
+# ELN_stats_mae[[2]]$loss_stats
+# ELN_stats_mae[[2]]$model$alpha
+# 
+# ELN_stats_mae[[3]]$loss_stats
+# ELN_stats_mae[[3]]$model$alpha
+# 
+# ELN_stats_mae[[1]]$variable_importance %>% arrange(desc(importance))
+# ELN_stats_mae[[2]]$variable_importance %>% arrange(desc(importance))
+# ELN_stats_mae[[3]]$variable_importance %>% arrange(desc(importance))
 
 # Notes
 # Mostly consistent results with the previous implementation, very minor differences in optimal alpha values chosen
@@ -985,19 +1006,19 @@ RF_fit_stats <- function(pooled_panel, RF_grid, timeSlices, loss_function) {
   return(RF_stats)
 }
 
-RF_MSE <- RF_fit_stats(f, pooled_panel, RF_grid, timeSlices, "mse")
-
-RF_MAE <- RF_fit_stats(f, pooled_panel, RF_grid, timeSlices, "mae")
-
-RF_MSE[[1]]$loss_stats
-RF_MSE[[2]]$loss_stats
-RF_MSE[[3]]$loss_stats
-
-RF_MSE[[1]]$variable_importance %>% arrange(desc(importance))
-
-RF_MAE[[1]]$loss_stats
-RF_MAE[[2]]$loss_stats
-RF_MAE[[3]]$loss_stats
+# RF_MSE <- RF_fit_stats(f, pooled_panel, RF_grid, timeSlices, "mse")
+# 
+# RF_MAE <- RF_fit_stats(f, pooled_panel, RF_grid, timeSlices, "mae")
+# 
+# RF_MSE[[1]]$loss_stats
+# RF_MSE[[2]]$loss_stats
+# RF_MSE[[3]]$loss_stats
+# 
+# RF_MSE[[1]]$variable_importance %>% arrange(desc(importance))
+# 
+# RF_MAE[[1]]$loss_stats
+# RF_MAE[[2]]$loss_stats
+# RF_MAE[[3]]$loss_stats
 
 # Notes
 # Performance seems to be worse than other methods, quite surprising
@@ -1058,6 +1079,13 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
     # The patience parameter is the amount of epochs to check for improvement.
     # Gu et al don't say what their early stopping parameter p is
     early_stop <- callback_early_stopping(monitor = "val_loss", patience = patience, restore_best_weights = TRUE)
+    
+    print_dot_callback <- callback_lambda(
+      on_epoch_end = function(epoch, logs) {
+        if (epoch %% 50 == 0) cat("\n")
+        cat(".")
+      }
+    ) 
     
     build_NN <- function(hidden_layers, loss_function) {
         
@@ -1187,9 +1215,9 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
     # In general, larger batch sizes result in faster progress in training, but don't always converge as fast. Smaller batch sizes train slower, but can converge faster.
     # Default batch size is 32
     neural_network %>% fit(as.matrix(train_x), as.matrix(train_y), 
-                           batch_size = batch_size, epochs = 500, verbose = 1, 
+                           batch_size = batch_size, epochs = 500, verbose = 0, 
                            validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
-                           callbacks = list(early_stop))
+                           callbacks = list(early_stop, print_dot_callback))
     
     #Model
     NNet_stats[[set]]$model <- neural_network
@@ -1225,75 +1253,75 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
     NNet_stats[[set]]$forecast_resids <- test$rt - test_predict
     
     #Variable Importance
-    NNet_stats[[set]]$variable_importance <- NNet_variable_importance(test, timeSlices, neural_network)
+    NNet_stats[[set]]$variable_importance <- NNet_variable_importance(test, neural_network)
   }
   NNet_stats
 }
 
-NNet_1_mse_stats <- NNet_fit_stats(pooled_panel, timeSlices, 1, "mse", batch_size = 32, 10)
-NNet_1_mae_stats <- NNet_fit_stats(pooled_panel, timeSlices, 1, "mae", batch_size = 32, 10)
-
-NNet_1_mse_stats[[1]]$loss_stats
-NNet_1_mse_stats[[2]]$loss_stats
-NNet_1_mse_stats[[3]]$loss_stats
-
-NNet_1_mse_stats[[1]]$variable_importance %>% arrange(desc(importance))
-
-NNet_1_mae_stats[[1]]$loss_stats
-NNet_1_mae_stats[[2]]$loss_stats
-NNet_1_mae_stats[[3]]$loss_stats
-
-##
-
-NNet_2_mse_stats <- NNet_fit_stats(pooled_panel, timeSlices, 2, "mse", batch_size = 512, 10)
-NNet_2_mae_stats <- NNet_fit_stats(pooled_panel, timeSlices, 2, "mae", batch_size = 512, 10)
-
-NNet_2_mse_stats[[1]]$loss_stats
-NNet_2_mse_stats[[2]]$loss_stats
-NNet_2_mse_stats[[3]]$loss_stats
-
-NNet_2_mae_stats[[1]]$loss_stats
-NNet_2_mae_stats[[2]]$loss_stats
-NNet_2_mae_stats[[3]]$loss_stats
-
-##
-
-NNet_3_mse_stats <- NNet_fit_stats(pooled_panel, timeSlices, 3, "mse", batch_size = 512, 10)
-NNet_3_mae_stats <- NNet_fit_stats(pooled_panel, timeSlices, 3, "mae", batch_size = 512, 10)
-
-NNet_3_mse_stats[[1]]$loss_stats
-NNet_3_mse_stats[[2]]$loss_stats
-NNet_3_mse_stats[[3]]$loss_stats
-
-NNet_3_mae_stats[[1]]$loss_stats
-NNet_3_mae_stats[[2]]$loss_stats
-NNet_3_mae_stats[[3]]$loss_stats
-
-##
-
-NNet_4_mse_stats <- NNet_fit_stats(pooled_panel, timeSlices, 4, "mse", batch_size = 32, 30)
-NNet_4_mae_stats <- NNet_fit_stats(pooled_panel, timeSlices, 4, "mae", batch_size = 32, 10)
-
-NNet_4_mse_stats[[1]]$loss_stats
-NNet_4_mse_stats[[2]]$loss_stats
-NNet_4_mse_stats[[3]]$loss_stats
-
-NNet_4_mae_stats[[1]]$loss_stats
-NNet_4_mae_stats[[2]]$loss_stats
-NNet_4_mae_stats[[3]]$loss_stats
-
-##
-
-NNet_5_mse_stats <- NNet_fit_stats(pooled_panel, timeSlices, 5, "mse", batch_size = 32, 30)
-NNet_5_mae_stats <- NNet_fit_stats(pooled_panel, timeSlices, 5, "mae", batch_size = 32, 20)
-
-NNet_5_mse_stats[[1]]$loss_stats
-NNet_5_mse_stats[[2]]$loss_stats
-NNet_5_mse_stats[[3]]$loss_stats
-
-NNet_5_mae_stats[[1]]$loss_stats
-NNet_5_mae_stats[[2]]$loss_stats
-NNet_5_mae_stats[[3]]$loss_stats
+# NNet_1_mse_stats <- NNet_fit_stats(pooled_panel, timeSlices, 1, "mse", batch_size = 16, 10)
+# # NNet_1_mae_stats <- NNet_fit_stats(pooled_panel, timeSlices, 1, "mae", batch_size = 32, 10)
+# # 
+# NNet_1_mse_stats[[1]]$loss_stats
+# NNet_1_mse_stats[[2]]$loss_stats
+# NNet_1_mse_stats[[3]]$loss_stats
+# # 
+# NNet_1_mse_stats[[1]]$variable_importance %>% arrange(desc(importance))
+# 
+# NNet_1_mae_stats[[1]]$loss_stats
+# NNet_1_mae_stats[[2]]$loss_stats
+# NNet_1_mae_stats[[3]]$loss_stats
+# 
+# ##
+# 
+# NNet_2_mse_stats <- NNet_fit_stats(pooled_panel, timeSlices, 2, "mse", batch_size = 512, 10)
+# NNet_2_mae_stats <- NNet_fit_stats(pooled_panel, timeSlices, 2, "mae", batch_size = 512, 10)
+# 
+# NNet_2_mse_stats[[1]]$loss_stats
+# NNet_2_mse_stats[[2]]$loss_stats
+# NNet_2_mse_stats[[3]]$loss_stats
+# 
+# NNet_2_mae_stats[[1]]$loss_stats
+# NNet_2_mae_stats[[2]]$loss_stats
+# NNet_2_mae_stats[[3]]$loss_stats
+# 
+# ##
+# 
+# NNet_3_mse_stats <- NNet_fit_stats(pooled_panel, timeSlices, 3, "mse", batch_size = 512, 10)
+# NNet_3_mae_stats <- NNet_fit_stats(pooled_panel, timeSlices, 3, "mae", batch_size = 512, 10)
+# 
+# NNet_3_mse_stats[[1]]$loss_stats
+# NNet_3_mse_stats[[2]]$loss_stats
+# NNet_3_mse_stats[[3]]$loss_stats
+# 
+# NNet_3_mae_stats[[1]]$loss_stats
+# NNet_3_mae_stats[[2]]$loss_stats
+# NNet_3_mae_stats[[3]]$loss_stats
+# 
+# ##
+# 
+# NNet_4_mse_stats <- NNet_fit_stats(pooled_panel, timeSlices, 4, "mse", batch_size = 32, 30)
+# NNet_4_mae_stats <- NNet_fit_stats(pooled_panel, timeSlices, 4, "mae", batch_size = 32, 10)
+# 
+# NNet_4_mse_stats[[1]]$loss_stats
+# NNet_4_mse_stats[[2]]$loss_stats
+# NNet_4_mse_stats[[3]]$loss_stats
+# 
+# NNet_4_mae_stats[[1]]$loss_stats
+# NNet_4_mae_stats[[2]]$loss_stats
+# NNet_4_mae_stats[[3]]$loss_stats
+# 
+# ##
+# 
+# NNet_5_mse_stats <- NNet_fit_stats(pooled_panel, timeSlices, 5, "mse", batch_size = 32, 30)
+# NNet_5_mae_stats <- NNet_fit_stats(pooled_panel, timeSlices, 5, "mae", batch_size = 32, 20)
+# 
+# NNet_5_mse_stats[[1]]$loss_stats
+# NNet_5_mse_stats[[2]]$loss_stats
+# NNet_5_mse_stats[[3]]$loss_stats
+# 
+# NNet_5_mae_stats[[1]]$loss_stats
+# NNet_5_mae_stats[[2]]$loss_stats
+# NNet_5_mae_stats[[3]]$loss_stats
 
 # Other general observations
 # Increasing the number of layers is NOT good. Neural Network 5 has validation loss graphs that do not look right at all

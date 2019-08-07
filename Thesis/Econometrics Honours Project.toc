@@ -34,10 +34,10 @@
 \contentsline {section}{\numberline {4}Results}{15}{section.4}% 
 \contentsline {section}{\numberline {5}Appendix}{15}{section.5}% 
 \contentsline {subsection}{\numberline {5.1}Data}{15}{subsection.5.1}% 
-\contentsline {subsection}{\numberline {5.2}Algorithms}{15}{subsection.5.2}% 
-\contentsline {subsubsection}{\numberline {5.2.1}Linear Models}{15}{subsubsection.5.2.1}% 
-\contentsline {subsubsection}{\numberline {5.2.2}Penalized Linear}{15}{subsubsection.5.2.2}% 
-\contentsline {subsubsection}{\numberline {5.2.3}Classification and Regression Trees}{17}{subsubsection.5.2.3}% 
-\contentsline {subsubsection}{\numberline {5.2.4}Random Forest}{18}{subsubsection.5.2.4}% 
-\contentsline {subsubsection}{\numberline {5.2.5}Neural Networks}{18}{subsubsection.5.2.5}% 
-\contentsline {subsubsection}{\numberline {5.2.6}Tuning of Simulated Datasets}{19}{subsubsection.5.2.6}% 
+\contentsline {subsection}{\numberline {5.2}Algorithms}{17}{subsection.5.2}% 
+\contentsline {subsubsection}{\numberline {5.2.1}Linear Models}{17}{subsubsection.5.2.1}% 
+\contentsline {subsubsection}{\numberline {5.2.2}Penalized Linear}{17}{subsubsection.5.2.2}% 
+\contentsline {subsubsection}{\numberline {5.2.3}Classification and Regression Trees}{18}{subsubsection.5.2.3}% 
+\contentsline {subsubsection}{\numberline {5.2.4}Random Forest}{19}{subsubsection.5.2.4}% 
+\contentsline {subsubsection}{\numberline {5.2.5}Neural Networks}{19}{subsubsection.5.2.5}% 
+\contentsline {subsubsection}{\numberline {5.2.6}Tuning of Simulated Datasets}{20}{subsubsection.5.2.6}% 
