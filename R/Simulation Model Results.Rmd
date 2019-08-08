@@ -118,8 +118,8 @@ fit_all_models <- function(dataset_list, batch_process_range,
       # Neural Networks
       # Commented for now because honours lab computers don't have keras/tensorflow
       
-      batch_size <- 32
-      patience <- 30
+      batch_size <- 128
+      patience <- 20
       
       simulation_results_list[[batch]]$NN1_MSE <- NNet_fit_stats(pooled_panel, timeSlices, 1, "mse", batch_size = batch_size, patience = patience)
       simulation_results_list[[batch]]$NN1_MAE <- NNet_fit_stats(pooled_panel, timeSlices, 1, "mae", batch_size = batch_size, patience = patience)
@@ -140,7 +140,10 @@ fit_all_models <- function(dataset_list, batch_process_range,
   simulation_results_list
 }
 
-g1_A1 <- fit_all_models(g1_A1_panel, batch_process_range, LM = 1, ELN = 0, RF = 0, NNet = 0)
+gu_et_al_g1_results <- fit_all_models(gu_et_al_g1, batch_process_range, LM = 1, ELN = 0, RF = 0, NNet = 1)
+gu_et_al_g2_results <- fit_all_models(gu_et_al_g2, batch_process_range, LM = 1, ELN = 0, RF = 0, NNet = 1)
+
+g1_A1 <- fit_all_models(g1_A1_panel, batch_process_range, LM = 1, ELN = 0, RF = 0, NNet = 1)
 g1_A2 <- fit_all_models(g1_A2_panel, batch_process_range, LM = 1, ELN = 0, RF = 0, NNet = 0)
 g1_A3 <- fit_all_models(g1_A3_panel, batch_process_range, LM = 1, ELN = 0, RF = 0, NNet = 0)
 
@@ -158,52 +161,146 @@ g3_A3 <- fit_all_models(g3_A3_panel, batch_process_range, LM = 1, ELN = 0, RF = 
 
 # Functions to visualize variable importance metrics from earlier
 
-combined_importance <- data.frame(
-  rbind(data.frame(cbind(g1_A1[[1]]$LM_MSE[[1]]$variable_importance, model = "LM_MSE")),
-        data.frame(cbind(g1_A1[[1]]$LM_MSE[[1]]$variable_importance, model = "LM_MAE")),
-        # Elastic Net
-        #data.frame(cbind(g1_A1[[1]]$LM_MSE[[1]]$variable_importance, model = "ELN_MAE")),
-        #data.frame(cbind(g1_A1[[1]]$LM_MSE[[1]]$variable_importance, model = "ELN_MSE")),
-        # Neural Networks
-        data.frame(cbind(g1_A1[[1]]$NN1_MSE[[1]]$variable_importance, model = "NN1_MSE")),
-        data.frame(cbind(g1_A1[[1]]$NN1_MAE[[1]]$variable_importance, model = "NN1_MAE")),
-        data.frame(cbind(g1_A1[[1]]$NN2_MSE[[1]]$variable_importance, model = "NN2_MSE")),
-        data.frame(cbind(g1_A1[[1]]$NN2_MAE[[1]]$variable_importance, model = "NN2_MAE")),
-        data.frame(cbind(g1_A1[[1]]$NN3_MSE[[1]]$variable_importance, model = "NN3_MSE")),
-        data.frame(cbind(g1_A1[[1]]$NN3_MAE[[1]]$variable_importance, model = "NN3_MAE")),
-        data.frame(cbind(g1_A1[[1]]$NN4_MSE[[1]]$variable_importance, model = "NN4_MSE")),
-        data.frame(cbind(g1_A1[[1]]$NN4_MAE[[1]]$variable_importance, model = "NN4_MAE")),
-        data.frame(cbind(g1_A1[[1]]$NN5_MSE[[1]]$variable_importance, model = "NN5_MSE")),
-        data.frame(cbind(g1_A1[[1]]$NN5_MAE[[1]]$variable_importance, model = "NN5_MAE"))
-)) %>%
-  # Calculates the relative importance of each factor within each model
-  group_by(model) %>%
-  mutate(importance = importance/sum(importance))
+combined_importance_list <- function(results_list) {
+  combined_importance_list <- rep(list(0), length(results_list))
+  
+  for (batch in 1:length(results_list)) {
+    combined_importance_list[[batch]] <- rep(list(0), 3)
+    
+    for (set in 1:3) {
+      
+      # Linear Models
+      
+      if (typeof(results_list[[batch]]$LM_MSE) == "list") {
+        LM <- rbind(
+          data.frame(cbind(results_list[[batch]]$LM_MSE[[set]]$variable_importance, model = "LM_MSE")),
+          data.frame(cbind(results_list[[batch]]$LM_MAE[[set]]$variable_importance, model = "LM_MAE"))
+        )
+      } else {LM <- NULL}
+      
+      # Elastic Net
+      
+      if (typeof(results_list[[batch]]$ELN_MSE) == "list") {
+        ELN <- rbind(
+          data.frame(cbind(results_list[[batch]]$ELN_MSE[[set]]$variable_importance, model = "ELN_MSE")),
+          data.frame(cbind(results_list[[batch]]$ELN_MAE[[set]]$variable_importance, model = "ELN_MAE"))
+        )
+      } else {ELN <- NULL}
+      
+      # Random Forest
+      
+      if (typeof(results_list[[batch]]$RF_MSE) == "list") {
+        RF <- rbind(
+          data.frame(cbind(results_list[[batch]]$RF_MSE[[set]]$variable_importance, model = "RF_MSE")),
+          data.frame(cbind(results_list[[batch]]$RF_MAE[[set]]$variable_importance, model = "RF_MAE"))
+        )
+      } else {RF <- NULL}
+      
+      # Neural Networks
+      
+      if (typeof(results_list[[batch]]$NN1_MSE) == "list") {
+        NN <- rbind(
+          data.frame(cbind(results_list[[batch]]$NN1_MSE[[set]]$variable_importance, model = "NN1_MSE")),
+          data.frame(cbind(results_list[[batch]]$NN1_MAE[[set]]$variable_importance, model = "NN1_MAE")),
+          
+          data.frame(cbind(results_list[[batch]]$NN2_MSE[[set]]$variable_importance, model = "NN2_MSE")),
+          data.frame(cbind(results_list[[batch]]$NN2_MAE[[set]]$variable_importance, model = "NN2_MAE")),
+          
+          data.frame(cbind(results_list[[batch]]$NN3_MSE[[set]]$variable_importance, model = "NN3_MSE")),
+          data.frame(cbind(results_list[[batch]]$NN3_MAE[[set]]$variable_importance, model = "NN3_MAE")),
+          
+          data.frame(cbind(results_list[[batch]]$NN4_MSE[[set]]$variable_importance, model = "NN4_MSE")),
+          data.frame(cbind(results_list[[batch]]$NN4_MAE[[set]]$variable_importance, model = "NN4_MAE")),
+          
+          data.frame(cbind(results_list[[batch]]$NN5_MSE[[set]]$variable_importance, model = "NN5_MSE")),
+          data.frame(cbind(results_list[[batch]]$NN5_MAE[[set]]$variable_importance, model = "NN5_MAE"))
+        )
+      } else {NN <- NULL}
+      combined_importance_list[[batch]][[set]] <- rbind( LM, ELN, RF, NN)
+    }
+  }
+  combined_importance_list
+}
 
-ggplot(combined_importance %>% filter(importance > 0.04) %>% mutate(variable = fct_reorder(variable, importance))) +
-  geom_tile(aes(x = model, y = variable, alpha = importance))
+# Takes a combined importance list object as returned from previous function, and plots variable importance for a given batch and set
+# Also take an importance threshold
+combined_importance_plot <- function(combined_importance, batch_no, set_no, threshold) {
+  df <- combined_importance[[batch_no]][[set_no]] %>%
+    group_by(model) %>%
+    mutate(importance = importance/sum(importance)) %>%
+    filter(importance > threshold)
+  
+  ggplot(df %>% mutate(variable = fct_reorder(variable, importance))) +
+    geom_tile(aes(x = model, y = variable, alpha = importance))
+}
 
-combined_loss_stats <- data.frame(
-  rbind(data.frame(cbind(g1_A1[[1]]$LM_MSE[[1]]$loss_stats, model = "LM_MSE")),
-        data.frame(cbind(g1_A1[[1]]$LM_MAE[[1]]$loss_stats, model = "LM_MAE")),
-        # Neural Networks
-        data.frame(cbind(g1_A1[[1]]$NN1_MSE[[1]]$loss_stats, model = "NN1_MSE")),
-        data.frame(cbind(g1_A1[[1]]$NN1_MAE[[1]]$loss_stats, model = "NN1_MAE")),
-        data.frame(cbind(g1_A1[[1]]$NN2_MSE[[1]]$loss_stats, model = "NN2_MSE")),
-        data.frame(cbind(g1_A1[[1]]$NN2_MAE[[1]]$loss_stats, model = "NN2_MAE")),
-        data.frame(cbind(g1_A1[[1]]$NN3_MSE[[1]]$loss_stats, model = "NN3_MSE")),
-        data.frame(cbind(g1_A1[[1]]$NN3_MAE[[1]]$loss_stats, model = "NN3_MAE")),
-        data.frame(cbind(g1_A1[[1]]$NN4_MSE[[1]]$loss_stats, model = "NN4_MSE")),
-        data.frame(cbind(g1_A1[[1]]$NN4_MAE[[1]]$loss_stats, model = "NN4_MAE")),
-        data.frame(cbind(g1_A1[[1]]$NN5_MSE[[1]]$loss_stats, model = "NN5_MSE")),
-        data.frame(cbind(g1_A1[[1]]$NN5_MAE[[1]]$loss_stats, model = "NN5_MAE"))
-  )
-)
+gu_et_al_g2_results_importance <- combined_importance_list(gu_et_al_g2_results)
 
-combined_loss_stats
+combined_importance_plot(gu_et_al_g2_results_importance, 1, 3, 0.005)
 
-# Functions to do Diebold Mariano Tests using forecast residuals from earlier
+# Function that takes a results list object and returns a combined loss statistics data frame
 
+combined_loss_stats <- function(results_list) {
+  results_loss <- rep(list(0), length(results_list))
+  for (batch in 1:length(results_list)) {
+    results_loss[[batch]] <- rep(list(0), 3)
+    for (set in 1:3) {
+      # Linear Models
+      
+      if (typeof(results_list[[batch]]$LM_MSE) == "list") {
+        LM <- rbind(
+          data.frame(cbind(results_list[[batch]]$LM_MSE[[set]]$loss_stats, model = "LM_MSE")),
+          data.frame(cbind(results_list[[batch]]$LM_MAE[[set]]$loss_stats, model = "LM_MAE"))
+        )
+      } else {LM <- NULL}
+      
+      # Elastic Net
+      
+      if (typeof(results_list[[batch]]$ELN_MSE) == "list") {
+        ELN <- rbind(
+          data.frame(cbind(results_list[[batch]]$ELN_MSE[[set]]$loss_stats, model = "ELN_MSE")),
+          data.frame(cbind(results_list[[batch]]$ELN_MAE[[set]]$loss_stats, model = "ELN_MAE"))
+        )
+      } else {ELN <- NULL}
+      
+      # Random Forest
+      
+      if (typeof(results_list[[batch]]$RF_MSE) == "list") {
+        RF <- rbind(
+          data.frame(cbind(results_list[[batch]]$RF_MSE[[set]]$loss_stats, model = "RF_MSE")),
+          data.frame(cbind(results_list[[batch]]$RF_MAE[[set]]$loss_stats, model = "RF_MAE"))
+        )
+      } else {RF <- NULL}
+      
+      # Neural Networks
+      
+      if (typeof(results_list[[batch]]$NN1_MSE) == "list") {
+        NN <- rbind(
+          data.frame(cbind(results_list[[batch]]$NN1_MSE[[set]]$loss_stats, model = "NN1_MSE")),
+          data.frame(cbind(results_list[[batch]]$NN1_MAE[[set]]$loss_stats, model = "NN1_MAE")),
+          
+          data.frame(cbind(results_list[[batch]]$NN2_MSE[[set]]$loss_stats, model = "NN2_MSE")),
+          data.frame(cbind(results_list[[batch]]$NN2_MAE[[set]]$loss_stats, model = "NN2_MAE")),
+          
+          data.frame(cbind(results_list[[batch]]$NN3_MSE[[set]]$loss_stats, model = "NN3_MSE")),
+          data.frame(cbind(results_list[[batch]]$NN3_MAE[[set]]$loss_stats, model = "NN3_MAE")),
+          
+          data.frame(cbind(results_list[[batch]]$NN4_MSE[[set]]$loss_stats, model = "NN4_MSE")),
+          data.frame(cbind(results_list[[batch]]$NN4_MAE[[set]]$loss_stats, model = "NN4_MAE")),
+          
+          data.frame(cbind(results_list[[batch]]$NN5_MSE[[set]]$loss_stats, model = "NN5_MSE")),
+          data.frame(cbind(results_list[[batch]]$NN5_MAE[[set]]$loss_stats, model = "NN5_MAE"))
+        )
+      } else {NN <- NULL}
+      results_loss[[batch]][[set]] <- rbind(LM, ELN, RF, NN)
+    }
+  }
+  results_loss
+}
+
+gu_et_al_g2_loss <- combined_loss_stats(gu_et_al_g2_results)
+
+gu_et_al_g2_loss[[1]][[1]]
 
 ```
 
