@@ -98,9 +98,9 @@ gen_C_bar <- function(rho_a, rho_b){
 
 gen_W <- function(){
   #Generate Lambda Matrix first
-  
+  # Change the sd parameter here to control the degree of cross sectional correlation
   Lambda <- matrix(
-    data = rnorm(N*4, 0, 1),
+    data = rnorm(N*4, 0, 0.1),
     nrow = N, ncol = 4
   )
   
@@ -1176,16 +1176,6 @@ sim_tune_statistics <- function(sim_panel_list) {
   }
   return(sim_tune_stats)
 }
-
-# gu_et_al_g1 <- sim_panel_data_parallel(100, cross_corr = 0, A1, xt_multi = 0, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1),
-#                                        error_sv = 0, error_ep_sd = 0.05, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
-# 
-# gu_et_al_g2 <- sim_panel_data_parallel(100, cross_corr = 0, A1, xt_multi = 0, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1),
-#                                        error_sv = 0, error_ep_sd = 0.05, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
-# 
-# summary(sim_tune_statistics(gu_et_al_g1))
-# 
-# summary(sim_tune_statistics(gu_et_al_g2))
 
 # Observations
 

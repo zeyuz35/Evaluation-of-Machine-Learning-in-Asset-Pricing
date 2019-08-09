@@ -1,43 +1,44 @@
-\babel@toc {english}{}
-\contentsline {section}{\numberline {1}Introduction}{2}{section.1}% 
-\contentsline {subsection}{\numberline {1.1}Topic}{2}{subsection.1.1}% 
-\contentsline {subsection}{\numberline {1.2}Background Literature and Motivations}{2}{subsection.1.2}% 
-\contentsline {section}{\numberline {2}Methodology}{5}{section.2}% 
-\contentsline {subsection}{\numberline {2.1}Overall Model Design}{5}{subsection.2.1}% 
-\contentsline {subsection}{\numberline {2.2}Sample Splitting}{5}{subsection.2.2}% 
-\contentsline {subsection}{\numberline {2.3}Loss Function}{6}{subsection.2.3}% 
-\contentsline {subsubsection}{\numberline {2.3.1}Mean Absolute Error}{6}{subsubsection.2.3.1}% 
-\contentsline {subsubsection}{\numberline {2.3.2}Mean Squared Error and Root Mean Squared Error}{6}{subsubsection.2.3.2}% 
-\contentsline {subsection}{\numberline {2.4}Linear Model}{6}{subsection.2.4}% 
-\contentsline {subsection}{\numberline {2.5}Penalized Linear Model}{7}{subsection.2.5}% 
-\contentsline {subsection}{\numberline {2.6}Classification and Regression Trees}{8}{subsection.2.6}% 
-\contentsline {subsection}{\numberline {2.7}Random Forests}{8}{subsection.2.7}% 
-\contentsline {subsection}{\numberline {2.8}Neural Networks}{9}{subsection.2.8}% 
-\contentsline {subsubsection}{\numberline {2.8.1}Introduction}{9}{subsubsection.2.8.1}% 
-\contentsline {subsubsection}{\numberline {2.8.2}Activation Function}{9}{subsubsection.2.8.2}% 
-\contentsline {subsubsection}{\numberline {2.8.3}Computation}{9}{subsubsection.2.8.3}% 
-\contentsline {subsubsection}{\numberline {2.8.4}Batch Normalization}{11}{subsubsection.2.8.4}% 
-\contentsline {subsubsection}{\numberline {2.8.5}Initialization}{11}{subsubsection.2.8.5}% 
-\contentsline {subsection}{\numberline {2.9}Simulation Design}{11}{subsection.2.9}% 
-\contentsline {subsubsection}{\numberline {2.9.1}Overall Design}{11}{subsubsection.2.9.1}% 
-\contentsline {subsubsection}{\numberline {2.9.2}Simulating Characteristics}{11}{subsubsection.2.9.2}% 
-\contentsline {subsubsection}{\numberline {2.9.3}Simulating Macroeconomic Series}{12}{subsubsection.2.9.3}% 
-\contentsline {subsubsection}{\numberline {2.9.4}Simulating Return Series}{12}{subsubsection.2.9.4}% 
-\contentsline {subsubsection}{\numberline {2.9.5}Sample Splitting}{13}{subsubsection.2.9.5}% 
-\contentsline {subsection}{\numberline {2.10}Model Evaluation}{13}{subsection.2.10}% 
-\contentsline {subsubsection}{\numberline {2.10.1}R Squared}{13}{subsubsection.2.10.1}% 
-\contentsline {subsubsection}{\numberline {2.10.2}Diebold-Mariano Test}{13}{subsubsection.2.10.2}% 
-\contentsline {subsection}{\numberline {2.11}Variable Importance}{14}{subsection.2.11}% 
-\contentsline {section}{\numberline {3}Study}{14}{section.3}% 
-\contentsline {subsection}{\numberline {3.1}Data}{14}{subsection.3.1}% 
-\contentsline {subsection}{\numberline {3.2}Model}{15}{subsection.3.2}% 
-\contentsline {section}{\numberline {4}Results}{15}{section.4}% 
-\contentsline {section}{\numberline {5}Appendix}{15}{section.5}% 
-\contentsline {subsection}{\numberline {5.1}Data}{15}{subsection.5.1}% 
-\contentsline {subsection}{\numberline {5.2}Algorithms}{17}{subsection.5.2}% 
-\contentsline {subsubsection}{\numberline {5.2.1}Linear Models}{17}{subsubsection.5.2.1}% 
-\contentsline {subsubsection}{\numberline {5.2.2}Penalized Linear}{17}{subsubsection.5.2.2}% 
-\contentsline {subsubsection}{\numberline {5.2.3}Classification and Regression Trees}{18}{subsubsection.5.2.3}% 
-\contentsline {subsubsection}{\numberline {5.2.4}Random Forest}{19}{subsubsection.5.2.4}% 
-\contentsline {subsubsection}{\numberline {5.2.5}Neural Networks}{19}{subsubsection.5.2.5}% 
-\contentsline {subsubsection}{\numberline {5.2.6}Tuning of Simulated Datasets}{20}{subsubsection.5.2.6}% 
+\select@language {english}
+\contentsline {section}{\numberline {1}Introduction}{2}{section.1}
+\contentsline {subsection}{\numberline {1.1}Topic}{2}{subsection.1.1}
+\contentsline {subsection}{\numberline {1.2}Background Literature and Motivations}{2}{subsection.1.2}
+\contentsline {section}{\numberline {2}Methodology}{5}{section.2}
+\contentsline {subsection}{\numberline {2.1}Overall Model Design}{5}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Sample Splitting}{5}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.3}Loss Function}{6}{subsection.2.3}
+\contentsline {subsubsection}{\numberline {2.3.1}Mean Absolute Error}{6}{subsubsection.2.3.1}
+\contentsline {subsubsection}{\numberline {2.3.2}Mean Squared Error and Root Mean Squared Error}{6}{subsubsection.2.3.2}
+\contentsline {subsection}{\numberline {2.4}Linear Model}{6}{subsection.2.4}
+\contentsline {subsection}{\numberline {2.5}Penalized Linear Model}{7}{subsection.2.5}
+\contentsline {subsection}{\numberline {2.6}Classification and Regression Trees}{8}{subsection.2.6}
+\contentsline {subsection}{\numberline {2.7}Random Forests}{8}{subsection.2.7}
+\contentsline {subsection}{\numberline {2.8}Neural Networks}{9}{subsection.2.8}
+\contentsline {subsubsection}{\numberline {2.8.1}Introduction}{9}{subsubsection.2.8.1}
+\contentsline {subsubsection}{\numberline {2.8.2}Activation Function}{9}{subsubsection.2.8.2}
+\contentsline {subsubsection}{\numberline {2.8.3}Computation}{9}{subsubsection.2.8.3}
+\contentsline {subsubsection}{\numberline {2.8.4}Batch Normalization}{11}{subsubsection.2.8.4}
+\contentsline {subsubsection}{\numberline {2.8.5}Initialization}{11}{subsubsection.2.8.5}
+\contentsline {subsection}{\numberline {2.9}Simulation Design}{11}{subsection.2.9}
+\contentsline {subsubsection}{\numberline {2.9.1}Overall Design}{11}{subsubsection.2.9.1}
+\contentsline {subsubsection}{\numberline {2.9.2}Simulating Characteristics}{11}{subsubsection.2.9.2}
+\contentsline {subsubsection}{\numberline {2.9.3}Simulating Macroeconomic Series}{12}{subsubsection.2.9.3}
+\contentsline {subsubsection}{\numberline {2.9.4}Simulating Return Series}{12}{subsubsection.2.9.4}
+\contentsline {subsubsection}{\numberline {2.9.5}Sample Splitting}{13}{subsubsection.2.9.5}
+\contentsline {subsection}{\numberline {2.10}Model Evaluation}{13}{subsection.2.10}
+\contentsline {subsubsection}{\numberline {2.10.1}R Squared}{13}{subsubsection.2.10.1}
+\contentsline {subsubsection}{\numberline {2.10.2}Diebold-Mariano Test}{13}{subsubsection.2.10.2}
+\contentsline {subsection}{\numberline {2.11}Variable Importance}{14}{subsection.2.11}
+\contentsline {section}{\numberline {3}Study}{14}{section.3}
+\contentsline {subsection}{\numberline {3.1}Model}{14}{subsection.3.1}
+\contentsline {section}{\numberline {4}Simulation Results}{14}{section.4}
+\contentsline {section}{\numberline {5}Empirical Data}{15}{section.5}
+\contentsline {section}{\numberline {6}Empirical Data Results}{15}{section.6}
+\contentsline {section}{\numberline {7}Appendix}{15}{section.7}
+\contentsline {subsection}{\numberline {7.1}Data}{15}{subsection.7.1}
+\contentsline {subsection}{\numberline {7.2}Algorithms}{17}{subsection.7.2}
+\contentsline {subsubsection}{\numberline {7.2.1}Linear Models}{17}{subsubsection.7.2.1}
+\contentsline {subsubsection}{\numberline {7.2.2}Penalized Linear}{17}{subsubsection.7.2.2}
+\contentsline {subsubsection}{\numberline {7.2.3}Classification and Regression Trees}{18}{subsubsection.7.2.3}
+\contentsline {subsubsection}{\numberline {7.2.4}Random Forest}{19}{subsubsection.7.2.4}
+\contentsline {subsubsection}{\numberline {7.2.5}Neural Networks}{19}{subsubsection.7.2.5}
+\contentsline {subsubsection}{\numberline {7.2.6}Tuning of Simulated Datasets}{20}{subsubsection.7.2.6}
