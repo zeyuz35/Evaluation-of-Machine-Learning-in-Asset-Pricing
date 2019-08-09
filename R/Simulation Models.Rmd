@@ -6,13 +6,11 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-
 ################
 ##Load Libraries
 ################
 
-library(tidyverse)
+#library(tidyverse)
 library(keras)
 library(ggplot2)
 library(forecast)
@@ -43,7 +41,9 @@ plan(multisession)
 
 #Caret and other packages are not so good at dealing with custom training/validation/test sets. Have to specify resampling, tuning and testing manually (ugh)
 
-customTimeSlices <- function(start, end, initialWindow, horizon, test_size) {
+# Change this to 10 + 3 + 3 initially, maybe more stable procedure
+
+customTimeSlices <- function(start, end, initialWindow, horizon, validation_size, test_size) {
   total <- c(start:end)
   offset <- start - 1
   set_num <- (end - start + offset - test_size - initialWindow) / horizon
@@ -62,7 +62,7 @@ customTimeSlices <- function(start, end, initialWindow, horizon, test_size) {
 }
 
 #Create custom time slices
-timeSlices <- customTimeSlices(start = 2, end = 181, initialWindow = 108, horizon = 12, test_size = 36)
+timeSlices <- customTimeSlices(start = 2, end = 181, initialWindow = 120, horizon = 12, test_size = 36)
 
 #Formula Function, makes it easier for those packages with a formula interface
 

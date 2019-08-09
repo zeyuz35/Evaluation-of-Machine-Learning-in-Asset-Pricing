@@ -14,6 +14,8 @@ Simulation code should be finished, in "Simulation.rmd". This includes flexible 
 
 "Simulation Model Results.rmd" contains wrapper functions that run any combination models, calling them from "Simulation Models.rmd" These will spit out a list object containing all specified model results. Also working on some useful functions such as plotting variable importance, conducting Diebold-Mariano Tests (lol), etc using the model results.
 
+Generally speaking, the project has been coded up in an efficient manner. Simulation, model fitting, variable importance calculation etc are all parallelized in addition to using efficient packages for maximum effiency. A notable exception are the variable importance functions for the neural networks, which does not work with foreach due to difficulties with reticulate. 
+
 Note that the random forests and neural networks are VERY computationally intensive. On an i5 6600K @ 4.4GHz + NVidia GTX 960 running a set of either of these typically requires a least a few hours, often overnight.
 
 Currently writing proposal in the actual thesis tex file because it just happens to have everything in one place already, and most of the introduction/literature review will be reused anyway. Planning to just copy and paste the elements that I need from the thesis tex file into the separate proposal tex file.
