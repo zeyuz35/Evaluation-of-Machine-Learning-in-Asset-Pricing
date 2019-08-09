@@ -6,12 +6,11 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
 ################
 ##Load Libraries
 ################
 
-library(tidyverse)
+# library(tidyverse)
 library(keras)
 library(ggplot2)
 library(forecast)
@@ -1348,7 +1347,7 @@ P_c <- 100
 Time <- 180
 
 #Number of realizations
-simN <- 4
+simN <- 30
 
 # A matrices
 
@@ -1404,109 +1403,37 @@ rm(gu_et_al_g2)
 #G1
 g1_A1_panel <- sim_panel_data(simN, 
                               char_rho_a = 0.5, char_rho_b = 1,
-                              cross_corr = 0, A1, xt_multi = 1, g_function = "g1", theta = matrix(c(0.015, 0.015, 0.015), nrow = 1), 
-                              error_sv = 1, error_ep_sd = 0.05, 
+                              cross_corr = 0, A1, xt_multi = 1, g_function = "g1", theta = matrix(c(0.04, 0.04, 0.04), nrow = 1), 
+                              error_sv = 1, error_ep_sd = 1, 
                               error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05,
                               predictor_format = "kronecker")
 summary(sim_tune_statistics(g1_A1_panel))
 saveRDS(g1_A1_panel, file = "g1_A1.rds")
 rm(g1_A1_panel)
 
-# Default Settings
-# Cross sectional r squared is somewhat lower
-
-g1_A2_panel <- sim_panel_data(simN, 
-                              char_rho_a = 0.5, char_rho_b = 1,
-                              cross_corr = 0, A2, xt_multi = 1, g_function = "g1", theta = matrix(c(0.008, 0.008, 0.008), nrow = 1), 
-                              error_sv = 1, error_ep_sd = 0.05, 
-                              error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05,
-                              predictor_format = "kronecker")
-summary(sim_tune_statistics(g1_A2_panel))
-saveRDS(g1_A2_panel, file = "g1_A2.rds")
-rm(g1_A2_panel)
-
-# Cross sectional R squared is very low
-
-g1_A3_panel <- sim_panel_data(simN, 
-                              char_rho_a = 0.5, char_rho_b = 1,
-                              cross_corr = 0, A3, xt_multi = 1, g_function = "g1", theta = matrix(c(0.007, 0.007, 0.007), nrow = 1), 
-                              error_sv = 1, error_ep_sd = 0.05, 
-                              error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05,
-                              predictor_format = "kronecker")
-summary(sim_tune_statistics(g1_A3_panel))
-saveRDS(g1_A3_panel, file = "g1_A3.rds")
-rm(g1_A3_panel)
-
-# This is also rather reasonable
-# Low Time Series R squared though
-
 #G2
 
 g2_A1_panel <- sim_panel_data(simN, 
                               char_rho_a = 0.5, char_rho_b = 1,
                               cross_corr = 0, A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1),
-                              error_sv = 1, error_ep_sd = 0.05, 
+                              error_sv = 1, error_ep_sd = 1, 
                               error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05,
                               predictor_format = "kronecker")
 summary(sim_tune_statistics(g2_A1_panel))
 saveRDS(g2_A1_panel, file = "g2_A1.rds")
 rm(g2_A1_panel)
 
-# True R squared values here are high for defaults
-# 
-
-g2_A2_panel <- sim_panel_data(simN, 
-                              char_rho_a = 0.5, char_rho_b = 1,
-                              cross_corr = 0, A2, xt_multi = 1, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1),
-                              error_sv = 1, error_ep_sd = 0.05, 
-                              error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05,
-                              predictor_format = "kronecker")
-summary(sim_tune_statistics(g2_A2_panel))
-saveRDS(g2_A2_panel, file = "g2_A2.rds")
-rm(g2_A2_panel)
-
-g2_A3_panel <- sim_panel_data(simN, 
-                              char_rho_a = 0.5, char_rho_b = 1,
-                              cross_corr = 0, A3, xt_multi = 1, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1),
-                              error_sv = 1, error_ep_sd = 0.05, 
-                              error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05,
-                              predictor_format = "kronecker")
-summary(sim_tune_statistics(g2_A3_panel))
-saveRDS(g2_A3_panel, file = "g2_A3.rds")
-rm(g2_A3_panel)
-
 #G3
-#Remember that G3 has 4 underlying factors, adjust theta accordingly
 
 g3_A1_panel <- sim_panel_data(simN, 
                               char_rho_a = 0.5, char_rho_b = 1,
                               cross_corr = 0, A1, xt_multi = 1, g_function = "g3", theta = matrix(c(0.015, 0.015, 0.015, 0.02), nrow = 1), 
-                              error_sv = 1, error_ep_sd = 0.05, 
+                              error_sv = 1, error_ep_sd = 1, 
                               error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05,
                               predictor_format = "kronecker")
 summary(sim_tune_statistics(g3_A1_panel))
 saveRDS(g3_A1_panel, file = "g3_A1.rds")
 rm(g3_A1_panel)
-
-g3_A2_panel <- sim_panel_data(simN, 
-                              char_rho_a = 0.5, char_rho_b = 1,
-                              cross_corr = 0, A2, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.02), nrow = 1), 
-                              error_sv = 1, error_ep_sd = 0.05, 
-                              error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05,
-                              predictor_format = "kronecker")
-summary(sim_tune_statistics(g3_A2_panel))
-saveRDS(g3_A2_panel, file = "g3_A2.rds")
-rm(g3_A2_panel)
-
-g3_A3_panel <- sim_panel_data(simN, 
-                              char_rho_a = 0.5, char_rho_b = 1,
-                              cross_corr = 0, A3, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.02), nrow = 1), 
-                              error_sv = 1, error_ep_sd = 0.05, 
-                              error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05,
-                              predictor_format = "kronecker")
-summary(sim_tune_statistics(g3_A3_panel))
-saveRDS(g3_A3_panel, file = "g3_A3.rds")
-rm(g3_A3_panel)
 
 # These all pretty good, except true r squared is still just a little bit high. Cross sectional R squared still has high variance
 

@@ -477,7 +477,7 @@ Then, define the matrix
 \begin{equation}
 	B:=\Lambda\Lambda' + \frac{1}{10}\mathbb{I}_{n}, \quad
 	\Lambda_i = (\lambda_{i1},\dots,\lambda_{i4}), \quad
-	\lambda_{ik}\sim N(0,1), \; k=1,\dots,4
+	\lambda_{ik}\sim N(0, 0.1), \; k=1, \dots, 4
 \end{equation}
 
 which we transform into a correlation matrix $W$ via
@@ -517,7 +517,11 @@ x_{t}=Ax_{t-1}+u_t,
 	\right) 
 \end{flalign*}
 
-where we have three separate specifications for the matrix $A$:
+where we specify $A$:
+
+\rhs{clean up}
+
+Other more complex and interactive matrix specifcations were briefly explored, but these did not appear to have a significant impact on results. More complex designs do affect the variable importance metrics, but not to large enough degree.
 
 \begin{align}
 (1)\; A =
@@ -544,7 +548,7 @@ where we have three separate specifications for the matrix $A$:
 
 \subsubsection{Simulating Return Series}
 
-We will consider four different functions for $g(z_{i, t})$:
+We will consider three different functions for $g(z_{i, t})$:
 
 \begin{flalign*}
 (1)\; & g_1 \left(z_{i, t}\right)=\left(c_{i 1, t}, c_{i 2, t}, c_{i 3, t} \times x_{t}'\right) \theta_{0};
@@ -552,20 +556,18 @@ We will consider four different functions for $g(z_{i, t})$:
 (2)\; & g_2 \left(z_{i, t}\right)=\left(c_{i 1, t}^{2}, c_{i 1, t} \times c_{i 2, t}, \operatorname{sgn}\left(c_{i 3, t} \times  x_{t}'\right)\right) \theta_{0}; 
 	\quad \theta_{0} = (0.04, 0.035, 0.01)^{\prime} \\
 (3)\; & g_3 \left(z_{i, t}\right) = \left(1[c_{i3,t}>0],c_{i 2, t}^{3}, c_{i 1, t} \times c_{i 2, t}\times 1[c_{i3,t}>0], \text{logit}\left({c}_{i 3, t} \right)\right) \theta_{0};
-	\quad \theta_{0} = (0.04, 0.035, 0.01, 0.01)^{\prime} \\
-(4)\; & g_4 \left(z_{i, t}\right)=\left(\hat{c}_{i 1, t}, \hat{c}_{i 2, t}, \hat{c}_{i 3, t} \times x_{t}'\right) \theta_{0};
-	\quad \theta_{0} = (0.02 ,0.02 ,0.02)^{\prime}
+	\quad \theta_{0} = (0.04, 0.035, 0.01, 0.01)^{\prime}
 \end{flalign*}
 
 $g_1 \left(z_{i, t}\right)$ allows the characteristics to enter the return equation linearly, and $g_2 \left(z_{i, t}\right)$ allows the characteristics to enter the return equation interactively and non-linearly. These two specifications correspond to the simulation design proposed by \cite{gu_empirical_2018}. 
 
 $g_3 \left(z_{i, t}\right)$ allows the characteristics to enter in a highly complex and non-linear fashion.
 
-$g_4 \left(z_{i, t}\right)$ builds returns using $\hat{c}$, which are the original characteristics without cross sectional correlation built in.
-
 $\theta^0$ will be tuned such that the cross sectional $R^2$ for any given time period is 25\%, and the predictive $R^2$ across the entire time period is 5\%.
 
-The simulation design results in $3 \times 4 = 12$ different simulated datasets, each with $N = 200$ stocks, $T = 180$ periods and $P_c = 100$ characteristics. Each design was simulated 50 times to assess the robustness of machine learning algorithms.
+\rhs{change this}
+
+The simulation design results in $3 \times 3 = 12$ different simulated datasets, each with $N = 200$ stocks, $T = 180$ periods and $P_c = 100$ characteristics. Each design was simulated 50 times to assess the robustness of machine learning algorithms.
 
 \subsubsection{Sample Splitting}
 
@@ -669,6 +671,37 @@ where \( c_{i,t} \) is a \( P_c \times 1 \) matrix of characteristics for each s
 \section{Simulation Results}
 
 When the underlying data generating process is linear with no cross sectional correlation we see that the linear and penalized linear models offer the best performance. Random forests and neural networks offer performance that is not too far behind, and it is likely due to these models overfitting the training and validation sets, thus generalizing more poorly to the test set. In terms of variable importance, the linear and penalized linear models are able to consistently pick out the correct factors in the DGP, while the random forests and neural networks cannot.
+
+Linear Models
+
+Perform very well in linear settings.
+Has difficulty with cross sectional correlation, even when there is no cross sectional correlation (picks out c * x3 and x * c3 terms when only x * c3 is important). Performance is significantly worse when cross sectional correlation is turned up
+Still does relatively OK in high dimensional settings. Turning up dimensionality affects the significance values of regressors a lot (increasing the amount "significant" regressors), though this was to be expected. Variable importance in terms of t statistics and significance values was not the focus of this paper, so this was not further explored.
+Variable importance measures very sensible as long as cross sectional correlation and linear DGP are involved. Cross sectional correlation does affect variable importance, but order is still relatively OK. Absolutely destroys significance values (almost all regressors appear significant).
+Variable importance affected by non-linear settings. Can pick out non linear terms such as sgn and logit, as these transformations do not affect the direction of the regressors. However, struggles with interaction terms, due to how the predictor set was set up. When interaction terms were explicitly fed to it, they did appear important. This was not fully explored, du eto computational complexity.
+Performance can be somewhat non-robust. Observed from out of sample r squared in validation and test sets, which both act as test sets for linear models. Difference between these can be quite large.
+
+Penalized Linear Models
+
+Very similar to linear models. Performs somewhat better most of the time. 
+Optimal alpha values on the validation set are very unstable. Most commonly, optimal alpha values of 1 (corresponding to LASSO and hence sparsity) are observed. It is not uncommon to see swings in the optimal values from 0 to 1 or vice versa as the validation set moves forward.
+
+Random Forests
+
+Quite robust. Performance is better than the linear and penalized linear models. 
+Variable importance does not make sense at all. Affected the most by cross sectional correlation. This is not unexpected, likely due to the mechanics of the random forest algorithm.
+Brief explanation of algorithm:
+Grow a set of very overfit trees, each only using a random subset of all possible predictors.
+This means that for the trees that do not has access to the true predictors, it is likely that they will pick up the best substitute for it, and in the case of cross sectionally correlated regressors, a correlated regressor. This means that the forest overall thinks that the cross sectionally correlated regressors are very important.
+Very computationally intensive, so only a conservative grid of hyperparameters was able to be implemented. In particular, a low ntree parameter was used for feasibility, and it was not feasible to explore which value of ntree stopped improving performance. This means that there could possibly be more room for performance.
+
+Neural Networks
+
+These were a disaster in general.
+Very unstable performance, and when they do perform well, it is not often better than other methods by a significant amount. 
+Due to computational environment having access to GPUs, higher batch sizes were faster. However, higher batch sizes were observed to almost universally producing poorer solutions, to the point of unfeasibility. On the other hand, smaller batch sizes produced better solutions, up until the batch size was too small and the resulting noise overpowered the gains. This well documented in other papers, and due to the computation resource limitations it is typically recommended to set these by trial and error, rather than through a systematic grid search + validation process. This is what was done, and it was found that batch sizes of 16 or 32 (default), max epochs of at least 200, and early stopping patience of at least 20 typically produced good results. Smaller batch sizes of 4 and 8 were slightly better, but computationally too intensive to implement.
+
+They can sometimes produce seriously unexpected results, such as producing a constant value for all predictions. There aren't really solutions for explicitly addressing problems like these.
 
 When the underlying data generating process becomes somewhat more non-linear (g2 specification), we start to see the linear and penalized linear models suffering in performance. 
 
