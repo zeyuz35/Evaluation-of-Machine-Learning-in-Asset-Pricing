@@ -10,7 +10,7 @@ output: html_document
 ##Load Libraries
 ################
 
-#library(tidyverse)
+library(tidyverse)
 library(keras)
 library(ggplot2)
 library(forecast)
@@ -44,25 +44,22 @@ plan(multisession)
 # Change this to 10 + 3 + 3 initially, maybe more stable procedure
 
 customTimeSlices <- function(start, end, initialWindow, horizon, validation_size, test_size) {
-  total <- c(start:end)
-  offset <- start - 1
-  set_num <- (end - start + offset - test_size - initialWindow) / horizon
   
   time_slice <- list(train = 0, validation = 0, test = 0)
   time_slices <- rep(list(time_slice), 3)
-
-  for (t in 1:set_num) {
-    time_slice$train <- c(start:(initialWindow + (t-1) * horizon + offset))
-    time_slice$validation <- c((initialWindow + (t-1) * horizon + offset + 1):(initialWindow + (t) * horizon + offset))
-    time_slice$test <- c((initialWindow + (t) * horizon + offset + 1):end)
-    
+  
+  for (t in 1:3) {
+    time_slice$train <- c(start:(initialWindow + (t-1) * horizon + 1))
+    time_slice$validation <- c((initialWindow + (t-1) * horizon + 2):((initialWindow + (t-1) * horizon) + validation_size + 1))
+    time_slice$test <- c((initialWindow + (t-1) * horizon) + validation_size + 2):((initialWindow + (t-1) * horizon) + validation_size + test_size + 1)
     time_slices[[t]] <- time_slice
   }
-  return(time_slices)
+  
+  time_slices
 }
 
 #Create custom time slices
-timeSlices <- customTimeSlices(start = 2, end = 181, initialWindow = 120, horizon = 12, test_size = 36)
+timeSlices <- customTimeSlices(2, 181, 84, 12, 36, 36)
 
 #Formula Function, makes it easier for those packages with a formula interface
 
@@ -72,9 +69,13 @@ panel_formula <- function(panel){
   f <- as.formula(c("rt ~", paste(panel_colnames, collapse = "+")))
   return(f)
 }
+```
+
+```{r, eval = FALSE}
 
 pooled_panel <- g1_A1_panel[[1]]$panel
 
+pooled_panel <- gu_et_al_g1[[1]]$panel
 ```
 
 ```{r variable_importance_functions, eval = FALSE}
@@ -276,7 +277,7 @@ ELN_variable_importance <- function(test, eln_model, alpha, lambda) {
 RF_variable_importance <- function(test, rf_model) {
   test_x <- test[4:ncol(test)]
   
-  variable_importance_df <- foreach(i = (1:ncol(test_x)), .combine = "rbind") %dopar% {
+  variable_importance_df <- foreach(i = (1:ncol(test_x)), .combine = "rbind", .packages = "randomForestSRC") %dopar% {
     test_x_zero <- test_x
     test_x_zero[, i] <- 0
     
@@ -392,21 +393,21 @@ LM_fit <- function(pooled_panel, timeSlices, loss_function) {
     LM_stats[[set]]$loss_stats$train_MAE <- mae(train$rt, train_predict)
     LM_stats[[set]]$loss_stats$train_MSE <- mse(train$rt, train_predict)
     LM_stats[[set]]$loss_stats$train_RMSE <- rmse(train$rt, train_predict)
-    LM_stats[[set]]$loss_stats$train_RSquare <- (1 - sse(train$rt, train_predict) / sum((train$rt - mean(train$rt))^2))
+    LM_stats[[set]]$loss_stats$train_RSquare <- R2(train_predict, train$rt, form = "traditional")
     
     #Validation Set Statistics
     validation_predict <- predict(lm, newdata = validation)
     LM_stats[[set]]$loss_stats$validation_MAE <- mae(validation$rt, validation_predict)
     LM_stats[[set]]$loss_stats$validation_MSE <- mse(validation$rt, validation_predict)
     LM_stats[[set]]$loss_stats$validation_RMSE <- rmse(validation$rt, validation_predict)
-    LM_stats[[set]]$loss_stats$validation_RSquare <- (1 - sse(validation$rt, validation_predict) / sum((validation$rt - mean(validation$rt))^2))
+    LM_stats[[set]]$loss_stats$validation_RSquare <- R2(validation_predict, validation$rt, form = "traditional")
       
     #Test Set Statistics
     test_predict <- predict(lm, newdata = test)
     LM_stats[[set]]$loss_stats$test_MAE <- mae(test$rt, test_predict)
     LM_stats[[set]]$loss_stats$test_MSE <- mse(test$rt, test_predict)
     LM_stats[[set]]$loss_stats$test_RMSE <- rmse(test$rt, test_predict)
-    LM_stats[[set]]$loss_stats$test_RSquare <- (1 - sse(test$rt, test_predict) / sum((test$rt - mean(test$rt))^2))
+    LM_stats[[set]]$loss_stats$test_RSquare <- R2(test_predict, test$rt, form = "traditional")
         
     #Forecasts
     LM_stats[[set]]$forecasts <- test_predict
@@ -417,32 +418,37 @@ LM_fit <- function(pooled_panel, timeSlices, loss_function) {
   }
   return(LM_stats)
 }
+```
 
-# LM_stats_mse <- LM_fit(pooled_panel, timeSlices, "mse")
+```{r, eval = FALSE}
+
+LM_stats_mse <- LM_fit(pooled_panel, timeSlices, "mse")
 # 
-# LM_stats_mae <- LM_fit(pooled_panel, timeSlices, "mae")
+LM_stats_mae <- LM_fit(pooled_panel, timeSlices, "mae")
 # 
-# LM_stats_mse[[1]]$loss_stats
-# LM_stats_mse[[2]]$loss_stats
-# LM_stats_mse[[3]]$loss_stats
+LM_stats_mse[[1]]$loss_stats
+LM_stats_mse[[2]]$loss_stats
+LM_stats_mse[[3]]$loss_stats
 # 
-# LM_stats_mse[[1]]$variable_importance %>% arrange(desc(importance))
-# LM_stats_mse[[2]]$variable_importance %>% arrange(desc(importance))
-# LM_stats_mse[[3]]$variable_importance %>% arrange(desc(importance))
+LM_stats_mse[[1]]$variable_importance %>% arrange(desc(importance))
+LM_stats_mse[[2]]$variable_importance %>% arrange(desc(importance))
+LM_stats_mse[[3]]$variable_importance %>% arrange(desc(importance))
 # 
-# summary(LM_stats_mse[[1]]$model)
+summary(LM_stats_mse[[1]]$model)
 # 
-# LM_stats_mae[[1]]$loss_stats
-# LM_stats_mae[[2]]$loss_stats
-# LM_stats_mae[[3]]$loss_stats
+LM_stats_mae[[1]]$loss_stats
+LM_stats_mae[[2]]$loss_stats
+LM_stats_mae[[3]]$loss_stats
+
+summary(LM_stats_mae[[1]]$model)
 # 
-# LM_stats_mae[[1]]$variable_importance %>% arrange(desc(importance))
-# LM_stats_mae[[2]]$variable_importance %>% arrange(desc(importance))
-# LM_stats_mae[[3]]$variable_importance %>% arrange(desc(importance))
+LM_stats_mae[[1]]$variable_importance %>% arrange(desc(importance))
+LM_stats_mae[[2]]$variable_importance %>% arrange(desc(importance))
+LM_stats_mae[[3]]$variable_importance %>% arrange(desc(importance))
 # 
-# summary(LM_stats_mae[[1]]$model)
-# 
-# # Observations
+
+LM_stats_mse[[3]]$forecast_resids
+LM_stats_mae[[3]]$forecast_resids
 
 ```
 
@@ -820,25 +826,15 @@ ELN_fit_stats <- function(alpha_grid, nlamb, timeSlices, pooled_panel, loss_func
 
 #Random Forest should also be fairly straightforward, only two tuning parameters mtry and ntree (usually)
 
-#The vanilla randomForest package is very basic and too slow
-#We will use the ranger package, which is apparently a C++ implementation of the random forest algorithm and should be faster
-#Another alternative is to use XGBoost (which is very very fast) and set boosting rounds = 1, because in this case it should be a standard random forest
-
-#Compute power is a real struggle, and the aim is just to get the code basis working for the moment. Very conservative grids are therefore used for now
-
 #Check out randomForestSRC for an implementation of randomForests that allows for quantile regression trees. Quantile regression use a check loss function, which is a superset of absolute error
 #forestr package doesn't seem to want to function on honours lab computers
 
 #Default ntree = 500
 #Default mtry = count(predictors/3) = 400/3 = 133
 
-# Looking at Gu et al's paper for random forests, it seems that they ONLY gridsearch over ntree and depth
-# More contemporary sources (such as the package authors) typically do NOT recommend grid searching over ntree, and recommend a grid search over mtry, nodesize, nodedepth, etc
-# Gu et al's approach does not make sense as ntree is suggested to be simply as large as computationally feasible (as increasing ntree usually increases performance, but with diminishing returns), and node depth to be as deep as possible (for highly unbiased individual trees)
-
 RF_grid <- expand.grid(
   #ntree usually isn't tuned. Just set to max of computationally feasible
-  ntree = 50,
+  ntree = 100,
   mtry = seq(10, round(ncol(pooled_panel[4:ncol(pooled_panel)])/3), 20)
   #nodesize = seq(2, 14, 2)
   # nodedepth recommended not to be changed
@@ -1001,37 +997,30 @@ RF_fit_stats <- function(pooled_panel, RF_grid, timeSlices, loss_function) {
     RF_stats[[set]]$forecast_resids <- test$rt - test_predict
     
     #Variable Importance
-    RF_stats[[set]]$variable_importance <- RF_variable_importance(test, timeSlices, model)
+    RF_stats[[set]]$variable_importance <- RF_variable_importance(test, model)
   }
   return(RF_stats)
 }
-
-# RF_MSE <- RF_fit_stats(f, pooled_panel, RF_grid, timeSlices, "mse")
-# 
-# RF_MAE <- RF_fit_stats(f, pooled_panel, RF_grid, timeSlices, "mae")
-# 
-# RF_MSE[[1]]$loss_stats
-# RF_MSE[[2]]$loss_stats
-# RF_MSE[[3]]$loss_stats
-# 
-# RF_MSE[[1]]$variable_importance %>% arrange(desc(importance))
-# 
-# RF_MAE[[1]]$loss_stats
-# RF_MAE[[2]]$loss_stats
-# RF_MAE[[3]]$loss_stats
-
-# Notes
-# Performance seems to be worse than other methods, quite surprising
-# Quantile trees (ie MAE) do better than MSE trees
-# Quantile trees are much more computationally intensive
-# These will probably perform much better given a better grid search, and increasing ntrees.
-# Currently, even ntrees = 50 is really quite intensive (overnight)
-# This is much more manageable on the honours computers (approx 30 minutes)
-
-# Other notes
-# 
 ```
-## Neural Networks WRT MSE
+
+```{r, eval = FALSE}
+
+RF_MSE <- RF_fit_stats(pooled_panel, RF_grid, timeSlices, "mse")
+
+RF_MAE <- RF_fit_stats(pooled_panel, RF_grid, timeSlices, "mae")
+
+RF_MSE[[1]]$loss_stats
+RF_MSE[[2]]$loss_stats
+RF_MSE[[3]]$loss_stats
+
+RF_MSE[[1]]$variable_importance %>% arrange(desc(importance))
+
+RF_MAE[[1]]$loss_stats
+RF_MAE[[2]]$loss_stats
+RF_MAE[[3]]$loss_stats
+
+RF_MAE[[1]]$variable_importance %>% arrange(desc(importance))
+```
 
 ```{r neural_networks}
 # Neural Networks
@@ -1260,18 +1249,25 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
   NNet_stats
 }
 
-# NNet_1_mse_stats <- NNet_fit_stats(pooled_panel, timeSlices, 1, "mse", batch_size = 16, 10)
-# # NNet_1_mae_stats <- NNet_fit_stats(pooled_panel, timeSlices, 1, "mae", batch_size = 32, 10)
+```
+
+```{r, eval = FALSE}
+
+NNet_1_mse_stats <- NNet_fit_stats(pooled_panel, timeSlices, 1, "mse", batch_size = 32, 10)
+NNet_1_mae_stats <- NNet_fit_stats(pooled_panel, timeSlices, 1, "mae", batch_size = 32, 10)
+
 # # 
-# NNet_1_mse_stats[[1]]$loss_stats
-# NNet_1_mse_stats[[2]]$loss_stats
-# NNet_1_mse_stats[[3]]$loss_stats
-# # 
-# NNet_1_mse_stats[[1]]$variable_importance %>% arrange(desc(importance))
+NNet_1_mse_stats[[1]]$loss_stats
+NNet_1_mse_stats[[2]]$loss_stats
+NNet_1_mse_stats[[3]]$loss_stats
+
+NNet_1_mse_stats[[1]]$variable_importance %>% arrange(desc(importance))
 # 
-# NNet_1_mae_stats[[1]]$loss_stats
-# NNet_1_mae_stats[[2]]$loss_stats
-# NNet_1_mae_stats[[3]]$loss_stats
+NNet_1_mae_stats[[1]]$loss_stats
+NNet_1_mae_stats[[2]]$loss_stats
+NNet_1_mae_stats[[3]]$loss_stats
+
+NNet_1_mae_stats[[1]]$variable_importance %>% arrange(desc(importance))
 # 
 # ##
 # 
@@ -1314,15 +1310,15 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
 # 
 # ##
 # 
-NNet_5_mse_stats <- NNet_fit_stats(pooled_panel, timeSlices, 5, "mse", batch_size = 32, 10)
+# NNet_5_mse_stats <- NNet_fit_stats(pooled_panel, timeSlices, 5, "mse", batch_size = 32, 10)
 # NNet_5_mae_stats <- NNet_fit_stats(pooled_panel, timeSlices, 5, "mae", batch_size = 32, 20)
 # 
-NNet_5_mse_stats[[1]]$loss_stats
-NNet_5_mse_stats[[2]]$loss_stats
-NNet_5_mse_stats[[3]]$loss_stats
+# NNet_5_mse_stats[[1]]$loss_stats
+# NNet_5_mse_stats[[2]]$loss_stats
+# NNet_5_mse_stats[[3]]$loss_stats
 
-NNet_5_mse_stats[[1]]$variable_importance %>%
-  arrange(desc(importance))
+# NNet_5_mse_stats[[1]]$variable_importance %>%
+#  arrange(desc(importance))
 # 
 # NNet_5_mae_stats[[1]]$loss_stats
 # NNet_5_mae_stats[[2]]$loss_stats

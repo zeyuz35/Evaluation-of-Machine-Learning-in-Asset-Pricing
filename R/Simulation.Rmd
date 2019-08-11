@@ -10,7 +10,7 @@ output: html_document
 ##Load Libraries
 ################
 
-# library(tidyverse)
+library(tidyverse)
 library(keras)
 library(ggplot2)
 library(forecast)
@@ -99,7 +99,7 @@ gen_W <- function(){
   #Generate Lambda Matrix first
   # Change the sd parameter here to control the degree of cross sectional correlation
   Lambda <- matrix(
-    data = rnorm(N*4, 0, 0.1),
+    data = rnorm(N*4, 0, 0.01),
     nrow = N, ncol = 4
   )
   
@@ -163,7 +163,7 @@ gen_C <- function(C_matrix){
 }
 ```
 
-```{r generate_characteristics}
+```{r generate_characteristics, eval = FALSE}
 C_bar <- gen_C_bar(rho_a = 0.9, rho_b = 1)
 C_hat <- gen_C_hat(C_bar)
 
@@ -271,6 +271,10 @@ plot_xt <- function(xt) {
   ggplot() +
   geom_line(aes(x = time, y = value, colour = series))
 }
+```
+
+
+```{r xt_testing, eval = FALSE}
 
 # Generate a multivariate xt
 
@@ -294,8 +298,6 @@ kpss.test(xt[3, ], null = c("Level", "Trend"), lshort = TRUE)
 #pacf(xt[1, ], lag.max = 90)
 #pacf(xt[2, ], lag.max = 90)
 #pacf(xt[3, ], lag.max = 90)
-
-
 ```
 
 ```{r function_univariate_xt}
@@ -318,6 +320,9 @@ gen_xt_univariate <- function(){
   }
   return(xt)
 }
+```
+
+```{r univariate_xt_testing, eval = FALSE}
 
 # Generate a univariate xt
 
@@ -528,20 +533,20 @@ gen_error <- function(sv,
   ###########
   if (sv == 1) {
     ##Generate Sigma first (only indexed by time)
-    sigma2 <- rep(0, Time+1)
+    logsigma2 <- rep(0, Time)
     #Initial sigma2
-    sigma2[1] <- omega + w
+    logsigma2[1] <- omega + rnorm(1, 0, w)
     
-    for (t in 1:Time+1) {
-      sigma2[t+1] <- omega + gamma*sigma2[t] + rnorm(1, 0, w)
+    for (t in 2:(Time)) {
+      logsigma2[t] <- omega + gamma*logsigma2[t-1] + rnorm(1, 0, w)
     }
     
     for (t in 1:(Time)) {
       for (i in 1:N) {
-        error[i, 1, t] <- exp(sigma2[t+1]/2) * rnorm(1, 0, ep_sd)
+        error[i, 1, t] <- sqrt(exp(logsigma2[t])) * rnorm(1, 0, ep_sd)
       }
     }
-    return(error + Beta_v)
+    return(Beta_v + error)
   }
   ##################
   #NON-SV Student t errors
@@ -615,12 +620,11 @@ error_nosv <- gen_error(sv = 0, ep_sd = 0.05, omega = -0.736, gamma = 0.90, w = 
 
 #Finally generate a returns panel
 
-rt_panel_g1_A1 <- g1_panel + error_nosv
+rt_panel_g1_A1 <- g1_panel + error_sv
 
 #All works, hooray
 
 ```
-
 
 ```{r tune_rsquared, eval = FALSE}
 #See Cochrane's book for more details and explanations, Chapter 12
@@ -776,7 +780,7 @@ panel_tune_stats <- function(return_panel, signal_panel, true_factor_panel) {
       
       Rsquared[i, 1] <- summary(fit)$r.squared
       
-      #annualized volatility
+      # annualized volatility
       
       annual_vol[i] <- sd(Rs) * sqrt(12)
     }
@@ -788,15 +792,6 @@ panel_tune_stats <- function(return_panel, signal_panel, true_factor_panel) {
   #Predictive R Squared
   
   tune_stats$true_rsquare <- R2(signal_panel, return_panel, form = "traditional")
-    
-    # David's approach at doing true (predictive) r squared
-    
-    # val <- g1(C,x,theta)
-    # true_res <- rowSums((rt - val)^2)
-    # true_sst <- rowSums((rt - rowMeans(rt))^2)
-    # true_rRsquared <- 1 - (sum(true_res)/sum(true_sst))
-    
-    # fitted_Rsquared <- 1 - (sum(SSR)/sum(SST))
     
   # Cross Sectional R squared
   # Regress the average cross sectional returns on the betas we estimated from previously
@@ -1067,28 +1062,7 @@ bind_rt_predictor <- function(rt_panel, z_panel) {
 
 ```
 
-```{r}
-##########################
-A1 <- matrix(c(
-  0.95, 0, 0,
-  0, 0.95, 0,
-  0, 0, 0.95),
-  nrow = 3, ncol = 3
-)
-
-A2 <- matrix(c(
-  1, 0, 0.25,
-  0, 0.95, 0,
-  0.25, 0, 0.95),
-  nrow = 3, ncol = 3
-)
-
-A3 <- matrix(c(
-  0.99, 0.2, 0.1,
-  0.2, 0.90, -0.3,
-  0.1, -0.3, -0.99),
-  nrow = 3, ncol = 3
-)
+```{r simulation_function_parallel}
 ##########################
 
 # Parallel implementation of simulation design
@@ -1152,9 +1126,6 @@ sim_panel_data <- function(sim_N,
     # Old way
     sim$statistics <- panel_tune_stats(rt_panel, g_panel, g_factor_panel)
     
-    # New Alternative
-    # sim$statistics <- panel_tune_stats(rt_panel, g_panel, C)
-    
     sim
   }
   return(sim_list)
@@ -1184,7 +1155,7 @@ sim_tune_statistics <- function(sim_panel_list) {
 # True r squared (predictive r squared) is somewhat close to what they specified
 ```
 
-```{r, eval = FALSE}
+```{r simulation_function, eval = FALSE}
 
 # Deprecated, old way implementation using standard for loops
 # Was too slow, kept for reference
@@ -1347,9 +1318,10 @@ P_c <- 100
 Time <- 180
 
 #Number of realizations
-simN <- 10
+simN <- 4
 
 # A matrices
+# These are just kept here for now, not actually used because they don't seem to have much difference
 
 A1 <- matrix(c(
   0.95, 0, 0,
@@ -1380,7 +1352,7 @@ gu_et_al_g1 <- sim_panel_data(simN,
                               char_rho_a = 0.9, char_rho_b = 1,
                               cross_corr = 0, A1, xt_multi = 0, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1),
                               error_sv = 0, error_ep_sd = 0.05, 
-                              error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05,
+                              error_omega = -0.736, error_gamma = 0.9, error_w = 0.363, error_v_sd = 0.05,
                               predictor_format = "kronecker")
 summary(sim_tune_statistics(gu_et_al_g1))
 saveRDS(gu_et_al_g1, file = "gu_et_al_g1.rds")
@@ -1390,7 +1362,7 @@ gu_et_al_g2 <- sim_panel_data(simN,
                               char_rho_a = 0.9, char_rho_b = 1,
                               cross_corr = 0, A1, xt_multi = 0, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1),
                               error_sv = 0, error_ep_sd = 0.05, 
-                              error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05,
+                              error_omega = -0.736, error_gamma = 0.9, error_w = 0.363, error_v_sd = 0.05,
                               predictor_format = "kronecker")
 summary(sim_tune_statistics(gu_et_al_g2))
 saveRDS(gu_et_al_g1, file = "gu_et_al_g2.rds")
@@ -1400,12 +1372,18 @@ rm(gu_et_al_g2)
 #Our different specifications
 ##################################
 
+# For some reason the SV parameters suggested by JPR 1994 (and in the literature) doesn't give ~20% annualized volatility with this returns simulation design, even when re-specifying everything to be weekly
+# Note that JPR's values do indeed give ~20% annualized volatility when plugged into their specified version of the lognormal SV process (see later chunk), so the issues seems to be isolated with just our design
+# Below are the parameter values that give ~20% annualized volatility, fixing the persistence parameter to 0.95, which seems to be commonly observed in the literature
+# Note that due to the time period being only 180, the true annualized volatility may be slightly lower than this, as observed with simulating SV error processes
+# The SV component was also changed NOT to include the Beta_v term from the earlier simpler design just for simplicity
+
 #G1
 g1_A1_panel <- sim_panel_data(simN, 
                               char_rho_a = 0.5, char_rho_b = 1,
-                              cross_corr = 0, A1, xt_multi = 1, g_function = "g1", theta = matrix(c(0.03, 0.03, 0.03), nrow = 1), 
+                              cross_corr = 1, A1, xt_multi = 1, g_function = "g1", theta = matrix(c(0.015, 0.015, 0.015), nrow = 1), 
                               error_sv = 1, error_ep_sd = 1, 
-                              error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05,
+                              error_omega = -1.2, error_gamma = 0.95, error_w = 0.2, error_v_sd = 0.05,
                               predictor_format = "kronecker")
 summary(sim_tune_statistics(g1_A1_panel))
 saveRDS(g1_A1_panel, file = "g1_A1.rds")
@@ -1415,9 +1393,9 @@ rm(g1_A1_panel)
 
 g2_A1_panel <- sim_panel_data(simN, 
                               char_rho_a = 0.5, char_rho_b = 1,
-                              cross_corr = 0, A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.03, 0.03, 0.03), nrow = 1),
+                              cross_corr = 1, A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.015, 0.015, 0.015), nrow = 1),
                               error_sv = 1, error_ep_sd = 1, 
-                              error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05,
+                              error_omega = -1.0, error_gamma = 0.95, error_w = 0.2, error_v_sd = 0.05,
                               predictor_format = "kronecker")
 summary(sim_tune_statistics(g2_A1_panel))
 saveRDS(g2_A1_panel, file = "g2_A1.rds")
@@ -1427,23 +1405,43 @@ rm(g2_A1_panel)
 
 g3_A1_panel <- sim_panel_data(simN, 
                               char_rho_a = 0.5, char_rho_b = 1,
-                              cross_corr = 0, A1, xt_multi = 1, g_function = "g3", theta = matrix(c(0.045, 0.045, 0.045, 0.045), nrow = 1), 
+                              cross_corr = 1, A1, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.02), nrow = 1), 
                               error_sv = 1, error_ep_sd = 1, 
-                              error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05,
+                              error_omega = -1.0, error_gamma = 0.95, error_w = 0.2, error_v_sd = 0.05,
                               predictor_format = "kronecker")
 summary(sim_tune_statistics(g3_A1_panel))
 saveRDS(g3_A1_panel, file = "g3_A1.rds")
 rm(g3_A1_panel)
 
-# These all pretty good, except true r squared is still just a little bit high. Cross sectional R squared still has high variance
-
-##########################################
-## OBSERVATIONS
-##########################################
-
-## Very low dimensionality and/or cross section size can make r squared values very different
-## Make sure to set them to exactly what you want (N = 200, T = 180 and P_c = 100 as following Gu et al)
-
 ```
 
+```{r, eval = FALSE}
+
+# This is the JPR specification for SV coded up again as a sanity check
+# Seems to be giving annualized volatility values closer to 24% rather than 20-22% when the time period is smaller
+# Increase length to something quite longer such as 52000 weeks (1000 years) to get values of ~20%
+
+test_error_sv <- function(omega, beta, sigmau, length) {
+  logsigma2 <- rep(0, length)
+  return <- rep(0, length)
+  
+  logsigma2[1] <- omega + rnorm(1, 0, sigmau)
+  return[1] <- sqrt(exp(logsigma2[1])) * rnorm(1, 0, 1)
+  
+  for (t in 2:length) {
+    logsigma2[t] <- omega + beta*logsigma2[t-1] + rnorm(1, 0, sigmau)
+    return[t] <- sqrt(exp(logsigma2[t-1])) * rnorm(1, 0, 1)
+  }
+  
+  sd(return) * sqrt(50)
+}
+
+temp <- rep(0, 100)
+
+for (i in 1:100) {
+  temp[i] <- test_error_sv(-0.736, 0.9, 0.363, 52000)
+}
+
+summary(temp)
+```
 
