@@ -21,3 +21,7 @@ Note that the random forests and neural networks are VERY computationally intens
 Currently writing proposal in the actual thesis tex file because it just happens to have everything in one place already, and most of the introduction/literature review will be reused anyway. Planning to just copy and paste the elements that I need from the thesis tex file into the separate proposal tex file.
 
 Folder structure of the repo might change once regression results and plots are start coming in from the coding section for easier embedation into the thesis.
+
+# Real Dataset
+
+The majority of the real dataset is provided by Dacheng Xiu, available from his website http://dachxiu.chicagobooth.edu/ under "Empirical Asset Pricing via Machine Learning." This dataset notably excludes the RET (holding period return) or Price columns, which have to be queried from WRDS/CRSP separately. Code to combine these two elements is provided.
