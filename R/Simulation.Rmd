@@ -1378,12 +1378,14 @@ rm(gu_et_al_g2)
 # Note that due to the time period being only 180, the true annualized volatility may be slightly lower than this, as observed with simulating SV error processes
 # The SV component was also changed NOT to include the Beta_v term from the earlier simpler design just for simplicity
 
+# A design with NO error component seems to have ~7% annualized volatility already
+
 #G1
 g1_A1_panel <- sim_panel_data(simN, 
                               char_rho_a = 0.5, char_rho_b = 1,
                               cross_corr = 1, A1, xt_multi = 1, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1), 
                               error_sv = 1, error_ep_sd = 1, 
-                              error_omega = -0.98, error_gamma = 0.95, error_w = 0.2, error_v_sd = 0.05,
+                              error_omega = -1.5, error_gamma = 0.95, error_w = 0.2, error_v_sd = 0.05,
                               predictor_format = "kronecker")
 summary(sim_tune_statistics(g1_A1_panel))
 saveRDS(g1_A1_panel, file = "g1_A1.rds")
