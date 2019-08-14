@@ -44,34 +44,79 @@ datashare_RAW <- read_csv("data/datashare/datashare.csv",
                           # Always make sure to force col_types so that read_csv doesn't assume weird stuff
                           col_types = cols(.default = "d"))
 
+# datashare with RET, Prices, and primary exchange
+datashare_RET_RAW <- read_csv("data/datashare/datashare_RET.csv") %>%
+  # Rename some columns
+  mutate(DATE = date) %>%
+  select(-date) %>%
+  mutate(permno = PERMNO) %>%
+  select(-PERMNO)
+
+# It seems that datashare with RET has more rows than the datashare file
+# Full join them for now
+
+datashare_RAW_join <- full_join(datashare_RAW, datashare_RET_RAW, by = c("permno", "DATE")) %>%
+  # Reorder variables
+  select(DATE, permno, RET, PRC, everything())
+
+colnames(datashare_RAW_join)
+
+head(datashare_RAW_join)
+
 individual_factor_names <- colnames(datashare_RAW)[3:96]
 
-datashare <- datashare_RAW %>%
+datashare <- datashare_RAW_join %>%
   mutate(Time = as.yearmon(as.character(DATE), "%Y%m%d")) %>%
   select(-DATE) %>%
-  # Convert sic2 codes to factor
-  mutate(sic2 = as.factor(sic2)) %>%
-  # Reorder
-  select(Time, permno, everything()) %>%
-  # Filter so that only much recent data is used
-  # Not too sure which exact periods, but for now, 2000 to 2015
-  filter(Time >= as.yearmon("2000-01") & Time <= as.yearmon("2015-01"))
+  # Generate log prices
+  # Drop RET which is monthly return
+  select(Time, permno, PRC, -RET, everything()) %>%
+  # Filter so that we only have NASDAQ stocks
+  # Remember that the NASDAQ only opened in 1971 ish
+  filter(PRIMEXCH == "Q") %>%
+  # Negative PRC means that there was no closing price, and the dash denotes the bid ask average instead
+  # Not too unreasonable to just take this as the actual price 
+  # Note that PRC has not been corrected for stock splits etc. This is more sensible for modelling purposes
+  mutate(PRC = abs(PRC)) %>%
+  # Prices of 0 mean that neither the bid ask average or price were available, ie missing
+  filter(PRC != 0) %>%
+  # SIC codes according to WRDS/CRSP are recommended to be used with caution, as they are not strictly enforced
+  # Companies can also belong in multiple SIC codes, or change SIC codes over time. This is not adequately captured by CRSP
+  # Also don't make much consistent sense either
+  # Personal decision: drop them entirely
+  select(-sic2) %>%
+  # We will construct quarterly returns using the end of each month
+  # Ie using the 3rd, 6th, 9th and 12th month of each year
+  # yearmon stores year + 0 for January. Exploit this to filter out non-quarter months
+  filter((as.yearmon(Time) %% 3) == 2/12 | (as.yearmon(Time) %% 3) == 5/12 | (as.yearmon(Time) %% 3) == 8/12 | (as.yearmon(Time) %% 3) == 11/12) %>%
+  # Generate log of prices
+  mutate(logPRC = log(PRC))
 
-# Check how many IDs there are
-# There are 74, consistent with Gu et al
-unique(datashare$sic2)
+# Check Missing data stats
+# Missing data tends to get a bit better as time goes forward
+# Therefore conduct this with 
+# Rule of thumb: drop any column missing more than 20% of data
+datashare %>% 
+  filter(Time > 1996) %>%
+  gather(col, value) %>%
+  group_by(col) %>%
+  summarize(missing_share = mean(is.na(value))) %>%
+  filter(missing_share > 0.20)
 
-# Generate 74 characteristics dummy variables
-dmy <- dummyVars(" ~ sic2", data = datashare)
-sic2_frame <- data.frame(predict(dmy, newdata = datashare))
-# Check Dimensions
-# 74 dummy variables as required
-dim(sic2_frame)
+datashare_sample <- sample_frac(datashare, 0.5)
 
-# sic2_frame is now ready to be combined to the entire predictor set at the end
-# Wait, not too sure about this yet because Gu et al later later a singular sic2 importance metric
-# What they probably did: pass sic2 to model fitting functions as a singular factor vector, which then applied model matrix to it
-# This way, they can simply change the values of this vector to 0 and calculate variable importance
+# Double check against original RAW data
+# Same story, original dataset is NOT GOOD
+datashare_RAW %>% 
+  mutate(Time = as.yearmon(as.character(DATE), "%Y%m%d")) %>%
+  filter(Time > 1996) %>%
+  gather(col, value) %>%
+  group_by(col) %>%
+  summarize(missing_share = mean(is.na(value))) %>%
+  filter(missing_share > 0.20)
+```
+
+```{r}
 
 # Dealing with Missing characteristics
 # Function to impute missing characteristics with their CROSS SECTIONAL median (as with gu et al) or mean (conventional) for each stock
@@ -128,14 +173,19 @@ length(unique(datashare$permno))
 # There are 94 lagged characteristics/factors
 
 # Export stock IDs so that we can query WRDS returns
+# WRDS wants a txt file with one code per line and nothing else
 datashare_stock_ids <- unique(datashare$permno)
-write.csv(datashare_stock_ids, file = "datashare_stock_ids.csv")
+write.table(datashare_stock_ids, file = "datashare_stock_ids.txt", sep = " ", 
+            row.names = FALSE, col.names = FALSE)
 
 # It seems as though that data is only fully available for some stocks in the dataset
 # Absolutely no clue how Gu et al dealt with missing data issues
 df_10006 <- datashare %>%
   filter(permno == 10006)
 
+```
+
+```{r}
 ####################################################
 # Load RAW Welch Goyal Data
 ####################################################
@@ -173,6 +223,10 @@ macro_predictors <- PredictorData2017 %>%
   # Reorder
   select(Time, constant, everything())
 
+```
+
+
+```{r}
 #############################
 # Combining everything
 #############################

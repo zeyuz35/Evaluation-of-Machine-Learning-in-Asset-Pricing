@@ -99,7 +99,7 @@ gen_W <- function(){
   #Generate Lambda Matrix first
   # Change the sd parameter here to control the degree of cross sectional correlation
   Lambda <- matrix(
-    data = rnorm(N*4, 0, 0.01),
+    data = rnorm(N*4, 0, 0.001),
     nrow = N, ncol = 4
   )
   
@@ -1381,9 +1381,9 @@ rm(gu_et_al_g2)
 #G1
 g1_A1_panel <- sim_panel_data(simN, 
                               char_rho_a = 0.5, char_rho_b = 1,
-                              cross_corr = 1, A1, xt_multi = 1, g_function = "g1", theta = matrix(c(0.015, 0.015, 0.015), nrow = 1), 
+                              cross_corr = 1, A1, xt_multi = 1, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1), 
                               error_sv = 1, error_ep_sd = 1, 
-                              error_omega = -1.2, error_gamma = 0.95, error_w = 0.2, error_v_sd = 0.05,
+                              error_omega = -0.98, error_gamma = 0.95, error_w = 0.2, error_v_sd = 0.05,
                               predictor_format = "kronecker")
 summary(sim_tune_statistics(g1_A1_panel))
 saveRDS(g1_A1_panel, file = "g1_A1.rds")
@@ -1395,7 +1395,7 @@ g2_A1_panel <- sim_panel_data(simN,
                               char_rho_a = 0.5, char_rho_b = 1,
                               cross_corr = 1, A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.015, 0.015, 0.015), nrow = 1),
                               error_sv = 1, error_ep_sd = 1, 
-                              error_omega = -1.0, error_gamma = 0.95, error_w = 0.2, error_v_sd = 0.05,
+                              error_omega = -0.9, error_gamma = 0.95, error_w = 0.2, error_v_sd = 0.05,
                               predictor_format = "kronecker")
 summary(sim_tune_statistics(g2_A1_panel))
 saveRDS(g2_A1_panel, file = "g2_A1.rds")
@@ -1407,7 +1407,7 @@ g3_A1_panel <- sim_panel_data(simN,
                               char_rho_a = 0.5, char_rho_b = 1,
                               cross_corr = 1, A1, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.02), nrow = 1), 
                               error_sv = 1, error_ep_sd = 1, 
-                              error_omega = -1.0, error_gamma = 0.95, error_w = 0.2, error_v_sd = 0.05,
+                              error_omega = -0.9, error_gamma = 0.95, error_w = 0.2, error_v_sd = 0.05,
                               predictor_format = "kronecker")
 summary(sim_tune_statistics(g3_A1_panel))
 saveRDS(g3_A1_panel, file = "g3_A1.rds")

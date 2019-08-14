@@ -41,14 +41,14 @@ plan(multisession)
 
 #Caret and other packages are not so good at dealing with custom training/validation/test sets. Have to specify resampling, tuning and testing manually (ugh)
 
-# Change this to 10 + 3 + 3 initially, maybe more stable procedure
+# Change this to 9 + 3 + 3, maybe more stable procedure
 
-customTimeSlices <- function(start, end, initialWindow, horizon, validation_size, test_size) {
+customTimeSlices <- function(start, initialWindow, horizon, validation_size, test_size, set_no) {
   
   time_slice <- list(train = 0, validation = 0, test = 0)
-  time_slices <- rep(list(time_slice), 3)
+  time_slices <- rep(list(time_slice), set_no)
   
-  for (t in 1:3) {
+  for (t in 1:set_no) {
     time_slice$train <- c(start:(initialWindow + (t-1) * horizon + 1))
     time_slice$validation <- c((initialWindow + (t-1) * horizon + 2):((initialWindow + (t-1) * horizon) + validation_size + 1))
     time_slice$test <- c((initialWindow + (t-1) * horizon) + validation_size + 2):((initialWindow + (t-1) * horizon) + validation_size + test_size + 1)
@@ -59,7 +59,11 @@ customTimeSlices <- function(start, end, initialWindow, horizon, validation_size
 }
 
 #Create custom time slices
-timeSlices <- customTimeSlices(2, 181, 84, 12, 36, 36)
+# These parameters give you teh following train/validation/test splits (in terms of years)
+# 7 3 3
+# 8 3 3
+# 9 3 3
+timeSlices <- customTimeSlices(start = 2, initialWindow = 84, horizon = 12, validation_size = 36, test_size = 36, set_no = 3)
 
 #Formula Function, makes it easier for those packages with a formula interface
 
@@ -76,145 +80,6 @@ panel_formula <- function(panel){
 pooled_panel <- g1_A1_panel[[1]]$panel
 
 pooled_panel <- gu_et_al_g1[[1]]$panel
-```
-
-```{r variable_importance_functions, eval = FALSE}
-# Variable Importance Metric Functions
-# Given a single model and test set, return a variable importance dataframe (don't bother sorting them now)
-# Note that a training set is NOT needed because this is to be called AFTER the model is fit
-# These functions were originally written after the actul fitting functions were
-# These are used by the fitting functions, so they need to be declared before them
-
-# Similarly, different functions are needed for all model types because all the model objects have slightly different predict methods
-
-################################################
-# Linear Model
-LM_variable_importance <- function(test, lm_model) {
-  test_x <- test[4:ncol(test)]
-  
-  test_x_zero <- test_x
-  test_x_zero[1] <- 0
-    
-  original_R2 <- R2(predict(lm_model, newdata = test_x), test$rt, form = "traditional")
-    
-  new_R2 <- R2(predict(lm_model, newdata = test_x_zero), test$rt, form = "traditional")
-      
-  variable_importance <- data.frame(variable = colnames(test_x)[1], importance = (original_R2 - new_R2))
-    
-  for (i in 2:ncol(test_x)) {
-    test_x_zero <- test_x
-    test_x_zero[i] <- 0
-      
-    original_R2 <- R2(predict(lm_model, newdata = test_x), test$rt, form = "traditional")
-    
-    new_R2 <- R2(predict(lm_model, newdata = test_x_zero), test$rt, form = "traditional")
-      
-    variable_importance <- rbind(variable_importance, 
-                                 data.frame(variable = colnames(test_x)[i], 
-                                            importance = (original_R2 - new_R2)
-                                            )
-                                 )
-      
-  }
-  return(variable_importance)
-}
-
-# Penalized Linear Model
-
-ELN_variable_importance <- function(test, eln_model, alpha, lambda) {
-  test_x <- as.matrix(test[4:ncol(test)])
-  test_x_zero <- test_x
-  test_x_zero[, 1] <- 0
-  
-  test_x <- as.matrix(test_x)
-  text_x_zero <- as.matrix(test_x_zero)
-      
-  original_R2 <- R2(predict(eln_model, test_x, alpha = alpha, lambda = lambda), test$rt, form = "traditional")
-    
-  new_R2 <- R2(predict(eln_model, test_x_zero, alpha = alpha, lambda = lambda), test$rt, form = "traditional")
-    
-  variable_importance <- data.frame(variable = colnames(test_x)[1], importance = (original_R2 - new_R2))
-    
-  for (i in 2:ncol(test_x)) {
-    test_x_zero <- test_x
-    test_x_zero[, i] <- 0
-      
-    original_R2 <- R2(predict(eln_model, test_x, alpha = alpha, lambda = lambda), test$rt, form = "traditional")
-    
-    new_R2 <- R2(predict(eln_model, test_x_zero, alpha = alpha, lambda = lambda), test$rt, form = "traditional")
-      
-    variable_importance <- rbind(variable_importance, 
-                                 data.frame(variable = colnames(test_x)[i], 
-                                            importance = (original_R2 - new_R2))
-                                 )
-  }
-  return(variable_importance)
-}
-
-# Random Forest
-
-RF_variable_importance <- function(test, rf_model) {
-  test_x <- test[4:ncol(test)]
-    
-  test_x_zero <- test_x
-  test_x_zero[1] <- 0
-    
-  original_R2 <- R2(predict(rf_model, newdata = test_x)$predicted, test$rt, form = "traditional")
-    
-  new_R2 <- R2(predict(rf_model, newdata = test_x_zero)$predicted, test$rt, form = "traditional")
-      
-  variable_importance <- data.frame(variable = colnames(test_x)[1], importance = (original_R2 - new_R2))
-    
-  for (i in 2:ncol(test_x)) {
-    test_x_zero <- test_x
-    test_x_zero[i] <- 0
-      
-    original_R2 <- R2(predict(rf_model, newdata = test_x)$predicted, test$rt, form = "traditional")
-    
-    new_R2 <- R2(predict(rf_model, newdata = test_x_zero)$predicted, test$rt, form = "traditional")
-      
-    variable_importance <- rbind(variable_importance, 
-                                 data.frame(variable = colnames(test_x)[i], 
-                                            importance = (original_R2 - new_R2)
-                                )
-    )
-  }
-  return(variable_importance)
-}
-
-# Neural Network
-
-NNet_variable_importance <- function(test, timeSlices, nnet_model) {
-  test_x <- as.matrix(test[4:ncol(test)])
-  test_x_zero <- test_x
-  test_x_zero[, 1] <- 0
-  
-  test_x <- as.matrix(test_x)
-  text_x_zero <- as.matrix(test_x_zero)
-    
-  original_R2 <- R2(predict(nnet_model, as.matrix(test_x)), test$rt, form = "traditional")
-    
-  new_R2 <- R2(predict(nnet_model, as.matrix(test_x_zero)), test$rt, form = "traditional")
-      
-  variable_importance <- data.frame(variable = colnames(test_x)[1], importance = (original_R2 - new_R2))
-    
-  for (i in 2:ncol(test_x)) {
-    test_x_zero <- test_x
-    test_x_zero[, i] <- 0
-      
-    original_R2 <- R2(predict(nnet_model, as.matrix(test_x)), test$rt, form = "traditional")
-    
-    new_R2 <- R2(predict(nnet_model, as.matrix(test_x_zero)), test$rt, form = "traditional")
-      
-    variable_importance <- rbind(variable_importance, 
-                                 data.frame(variable = colnames(test_x)[i], 
-                                            importance = (original_R2 - new_R2)
-                                            )
-                                 )
-      
-  }
-  return(variable_importance)
-}
 ```
 
 ```{r variable_importance_functions_foreach}
@@ -598,22 +463,6 @@ ELN_fit_stats <- function(ELN_grid, nlambda, timeSlices, pooled_panel, loss_func
   }
   return(ELN_stats)
 }
-
-#Testing if function works
-
-ELN_stats_mae <- ELN_fit_stats(ELN_grid, nlambda = 100, timeSlices, pooled_panel, loss_function = "mae")
-
-ELN_stats_mse <- ELN_fit_stats(ELN_grid, nlambda = 100, timeSlices, pooled_panel, loss_function = "mse")
-
-ELN_stats_mae[[1]]$model$alpha
-ELN_stats_mae[[2]]$model$alpha
-ELN_stats_mae[[3]]$model$alpha
-
-ELN_stats_mse[[1]]$model$alpha
-ELN_stats_mse[[2]]$model$alpha
-ELN_stats_mse[[3]]$model$alpha
-
-# Optimal alpha vlaues seem to be very unstable across folds
 ```
 
 ```{r elastic_net}
@@ -831,15 +680,6 @@ ELN_fit_stats <- function(alpha_grid, nlamb, timeSlices, pooled_panel, loss_func
 
 #Default ntree = 500
 #Default mtry = count(predictors/3) = 400/3 = 133
-
-RF_grid <- expand.grid(
-  #ntree usually isn't tuned. Just set to max of computationally feasible
-  ntree = 100,
-  mtry = seq(10, round(ncol(pooled_panel[4:ncol(pooled_panel)])/3), 20)
-  #nodesize = seq(2, 14, 2)
-  # nodedepth recommended not to be changed
-  #nodedepth = 1,
-)
 
 # Fit an RF model over the entire grid of hyperparameters
 # Ideally, we would save all the models as we computed them
