@@ -93,9 +93,10 @@ datashare <- datashare_RAW_join %>%
   # We will construct quarterly returns using the end of each month
   # Ie using the 3rd, 6th, 9th and 12th month of each year
   # yearmon stores year + 0 for January. Exploit this to filter out non-quarter months
-  filter((as.yearmon(Time) %% 3) == 2/12 | (as.yearmon(Time) %% 3) == 5/12 | (as.yearmon(Time) %% 3) == 8/12 | (as.yearmon(Time) %% 3) == 11/12) %>%
+  filter((as.yearmon(Time) %% 1) == 2/12 | (as.yearmon(Time) %% 1) == 5/12 | (as.yearmon(Time) %% 1) == 8/12 | (as.yearmon(Time) %% 1) == 11/12) %>%
   # Generate log of prices
-  mutate(logPRC = log(PRC))
+  mutate(logPRC = log(PRC)) %>%
+  select(-RET)
 
 # Check Missing data stats
 # Missing data tends to get a bit better as time goes forward
@@ -104,7 +105,7 @@ datashare <- datashare_RAW_join %>%
 
 datashare %>% 
   # Change time filtering here
-  filter(Time > 1990) %>%
+  filter(Time > 1980) %>%
   gather(col, value) %>%
   group_by(col) %>%
   summarize(missing_share = mean(is.na(value))) %>%
@@ -112,8 +113,34 @@ datashare %>%
   # Delete or comment this last nrow() if you want to see which specific factors
   nrow()
 
-datashare_sample <- sample_frac(datashare, 0.5)
+datashare_sample <- sample_frac(datashare, 0.25)
 write.csv(datashare_sample, file = "datashare_sample.csv")
+
+## Function to generate log quarterly returns
+## This does not account for stocks entering and then leaving for whatever reason
+## Therefore not working properly yet
+
+datashare <- foreach(i = (1:length(unique(datashare$permno))), .combine = rbind) %dopar% {
+  datashare_stock <- datashare %>%
+    filter(permno == unique(datashare$permno)[i]) %>%
+    arrange(Time)
+  # This if statement filters out stocks which do not appear continuously throughout the dataset
+  if (mean((datashare_stock$Time - lag(datashare_stock$Time))[-1] == 1/4) == 1) {
+    datashare_stock %>%
+      mutate(RET_M = (logPRC - lag(logPRC)))
+  }
+}
+
+datashare_test <- datashare %>%
+  filter(permno == 11587) %>%
+  arrange(Time)
+
+(datashare_test$Time - lag(datashare_test$Time))[-1] == 1/4)
+
+datashare %>%
+  drop_na(RET_M) %>%
+  select(Time, permno, PRC, logPRC, RET_M, everything()) %>%
+  mutate(Time = as.yearmon(Time))
 
 # Double check against original RAW data
 # Same story, original dataset is NOT GOOD
