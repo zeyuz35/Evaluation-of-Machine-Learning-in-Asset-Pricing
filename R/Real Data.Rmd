@@ -44,6 +44,12 @@ datashare_RAW <- read_csv("data/datashare/datashare.csv",
                           # Always make sure to force col_types so that read_csv doesn't assume weird stuff
                           col_types = cols(.default = "d"))
 
+# Export stock IDs so that we can query WRDS returns
+# WRDS wants a txt file with one code per line and nothing else
+datashare_stock_ids <- unique(datashare_RAW$permno)
+write.table(datashare_stock_ids, file = "datashare_stock_ids.txt", sep = " ", 
+            row.names = FALSE, col.names = FALSE)
+
 # datashare with RET, Prices, and primary exchange
 datashare_RET_RAW <- read_csv("data/datashare/datashare_PRC.csv") %>%
   # Rename some columns
@@ -57,7 +63,7 @@ datashare_RET_RAW <- read_csv("data/datashare/datashare_PRC.csv") %>%
 
 datashare_RAW_join <- full_join(datashare_RAW, datashare_RET_RAW, by = c("permno", "DATE")) %>%
   # Reorder variables
-  select(DATE, permno, RET, PRC, everything())
+  select(DATE, permno, PRC, everything())
 
 colnames(datashare_RAW_join)
 
@@ -74,6 +80,7 @@ datashare <- datashare_RAW_join %>%
   # Filter so that we only have NASDAQ stocks
   # Remember that the NASDAQ only opened in 1971 ish
   filter(PRIMEXCH == "Q") %>%
+  select(-PRIMEXCH) %>%
   # Negative PRC means that there was no closing price, and the dash denotes the bid ask average instead
   # Not too unreasonable to just take this as the actual price 
   # Note that PRC has not been corrected for stock splits etc. This is more sensible for modelling purposes
@@ -94,53 +101,51 @@ datashare <- datashare_RAW_join %>%
   # Ie using the 3rd, 6th, 9th and 12th month of each year
   # yearmon stores year + 0 for January. Exploit this to filter out non-quarter months
   filter((as.yearmon(Time) %% 1) == 2/12 | (as.yearmon(Time) %% 1) == 5/12 | (as.yearmon(Time) %% 1) == 8/12 | (as.yearmon(Time) %% 1) == 11/12) %>%
-  # Generate log of prices
-  mutate(logPRC = log(PRC)) %>%
+  # Convert Time to yearqtr format
+  # yearqtr stores data as year + 0/4 for q1, 1/4 for q2, etc
+  mutate(Time = as.yearqtr(Time - 2/12)) %>%
   select(-RET)
+
+datashare_sample <- sample_frac(datashare, 0.25)
+write.csv(datashare_sample, file = "datashare_sample.csv")
+
+## Generate quarterly returns
+## This approach keeps companies that were were unlisted and relisted
+## Sensible, because companies can be bought out and floated again, etc.
+## Not likely to make a huge difference, but actual quarterly returns are computed, instead of log quarterly returns
+## This is because stock prices can in some cases have rather large movements over a quarter
+time_df <- data.frame(Time = unique(datashare$Time)) %>%
+  mutate(Time = as.numeric(Time))
+
+datashare <- foreach(i = (1:length(unique(datashare$permno))), .combine = rbind) %dopar% {
+  datashare_stock <- datashare %>%
+    mutate(Time = as.numeric(Time)) %>%
+    filter(permno == unique(datashare$permno)[i]) %>%
+    full_join(time_df, by = "Time") %>%
+    arrange(Time) %>%
+    mutate(RET_M = (PRC - lag(PRC))/lag(PRC)) %>%
+    drop_na(RET_M)
+  datashare_stock
+}
+
+# Reorder (again)
+datashare <- datashare %>%
+  select(Time, permno, PRC, RET_M, everything()) %>%
+  mutate(Time = as.yearqtr(Time))
 
 # Check Missing data stats
 # Missing data tends to get a bit better as time goes forward
 # Therefore conduct this with 
 # Rule of thumb: drop any column missing more than 20% of data
+# Best trade off between missing columns and maintaing a large dataset seems to be cutting it off ~1990s.
 
-datashare %>% 
+missing_factors <- datashare %>% 
   # Change time filtering here
-  filter(Time > 1980) %>%
+  filter(Time >= 1993.5) %>%
   gather(col, value) %>%
   group_by(col) %>%
   summarize(missing_share = mean(is.na(value))) %>%
-  filter(missing_share > 0.25) %>%
-  # Delete or comment this last nrow() if you want to see which specific factors
-  nrow()
-
-datashare_sample <- sample_frac(datashare, 0.25)
-write.csv(datashare_sample, file = "datashare_sample.csv")
-
-## Function to generate log quarterly returns
-## This does not account for stocks entering and then leaving for whatever reason
-## Therefore not working properly yet
-
-datashare <- foreach(i = (1:length(unique(datashare$permno))), .combine = rbind) %dopar% {
-  datashare_stock <- datashare %>%
-    filter(permno == unique(datashare$permno)[i]) %>%
-    arrange(Time)
-  # This if statement filters out stocks which do not appear continuously throughout the dataset
-  if (mean((datashare_stock$Time - lag(datashare_stock$Time))[-1] == 1/4) == 1) {
-    datashare_stock %>%
-      mutate(RET_M = (logPRC - lag(logPRC)))
-  }
-}
-
-datashare_test <- datashare %>%
-  filter(permno == 11587) %>%
-  arrange(Time)
-
-(datashare_test$Time - lag(datashare_test$Time))[-1] == 1/4)
-
-datashare %>%
-  drop_na(RET_M) %>%
-  select(Time, permno, PRC, logPRC, RET_M, everything()) %>%
-  mutate(Time = as.yearmon(Time))
+  filter(missing_share > 0.20)
 
 # Double check against original RAW data
 # Same story, original dataset is NOT GOOD
@@ -151,24 +156,24 @@ datashare_RAW %>%
   group_by(col) %>%
   summarize(missing_share = mean(is.na(value))) %>%
   filter(missing_share > 0.20)
-```
 
-```{r}
+## Remove previously identified factors
+datashare_filtered <- datashare %>%
+  filter(Time >= 1993.5) %>%
+  select(-c(missing_factors$col))
 
 # Dealing with Missing characteristics
 # Function to impute missing characteristics with their CROSS SECTIONAL median (as with gu et al) or mean (conventional) for each stock
 # THIS FUNCTION WORKS PROPERLY, HOWEVER THE DATASET HAS TOO MUCH MISSING DATA
 # Many of the earlier cross sections are completely missing any sort of data for some characteristics
 # This means that it is impossible to impute a cross sectional mean/median
+# The foreach loop may through some errors if this is the case but will still function correctly, check the output to see which exact factors are missing
 # Don't know how Gu et al did this
 
-# Function to calculate cross sectional medians/means from panel dataset
+# Function to calculate cross sectional medians/means from panel dataset, mainly for checking purposes
 # Assumes that the dataset has a "Time" column
 # doFuture has a maxsize default of around 500 MB
-# This smaller than our dataset, so make sure to set it to something large
-
-# Setting doFuture maxsize to 3GB
-
+# In the current setting this is sufficient for our dataset, but you can set the maxsize to something larger like so:
 #options(future.globals.maxSize = 3e+9)
 
 cross_sectional_values <- function(dataset, impute_type) {
@@ -183,42 +188,61 @@ cross_sectional_values <- function(dataset, impute_type) {
     # Mean Case
     if (impute_type == "mean") {
       cross_sectional_values <- dataset_cross_section %>% 
-        select(-sic2) %>% 
         summarize_all(mean, na.rm = TRUE) %>%
-        mutate(Time = as.yearmon(Time))
+        mutate(Time = as.yearqtr(Time))
     }
     # Median Case
     else {
       cross_sectional_values <- dataset_cross_section %>% 
-        select(-sic2) %>% 
         summarize_all(median, na.rm = TRUE) %>%
-        mutate(Time = as.yearmon(Time))
+        mutate(Time = as.yearqtr(Time))
     }
     cross_sectional_values
   }
   cross_sectional_values_df
 }
 
-test <- cross_sectional_values(datashare, impute_type = "mean")
+test <- cross_sectional_values(datashare_filtered, impute_type = "median")
 
+# Checks to see if there are any time periods where there is no cross sectional imputation possible due to missing data
+# Looks all good
+cbind(test$Time, (test)[colSums(is.na(test)) > 0])
 
+colnames(test)[colSums(is.na(test)) > 0]
+
+# Function to impute cross sectional values
+
+impute_cross_section <- function(dataset, impute_type) {
+  time_periods <- unique(dataset$Time)
+  
+  imputed_cross_section_df <- foreach(t = 1:length(time_periods), .combine = "rbind") %dopar% {
+    dataset_cross_section <- dataset %>%
+      filter(Time == time_periods[t])
+    
+    if (impute_type == "median") {
+      # Impute the median for ALL columns
+      dataset_cross_section %>%
+        impute_median()
+    } else {
+      dataset_cross_section %>%
+        impute_mean()
+    }
+  }
+  imputed_cross_section_df
+}
+
+datashare_imputed <- impute_cross_section(datashare_filtered, impute_type = "median")
 
 # Summary Statistics
+summary(datashare_imputed)
 
-length(unique(datashare$permno))
-# There are 29892 unique stocks to begin with
-# There are 94 lagged characteristics/factors
+length(unique(datashare_imputed$permno))
 
-# Export stock IDs so that we can query WRDS returns
-# WRDS wants a txt file with one code per line and nothing else
-datashare_stock_ids <- unique(datashare$permno)
-write.table(datashare_stock_ids, file = "datashare_stock_ids.txt", sep = " ", 
-            row.names = FALSE, col.names = FALSE)
+ncol(datashare_filtered)
 
-# It seems as though that data is only fully available for some stocks in the dataset
-# Absolutely no clue how Gu et al dealt with missing data issues
-df_10006 <- datashare %>%
-  filter(permno == 10006)
+## With that... FINISHED CLEANING DATASHARE
+## We still have ~60 or so factors left, not too bad
+# Final imputed dataset is ~100mb in size, quite manageable
 
 ```
 
@@ -231,11 +255,13 @@ df_10006 <- datashare %>%
 # net equity expansion ntis, Treasury bill rate tbl, term spread tms,
 # Default spread dfy, stock variance svar
 PredictorData2017_RAW <- read_excel("data/factors/PredictorData2017.xlsx", 
+                                    # Specify quarterly as we are now working with quarterly data
+                                    sheet = "Quarterly",
                                     na = "NaN")
 
 PredictorData2017 <- PredictorData2017_RAW %>%
-  mutate(Time = as.yearmon(as.character(yyyymm), "%Y%m")) %>%
-  select(-yyyymm) %>%
+  mutate(Time = as.yearqtr(as.character(yyyyq), "%Y%q")) %>%
+  select(-yyyyq) %>%
   # Dividend price ratio is the difference between the log of dividends and the log of prices
   # Note that log(D12) - log(Index) is negative which doesn't make sense as a ratio
   mutate(dp = abs(log(D12) - log(Index))) %>%
@@ -247,19 +273,25 @@ PredictorData2017 <- PredictorData2017_RAW %>%
   # Default spread is the difference between BAA and AAA-rated corporate bond yields
   mutate(dfy = abs(BAA - AAA)) %>%
   # Rename b/m to bm
-  rename(bm = `b/m`)
+  rename(bm = `b/m`) %>%
+  # Reorder
+  select(Time, everything())
 
 # Subset so that we have the predictors we actually care about
 # Note that some of these by default have the same names as those in the individual factor set
 # Therefore, prefix them with macro_ to make it clearer
 # Also filter out all the entries that are not in the datashare dataset as they can't be used (Note that this also takes care of all missing values in this dataset)
+# Filter it so that we only have the years we are interested in (same filtering as datashare)
 macro_predictors <- PredictorData2017 %>%
   select(Time, dp, ep, bm, ntis, tbl, tms, dfy, svar) %>%
   rename_at(vars(-Time), function(x) paste0("macro_", x)) %>%
-  filter(Time >= min(datashare$Time) & Time <= max(datashare$Time)) %>%
+  # Create constant
+  mutate(macro_constant = 1) %>%
   # Reorder
-  select(Time, constant, everything())
+  select(Time, macro_constant, everything()) %>%
+  filter(Time >= 1993.5)
 
+# DONE WITH WELCH GOYAL
 ```
 
 
@@ -275,7 +307,7 @@ macro_predictors <- PredictorData2017 %>%
 # This EXCLUDES macro factors by themselves
 
 macro_factor_names <- colnames(select(macro_predictors, -Time))
-individual_factor_names <- colnames(select(datashare, -permno, -Time, -sic2))
+individual_factor_names <- colnames(select(datashare_imputed, -permno, -Time, -RET_M, -PRC))
 
 interaction_terms <- rep(list(0), length(macro_factor_names))
 
@@ -285,21 +317,16 @@ for (i in 1:length(macro_factor_names)) {
 
 f <- as.formula(c("~ ", paste(interaction_terms, collapse = "+")))
 
-combined <- full_join(macro_predictors, datashare)
+combined <- full_join(macro_predictors, datashare, by = "Time")
 
 # Memory issues. This interaction matrix is way too large
 interaction_matrix <- sparse.model.matrix(f, model.frame(~., combined))
 dmy <- dummyVars(f, data = combined)
 
-# This keeps all the NAs in data, but takes up way too much memory and therefore doesn't work
-interaction_matrix <- sparse.model.matrix(f, model.frame(~., combined, na.action=na.pass))
+# This is pretty damn large at ~1.5GB. Interaction terms are brutal
+final_dataset_x <- predict(dmy, combined)
 
-macro_matrix <- macro_predictors %>%
-  select(-Time) %>%
-  as.matrix()
-datashare_matrix <- datashare %>%
-  select(-Time, -permno, -sic2) %>%
-  as.matrix()
-
-combined_matrix <- kronecker(macro_matrix, datashare_matrix, make.dimnames = TRUE)
+# Double Check
+colnames(final_dataset)
+ncol(final_dataset)
 ```
