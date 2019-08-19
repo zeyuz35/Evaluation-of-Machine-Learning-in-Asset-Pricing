@@ -47,7 +47,7 @@ batch_process_range <- c(1:1)
 # Runs all possible models across mse and mae loss functions, does NOT save the models (for memory efficiency), and saves the loss statistics, actual forecasts, forecast residuals, and variable importance metrics into a list object
 # Fairly straightforward, as the model_fit functions from before do everything for you already
 # Ie acts as a very big wrapper/for loop
-# Note that a lot number of the models are not multithreaded, so a foreach loop will be used so that batches of realizations can be run
+# Note that a lot number of the models are not multithreaded
 
 fit_all_models <- function(dataset_list, batch_process_range,
                            # Logical arguments specifying which models you want to fit
@@ -86,8 +86,8 @@ fit_all_models <- function(dataset_list, batch_process_range,
     
     if (LM == 1) {
       # Linear Models
-      simulation_results_list[[batch]]$LM_MSE <- LM_fit(pooled_panel, timeSlices, "mse")
-      simulation_results_list[[batch]]$LM_MAE <- LM_fit(pooled_panel, timeSlices, "mae")
+      simulation_results_list[[batch]]$LM_MSE <- LM_fit(pooled_panel, timeSlices, "mse", f)
+      simulation_results_list[[batch]]$LM_MAE <- LM_fit(pooled_panel, timeSlices, "mae", f)
     }
     
     if (ELN == 1) {

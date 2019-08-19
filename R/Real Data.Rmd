@@ -23,6 +23,7 @@ library(readr)
 library(zoo)
 library(readxl)
 library(Matrix)
+library(tidyimpute)
 
 #Parallel Computing
 library(foreach)
@@ -63,20 +64,23 @@ datashare_RET_RAW <- read_csv("data/datashare/datashare_PRC.csv") %>%
 
 datashare_RAW_join <- full_join(datashare_RAW, datashare_RET_RAW, by = c("permno", "DATE")) %>%
   # Reorder variables
-  select(DATE, permno, PRC, everything())
+  mutate(stock = permno) %>%
+  select(-permno) %>%
+  select(DATE, stock, PRC, everything())
 
 colnames(datashare_RAW_join)
 
 head(datashare_RAW_join)
 
-individual_factor_names <- colnames(datashare_RAW)[3:96]
+rm(datashare_RAW)
+rm(datashare_RET_RAW)
 
 datashare <- datashare_RAW_join %>%
-  mutate(Time = as.yearmon(as.character(DATE), "%Y%m%d")) %>%
+  mutate(time = as.yearmon(as.character(DATE), "%Y%m%d")) %>%
   select(-DATE) %>%
   # Generate log prices
   # Drop RET which is monthly return
-  select(Time, permno, PRC, -RET, everything()) %>%
+  select(time, stock, PRC, -RET, everything()) %>%
   # Filter so that we only have NASDAQ stocks
   # Remember that the NASDAQ only opened in 1971 ish
   filter(PRIMEXCH == "Q") %>%
@@ -92,6 +96,7 @@ datashare <- datashare_RAW_join %>%
   # Filter out so that only shares with share codes of 10 or 11 are included (other codes refer to other instruments such as REITs, etc)
   # Don't have any idea why Gu et al thought this was originally sensible
   filter(SHRCD == 10 | SHRCD == 11) %>%
+  select(-SHRCD) %>%
   # SIC codes according to WRDS/CRSP are recommended to be used with caution, as they are not strictly enforced
   # Companies can also belong in multiple SIC codes, or change SIC codes over time. This is not adequately captured by CRSP
   # Also don't make much consistent sense either
@@ -100,10 +105,10 @@ datashare <- datashare_RAW_join %>%
   # We will construct quarterly returns using the end of each month
   # Ie using the 3rd, 6th, 9th and 12th month of each year
   # yearmon stores year + 0 for January. Exploit this to filter out non-quarter months
-  filter((as.yearmon(Time) %% 1) == 2/12 | (as.yearmon(Time) %% 1) == 5/12 | (as.yearmon(Time) %% 1) == 8/12 | (as.yearmon(Time) %% 1) == 11/12) %>%
-  # Convert Time to yearqtr format
+  filter((as.yearmon(time) %% 1) == 2/12 | (as.yearmon(time) %% 1) == 5/12 | (as.yearmon(time) %% 1) == 8/12 | (as.yearmon(time) %% 1) == 11/12) %>%
+  # Convert time to yearqtr format
   # yearqtr stores data as year + 0/4 for q1, 1/4 for q2, etc
-  mutate(Time = as.yearqtr(Time - 2/12)) %>%
+  mutate(time = as.yearqtr(time - 2/12)) %>%
   select(-RET)
 
 datashare_sample <- sample_frac(datashare, 0.25)
@@ -114,15 +119,15 @@ write.csv(datashare_sample, file = "datashare_sample.csv")
 ## Sensible, because companies can be bought out and floated again, etc.
 ## Not likely to make a huge difference, but actual quarterly returns are computed, instead of log quarterly returns
 ## This is because stock prices can in some cases have rather large movements over a quarter
-time_df <- data.frame(Time = unique(datashare$Time)) %>%
-  mutate(Time = as.numeric(Time))
+time_df <- data.frame(time = unique(datashare$time)) %>%
+  mutate(time = as.numeric(time))
 
-datashare <- foreach(i = (1:length(unique(datashare$permno))), .combine = rbind) %dopar% {
+datashare <- foreach(i = (1:length(unique(datashare$stock))), .combine = rbind) %dopar% {
   datashare_stock <- datashare %>%
-    mutate(Time = as.numeric(Time)) %>%
-    filter(permno == unique(datashare$permno)[i]) %>%
-    full_join(time_df, by = "Time") %>%
-    arrange(Time) %>%
+    mutate(time = as.numeric(time)) %>%
+    filter(stock == unique(datashare$stock)[i]) %>%
+    full_join(time_df, by = "time") %>%
+    arrange(time) %>%
     mutate(RET_M = (PRC - lag(PRC))/lag(PRC)) %>%
     drop_na(RET_M)
   datashare_stock
@@ -130,8 +135,8 @@ datashare <- foreach(i = (1:length(unique(datashare$permno))), .combine = rbind)
 
 # Reorder (again)
 datashare <- datashare %>%
-  select(Time, permno, PRC, RET_M, everything()) %>%
-  mutate(Time = as.yearqtr(Time))
+  select(time, stock, PRC, RET_M, everything()) %>%
+  mutate(time = as.yearqtr(time))
 
 # Check Missing data stats
 # Missing data tends to get a bit better as time goes forward
@@ -141,17 +146,7 @@ datashare <- datashare %>%
 
 missing_factors <- datashare %>% 
   # Change time filtering here
-  filter(Time >= 1993.5) %>%
-  gather(col, value) %>%
-  group_by(col) %>%
-  summarize(missing_share = mean(is.na(value))) %>%
-  filter(missing_share > 0.20)
-
-# Double check against original RAW data
-# Same story, original dataset is NOT GOOD
-datashare_RAW %>% 
-  mutate(Time = as.yearmon(as.character(DATE), "%Y%m%d")) %>%
-  filter(Time > 1996) %>%
+  filter(time >= 1993.5) %>%
   gather(col, value) %>%
   group_by(col) %>%
   summarize(missing_share = mean(is.na(value))) %>%
@@ -159,7 +154,7 @@ datashare_RAW %>%
 
 ## Remove previously identified factors
 datashare_filtered <- datashare %>%
-  filter(Time >= 1993.5) %>%
+  filter(time >= 1993.5) %>%
   select(-c(missing_factors$col))
 
 # Dealing with Missing characteristics
@@ -171,31 +166,31 @@ datashare_filtered <- datashare %>%
 # Don't know how Gu et al did this
 
 # Function to calculate cross sectional medians/means from panel dataset, mainly for checking purposes
-# Assumes that the dataset has a "Time" column
+# Assumes that the dataset has a "time" column
 # doFuture has a maxsize default of around 500 MB
 # In the current setting this is sufficient for our dataset, but you can set the maxsize to something larger like so:
 #options(future.globals.maxSize = 3e+9)
 
 cross_sectional_values <- function(dataset, impute_type) {
   
-  time_periods <- unique(dataset$Time)
+  time_periods <- unique(dataset$time)
   
   cross_sectional_values_df <- foreach(t = 1:length(time_periods), .combine = "rbind") %dopar% {
     
     dataset_cross_section <- dataset %>%
-      filter(Time == time_periods[t])
+      filter(time == time_periods[t])
     
     # Mean Case
     if (impute_type == "mean") {
       cross_sectional_values <- dataset_cross_section %>% 
         summarize_all(mean, na.rm = TRUE) %>%
-        mutate(Time = as.yearqtr(Time))
+        mutate(time = as.yearqtr(time))
     }
     # Median Case
     else {
       cross_sectional_values <- dataset_cross_section %>% 
         summarize_all(median, na.rm = TRUE) %>%
-        mutate(Time = as.yearqtr(Time))
+        mutate(time = as.yearqtr(time))
     }
     cross_sectional_values
   }
@@ -206,18 +201,18 @@ test <- cross_sectional_values(datashare_filtered, impute_type = "median")
 
 # Checks to see if there are any time periods where there is no cross sectional imputation possible due to missing data
 # Looks all good
-cbind(test$Time, (test)[colSums(is.na(test)) > 0])
+cbind(test$time, (test)[colSums(is.na(test)) > 0])
 
 colnames(test)[colSums(is.na(test)) > 0]
 
 # Function to impute cross sectional values
 
 impute_cross_section <- function(dataset, impute_type) {
-  time_periods <- unique(dataset$Time)
+  time_periods <- unique(dataset$time)
   
   imputed_cross_section_df <- foreach(t = 1:length(time_periods), .combine = "rbind") %dopar% {
     dataset_cross_section <- dataset %>%
-      filter(Time == time_periods[t])
+      filter(time == time_periods[t])
     
     if (impute_type == "median") {
       # Impute the median for ALL columns
@@ -236,12 +231,12 @@ datashare_imputed <- impute_cross_section(datashare_filtered, impute_type = "med
 # Summary Statistics
 summary(datashare_imputed)
 
-length(unique(datashare_imputed$permno))
+length(unique(datashare_imputed$stock))
 
 ncol(datashare_filtered)
 
 ## With that... FINISHED CLEANING DATASHARE
-## We still have ~60 or so factors left, not too bad
+## We still have ~70 or so factors left, not too bad
 # Final imputed dataset is ~100mb in size, quite manageable
 
 ```
@@ -260,7 +255,7 @@ PredictorData2017_RAW <- read_excel("data/factors/PredictorData2017.xlsx",
                                     na = "NaN")
 
 PredictorData2017 <- PredictorData2017_RAW %>%
-  mutate(Time = as.yearqtr(as.character(yyyyq), "%Y%q")) %>%
+  mutate(time = as.yearqtr(as.character(yyyyq), "%Y%q")) %>%
   select(-yyyyq) %>%
   # Dividend price ratio is the difference between the log of dividends and the log of prices
   # Note that log(D12) - log(Index) is negative which doesn't make sense as a ratio
@@ -275,7 +270,7 @@ PredictorData2017 <- PredictorData2017_RAW %>%
   # Rename b/m to bm
   rename(bm = `b/m`) %>%
   # Reorder
-  select(Time, everything())
+  select(time, everything())
 
 # Subset so that we have the predictors we actually care about
 # Note that some of these by default have the same names as those in the individual factor set
@@ -283,13 +278,13 @@ PredictorData2017 <- PredictorData2017_RAW %>%
 # Also filter out all the entries that are not in the datashare dataset as they can't be used (Note that this also takes care of all missing values in this dataset)
 # Filter it so that we only have the years we are interested in (same filtering as datashare)
 macro_predictors <- PredictorData2017 %>%
-  select(Time, dp, ep, bm, ntis, tbl, tms, dfy, svar) %>%
-  rename_at(vars(-Time), function(x) paste0("macro_", x)) %>%
+  select(time, dp, ep, bm, ntis, tbl, tms, dfy, svar) %>%
+  rename_at(vars(-time), function(x) paste0("macro_", x)) %>%
   # Create constant
   mutate(macro_constant = 1) %>%
   # Reorder
-  select(Time, macro_constant, everything()) %>%
-  filter(Time >= 1993.5)
+  select(time, macro_constant, everything()) %>%
+  filter(time >= 1993.5)
 
 # DONE WITH WELCH GOYAL
 ```
@@ -306,8 +301,8 @@ macro_predictors <- PredictorData2017 %>%
 # Remember that kronecker would give us constant*individual factors + individual factors*macro factors
 # This EXCLUDES macro factors by themselves
 
-macro_factor_names <- colnames(select(macro_predictors, -Time))
-individual_factor_names <- colnames(select(datashare_imputed, -permno, -Time, -RET_M, -PRC))
+macro_factor_names <- colnames(select(macro_predictors, -time))
+individual_factor_names <- colnames(select(datashare_imputed, -stock, -time, -RET_M, -PRC))
 
 interaction_terms <- rep(list(0), length(macro_factor_names))
 
@@ -317,16 +312,173 @@ for (i in 1:length(macro_factor_names)) {
 
 f <- as.formula(c("~ ", paste(interaction_terms, collapse = "+")))
 
-combined <- full_join(macro_predictors, datashare, by = "Time")
+combined <- full_join(macro_predictors, datashare, by = "time")
 
-# Memory issues. This interaction matrix is way too large
-interaction_matrix <- sparse.model.matrix(f, model.frame(~., combined))
 dmy <- dummyVars(f, data = combined)
 
 # This is pretty damn large at ~1.5GB. Interaction terms are brutal
-final_dataset_x <- predict(dmy, combined)
+final_dataset_x <- (predict(dmy, combined))
+
+# Strap on the stock, time and RET_M columns to this
+
+final_dataset <- data.frame(combined$stock, combined$time, combined$RET_M, final_dataset_x) %>%
+  # Rename some columns
+  mutate(stock = combined.stock) %>%
+  mutate(time = combined.time) %>%
+  mutate(rt = combined.RET_M) %>%
+  select(-combined.stock, -combined.time, -combined.RET_M) %>%
+  select(time, stock, rt, everything())
+
+rm(final_dataset_x)
 
 # Double Check
 colnames(final_dataset)
-ncol(final_dataset)
+ncol(final_dataset) - 3
 ```
+
+```{r}
+## Setting up time slices, formulas, etc
+
+## time slices function
+## Different function needed due to different time format (inclusion of quarters)
+## Makes it so that it works with all of our model fitting function from earlier
+realdata_custom_timeslices <- function(start, initialWindow, horizon, validation_size, test_size, set_no) {
+  time_slice <- list(train = 0, validation = 0, test = 0)
+  time_slices <- rep(list(time_slice), set_no)
+  
+  for (t in 1:set_no) {
+    time_slice$train <- seq(start, 
+                            (start + initialWindow + (t-1) * horizon + 3/4), 
+                            0.25)
+    
+    time_slice$validation <- seq(
+      (start + initialWindow + (t-1) * horizon + 1),
+      (start + initialWindow + (t-1) * horizon + validation_size + 3/4), 
+      0.25
+      )
+    
+    time_slice$test <- seq(
+      (start + initialWindow + (t-1) * horizon + validation_size + 1),
+      (start + (initialWindow + (t-1) * horizon) + validation_size + test_size + 3/4), 
+      0.25
+      )
+    time_slices[[t]] <- time_slice
+  }
+  time_slices
+}
+
+# These are the settings working with a dataset going from 1993 - 2016
+realdata_timeSlices <- realdata_custom_timeslices(start = 1993, initialWindow = 15, horizon = 1, validation_size = 3, test_size = 3, set_no = 3)
+
+# Formula
+
+real_panel_formula <- function(panel){
+  #Remove the first 3 colNames, as these correspond to the return, time and stock id
+  panel_colnames <- colnames(panel)[-c(1:3)]
+  f <- as.formula(c("rt ~", paste(panel_colnames, collapse = "+")))
+  return(f)
+}
+
+## Function to fit all models for real data
+## Slightly different from simulation model fitting function
+fit_all_models_real_data <- function(pooled_panel,
+                           # Logical arguments specifying which models you want to fit
+                           # This is useful if you don't want to fit some of the most intensive methods such as RF and Neural Networks
+                           LM, ELN, RF, NNet) {
+  # Initialize List
+  real_data_results_list <- list(0)
+    
+  real_data_results_list <- list(
+    # Panel Statistics
+    pooled_panel_stats = 0, 
+    # Y Values (used for Diebold Mariano Tests later)
+    returns = 0,
+    # Models
+    LM_MSE = 0, LM_MAE = 0,
+    ELN_MSE = 0, ELN_MAE = 0,
+    RF_MSE = 0, RF_MAE = 0,
+    # Neural Networks
+    NN1_MSE = 0, NN1_MAE = 0,
+    NN2_MSE = 0, NN2_MAE = 0,
+    NN3_MSE = 0, NN3_MAE = 0,
+    NN4_MSE = 0, NN4_MAE = 0,
+    NN5_MSE = 0, NN5_MAE = 0
+  )
+    
+  # Load pooled_panel
+  real_data_results_list$returns <- pooled_panel$RET_M
+    
+  realdata_timeSlices <- realdata_custom_timeslices(start = 1993, initialWindow = 15, horizon = 1, validation_size = 3, test_size = 3, set_no = 3)
+    
+  f <- real_panel_formula(pooled_panel)
+    
+  if (LM == 1) {
+    # Linear Models
+    real_data_results_list$LM_MSE <- LM_fit(pooled_panel, realdata_timeSlices, "mse", f)
+    real_data_results_list$LM_MAE <- LM_fit(pooled_panel, realdata_timeSlices, "mae", f)
+  }
+    
+  if (ELN == 1) {
+    # Penalized Linear Models
+  
+    alpha_grid <- seq(0, 1, 0.01)
+    
+    real_data_results_list$ELN_MAE <- ELN_fit_stats(alpha_grid, nlamb = 100, realdata_timeSlices, pooled_panel, loss_function = "mae")
+    real_data_results_list$ELN_MSE <- ELN_fit_stats(alpha_grid, nlamb = 100, realdata_timeSlices, pooled_panel, loss_function = "mse")
+  }
+    
+  if (RF == 1) {
+    # Random Forests
+    RF_grid <- expand.grid(
+    #ntree usually isn't tuned. Just set to max of computationally feasible
+    ntree = 100,
+    mtry = seq(10, round(ncol(pooled_panel[4:ncol(pooled_panel)])/3), 20)
+    # nodesize = seq(2, 14, 2)
+    # nodedepth recommended not to be changed
+    #nodedepth = 1
+    )
+    
+    real_data_results_list$RF_MSE <- RF_fit_stats(pooled_panel, RF_grid, realdata_timeSlices, "mse")
+    real_data_results_list$RF_MAE <- RF_fit_stats(pooled_panel, RF_grid, realdata_timeSlices, "mae")
+  }
+      
+  if (NNet == 1) {
+    # Neural Networks
+    # Commented for now because honours lab computers don't have keras/tensorflow
+    
+    batch_size <- 32
+    patience <- 20
+    
+    real_data_results_list$NN1_MSE <- NNet_fit_stats(pooled_panel, realdata_timeSlices, 1, "mse", batch_size = batch_size, patience = patience)
+    real_data_results_list$NN1_MAE <- NNet_fit_stats(pooled_panel, realdata_timeSlices, 1, "mae", batch_size = batch_size, patience = patience)
+    
+    real_data_results_list$NN2_MSE <- NNet_fit_stats(pooled_panel, realdata_timeSlices, 2, "mse", batch_size = batch_size, patience = patience)
+    real_data_results_list$NN2_MAE <- NNet_fit_stats(pooled_panel, realdata_timeSlices, 2, "mae", batch_size = batch_size, patience = patience)
+    
+    real_data_results_list$NN3_MSE <- NNet_fit_stats(pooled_panel, realdata_timeSlices, 3, "mse", batch_size = batch_size, patience = patience)
+    real_data_results_list$NN3_MAE <- NNet_fit_stats(pooled_panel, realdata_timeSlices, 3, "mae", batch_size = batch_size, patience = patience)
+    
+    real_data_results_list$NN4_MSE <- NNet_fit_stats(pooled_panel, realdata_timeSlices, 4, "mse", batch_size = batch_size, patience = patience)
+    real_data_results_list$NN4_MAE <- NNet_fit_stats(pooled_panel, realdata_timeSlices, 4, "mae", batch_size = batch_size, patience = patience)
+    
+    real_data_results_list$NN5_MSE <- NNet_fit_stats(pooled_panel, realdata_timeSlices, 5, "mse", batch_size = batch_size, patience = patience)
+    real_data_results_list$NN5_MAE <- NNet_fit_stats(pooled_panel, realdata_timeSlices, 5, "mae", batch_size = batch_size, patience = patience)
+  }
+  real_data_results_list
+}
+```
+
+```{r}
+# Test on fitting actual data
+# Lots of memory issues, need to change fit functions so that they are more memory efficient
+options(future.globals.maxSize = 1.5e+9)
+real_data_results <- fit_all_models_real_data(final_dataset,
+                                              LM = 1, ELN = 0, RF = 0, NNet = 0)
+```
+
+```{r}
+# test
+LM_stats_mse <- LM_fit(final_dataset, realdata_timeSlices, "mse", f)
+NNet_1_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 1, "mse", batch_size = 32, 10)
+```
+

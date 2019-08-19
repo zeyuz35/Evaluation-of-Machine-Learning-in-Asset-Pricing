@@ -54,7 +54,6 @@ customTimeSlices <- function(start, initialWindow, horizon, validation_size, tes
     time_slice$test <- c((initialWindow + (t-1) * horizon) + validation_size + 2):((initialWindow + (t-1) * horizon) + validation_size + test_size + 1)
     time_slices[[t]] <- time_slice
   }
-  
   time_slices
 }
 
@@ -213,11 +212,9 @@ NNet_variable_importance <- function(test, nnet_model) {
 ```{r pooled_ols}
 #Linear model wrt MSE
 
-LM_fit <- function(pooled_panel, timeSlices, loss_function) {
+LM_fit <- function(pooled_panel, timeSlices, loss_function, f) {
   #Initialize Loss Function Statistics
   LM_stats <- rep(list(0), 3)
-  
-  f <- panel_formula(pooled_panel)
   
   for (set in 1:3) {
     LM_stats[[set]] <- list(loss_stats = data.frame(train_MAE = 0, train_MSE = 0, train_RMSE = 0, train_RSquare = 0, 
@@ -240,9 +237,11 @@ LM_fit <- function(pooled_panel, timeSlices, loss_function) {
     
     #Train Model on training set
     
+    # Set model = FALSE so that it won't save a copy of the training data in the model object
+    # Doen for memory efficiency
     #MSE case
     if (loss_function == "mse") {
-      lm <- lm(f, data = train)
+      lm <- lm(f, data = train, model = FALSE, y = FALSE)
     } else {
       # Use pfn as method here for much faster computation
       lm <- rq(f, data = train, tau = 0.5, method = "pfn")
@@ -358,7 +357,7 @@ ELN_model_grid <- function(ELN_grid, train_x, train_y, validation_x, validation_
     
     # MSE Case
     if (loss_function == "mse") {
-      ELN <- hqreg_raw(train_x, train_y, method = "ls", alpha = ELN_grid$alpha[i], nlambda = nlambda)
+      ELN <- hqreg(train_x, train_y, method = "ls", alpha = ELN_grid$alpha[i], nlambda = nlambda)
       
       #ELN_model_grid[[i]]$model <- ELN
       
@@ -368,7 +367,7 @@ ELN_model_grid <- function(ELN_grid, train_x, train_y, validation_x, validation_
                                             )
     } else {
       # MAE Case
-      ELN <- hqreg_raw(train_x, train_y, method = "quantile", tau = 0.5, alpha = ELN_grid$alpha[i], nlambda = nlambda)
+      ELN <- hqreg(train_x, train_y, method = "quantile", tau = 0.5, alpha = ELN_grid$alpha[i], nlambda = nlambda)
       #ELN_model_grid[[i]]$model <- ELN
 
       ELN_model_grid[[i]]$ELN_grid <- cbind(alpha = ELN_grid$alpha[i], lambda = ELN_grid$lambda[i],
@@ -427,9 +426,9 @@ ELN_fit_stats <- function(ELN_grid, nlambda, timeSlices, pooled_panel, loss_func
       
     #Model
     if (loss_function == "mse") {
-      model <- hqreg_raw(train_x, train_y, method = "ls", alpha = best_model_params$alpha, nlambda = nlambda)
+      model <- hqreg(train_x, train_y, method = "ls", alpha = best_model_params$alpha, nlambda = nlambda)
     } else {
-      model <- hqreg_raw(train_x, train_y, method = "quantile", tau = 0.5, alpha = best_model_params$alpha, nlambda = nlambda)
+      model <- hqreg(train_x, train_y, method = "quantile", tau = 0.5, alpha = best_model_params$alpha, nlambda = nlambda)
     }
     ELN_stats[[set]]$model <- model
       
@@ -485,7 +484,7 @@ ELN_model_grid <- function(alpha_grid, train_x, train_y, validation_x, validatio
     
     #MSE Case
     if (loss_function == "mse") {
-      ELN <- hqreg_raw(train_x, train_y, method = "ls", alpha = alpha_grid[i], nlambda = nlamb)
+      ELN <- hqreg(train_x, train_y, method = "ls", alpha = alpha_grid[i], nlambda = nlamb)
       ELN_model_grid[[i]]$model <- ELN
     
       ELN_model_grid[[i]]$ELN_grid <- cbind(alpha = alpha_grid[i], lambda = ELN$lambda,
@@ -493,7 +492,7 @@ ELN_model_grid <- function(alpha_grid, train_x, train_y, validation_x, validatio
                                             validation_loss = apply(predict(ELN, validation_x), 2, mse, actual = validation_y))
     } else {
       #MAE Case
-      ELN <- hqreg_raw(train_x, train_y, method = "quantile", tau = 0.5, alpha = alpha_grid[i], nlambda = nlamb)
+      ELN <- hqreg(train_x, train_y, method = "quantile", tau = 0.5, alpha = alpha_grid[i], nlambda = nlamb)
       ELN_model_grid[[i]]$model <- ELN
     
       ELN_model_grid[[i]]$ELN_grid <- cbind(alpha = alpha_grid[i], lambda = ELN$lambda,
@@ -515,7 +514,7 @@ ELN_model_grid <- function(alpha_grid, train_x, train_y, validation_x, validatio
     
     #MSE Case
     if (loss_function == "mse") {
-      ELN <- hqreg_raw(train_x, train_y, method = "ls", alpha = alpha_grid[i], nlambda = nlamb)
+      ELN <- hqreg(train_x, train_y, method = "ls", alpha = alpha_grid[i], nlambda = nlamb)
       ELN_model_grid$model <- ELN
     
       ELN_model_grid$ELN_grid <- cbind(alpha = alpha_grid[i], lambda = ELN$lambda,
@@ -523,7 +522,7 @@ ELN_model_grid <- function(alpha_grid, train_x, train_y, validation_x, validatio
                                        validation_loss = apply(predict(ELN, validation_x), 2, mse, actual = validation_y))
     } else {
       #MAE Case
-      ELN <- hqreg_raw(train_x, train_y, method = "quantile", tau = 0.5, alpha = alpha_grid[i], nlambda = nlamb)
+      ELN <- hqreg(train_x, train_y, method = "quantile", tau = 0.5, alpha = alpha_grid[i], nlambda = nlamb)
       ELN_model_grid$model <- ELN
     
       ELN_model_grid$ELN_grid <- cbind(alpha = alpha_grid[i], lambda = ELN$lambda,
@@ -926,6 +925,7 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
         
         # Layer 1
         layer_dense(units = 32, input_shape = ncol(train_x)) %>%
+          layer_batch_normalization() %>%
           layer_activation("relu") %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
@@ -938,6 +938,7 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
           
         # Layer 1
         layer_dense(units = 32, input_shape = ncol(train_x)) %>%
+          layer_batch_normalization() %>%
           layer_activation("relu") %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
@@ -955,6 +956,7 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
           
         # Layer 1
         layer_dense(units = 32, input_shape = ncol(train_x)) %>%
+          layer_batch_normalization() %>%
           layer_activation("relu") %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
@@ -977,6 +979,7 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
         
         # Layer 1
         layer_dense(units = 32, input_shape = ncol(train_x)) %>%
+          layer_batch_normalization() %>%
           layer_activation("relu") %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
@@ -1004,6 +1007,7 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
         
         # Layer 1
         layer_dense(units = 32, input_shape = ncol(train_x)) %>%
+          layer_batch_normalization() %>%
           layer_activation("relu") %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
@@ -1046,7 +1050,7 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
     # In general, larger batch sizes result in faster progress in training, but don't always converge as fast. Smaller batch sizes train slower, but can converge faster.
     # Default batch size is 32
     neural_network %>% fit(as.matrix(train_x), as.matrix(train_y), 
-                           batch_size = batch_size, epochs = 500, verbose = 0, 
+                           batch_size = batch_size, epochs = 500, verbose = 1, 
                            validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
                            callbacks = list(early_stop, print_dot_callback))
     
