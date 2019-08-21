@@ -128,14 +128,15 @@ datashare <- foreach(i = (1:length(unique(datashare$stock))), .combine = rbind) 
     filter(stock == unique(datashare$stock)[i]) %>%
     full_join(time_df, by = "time") %>%
     arrange(time) %>%
-    mutate(RET_M = (PRC - lag(PRC))/lag(PRC)) %>%
-    drop_na(RET_M)
+    mutate(rt = (PRC - lag(PRC))/lag(PRC)) %>%
+    drop_na(rt)
   datashare_stock
 }
 
 # Reorder (again)
 datashare <- datashare %>%
-  select(time, stock, PRC, RET_M, everything()) %>%
+  select(time, stock, rt, everything()) %>%
+  select(-PRC) %>%
   mutate(time = as.yearqtr(time))
 
 # Check Missing data stats
@@ -235,9 +236,47 @@ length(unique(datashare_imputed$stock))
 
 ncol(datashare_filtered)
 
-## With that... FINISHED CLEANING DATASHARE
-## We still have ~70 or so factors left, not too bad
+## We still have ~60 or so factors left, not too bad
 # Final imputed dataset is ~100mb in size, quite manageable
+
+## Function to cross sectionally normalize characteristics
+# Lots of different approaches, we'll stick with the rank transformation of only the individual charcteristics for each cross section and leave the macro economic factors untouched
+# This is consistent with what we did in the simulation exercise
+cross_section_normalize <- function(dataset) {
+  time_periods <- unique(dataset$time)
+  
+  normalize_cross_section_df <- foreach(t = 1:length(time_periods), .combine = "rbind") %dopar% {
+    dataset_cross_section <- dataset %>%
+      filter(time == time_periods[t])
+    
+    dataset_cross_section_y <- dataset_cross_section %>%
+      select(time, stock, rt)
+    
+    dataset_cross_section_x <- dataset_cross_section %>%
+      select(-time, -stock, -rt)
+    
+    dataset_cross_section_x_norm <- data.frame(
+      data = (2/(nrow(dataset_cross_section_x)*ncol(dataset_cross_section_x) + 1)) * 
+        matrix(rank(data.frame(dataset_cross_section_x)),
+               ncol = ncol(dataset_cross_section_x),
+               nrow = nrow(dataset_cross_section_x)
+               ) -
+        matrix(data = 1, 
+               ncol = ncol(dataset_cross_section_x), 
+               nrow = nrow(dataset_cross_section_x)
+               )
+      )
+    
+    colnames(dataset_cross_section_x_norm) <- colnames(dataset_cross_section_x)
+    
+    cbind(dataset_cross_section_y, dataset_cross_section_x_norm)
+  }
+  normalize_cross_section_df
+}
+
+# This function is working
+# Some immediate problems: columns which were on a very large scale (such a company value mvel1) are still very large (ranging from 0.96 - 1 in value)
+datashare_normalized <- cross_section_normalize(datashare_imputed)
 
 ```
 
@@ -302,7 +341,7 @@ macro_predictors <- PredictorData2017 %>%
 # This EXCLUDES macro factors by themselves
 
 macro_factor_names <- colnames(select(macro_predictors, -time))
-individual_factor_names <- colnames(select(datashare_imputed, -stock, -time, -RET_M, -PRC))
+individual_factor_names <- colnames(select(datashare_imputed, -stock, -time, -rt, -PRC))
 
 interaction_terms <- rep(list(0), length(macro_factor_names))
 
@@ -319,14 +358,14 @@ dmy <- dummyVars(f, data = combined)
 # This is pretty damn large at ~1.5GB. Interaction terms are brutal
 final_dataset_x <- (predict(dmy, combined))
 
-# Strap on the stock, time and RET_M columns to this
+# Strap on the stock, time and rt columns to this
 
-final_dataset <- data.frame(combined$stock, combined$time, combined$RET_M, final_dataset_x) %>%
+final_dataset <- data.frame(combined$stock, combined$time, combined$rt, final_dataset_x) %>%
   # Rename some columns
   mutate(stock = combined.stock) %>%
   mutate(time = combined.time) %>%
-  mutate(rt = combined.RET_M) %>%
-  select(-combined.stock, -combined.time, -combined.RET_M) %>%
+  mutate(rt = combined.rt) %>%
+  select(-combined.stock, -combined.time, -combined.rt) %>%
   select(time, stock, rt, everything())
 
 rm(final_dataset_x)
@@ -406,7 +445,7 @@ fit_all_models_real_data <- function(pooled_panel,
   )
     
   # Load pooled_panel
-  real_data_results_list$returns <- pooled_panel$RET_M
+  real_data_results_list$returns <- pooled_panel$rt
     
   realdata_timeSlices <- realdata_custom_timeslices(start = 1993, initialWindow = 15, horizon = 1, validation_size = 3, test_size = 3, set_no = 3)
     
