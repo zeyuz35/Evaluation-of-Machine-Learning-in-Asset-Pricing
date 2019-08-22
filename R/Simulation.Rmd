@@ -1318,7 +1318,7 @@ P_c <- 100
 Time <- 180
 
 #Number of realizations
-simN <- 4
+simN <- 4 
 
 # A matrices
 # These are just kept here for now, not actually used because they don't seem to have much difference
@@ -1347,6 +1347,9 @@ A3 <- matrix(c(
 #Gu et al's original specfications, recreated
 # Special Note: the twoway specification is very very memory intensive during the actual generation process
 # This means that R will be calling gc() alot, contributing to very slow computational speeds
+# twoway specification is too computationally intensive when you move to actually fitting models to them. Even OLS takes hours for a single sample set. 
+# Mostly implemented as a proof of concept to show that OLS can indeed pick out interactive covariates (though incorrectly still picking out correlated ones) in this simple simulation specification
+# Gu et al's specifications have ~25% annualized volatility, different from the 30% they said in the paper, 
 
 gu_et_al_g1 <- sim_panel_data(simN, 
                               char_rho_a = 0.9, char_rho_b = 1,
@@ -1378,14 +1381,14 @@ rm(gu_et_al_g2)
 # Note that due to the time period being only 180, the true annualized volatility may be slightly lower than this, as observed with simulating SV error processes
 # The SV component was also changed NOT to include the Beta_v term from the earlier simpler design just for simplicity
 
-# A design with NO error component seems to have ~7% annualized volatility already
+# A design with NO error component seems to have ~7% annualized volatility already (not that will throw ignorable errors when trying to calculate the tuning statistics)
 
 #G1
 g1_A1_panel <- sim_panel_data(simN, 
                               char_rho_a = 0.5, char_rho_b = 1,
                               cross_corr = 1, A1, xt_multi = 1, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1), 
                               error_sv = 1, error_ep_sd = 1, 
-                              error_omega = -1.5, error_gamma = 0.95, error_w = 0.2, error_v_sd = 0.05,
+                              error_omega = -1.8, error_gamma = 0.95, error_w = 0.2, error_v_sd = 0.05,
                               predictor_format = "kronecker")
 summary(sim_tune_statistics(g1_A1_panel))
 saveRDS(g1_A1_panel, file = "g1_A1.rds")
@@ -1397,7 +1400,7 @@ g2_A1_panel <- sim_panel_data(simN,
                               char_rho_a = 0.5, char_rho_b = 1,
                               cross_corr = 1, A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.015, 0.015, 0.015), nrow = 1),
                               error_sv = 1, error_ep_sd = 1, 
-                              error_omega = -0.9, error_gamma = 0.95, error_w = 0.2, error_v_sd = 0.05,
+                              error_omega = -1.8, error_gamma = 0.95, error_w = 0.2, error_v_sd = 0.05,
                               predictor_format = "kronecker")
 summary(sim_tune_statistics(g2_A1_panel))
 saveRDS(g2_A1_panel, file = "g2_A1.rds")

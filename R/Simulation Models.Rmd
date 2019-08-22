@@ -21,6 +21,7 @@ library(quantreg)
 library(randomForestSRC)
 library(hqreg)
 library(caret)
+library(speedglm)
 
 #Parallel Computing
 library(foreach)
@@ -78,6 +79,8 @@ panel_formula <- function(panel){
 
 pooled_panel <- g1_A1_panel[[1]]$panel
 
+f <- panel_formula(pooled_panel)
+
 pooled_panel <- gu_et_al_g1[[1]]$panel
 ```
 
@@ -101,7 +104,7 @@ LM_variable_importance <- function(test, lm_model) {
   test_x <- test[4:ncol(test)]
   
   # Specify .packages = "quantreg" here as it seems it isn't supported and therefore is missed by doFuture
-  variable_importance_df <- foreach(i = (1:ncol(test_x)), .combine = "rbind", .packages = "quantreg") %dopar% {
+  variable_importance_df <- foreach(i = (1:ncol(test_x)), .combine = "rbind", .packages = c("speedglm", "quantreg")) %dopar% {
     test_x_zero <- test_x
     test_x_zero[, i] <- 0
     
@@ -209,6 +212,96 @@ NNet_variable_importance <- function(test, nnet_model) {
 }
 ```
 
+```{r cross_sectional_average_residuals}
+## Function to calculate cross sectional average residuals, used for Diebold Mariano Tests later
+## Don't really believe in this, mostly done because its popular in literature
+# Similarly, different functions are needed for each type of model object as they all have slightly different predict methods
+
+## Linear Model
+# Given a an lm object and a test dataset, return the cross sectional average forecast errors
+
+lm_ave_forecast_resids <- function(lm_model, test) {
+  
+  time_periods <- unique(test$time)
+  
+  # Set .combine to "c" to return a vector of results, which is what we want
+  ave_forecast_resids_vector <- foreach(t = 1:length(time_periods), .combine = "c") %do% {
+    
+    test_cross_section <- test %>%
+      filter(time == time_periods[t])
+    
+    residuals <- test_cross_section$rt - predict(lm_model, newdata = test_cross_section)
+    
+    mean(residuals)
+  }
+  ave_forecast_resids_vector
+}
+
+## Elastic Net
+
+eln_ave_forecast_resids <- function(eln_model, test, alpha, lambda) {
+  
+  time_periods <- unique(test$time)
+  
+  # Set .combine to "c" to return a vector of results, which is what we want
+  ave_forecast_resids_vector <- foreach(t = 1:length(time_periods), .combine = "c") %do% {
+    
+    test_cross_section <- test %>%
+      filter(time == time_periods[t])
+
+    test_cross_section_x <- as.matrix(test_cross_section[4:ncol(test_cross_section)])
+    
+    residuals <- test_cross_section$rt - predict(eln_model, test_cross_section_x,
+                                                 alpha = alpha, lambda = lambda)
+    
+    mean(residuals)
+  }
+  ave_forecast_resids_vector
+}
+
+## Random Forest
+
+rf_ave_forecast_resids <- function(rf_model, test) {
+  
+  time_periods <- unique(test$time)
+  
+  # Set .combine to "c" to return a vector of results, which is what we want
+  ave_forecast_resids_vector <- foreach(t = 1:length(time_periods), .combine = "c") %do% {
+    
+    test_cross_section <- test %>%
+      filter(time == time_periods[t])
+    
+    test_cross_section_x <- as.matrix(test_cross_section[4:ncol(test_cross_section)])
+    
+    residuals <- test_cross_section$rt - predict(rf_model, newdata = test_cross_section)
+    
+    mean(residuals)
+  }
+  ave_forecast_resids_vector
+}
+
+## Neural Networks
+
+nnet_ave_forecast_resids <- function(nnet_model, test) {
+  
+  time_periods <- unique(test$time)
+  
+  # Set .combine to "c" to return a vector of results, which is what we want
+  ave_forecast_resids_vector <- foreach(t = 1:length(time_periods), .combine = "c") %do% {
+    
+    test_cross_section <- test %>%
+      filter(time == time_periods[t])
+    
+    residuals <- test_cross_section$rt - (nnet_model %>% predict(as.matrix(test_cross_section_x)))
+    
+    mean(residuals)
+  }
+  ave_forecast_resids_vector
+}
+
+```
+
+
 ```{r pooled_ols}
 #Linear model wrt MSE
 
@@ -221,7 +314,6 @@ LM_fit <- function(pooled_panel, timeSlices, loss_function, f) {
                                                     validation_MAE = 0, validation_MSE = 0, validation_RMSE = 0, validation_RSquare = 0, 
                                                     test_MAE = 0, test_MSE = 0, test_RMSE = 0, test_RSquare = 0),
                             #Other useful things
-                            forecasts = 0,
                             forecast_resids = 0,
                             model = 0,
                             #Variable Importance
@@ -241,7 +333,7 @@ LM_fit <- function(pooled_panel, timeSlices, loss_function, f) {
     # Doen for memory efficiency
     #MSE case
     if (loss_function == "mse") {
-      lm <- lm(f, data = train, model = FALSE, y = FALSE)
+      lm <- speedlm(f, data = train, model = FALSE, fitted = FALSE, y = FALSE)
     } else {
       # Use pfn as method here for much faster computation
       lm <- rq(f, data = train, tau = 0.5, method = "pfn")
@@ -272,11 +364,9 @@ LM_fit <- function(pooled_panel, timeSlices, loss_function, f) {
     LM_stats[[set]]$loss_stats$test_MSE <- mse(test$rt, test_predict)
     LM_stats[[set]]$loss_stats$test_RMSE <- rmse(test$rt, test_predict)
     LM_stats[[set]]$loss_stats$test_RSquare <- R2(test_predict, test$rt, form = "traditional")
-        
-    #Forecasts
-    LM_stats[[set]]$forecasts <- test_predict
+
     #Forecast Residuals
-    LM_stats[[set]]$forecast_resids <- test$rt - test_predict
+    LM_stats[[set]]$forecast_resids <- lm_ave_forecast_resids(lm_model = lm, test = test)
     #Variable Importance
     LM_stats[[set]]$variable_importance <- LM_variable_importance(test, lm)
   }
@@ -286,9 +376,9 @@ LM_fit <- function(pooled_panel, timeSlices, loss_function, f) {
 
 ```{r, eval = FALSE}
 
-LM_stats_mse <- LM_fit(pooled_panel, timeSlices, "mse")
+LM_stats_mse <- LM_fit(pooled_panel, timeSlices, "mse", f)
 # 
-LM_stats_mae <- LM_fit(pooled_panel, timeSlices, "mae")
+LM_stats_mae <- LM_fit(pooled_panel, timeSlices, "mae", f)
 # 
 LM_stats_mse[[1]]$loss_stats
 LM_stats_mse[[2]]$loss_stats
@@ -578,7 +668,6 @@ ELN_fit_stats <- function(alpha_grid, nlamb, timeSlices, pooled_panel, loss_func
                                                      validation_MAE = 0, validation_MSE = 0, validation_RMSE = 0, validation_RSquare = 0, 
                                                      test_MAE = 0, test_MSE = 0, test_RMSE = 0, test_RSquare = 0),
                              #Other useful things
-                             forecasts = 0,
                              forecast_resids = 0,
                              model = 0,
                              hyperparameters = 0,
@@ -612,50 +701,53 @@ ELN_fit_stats <- function(alpha_grid, nlamb, timeSlices, pooled_panel, loss_func
     ELN_stats[[set]]$loss_stats$test_MSE <- mse(test_y, test_predict)
     ELN_stats[[set]]$loss_stats$test_RMSE <- rmse(test_y, test_predict)
     ELN_stats[[set]]$loss_stats$test_RSquare <- (1 - sse(test_y, test_predict) / sum((test_y - mean(test_y))^2))
-      
-    #Forecasts
-    ELN_stats[[set]]$forecasts <- predict(model, test_x, alpha = best_model_params$alpha, lambda = best_model_params$lambda)
     
     #Forecast residuals
-    ELN_stats[[set]]$forecast_resids <- test_y - predict(model, test_x, alpha = best_model_params$alpha, lambda = best_model_params$lambda)
+    ELN_stats[[set]]$forecast_resids <- eln_ave_forecast_resids(eln_model = model, test, 
+                                                                # Hyperparameters
+                                                                alpha = best_model_params$alpha, 
+                                                                lambda = best_model_params$lambda)
     
     #Variable Importance
     ELN_stats[[set]]$variable_importance <- ELN_variable_importance(test, model, alpha = best_model_params$alpha, lambda = best_model_params$lambda)
   }
   return(ELN_stats)
 }
+```
+
+```{r, eval = FALSE}
 
 #Testing if function works
 
-# ELN_stats_mae <- ELN_fit_stats(alpha_grid, nlamb = 100, timeSlices, pooled_panel, loss_function = "mae")
-# 
-# ELN_stats_mse <- ELN_fit_stats(alpha_grid, nlamb = 100, timeSlices, pooled_panel, loss_function = "mse")
-# 
-# ELN_stats_mse[[1]]$loss_stats
-# ELN_stats_mse[[1]]$model$alpha
-# 
-# ELN_stats_mse[[2]]$loss_stats
-# ELN_stats_mse[[2]]$model$alpha
-# 
-# ELN_stats_mse[[3]]$loss_stats
-# ELN_stats_mse[[3]]$model$alpha
-# 
-# ELN_stats_mse[[1]]$variable_importance %>% arrange(desc(importance))
-# ELN_stats_mse[[2]]$variable_importance %>% arrange(desc(importance))
-# ELN_stats_mse[[3]]$variable_importance %>% arrange(desc(importance))
-# 
-# ELN_stats_mae[[1]]$loss_stats
-# ELN_stats_mae[[1]]$model$alpha
-# 
-# ELN_stats_mae[[2]]$loss_stats
-# ELN_stats_mae[[2]]$model$alpha
-# 
-# ELN_stats_mae[[3]]$loss_stats
-# ELN_stats_mae[[3]]$model$alpha
-# 
-# ELN_stats_mae[[1]]$variable_importance %>% arrange(desc(importance))
-# ELN_stats_mae[[2]]$variable_importance %>% arrange(desc(importance))
-# ELN_stats_mae[[3]]$variable_importance %>% arrange(desc(importance))
+ELN_stats_mae <- ELN_fit_stats(alpha_grid, nlamb = 100, timeSlices, pooled_panel, loss_function = "mae")
+
+ELN_stats_mse <- ELN_fit_stats(alpha_grid, nlamb = 100, timeSlices, pooled_panel, loss_function = "mse")
+
+ELN_stats_mse[[1]]$loss_stats
+ELN_stats_mse[[1]]$model$alpha
+
+ELN_stats_mse[[2]]$loss_stats
+ELN_stats_mse[[2]]$model$alpha
+
+ELN_stats_mse[[3]]$loss_stats
+ELN_stats_mse[[3]]$model$alpha
+
+ELN_stats_mse[[1]]$variable_importance %>% arrange(desc(importance))
+ELN_stats_mse[[2]]$variable_importance %>% arrange(desc(importance))
+ELN_stats_mse[[3]]$variable_importance %>% arrange(desc(importance))
+
+ELN_stats_mae[[1]]$loss_stats
+ELN_stats_mae[[1]]$model$alpha
+
+ELN_stats_mae[[2]]$loss_stats
+ELN_stats_mae[[2]]$model$alpha
+
+ELN_stats_mae[[3]]$loss_stats
+ELN_stats_mae[[3]]$model$alpha
+
+ELN_stats_mae[[1]]$variable_importance %>% arrange(desc(importance))
+ELN_stats_mae[[2]]$variable_importance %>% arrange(desc(importance))
+ELN_stats_mae[[3]]$variable_importance %>% arrange(desc(importance))
 
 # Notes
 # Mostly consistent results with the previous implementation, very minor differences in optimal alpha values chosen
@@ -761,7 +853,6 @@ RF_fit_stats <- function(pooled_panel, RF_grid, timeSlices, loss_function) {
                                                     validation_MAE = 0, validation_MSE = 0, validation_RMSE = 0, validation_RSquare = 0, 
                                                     test_MAE = 0, test_MSE = 0, test_RMSE = 0, test_RSquare = 0),
                             #Other useful things
-                            forecasts = 0,
                             forecast_resids = 0,
                             model = 0,
                             hyperparameters = 0,
@@ -809,31 +900,28 @@ RF_fit_stats <- function(pooled_panel, RF_grid, timeSlices, loss_function) {
     RF_stats[[set]]$model <- model
     
     #Train
-    train_predict <- predict(model, train, alpha = best_model_params$alpha, lambda = best_model_params$lambda)$predicted
+    train_predict <- predict(model, train)$predicted
     RF_stats[[set]]$loss_stats$train_MAE <- mae(train$rt, train_predict)
     RF_stats[[set]]$loss_stats$train_MSE <- mse(train$rt, train_predict)
     RF_stats[[set]]$loss_stats$train_RMSE <- rmse(train$rt, train_predict)
     RF_stats[[set]]$loss_stats$train_RSquare <- (1 - sse(train$rt, train_predict) / sum((train$rt - mean(train$rt))^2))
         
     #Validation
-    valid_predict <- predict(model, newdata = validation, alpha = best_model_params$alpha, lambda = best_model_params$lambda)$predicted
+    valid_predict <- predict(model, newdata = validation)$predicted
     RF_stats[[set]]$loss_stats$validation_MAE <- mae(validation$rt, valid_predict)
     RF_stats[[set]]$loss_stats$validation_MSE <- mse(validation$rt, valid_predict)
     RF_stats[[set]]$loss_stats$validation_RMSE <- rmse(validation$rt, valid_predict)
     RF_stats[[set]]$loss_stats$validation_RSquare <- (1 - sse(validation$rt, valid_predict) / sum((validation$rt - mean(validation$rt))^2))
     
     #Test
-    test_predict <- predict(model, newdata = test, alpha = best_model_params$alpha, lambda = best_model_params$lambda)$predicted
+    test_predict <- predict(model, newdata = test)$predicted
     RF_stats[[set]]$loss_stats$test_MAE <- mae(test$rt, test_predict)
     RF_stats[[set]]$loss_stats$test_MSE <- mse(test$rt, test_predict)
     RF_stats[[set]]$loss_stats$test_RMSE <- rmse(test$rt, test_predict)
     RF_stats[[set]]$loss_stats$test_RSquare <- (1 - sse(test$rt, test_predict) / sum((test$rt - mean(test$rt))^2))
-      
-    #Forecasts
-    RF_stats[[set]]$forecasts <- test_predict
     
     #Forecast residuals
-    RF_stats[[set]]$forecast_resids <- test$rt - test_predict
+    RF_stats[[set]]$forecast_resids <- rf_ave_forecast_resids(rf_model = model, test = test)
     
     #Variable Importance
     RF_stats[[set]]$variable_importance <- RF_variable_importance(test, model)
@@ -881,6 +969,7 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
                                                       validation_MAE = 0, validation_MSE = 0, validation_RMSE = 0, validation_RSquare = 0, 
                                                       test_MAE = 0, test_MSE = 0, test_RMSE = 0, test_RSquare = 0),
                               #Other useful things
+                              # Keep forecasts here in for nnet objects to make sure they aren't doing something stupid
                               forecasts = 0,
                               forecast_resids = 0,
                               model = 0,
@@ -1085,7 +1174,7 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
     NNet_stats[[set]]$forecasts <- test_predict
       
     #Forecast residuals
-    NNet_stats[[set]]$forecast_resids <- test$rt - test_predict
+    NNet_stats[[set]]$forecast_resids <- nnet_ave_forecast_resids(nnet_model = neural_network, test = test)
     
     #Variable Importance
     NNet_stats[[set]]$variable_importance <- NNet_variable_importance(test, neural_network)
