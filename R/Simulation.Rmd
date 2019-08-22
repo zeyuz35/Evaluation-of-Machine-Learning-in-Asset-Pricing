@@ -99,7 +99,7 @@ gen_W <- function(){
   #Generate Lambda Matrix first
   # Change the sd parameter here to control the degree of cross sectional correlation
   Lambda <- matrix(
-    data = rnorm(N*4, 0, 0.001),
+    data = rnorm(N*4, 0, 0.01),
     nrow = N, ncol = 4
   )
   
