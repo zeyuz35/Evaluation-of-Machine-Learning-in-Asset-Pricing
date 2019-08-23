@@ -278,7 +278,7 @@ plot_xt <- function(xt) {
 
 # Generate a multivariate xt
 
-xt <- gen_xt(A2)
+xt <- gen_xt(A1)
 
 plot_xt(xt)
 

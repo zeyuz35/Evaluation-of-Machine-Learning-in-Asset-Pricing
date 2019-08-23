@@ -162,53 +162,23 @@ variable_importance_df
 # Neural Network
 # Unfortunately it seems that the tensorflow/keras backend does not work with foreach, so a standard for loop is needed instead
 
-# Foreach implementation, commented out for reference
-# NNet_variable_importance <- function(test, nnet_model) {
-#   
-#   test_x <- test[4:ncol(test)]
-#   
-#   variable_importance_df <- foreach(i = (1:ncol(test_x)), .combine = "rbind", .packages = c("keras", "tensorflow")) %dopar% {
-#     test_x_zero <- test_x
-#     test_x_zero[, i] <- 0
-#     
-#     original_R2 <- R2(predict(nnet_model, as.matrix(test_x)), test$rt, form = "traditional")
-#     
-#     new_R2 <- R2(predict(nnet_model, as.matrix(test_x_zero)), test$rt, form = "traditional")
-#         
-#     variable_importance <- data.frame(variable = colnames(test_x)[i], importance = (original_R2 - new_R2))
-#     
-#     variable_importance
-#   }
-# variable_importance_df
-# }
-
 NNet_variable_importance <- function(test, nnet_model) {
-  test_x <- as.matrix(test[4:ncol(test)])
-  test_x_zero <- test_x
-  test_x_zero[, 1] <- 0
-    
-  original_R2 <- R2(predict(nnet_model, as.matrix(test_x)), test$rt, form = "traditional")
-    
-  new_R2 <- R2(predict(nnet_model, as.matrix(test_x_zero)), test$rt, form = "traditional")
-      
-  variable_importance <- data.frame(variable = colnames(test_x)[1], importance = (original_R2 - new_R2))
-    
-  for (i in 2:ncol(test_x)) {
+
+  test_x <- test[4:ncol(test)]
+
+  variable_importance_df <- foreach(i = (1:ncol(test_x)), .combine = "rbind", .packages = c("keras", "tensorflow", "reticulate")) %do% {
     test_x_zero <- test_x
     test_x_zero[, i] <- 0
-      
+
     original_R2 <- R2(predict(nnet_model, as.matrix(test_x)), test$rt, form = "traditional")
-    
+
     new_R2 <- R2(predict(nnet_model, as.matrix(test_x_zero)), test$rt, form = "traditional")
-      
-    variable_importance <- rbind(variable_importance, 
-                                 data.frame(variable = colnames(test_x)[i], 
-                                            importance = (original_R2 - new_R2)
-                                            )
-                                 )
-      
+
+    variable_importance <- data.frame(variable = colnames(test_x)[i], importance = (original_R2 - new_R2))
+
+    variable_importance
   }
-  return(variable_importance)
+variable_importance_df
 }
 ```
 
@@ -289,6 +259,8 @@ nnet_ave_forecast_resids <- function(nnet_model, test) {
     
     test_cross_section <- test %>%
       filter(time == time_periods[t])
+    
+    test_cross_section_x <- test_cross_section[4:ncol(test_cross_section)]
     
     residuals <- test_cross_section$rt - (nnet_model %>% predict(as.matrix(test_cross_section_x)))
     
@@ -1014,7 +986,7 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
       }
     ) 
     
-    l1_penalty <- 0.1
+    l1_penalty <- 0.01
     
     build_NN <- function(hidden_layers, loss_function) {
         
@@ -1196,13 +1168,15 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
 
 ```{r, eval = FALSE}
 
-NNet_1_mse_stats <- NNet_fit_stats(pooled_panel, timeSlices, 1, "mse", batch_size = 32, 10)
-NNet_1_mae_stats <- NNet_fit_stats(pooled_panel, timeSlices, 1, "mae", batch_size = 32, 10)
+NNet_1_mse_stats <- NNet_fit_stats(pooled_panel, timeSlices, 1, "mse", batch_size = 256, 5)
+NNet_1_mae_stats <- NNet_fit_stats(pooled_panel, timeSlices, 1, "mae", batch_size = 32, 5)
 
 # # 
 NNet_1_mse_stats[[1]]$loss_stats
 NNet_1_mse_stats[[2]]$loss_stats
 NNet_1_mse_stats[[3]]$loss_stats
+
+NNet_1_mse_stats[[1]]$forecasts
 
 NNet_1_mse_stats[[1]]$variable_importance %>% arrange(desc(importance))
 # 

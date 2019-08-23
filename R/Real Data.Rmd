@@ -276,7 +276,8 @@ cross_section_normalize <- function(dataset) {
 
 # This function is working
 # Some immediate problems: columns which were on a very large scale (such a company value mvel1) are still very large (ranging from 0.96 - 1 in value)
-datashare_normalized <- cross_section_normalize(datashare_imputed)
+datashare_normalized <- cross_section_normalize(datashare_imputed) %>%
+  mutate(time = as.yearqtr(time))
 
 ```
 
@@ -341,7 +342,7 @@ macro_predictors <- PredictorData2017 %>%
 # This EXCLUDES macro factors by themselves
 
 macro_factor_names <- colnames(select(macro_predictors, -time))
-individual_factor_names <- colnames(select(datashare_imputed, -stock, -time, -rt, -PRC))
+individual_factor_names <- colnames(select(datashare_normalized, -stock, -time, -rt))
 
 interaction_terms <- rep(list(0), length(macro_factor_names))
 
@@ -351,7 +352,7 @@ for (i in 1:length(macro_factor_names)) {
 
 f <- as.formula(c("~ ", paste(interaction_terms, collapse = "+")))
 
-combined <- full_join(macro_predictors, datashare, by = "time")
+combined <- full_join(macro_predictors, datashare_normalized, by = "time")
 
 dmy <- dummyVars(f, data = combined)
 
@@ -517,7 +518,17 @@ real_data_results <- fit_all_models_real_data(final_dataset,
 
 ```{r}
 # test
+
+f <- real_panel_formula(final_dataset)
 LM_stats_mse <- LM_fit(final_dataset, realdata_timeSlices, "mse", f)
-NNet_1_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 1, "mse", batch_size = 32, 10)
+
+NNet_1_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 1, "mse", batch_size = 64, 10)
+NNet_1_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 1, "mae", batch_size = 64, 10)
+
+NNet_2_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 1, "mse", batch_size = 64, 10)
+NNet_2_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 1, "mae", batch_size = 64, 10)
+
+NNet_3_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 1, "mse", batch_size = 64, 10)
+NNet_3_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 1, "mae", batch_size = 64, 10)
 ```
 
