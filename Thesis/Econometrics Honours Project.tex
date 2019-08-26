@@ -571,7 +571,7 @@ The simulation design results in $3 \times 3 = 12$ different simulated datasets,
 
 \subsubsection{Sample Splitting}
 
-$T = 180$ monthly periods corresponds to 15 years. The training sample was set to start from $T = 108$ or 9 years, a validation set 1 year in length. The last 3 years were reserved as a test set never to be used for validation or training. We employ the hybrid growing window approach as described earlier in section \ref{sample_split} (see Figure \ref{sample_split_diag} for a graphical representation).
+If viewed as monthly periods, $T = 180$ corresponds to 15 years. The training sample was set to start from $T = 108$ or 9 years, a validation set 3 years in length, and a test set 3 in length. We employ the hybrid growing window approach as described earlier in section \ref{sample_split} (see Figure \ref{sample_split_diag} for a graphical representation). The sample splitting scheme was chosen in a way which assisted with the stability of the advanced machine learning models, particularly neural networks. 
 
 Unlike \cite{gu_empirical_2018} who split their simulated dataset into training, validation and test sets of equal length, we choose a splitting scheme that is consistent with the splitting scheme to be used for the real world dataset.
 
@@ -612,6 +612,8 @@ Unlike \cite{gu_empirical_2018} who split their simulated dataset into training,
 	\label{sample_split_diag}
 \end{figure}
 
+Other popular schemes in the forecasting literature such as using an "inner" rolling window validation loop to find the best hyperparameters on average, finally aggregating them in an "outer" loop for a robust error were considered but not implemented for a variety of reasons. Firstly, many of the models are computationally too intensive for this to be feasible for this to be feasible. More importantly, during the model fitting process it was observed that the optimal hyperparameters for the different rolling windows were highly unstable. Thus, this would have made the selection of the best hyperparameters on average across all windows significantly less meaningful.
+
 \subsection{Model Evaluation}
 \label{model_evaluation}
 
@@ -648,15 +650,13 @@ Under the null hypothesis of the Diebold-Mariano test:
 
 where $d_t$ represents the difference series between the forecast errors of the two models $e_1t - e_2t$, $\hat{\gamma}_k$ represents the sample $k$th autocovariance for $d_t$, and $S_1$ represents the original unmodified Diebold Mariano test statistic.
 
-As all models in this paper will be producing forecasts for an entire cross section of stocks, $e_1t$ and $e_2t$ will instead represent the average forecast errors for each model.
+As all models in this paper will be producing forecasts for an entire cross section of stocks, $e_1t$ and $e_2t$ will instead represent the cross sectional average forecast errors for each model.
 
 \subsection{Variable Importance}
 
-The importance of each predictor $j$ is denoted as $VI_j$, and is defined as the reduction in predictive R-Squared from setting all values of predictor $j$ to 0, while holding the remaining model estimates fixed. This will allow us to see which variables each model determines to be important. 
+The importance of each predictor $j$ is denoted as $VI_j$, and is defined as the reduction in predictive R-Squared from setting all values of predictor $j$ to 0, while holding the remaining model estimates fixed. These were then normalized to sum to 1 within each model as a way to assess the relative importance of each predictor for each model. As $VI_j$ can sometimes be negative, this was achieved by shifting all $VI_j$ positively by the magnitude of the smallest $VI_j$, then dividing all $VI_j$ by the total. This mechanism was chosen because the other popular mechanism "softmax" was observed to be unable to preserve the distances between each original $VI_j$ well enough, thus squishing together all importance metrics.
 
 \section{Study}
-
-
 
 \subsection{Model}
 
@@ -709,9 +709,11 @@ Moving to even more non linear DGPs (g3), the limitations of linear and penalize
 
 Once cross sectional correlation across factors is introduced into the DGP however, all models perform significantly worse. 
 
-\section{Empirical Data}
+\section{Empirical Data \& Cleaning Procedure}
 
-We mimic the data procedure of \cite{gu_empirical_2018}. This means that we obtain the dataset provided by Gu on his website. This dataset contains 94 stock level characteristics: 61 updated annually, 13 updated quarterly and 20 updated monthly. In addition, 74 industry dummies corresponding the the first two digits of the Standard Industrial Classification (SIC) codes are included. 
+We mimic the data procedure of \cite{gu_empirical_2018}. This means that we obtain the dataset provided by Gu on his website. This dataset contains 94 stock level characteristics: 61 updated annually, 13 updated quarterly and 20 updated monthly. In addition, 74 industry dummies corresponding the the first two digits of the Standard Industrial Classification (SIC) codes are included. It is noted that this dataset contains all securities traded, including those with a CRSP share code other than 10 or 11 and thus includes instruments such as REITs and mutual funds, and those with a share price of less than \$5.
+
+We detail our cleaning procedure of this dataset. To reduce the size and maintain computational feasibility, only shares traded on the NASDAQ exchange was included (filtered out using the PRIMEXCH variable). To reduce the 
 
 We then follow \cite{gu_empirical_2018} and construct eight macroeconomic factors following the variable definitions in \cite{welch_comprehensive_2008}: dividend-price ratio (dp), earnings-price ratio (ep), book-to-market ratio (bm), net equity expansion (ntis), Treasury-bill rate (tbl), term spread (tms), default spread (dfy) and stock variance (svar).
 
