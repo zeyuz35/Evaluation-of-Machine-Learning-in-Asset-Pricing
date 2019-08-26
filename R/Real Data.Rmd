@@ -424,8 +424,104 @@ real_panel_formula <- function(panel){
   return(f)
 }
 
+##################################################################
+## Function to conduct variable importance for real data
+# This is slightly different from the functions used in the simulated context, as we do not care about the importance of ALL interaction terms
+# Use the same function names as the simulated ones for simplicity, MAKE SURE YOU RUN THIS BEFORE FITTING EMPIRICAL DATA
+
+# General plan:
+# Supply a combined_dataset TEST set with no interaction terms, a formula from care tto be able to generate those interaction terms, and a previously estimated model object
+# For each column, excluding macro_constant, set it to zero
+# Put it through predict(f) to get the interaction terms
+# Calculate out of sample r squared and hence variable importance
+
+################################################
+# Linear Model
+LM_variable_importance <- function(test, lm_model) {
+  test_x <- test[4:ncol(test)]
+  
+  # Specify .packages = "quantreg" here as it seems it isn't supported and therefore is missed by doFuture
+  variable_importance_df <- foreach(i = (1:ncol(test_x)), .combine = "rbind", .packages = c("speedglm", "quantreg")) %dopar% {
+    test_x_zero <- test_x
+    test_x_zero[, i] <- 0
+    
+    original_R2 <- R2(predict(lm_model, newdata = test_x), test$rt, form = "traditional")
+    
+    new_R2 <- R2(predict(lm_model, newdata = test_x_zero), test$rt, form = "traditional")
+    
+    variable_importance <- data.frame(variable = colnames(test_x)[i], importance = (original_R2 - new_R2))
+    
+    variable_importance
+  }
+  variable_importance_df
+}
+
+# Penalized Linear Model
+
+ELN_variable_importance <- function(test, eln_model, alpha, lambda) {
+  test_x <- as.matrix(test[4:ncol(test)])
+  
+  variable_importance_df <- foreach(i = (1:ncol(test_x)), .combine = "rbind") %dopar% {
+    test_x_zero <- test_x
+    test_x_zero[, i] <- 0
+    
+    original_R2 <- R2(predict(eln_model, test_x, alpha = alpha, lambda = lambda), test$rt, form = "traditional")
+    
+    new_R2 <- R2(predict(eln_model, test_x_zero, alpha = alpha, lambda = lambda), test$rt, form = "traditional")
+    
+    variable_importance <- data.frame(variable = colnames(test_x)[i], importance = (original_R2 - new_R2))
+    
+    variable_importance
+  }
+  variable_importance_df
+}
+
+# Random Forest
+
+RF_variable_importance <- function(test, rf_model) {
+  test_x <- test[4:ncol(test)]
+  
+  variable_importance_df <- foreach(i = (1:ncol(test_x)), .combine = "rbind", .packages = "randomForestSRC") %dopar% {
+    test_x_zero <- test_x
+    test_x_zero[, i] <- 0
+    
+    original_R2 <- R2(predict(rf_model, newdata = test_x)$predicted, test$rt, form = "traditional")
+    
+    new_R2 <- R2(predict(rf_model, newdata = test_x_zero)$predicted, test$rt, form = "traditional")
+    
+    variable_importance <- data.frame(variable = colnames(test_x)[i], importance = (original_R2 - new_R2))
+                                      
+    variable_importance
+  }
+variable_importance_df
+}
+
+# Neural Network
+# Unfortunately it seems that the tensorflow/keras backend does not work with foreach, so a standard for loop is needed instead
+
+NNet_variable_importance <- function(test, nnet_model) {
+
+  test_x <- test[4:ncol(test)]
+
+  variable_importance_df <- foreach(i = (1:ncol(test_x)), .combine = "rbind", .packages = c("keras", "tensorflow", "reticulate")) %do% {
+    test_x_zero <- test_x
+    test_x_zero[, i] <- 0
+
+    original_R2 <- R2(predict(nnet_model, as.matrix(test_x)), test$rt, form = "traditional")
+
+    new_R2 <- R2(predict(nnet_model, as.matrix(test_x_zero)), test$rt, form = "traditional")
+
+    variable_importance <- data.frame(variable = colnames(test_x)[i], importance = (original_R2 - new_R2))
+
+    variable_importance
+  }
+variable_importance_df
+}
+
+################################################################
 ## Function to fit all models for real data
 ## Slightly different from simulation model fitting function
+################################################################
 fit_all_models_real_data <- function(pooled_panel,
                            # Logical arguments specifying which models you want to fit
                            # This is useful if you don't want to fit some of the most intensive methods such as RF and Neural Networks
@@ -514,9 +610,7 @@ fit_all_models_real_data <- function(pooled_panel,
 ```
 
 ```{r}
-# Real Data variable Importance
-# Slightly different to simulation variable importance
-# Instead, set each column of the original model frame to 0, then create the interaction matrix
+
 ```
 
 
