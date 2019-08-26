@@ -271,10 +271,7 @@ nnet_ave_forecast_resids <- function(nnet_model, test) {
 
 ```
 
-
 ```{r pooled_ols}
-#Linear model wrt MSE
-
 LM_fit <- function(pooled_panel, timeSlices, loss_function, f) {
   #Initialize Loss Function Statistics
   LM_stats <- rep(list(0), 3)
