@@ -438,6 +438,7 @@ real_panel_formula <- function(panel){
 # Use grepl & partial matching to match which columns contain which factor columns contain which factor
 # Much more straightforward than generating a new panel containing a new set of interaction terms
 # Slight problem, some of the column names can "overlap" E.g. bm and bm_ia
+# Column names were changed is data prep step to get around this
 
 ################################################
 # Linear Model
@@ -448,11 +449,11 @@ LM_variable_importance <- function(test, lm_model,
   test_x <- test[4:ncol(test)]
   
   # Specify .packages = "quantreg" here as it seems it isn't supported and therefore is missed by doFuture
-  variable_importance_df <- foreach(i = (1:length(all_factor_names)), .combine = "rbind", .packages = c("speedglm", "quantreg")) %dopar% {
+  variable_importance_df <- foreach(i = (1:(length(all_factor_names))), .combine = "rbind", .packages = c("speedglm", "quantreg")) %dopar% {
     test_x_zero <- test_x
     
-    zero_indices <- which(str_detect(colnames(final_dataset), all_factor_names[i]) == 1)
-    test_x_zero[, zero_indices] <- 0
+    zero_indices <- which(str_detect(colnames(test_x_zero), all_factor_names[i]) == 1)
+    test_x_zero[, c(zero_indices)] <- 0
     
     original_R2 <- R2(predict(lm_model, newdata = test_x), test$rt, form = "traditional")
     
@@ -472,10 +473,10 @@ ELN_variable_importance <- function(test, eln_model, alpha, lambda,
   all_factor_names <- c(macro_factor_names, individual_factor_names)[-1]
   test_x <- as.matrix(test[4:ncol(test)])
   
-  variable_importance_df <- foreach(i = (1:length(test_x)), .combine = "rbind") %dopar% {
+  variable_importance_df <- foreach(i = (1:(length(all_factor_names))), .combine = "rbind") %dopar% {
     test_x_zero <- test_x
     
-    zero_indices <- which(str_detect(colnames(final_dataset), all_factor_names[i]) == 1)
+    zero_indices <- which(str_detect(colnames(test_x_zero), all_factor_names[i]) == 1)
     test_x_zero[, zero_indices] <- 0
     
     original_R2 <- R2(predict(eln_model, test_x, alpha = alpha, lambda = lambda), test$rt, form = "traditional")
@@ -496,10 +497,10 @@ RF_variable_importance <- function(test, rf_model,
   all_factor_names <- c(macro_factor_names, individual_factor_names)[-1]
   test_x <- test[4:ncol(test)]
   
-  variable_importance_df <- foreach(i = (1:length(test_x)), .combine = "rbind", .packages = "randomForestSRC") %dopar% {
+  variable_importance_df <- foreach(i = (1:(length(all_factor_names))), .combine = "rbind", .packages = "randomForestSRC") %dopar% {
     test_x_zero <- test_x
     
-    zero_indices <- which(str_detect(colnames(final_dataset), all_factor_names[i]) == 1)
+    zero_indices <- which(str_detect(colnames(test_x_zero), all_factor_names[i]) == 1)
     test_x_zero[, zero_indices] <- 0
     
     original_R2 <- R2(predict(rf_model, newdata = test_x)$predicted, test$rt, form = "traditional")
@@ -521,10 +522,10 @@ NNet_variable_importance <- function(test, nnet_model,
   all_factor_names <- c(macro_factor_names, individual_factor_names)[-1]
   test_x <- test[4:ncol(test)]
 
-  variable_importance_df <- foreach(i = (1:length(test_x)), .combine = "rbind", .packages = c("keras", "tensorflow", "reticulate")) %do% {
+  variable_importance_df <- foreach(i = (1:(length(all_factor_names))), .combine = "rbind", .packages = c("keras", "tensorflow", "reticulate")) %do% {
     test_x_zero <- test_x
     
-    zero_indices <- which(str_detect(colnames(final_dataset), all_factor_names[i]) == 1)
+    zero_indices <- which(str_detect(colnames(test_x_zero), all_factor_names[i]) == 1)
     test_x_zero[, zero_indices] <- 0
 
     original_R2 <- R2(predict(nnet_model, as.matrix(test_x)), test$rt, form = "traditional")
@@ -1286,6 +1287,8 @@ fit_all_models_real_data <- function(pooled_panel, macro_factor_names, individua
 ```{r}
 # Test on fitting actual data
 # Lots of memory issues, need to change fit functions so that they are more memory efficient
+
+# Line which changes doFuture max memory limits (1.5GB currently)
 options(future.globals.maxSize = 1.5e+9)
 real_data_results <- fit_all_models_real_data(final_dataset,
                                               LM = 1, ELN = 0, RF = 0, NNet = 0)
@@ -1312,7 +1315,8 @@ LM_stats_mse[[3]]$variable_importance %>%
 
 ######################################################################################################################
 
-ELN_stats_mse <- ELN_fit_stats(alpha_grid = seq(0, 1, 0.01), 100, realdata_timeSlices, final_dataset, "mse")
+ELN_stats_mse <- ELN_fit_stats(alpha_grid = seq(0, 1, 0.01), 100, realdata_timeSlices, final_dataset, "mse",
+                               macro_factor_names, individual_factor_names)
 
 ELN_stats_mse[[1]]$loss_stats
 ELN_stats_mse[[1]]$hyperparameters
