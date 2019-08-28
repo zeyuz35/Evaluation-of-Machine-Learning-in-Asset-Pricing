@@ -418,7 +418,7 @@ realdata_custom_timeslices <- function(start, initialWindow, horizon, validation
 }
 
 # These are the settings working with a dataset going from 1993 - 2016
-realdata_timeSlices <- realdata_custom_timeslices(start = 1993, initialWindow = 15, horizon = 1, validation_size = 3, test_size = 3, set_no = 3)
+realdata_timeSlices <- realdata_custom_timeslices(start = 1993.5, initialWindow = 16, horizon = 1, validation_size = 3, test_size = 1, set_no = 3)
 
 # Formula
 
@@ -473,7 +473,8 @@ ELN_variable_importance <- function(test, eln_model, alpha, lambda,
   all_factor_names <- c(macro_factor_names, individual_factor_names)[-1]
   test_x <- as.matrix(test[4:ncol(test)])
   
-  variable_importance_df <- foreach(i = (1:(length(all_factor_names))), .combine = "rbind") %dopar% {
+  variable_importance_df <- foreach(i = (1:(length(all_factor_names))), .combine = "rbind",
+                                    .packages = "hqreg") %dopar% {
     test_x_zero <- test_x
     
     zero_indices <- which(str_detect(colnames(test_x_zero), all_factor_names[i]) == 1)
@@ -522,7 +523,8 @@ NNet_variable_importance <- function(test, nnet_model,
   all_factor_names <- c(macro_factor_names, individual_factor_names)[-1]
   test_x <- test[4:ncol(test)]
 
-  variable_importance_df <- foreach(i = (1:(length(all_factor_names))), .combine = "rbind", .packages = c("keras", "tensorflow", "reticulate")) %do% {
+  variable_importance_df <- foreach(i = (1:(length(all_factor_names))), .combine = "rbind", 
+                                    .packages = c("keras", "tensorflow", "reticulate")) %do% {
     test_x_zero <- test_x
     
     zero_indices <- which(str_detect(colnames(test_x_zero), all_factor_names[i]) == 1)
@@ -544,7 +546,8 @@ variable_importance_df
 # Mostly the same as the simulation ones, but slightly different due to different variable importance schemes
 
 ##############################################################################################################
-LM_fit <- function(pooled_panel, timeSlices, loss_function, f, macro_factor_names, individual_factor_names) {
+LM_fit <- function(pooled_panel, timeSlices, loss_function, f, 
+                   macro_factor_names, individual_factor_names) {
   #Initialize Loss Function Statistics
   LM_stats <- rep(list(0), 3)
   
@@ -613,80 +616,6 @@ LM_fit <- function(pooled_panel, timeSlices, loss_function, f, macro_factor_name
   return(LM_stats)
 }
 ###################################################################################################################
-
-ELN_model_grid <- function(alpha_grid, train_x, train_y, validation_x, validation_y, loss_function, nlamb) {
-  #Initialize List
-  ELN_model_grid <- rep(list(0), length(alpha_grid))
-  
-  for (i in 1:(length(alpha_grid))) {
-    
-    ELN_model_grid[[i]] <- list(ELN_grid = 0, model = 0)
-    
-    #MSE Case
-    if (loss_function == "mse") {
-      ELN <- hqreg(train_x, train_y, method = "ls", alpha = alpha_grid[i], nlambda = nlamb)
-      ELN_model_grid[[i]]$model <- ELN
-    
-      ELN_model_grid[[i]]$ELN_grid <- cbind(alpha = alpha_grid[i], lambda = ELN$lambda,
-                                            train_loss = apply(predict(ELN, train_x), 2, mse, actual = train_y), 
-                                            validation_loss = apply(predict(ELN, validation_x), 2, mse, actual = validation_y))
-    } else {
-      #MAE Case
-      ELN <- hqreg(train_x, train_y, method = "quantile", tau = 0.5, alpha = alpha_grid[i], nlambda = nlamb)
-      ELN_model_grid[[i]]$model <- ELN
-    
-      ELN_model_grid[[i]]$ELN_grid <- cbind(alpha = alpha_grid[i], lambda = ELN$lambda,
-                                            train_loss = apply(predict(ELN, train_x), 2, mse, actual = train_y), 
-                                            validation_loss = apply(predict(ELN, validation_x), 2, mae, actual = validation_y))
-    }
-  }
-  return(ELN_model_grid)
-  
-}
-
-# Foreach implementation of above function
-# This is much much faster
-
-ELN_model_grid <- function(alpha_grid, train_x, train_y, validation_x, validation_y, loss_function, nlamb) {
-  
-  ELN_model_grid_list <- foreach(i = (1:length(alpha_grid))) %dopar% {
-    ELN_model_grid <- list(ELN_grid = 0, model = 0)
-    
-    #MSE Case
-    if (loss_function == "mse") {
-      ELN <- hqreg(train_x, train_y, method = "ls", alpha = alpha_grid[i], nlambda = nlamb)
-      ELN_model_grid$model <- ELN
-    
-      ELN_model_grid$ELN_grid <- cbind(alpha = alpha_grid[i], lambda = ELN$lambda,
-                                       train_loss = apply(predict(ELN, train_x), 2, mse, actual = train_y), 
-                                       validation_loss = apply(predict(ELN, validation_x), 2, mse, actual = validation_y))
-    } else {
-      #MAE Case
-      ELN <- hqreg(train_x, train_y, method = "quantile", tau = 0.5, alpha = alpha_grid[i], nlambda = nlamb)
-      ELN_model_grid$model <- ELN
-    
-      ELN_model_grid$ELN_grid <- cbind(alpha = alpha_grid[i], lambda = ELN$lambda,
-                                       train_loss = apply(predict(ELN, train_x), 2, mse, actual = train_y), 
-                                       validation_loss = apply(predict(ELN, validation_x), 2, mae, actual = validation_y))
-    }
-    ELN_model_grid
-  }
-  ELN_model_grid_list
-}
-
-# Given a list containing the model grid, return the "best" model according to validation loss
-# Use in conjunction with previous function
-
-get_ELN_best_tune <- function(model_grid) {
-  ELN_tune_dataframe <- cbind(model_grid[[1]]$ELN_grid, list_index = 1)
-  for (i in 2:length(model_grid)) {
-    ELN_tune_dataframe <- rbind(ELN_tune_dataframe, cbind(model_grid[[i]]$ELN_grid, list_index = i))
-  }
-  ELN_tune_dataframe <- data.frame(ELN_tune_dataframe)
-  return(ELN_tune_dataframe[which.min(ELN_tune_dataframe$validation_loss), ])
-}
-
-# Final big wrapper function that gives an ELN_stats list with everything desired
 
 ELN_fit_stats <- function(alpha_grid, nlamb, timeSlices, pooled_panel, loss_function,
                           macro_factor_names, individual_factor_names) {
@@ -760,72 +689,14 @@ ELN_fit_stats <- function(alpha_grid, nlamb, timeSlices, pooled_panel, loss_func
                                                                 lambda = best_model_params$lambda)
     
     #Variable Importance
-    ELN_stats[[set]]$variable_importance <- ELN_variable_importance(test, model, alpha = best_model_params$alpha, lambda = best_model_params$lambda,
+    ELN_stats[[set]]$variable_importance <- ELN_variable_importance(test, model, 
+                                                                    alpha = best_model_params$alpha, lambda = best_model_params$lambda,
                                                                     macro_factor_names, individual_factor_names)
   }
   return(ELN_stats)
 }
 
 ################################################################################################################################
-
-RF_fit_model_grid <- function(f, train, validation, RF_grid, loss_function) {
-  #Initialize List
-  RF_model_grid <- rep(list(0), nrow(RF_grid))
-  
-  for (i in 1:nrow(RF_grid)) {
-    
-    RF_model_grid[[i]] <- list(RF_grid = 0, model = 0)
-    
-    #MSE Case
-    if (loss_function == "mse") {
-      RF <- rfsrc(f, train, 
-                  #Hyperparameters
-                  ntree = RF_grid$ntree[i],
-                  mtry = RF_grid$mtry[i],
-                  nodesize = RF_grid$nodesize[i],
-                  splitrule = "mse"
-                  )
-      
-      #RF_model_grid[[i]]$model <- RF
-      RF_model_grid[[i]]$RF_grid <- cbind(RF_grid[i, ],
-                                          #Train Loss
-                                          train_loss = mse(train$rt, predict(RF)$predicted),
-                                          #Validation Loss
-                                          validation_loss = mse(validation$rt, predict(RF, newdata = validation)$predicted)
-                                          )
-      
-    } else {
-      #MAE Case
-      RF <- rfsrc(f, train, 
-                  #Hyperparameters
-                  ntree = RF_grid$ntree[i],
-                  mtry = RF_grid$mtry[i],
-                  nodesize = RF_grid$nodesize[i],
-                  splitrule = "quantile.regr",
-                  prob = 0.5
-                  )
-      
-      #RF_model_grid[[i]]$model <- RF
-      RF_model_grid[[i]]$RF_grid <- cbind(RF_grid[i, ],
-                                          #Train Loss
-                                          train_loss = mae(train$rt, predict(RF)$predicted),
-                                          #Validation Loss
-                                          validation_loss = mae(validation$rt, predict(RF, newdata = validation)$predicted)
-                                          )
-    }
-  }
-  return(RF_model_grid)
-}
-
-#Returns the dataframe row containing the "best" hyperparameters
-
-get_RF_best_tune <- function(RF_model_grid) {
-  RF_tune_grid <- RF_model_grid[[1]]$RF_grid
-  for (i in 2:length(RF_model_grid)) {
-    RF_tune_grid <- rbind(RF_tune_grid, RF_model_grid[[i]]$RF_grid)
-  }
-  return(RF_tune_grid[which.min(RF_tune_grid$validation_loss), ])
-}
 
 RF_fit_stats <- function(pooled_panel, RF_grid, timeSlices, loss_function,
                          macro_factor_names, individual_factor_names) {
@@ -1280,11 +1151,6 @@ fit_all_models_real_data <- function(pooled_panel, macro_factor_names, individua
 ```
 
 ```{r}
-
-```
-
-
-```{r}
 # Test on fitting actual data
 # Lots of memory issues, need to change fit functions so that they are more memory efficient
 
@@ -1315,7 +1181,8 @@ LM_stats_mse[[3]]$variable_importance %>%
 
 ######################################################################################################################
 
-ELN_stats_mse <- ELN_fit_stats(alpha_grid = seq(0, 1, 0.01), 100, realdata_timeSlices, final_dataset, "mse",
+ELN_stats_mse <- ELN_fit_stats(alpha_grid = seq(0, 1, 0.01), nlamb = 100, 
+                               realdata_timeSlices, final_dataset, "mse",
                                macro_factor_names, individual_factor_names)
 
 ELN_stats_mse[[1]]$loss_stats
