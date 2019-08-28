@@ -24,21 +24,21 @@
 \contentsline {subsubsection}{\numberline {2.9.3}Simulating Macroeconomic Series}{12}{subsubsection.2.9.3}
 \contentsline {subsubsection}{\numberline {2.9.4}Simulating Return Series}{12}{subsubsection.2.9.4}
 \contentsline {subsubsection}{\numberline {2.9.5}Sample Splitting}{13}{subsubsection.2.9.5}
-\contentsline {subsection}{\numberline {2.10}Model Evaluation}{13}{subsection.2.10}
-\contentsline {subsubsection}{\numberline {2.10.1}R Squared}{13}{subsubsection.2.10.1}
-\contentsline {subsubsection}{\numberline {2.10.2}Diebold-Mariano Test}{13}{subsubsection.2.10.2}
+\contentsline {subsection}{\numberline {2.10}Model Evaluation}{14}{subsection.2.10}
+\contentsline {subsubsection}{\numberline {2.10.1}R Squared}{14}{subsubsection.2.10.1}
+\contentsline {subsubsection}{\numberline {2.10.2}Diebold-Mariano Test}{14}{subsubsection.2.10.2}
 \contentsline {subsection}{\numberline {2.11}Variable Importance}{14}{subsection.2.11}
-\contentsline {section}{\numberline {3}Study}{14}{section.3}
-\contentsline {subsection}{\numberline {3.1}Model}{14}{subsection.3.1}
-\contentsline {section}{\numberline {4}Simulation Results}{14}{section.4}
-\contentsline {section}{\numberline {5}Empirical Data}{15}{section.5}
-\contentsline {section}{\numberline {6}Empirical Data Results}{15}{section.6}
-\contentsline {section}{\numberline {7}Appendix}{15}{section.7}
-\contentsline {subsection}{\numberline {7.1}Data}{15}{subsection.7.1}
-\contentsline {subsection}{\numberline {7.2}Algorithms}{17}{subsection.7.2}
-\contentsline {subsubsection}{\numberline {7.2.1}Linear Models}{17}{subsubsection.7.2.1}
-\contentsline {subsubsection}{\numberline {7.2.2}Penalized Linear}{17}{subsubsection.7.2.2}
-\contentsline {subsubsection}{\numberline {7.2.3}Classification and Regression Trees}{18}{subsubsection.7.2.3}
-\contentsline {subsubsection}{\numberline {7.2.4}Random Forest}{19}{subsubsection.7.2.4}
-\contentsline {subsubsection}{\numberline {7.2.5}Neural Networks}{19}{subsubsection.7.2.5}
-\contentsline {subsubsection}{\numberline {7.2.6}Tuning of Simulated Datasets}{20}{subsubsection.7.2.6}
+\contentsline {section}{\numberline {3}Study}{15}{section.3}
+\contentsline {subsection}{\numberline {3.1}Model}{15}{subsection.3.1}
+\contentsline {section}{\numberline {4}Simulation Results}{15}{section.4}
+\contentsline {section}{\numberline {5}Empirical Data \& Cleaning Procedure}{16}{section.5}
+\contentsline {section}{\numberline {6}Empirical Data Results}{17}{section.6}
+\contentsline {section}{\numberline {7}Appendix}{17}{section.7}
+\contentsline {subsection}{\numberline {7.1}Data}{17}{subsection.7.1}
+\contentsline {subsection}{\numberline {7.2}Algorithms}{22}{subsection.7.2}
+\contentsline {subsubsection}{\numberline {7.2.1}Linear Models}{22}{subsubsection.7.2.1}
+\contentsline {subsubsection}{\numberline {7.2.2}Penalized Linear}{22}{subsubsection.7.2.2}
+\contentsline {subsubsection}{\numberline {7.2.3}Classification and Regression Trees}{23}{subsubsection.7.2.3}
+\contentsline {subsubsection}{\numberline {7.2.4}Random Forest}{24}{subsubsection.7.2.4}
+\contentsline {subsubsection}{\numberline {7.2.5}Neural Networks}{24}{subsubsection.7.2.5}
+\contentsline {subsubsection}{\numberline {7.2.6}Tuning of Simulated Datasets}{25}{subsubsection.7.2.6}
