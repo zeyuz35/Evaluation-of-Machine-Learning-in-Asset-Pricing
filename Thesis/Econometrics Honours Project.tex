@@ -703,9 +703,11 @@ There exists a significant amount of missing data in the dataset. The dataset's 
 
 The dataset was not normalized for all methods, as only penalized regression and neural networks are affected by normalization. For these two methods, the dataset was normalized such that each predictor had 0 mean and 1 variance.
 
+The final dataset spanned from 1993 Q3 to 2016 Q6 with ~20,000 
+
 \subsection{Empirical Data Model Fitting}
 
-We detail our model fitting procedure used specifically for the empirical. 
+We detail our model fitting procedure used specifically for the empirical dataset.
 
 We try to mimic the procedure used in the simulation study as much as possible. This means that the dataset was was split such that the training and validation sets were split such that the training set was 1.5 times the length of the validation set, in order to predict a test set that is one year in length.
 
@@ -951,7 +953,7 @@ quantreg used for fitting wrt MAE. (minimizing 0.5 quantile loss is equivalent t
 
 \subsubsection{Penalized Linear}
 
-package hqreg used for
+The package \textit{hqreg} was used to fit penalized regression models with respect to MSE and MAE.
 
 \subsubsection{Classification and Regression Trees}
 

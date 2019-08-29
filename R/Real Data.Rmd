@@ -229,7 +229,13 @@ impute_cross_section <- function(dataset, impute_type) {
   imputed_cross_section_df
 }
 
-datashare_imputed <- impute_cross_section(datashare_filtered, impute_type = "median")
+datashare_imputed <- impute_cross_section(datashare_filtered, impute_type = "median") %>%
+  mutate(time = as.yearqtr(time)) %>%
+  # Rename some factors
+  mutate(beta1 = beta) %>%
+  select(-beta) %>%
+  # Make the names clearer
+  rename_at(vars(-time, -stock, -rt), function(x) paste0("ind_", x))
 
 # Summary Statistics
 summary(datashare_imputed)
@@ -278,13 +284,8 @@ cross_section_normalize <- function(dataset) {
 
 # This function is working
 # Some immediate problems: columns which were on a very large scale (such a company value mvel1) are still very large (ranging from 0.96 - 1 in value)
-datashare_normalized <- cross_section_normalize(datashare_imputed) %>%
-  mutate(time = as.yearqtr(time)) %>%
-  # Rename some factors
-  mutate(beta1 = beta) %>%
-  select(-beta) %>%
-  # Make the names clearer
-  rename_at(vars(-time, -stock, -rt), function(x) paste0("ind_", x))
+# datashare_normalized <- cross_section_normalize(datashare_imputed) %>%
+#   mutate(time = as.yearqtr(time))
 
 ```
 
@@ -349,7 +350,10 @@ macro_predictors <- PredictorData2017 %>%
 # This EXCLUDES macro factors by themselves
 
 macro_factor_names <- colnames(dplyr::select(macro_predictors, -time, -macro_Rfree))
-individual_factor_names <- colnames(dplyr::select(datashare_normalized, -stock, -time, -rt))
+individual_factor_names <- colnames(dplyr::select(datashare_imputed, -stock, -time, -rt))
+```
+
+```{r}
 
 interaction_terms <- rep(list(0), length(macro_factor_names))
 
@@ -359,7 +363,7 @@ for (i in 1:length(macro_factor_names)) {
 
 interaction_formula <- as.formula(c("~ ", paste(interaction_terms, collapse = "+")))
 
-datashare_combined <- full_join(macro_predictors, datashare_normalized, by = "time") %>%
+datashare_combined <- full_join(macro_predictors, datashare_imputed, by = "time") %>%
   # Create Excess Returns
   mutate(rt = rt - macro_Rfree) %>%
   select(-macro_Rfree) %>%
@@ -380,7 +384,9 @@ final_dataset <- data.frame(stock = datashare_combined$stock,
                             final_dataset_x)
 
 rm(final_dataset_x)
+```
 
+```{r}
 # Double Check
 colnames(final_dataset)
 ncol(final_dataset) - 3
@@ -417,9 +423,6 @@ realdata_custom_timeslices <- function(start, initialWindow, horizon, validation
   time_slices
 }
 
-# These are the settings working with a dataset going from 1993 - 2016
-realdata_timeSlices <- realdata_custom_timeslices(start = 1993.5, initialWindow = 16, horizon = 1, validation_size = 3, test_size = 1, set_no = 3)
-
 # Formula
 
 real_panel_formula <- function(panel){
@@ -429,6 +432,14 @@ real_panel_formula <- function(panel){
   return(f)
 }
 
+# These are the settings working with a dataset going from 1993 - 2016
+# Results in a traing:validation size ratio of 1.5
+realdata_timeSlices <- realdata_custom_timeslices(
+  start = 1993.5, initialWindow = 11, horizon = 1, validation_size = 8, test_size = 1, set_no = 3
+  )
+```
+
+```{r variable_importance}
 ##################################################################
 ## Function to conduct variable importance for real data
 # This is slightly different from the functions used in the simulated context, as we do not care about the importance of ALL interaction terms
@@ -498,7 +509,7 @@ RF_variable_importance <- function(test, rf_model,
   all_factor_names <- c(macro_factor_names, individual_factor_names)[-1]
   test_x <- test[4:ncol(test)]
   
-  variable_importance_df <- foreach(i = (1:(length(all_factor_names))), .combine = "rbind", .packages = "randomForestSRC") %dopar% {
+  variable_importance_df <- foreach(i = (1:(length(all_factor_names))), .combine = "rbind", .packages = "randomForestSRC") %do% {
     test_x_zero <- test_x
     
     zero_indices <- which(str_detect(colnames(test_x_zero), all_factor_names[i]) == 1)
@@ -575,13 +586,13 @@ LM_fit <- function(pooled_panel, timeSlices, loss_function, f,
     # Doen for memory efficiency
     #MSE case
     if (loss_function == "mse") {
-      lm <- speedlm(f, data = train, model = FALSE, fitted = FALSE, y = FALSE)
+      lm <- lm(f, data = train, model = FALSE, x = FALSE, y = FALSE)
     } else {
       # Use pfn as method here for much faster computation
       lm <- rq(f, data = train, tau = 0.5, method = "pfn")
     }
     
-    LM_stats[[set]]$model <- lm
+    #LM_stats[[set]]$model <- lm
     
     #No Tuning Needed
     
@@ -698,12 +709,10 @@ ELN_fit_stats <- function(alpha_grid, nlamb, timeSlices, pooled_panel, loss_func
 
 ################################################################################################################################
 
-RF_fit_stats <- function(pooled_panel, RF_grid, timeSlices, loss_function,
+RF_fit_stats <- function(pooled_panel, RF_grid, timeSlices, loss_function, f,
                          macro_factor_names, individual_factor_names) {
   #Initialize
   RF_stats <- rep(list(0), 3)
-  
-  f <- panel_formula(pooled_panel)
   
   #Load training, validation and test sets
   
@@ -757,7 +766,7 @@ RF_fit_stats <- function(pooled_panel, RF_grid, timeSlices, loss_function,
                      )
     }
     
-    RF_stats[[set]]$model <- model
+    #RF_stats[[set]]$model <- model
     
     #Train
     train_predict <- predict(model, train)$predicted
@@ -1150,17 +1159,17 @@ fit_all_models_real_data <- function(pooled_panel, macro_factor_names, individua
 }
 ```
 
-```{r}
+```{r, eval = FALSE}
 # Test on fitting actual data
 # Lots of memory issues, need to change fit functions so that they are more memory efficient
 
 # Line which changes doFuture max memory limits (1.5GB currently)
-options(future.globals.maxSize = 1.5e+9)
+options(future.globals.maxSize = 2.0e+9)
 real_data_results <- fit_all_models_real_data(final_dataset,
                                               LM = 1, ELN = 0, RF = 0, NNet = 0)
 ```
 
-```{r}
+```{r, eval = FALSE}
 # test
 
 f <- real_panel_formula(final_dataset)
@@ -1199,11 +1208,48 @@ ELN_stats_mse[[3]]$loss_stats
 ELN_stats_mse[[3]]$hyperparameters
 ELN_stats_mse[[3]]$variable_importance %>%
   arrange(desc(importance))
+##############################################
+ELN_stats_mae <- ELN_fit_stats(alpha_grid = seq(0, 1, 0.01), nlamb = 100, 
+                               realdata_timeSlices, final_dataset, "mae",
+                               macro_factor_names, individual_factor_names)
+
+ELN_stats_mae[[1]]$loss_stats
+ELN_stats_mae[[1]]$hyperparameters
+ELN_stats_mae[[1]]$variable_importance %>%
+  arrange(desc(importance))
+
+ELN_stats_mae[[2]]$loss_stats
+ELN_stats_mae[[2]]$hyperparameters
+ELN_stats_mae[[2]]$variable_importance %>%
+  arrange(desc(importance))
+
+ELN_stats_mae[[3]]$loss_stats
+ELN_stats_mae[[3]]$hyperparameters
+ELN_stats_mae[[3]]$variable_importance %>%
+  arrange(desc(importance))
 
 ######################################################################################################################
 
-RF_mse_stats <- RF_fit_stats(final_dataset, realdata_timeSlices, "mse",
+# Random Forests
+RF_grid <- expand.grid(
+  #ntree usually isn't tuned. Just set to max of computationally feasible
+  ntree = 100,
+  mtry = seq(20, round(ncol(final_dataset[4:ncol(final_dataset)])/4), 20)
+  # nodesize = seq(2, 14, 2)
+  # nodedepth recommended not to be changed
+  #nodedepth = 1
+  )
+
+RF_mse_stats <- RF_fit_stats(final_dataset, RF_grid, realdata_timeSlices, "mse", f,
                              macro_factor_names, individual_factor_names)
+
+RF_mae_stats <- RF_fit_stats(final_dataset, RF_grid, realdata_timeSlices, "mae", f,
+                             macro_factor_names, individual_factor_names)
+
+RF_mse_stats[[1]]$loss_stats
+RF_mse_stats[[1]]$hyperparameters
+RF_mse_stats[[1]]$variable_importance %>%
+  arrange(desc(importance))
 
 ######################################################################################################################
 
