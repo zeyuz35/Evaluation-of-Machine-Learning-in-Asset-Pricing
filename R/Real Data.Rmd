@@ -553,6 +553,93 @@ variable_importance_df
 }
 ```
 
+```{r}
+# Forecasting Variable Importance Metrics
+
+## Linear Model
+# Given a an lm object and a test dataset, return the cross sectional average forecast errors
+
+lm_ave_forecast_resids <- function(lm_model, test) {
+  
+  time_periods <- unique(test$time)
+  
+  # Set .combine to "c" to return a vector of results, which is what we want
+  ave_forecast_resids_vector <- foreach(t = 1:length(time_periods), .combine = "c", .packages = c("speedglm", "quantreg")) %do% {
+    
+    test_cross_section <- test %>%
+      filter(time == time_periods[t])
+    
+    residuals <- test_cross_section$rt - predict(lm_model, newdata = test_cross_section)
+    
+    mean(residuals)
+  }
+  ave_forecast_resids_vector
+}
+
+## Elastic Net
+
+eln_ave_forecast_resids <- function(eln_model, test, alpha, lambda) {
+  
+  time_periods <- unique(test$time)
+  
+  # Set .combine to "c" to return a vector of results, which is what we want
+  ave_forecast_resids_vector <- foreach(t = 1:length(time_periods), .combine = "c") %do% {
+    
+    test_cross_section <- test %>%
+      filter(time == time_periods[t])
+
+    test_cross_section_x <- as.matrix(test_cross_section[4:ncol(test_cross_section)])
+    
+    residuals <- test_cross_section$rt - predict(eln_model, test_cross_section_x,
+                                                 alpha = alpha, lambda = lambda)
+    
+    mean(residuals)
+  }
+  ave_forecast_resids_vector
+}
+
+## Random Forest
+
+rf_ave_forecast_resids <- function(rf_model, test) {
+  
+  time_periods <- unique(test$time)
+  
+  # Set .combine to "c" to return a vector of results, which is what we want
+  ave_forecast_resids_vector <- foreach(t = 1:length(time_periods), .combine = "c") %do% {
+    
+    test_cross_section <- test %>%
+      filter(time == time_periods[t])
+    
+    residuals <- test_cross_section$rt - predict(rf_model, newdata = test_cross_section)$predicted
+    
+    mean(residuals)
+  }
+  ave_forecast_resids_vector
+}
+
+## Neural Networks
+
+nnet_ave_forecast_resids <- function(nnet_model, test) {
+  
+  time_periods <- unique(test$time)
+  
+  # Set .combine to "c" to return a vector of results, which is what we want
+  ave_forecast_resids_vector <- foreach(t = 1:length(time_periods), .combine = "c") %do% {
+    
+    test_cross_section <- test %>%
+      filter(time == time_periods[t])
+    
+    test_cross_section_x <- test_cross_section[4:ncol(test_cross_section)]
+    
+    residuals <- test_cross_section$rt - (nnet_model %>% predict(as.matrix(test_cross_section_x)))
+    
+    mean(residuals)
+  }
+  ave_forecast_resids_vector
+}
+```
+
+
 ```{r fit_functions}
 # Mostly the same as the simulation ones, but slightly different due to different variable importance schemes
 
@@ -1194,6 +1281,10 @@ ELN_stats_mse <- ELN_fit_stats(alpha_grid = seq(0, 1, 0.01), nlamb = 100,
                                realdata_timeSlices, final_dataset, "mse",
                                macro_factor_names, individual_factor_names)
 
+ELN_stats_mae <- ELN_fit_stats(alpha_grid = seq(0, 1, 0.01), nlamb = 100, 
+                               realdata_timeSlices, final_dataset, "mae",
+                               macro_factor_names, individual_factor_names)
+
 ELN_stats_mse[[1]]$loss_stats
 ELN_stats_mse[[1]]$hyperparameters
 ELN_stats_mse[[1]]$variable_importance %>%
@@ -1208,10 +1299,6 @@ ELN_stats_mse[[3]]$loss_stats
 ELN_stats_mse[[3]]$hyperparameters
 ELN_stats_mse[[3]]$variable_importance %>%
   arrange(desc(importance))
-##############################################
-ELN_stats_mae <- ELN_fit_stats(alpha_grid = seq(0, 1, 0.01), nlamb = 100, 
-                               realdata_timeSlices, final_dataset, "mae",
-                               macro_factor_names, individual_factor_names)
 
 ELN_stats_mae[[1]]$loss_stats
 ELN_stats_mae[[1]]$hyperparameters
@@ -1233,7 +1320,7 @@ ELN_stats_mae[[3]]$variable_importance %>%
 # Random Forests
 RF_grid <- expand.grid(
   #ntree usually isn't tuned. Just set to max of computationally feasible
-  ntree = 100,
+  ntree = 50,
   mtry = seq(20, round(ncol(final_dataset[4:ncol(final_dataset)])/4), 20)
   # nodesize = seq(2, 14, 2)
   # nodedepth recommended not to be changed
@@ -1249,6 +1336,11 @@ RF_mae_stats <- RF_fit_stats(final_dataset, RF_grid, realdata_timeSlices, "mae",
 RF_mse_stats[[1]]$loss_stats
 RF_mse_stats[[1]]$hyperparameters
 RF_mse_stats[[1]]$variable_importance %>%
+  arrange(desc(importance))
+
+RF_mae_stats[[1]]$loss_stats
+RF_mae_stats[[1]]$hyperparameters
+RF_mae_stats[[1]]$variable_importance %>%
   arrange(desc(importance))
 
 ######################################################################################################################
