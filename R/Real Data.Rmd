@@ -1263,6 +1263,9 @@ f <- real_panel_formula(final_dataset)
 LM_stats_mse <- LM_fit(final_dataset, realdata_timeSlices, "mse", f,
                        macro_factor_names, individual_factor_names)
 
+LM_stats_mae <- LM_fit(final_dataset, realdata_timeSlices, "mse", f,
+                       macro_factor_names, individual_factor_names)
+
 LM_stats_mse[[1]]$loss_stats
 LM_stats_mse[[1]]$variable_importance %>%
   arrange(desc(importance))
@@ -1342,6 +1345,12 @@ RF_mae_stats[[1]]$loss_stats
 RF_mae_stats[[1]]$hyperparameters
 RF_mae_stats[[1]]$variable_importance %>%
   arrange(desc(importance))
+
+# Save Results
+
+saveRDS(RF_mse_stats, file = "RF_mse_stats_1.5_train_valid.rds")
+
+saveRDS(RF_mae_stats, file = "RF_mae_stats_1.5_train_valid.rds")
 
 ######################################################################################################################
 
