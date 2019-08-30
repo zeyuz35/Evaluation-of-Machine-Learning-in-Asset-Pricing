@@ -1251,7 +1251,7 @@ fit_all_models_real_data <- function(pooled_panel, macro_factor_names, individua
 # Lots of memory issues, need to change fit functions so that they are more memory efficient
 
 # Line which changes doFuture max memory limits (1.5GB currently)
-options(future.globals.maxSize = 2.0e+9)
+options(future.globals.maxSize = 1.5e+9)
 real_data_results <- fit_all_models_real_data(final_dataset,
                                               LM = 1, ELN = 0, RF = 0, NNet = 0)
 ```
