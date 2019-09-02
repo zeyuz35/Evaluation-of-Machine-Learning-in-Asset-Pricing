@@ -930,7 +930,10 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
     # Fit the model
     # The patience parameter is the amount of epochs to check for improvement.
     # Gu et al don't say what their early stopping parameter p is
-    early_stop <- callback_early_stopping(monitor = "val_loss", patience = patience, restore_best_weights = FALSE)
+    early_stop <- callback_early_stopping(monitor = "val_loss", patience = patience, restore_best_weights = TRUE)
+    lr_reduce <- callback_reduce_lr_on_plateau(monitor = "val_loss", factor = 0.1,
+                                               patience = 5, verbose = 0, mode = c("auto", "min", "max"),
+                                               min_delta = 1e-04, cooldown = 0, min_lr = 0)
     
     print_dot_callback <- callback_lambda(
       on_epoch_end = function(epoch, logs) {
@@ -968,7 +971,6 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
           layer_activation_leaky_relu() %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
-          layer_dropout(rate = 0.5) %>%
         # Layer 2
         layer_dense(units = 16,
                     bias_initializer = initializer_zeros(),
@@ -976,7 +978,6 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
           layer_activation_leaky_relu() %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
-          layer_dropout(rate = 0.5) %>%
         # Output Layer
         layer_dense(units = 1, activation = "linear")
           
@@ -1088,7 +1089,9 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
       }
       model %>% compile(
         loss = loss_function,
-        optimizer = optimizer_adam(lr = 0.001, beta_1 = 0.9, beta_2 = 0.999),
+        optimizer = optimizer_adam(lr = 0.0005, beta_1 = 0.9, beta_2 = 0.999,
+                                   epsilon = NULL, decay = 0, amsgrad = FALSE, clipnorm = NULL,
+                                   clipvalue = NULL),
         metrics = list("mae", "mse")
       )
       model
@@ -1103,7 +1106,7 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
     neural_network %>% fit(as.matrix(train_x), as.matrix(train_y), 
                            batch_size = batch_size, epochs = 500, verbose = 1, 
                            validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
-                           callbacks = list(early_stop, print_dot_callback))
+                           callbacks = list(early_stop, lr_reduce, print_dot_callback))
     
     #Model
     NNet_stats[[set]]$model <- neural_network
@@ -1346,29 +1349,29 @@ saveRDS(RF_mae_stats, file = "RF_mae_stats_1.5_train_valid.rds")
 
 ######################################################################################################################
 
-NNet_1_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 1, "mse", batch_size = 512, 50,
+NNet_1_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 1, "mse", batch_size = 128, 40,
                                    macro_factor_names, individual_factor_names)
-NNet_1_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 1, "mae", batch_size = 512, 50,
-                                   macro_factor_names, individual_factor_names)
-
-NNet_2_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 2, "mse", batch_size = 512, 50,
-                                   macro_factor_names, individual_factor_names)
-NNet_2_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 2, "mae", batch_size = 512, 50,
+NNet_1_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 1, "mae", batch_size = 128, 50,
                                    macro_factor_names, individual_factor_names)
 
-NNet_3_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 3, "mse", batch_size = 512, 50,
+NNet_2_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 2, "mse", batch_size = 128, 50,
                                    macro_factor_names, individual_factor_names)
-NNet_3_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 3, "mae", batch_size = 512, 50,
-                                   macro_factor_names, individual_factor_names)
-
-NNet_4_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 4, "mse", batch_size = 512, 50,
-                                   macro_factor_names, individual_factor_names)
-NNet_4_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 4, "mae", batch_size = 512, 50,
+NNet_2_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 2, "mae", batch_size = 128, 50,
                                    macro_factor_names, individual_factor_names)
 
-NNet_5_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 5, "mse", batch_size = 512, 50,
+NNet_3_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 3, "mse", batch_size = 128, 50,
                                    macro_factor_names, individual_factor_names)
-NNet_5_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 5, "mae", batch_size = 512, 50,
+NNet_3_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 3, "mae", batch_size = 128, 50,
+                                   macro_factor_names, individual_factor_names)
+
+NNet_4_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 4, "mse", batch_size = 128, 50,
+                                   macro_factor_names, individual_factor_names)
+NNet_4_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 4, "mae", batch_size = 128, 50,
+                                   macro_factor_names, individual_factor_names)
+
+NNet_5_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 5, "mse", batch_size = 128, 50,
+                                   macro_factor_names, individual_factor_names)
+NNet_5_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 5, "mae", batch_size = 128, 50,
                                    macro_factor_names, individual_factor_names)
 
 NNet_1_mse_stats[[1]]$loss_stats
