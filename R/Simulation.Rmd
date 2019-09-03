@@ -95,11 +95,11 @@ gen_C_bar <- function(rho_a, rho_b){
 ##Generate correlation matrix
 #######################################
 
-gen_W <- function(){
+gen_W <- function(lambda_degree){
   #Generate Lambda Matrix first
   # Change the sd parameter here to control the degree of cross sectional correlation
   Lambda <- matrix(
-    data = rnorm(N*4, 0, 0.01),
+    data = rnorm(N*4, 0, lambda_degree),
     nrow = N, ncol = 4
   )
   
@@ -122,8 +122,8 @@ gen_W <- function(){
 #This builds in the correlation from W into original C_bar
 #This already calls gen_W and does everything for you, but you need to specify a C_bar
 
-gen_C_hat <- function(C_bar){
-  W <- gen_W()
+gen_C_hat <- function(C_bar, cross_corr_degree){
+  W <- gen_W(cross_corr_degree)
   
   stock_dim <- paste0("stock_", c(1:N))
   c_dim <- paste0("c_", c(1:P_c))
@@ -173,7 +173,7 @@ C <- gen_C(C_bar)
 # cor(C[, , 1])
 
 # Cross Sectional Correlation
-C <- gen_C(C_hat)
+C <- gen_C(C_hat, 0.01)
 # We can similarly check this via the the following that there is a much larger degree correlation among factors
 # cor(C[, , 1])
 ```
@@ -1070,7 +1070,8 @@ bind_rt_predictor <- function(rt_panel, z_panel) {
 
 sim_panel_data <- function(sim_N, 
                            char_rho_a, char_rho_b,
-                           cross_corr, A_matrix, xt_multi, g_function, theta,
+                           cross_corr, cross_corr_degree, 
+                           A_matrix, xt_multi, g_function, theta,
                            #Error Parameters
                            error_sv, error_ep_sd, error_omega, error_gamma, error_w, error_v_sd,
                            predictor_format) {
@@ -1082,7 +1083,7 @@ sim_panel_data <- function(sim_N,
     sim <- list(panel = 0, statistics = 0)
     
     C_bar <- gen_C_bar(char_rho_a, char_rho_b)
-    C_hat <- gen_C_hat(C_bar)
+    C_hat <- gen_C_hat(C_bar, cross_corr_degree)
     
     if (cross_corr == 0) {
       C <- gen_C(C_bar)
@@ -1160,7 +1161,7 @@ sim_tune_statistics <- function(sim_panel_list) {
 # Deprecated, old way implementation using standard for loops
 # Was too slow, kept for reference
 
-sim_panel_data <- function(sim_N, cross_corr, A_matrix, xt_multi, g_function, theta,
+sim_panel_data <- function(sim_N, cross_corr, cross_corr_dergee, A_matrix, xt_multi, g_function, theta,
                            #Error Parameters
                            error_sv, error_ep_sd, error_omega, error_gamma, error_w, error_v_sd) {
   #Initialize
@@ -1171,7 +1172,7 @@ sim_panel_data <- function(sim_N, cross_corr, A_matrix, xt_multi, g_function, th
     sim_list[[sim]] <- list(panel = 0, statistics = 0)
     
     C_bar <- gen_C_bar()
-    C_hat <- gen_C_hat(C_bar)
+    C_hat <- gen_C_hat(C_bar, cross_corr_degree)
     
     if (cross_corr == 0) {
       C <- gen_C(C_bar)
@@ -1353,7 +1354,8 @@ A3 <- matrix(c(
 
 gu_et_al_g1 <- sim_panel_data(simN, 
                               char_rho_a = 0.9, char_rho_b = 1,
-                              cross_corr = 0, A1, xt_multi = 0, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1),
+                              cross_corr = 0, cross_corr_degree = 0, 
+                              A1, xt_multi = 0, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1),
                               error_sv = 0, error_ep_sd = 0.05, 
                               error_omega = -0.736, error_gamma = 0.9, error_w = 0.363, error_v_sd = 0.05,
                               predictor_format = "kronecker")
@@ -1363,14 +1365,17 @@ rm(gu_et_al_g1)
 
 gu_et_al_g2 <- sim_panel_data(simN, 
                               char_rho_a = 0.9, char_rho_b = 1,
-                              cross_corr = 0, A1, xt_multi = 0, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1),
+                              cross_corr = 0, cross_corr_degree = 0, 
+                              A1, xt_multi = 0, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1),
                               error_sv = 0, error_ep_sd = 0.05, 
                               error_omega = -0.736, error_gamma = 0.9, error_w = 0.363, error_v_sd = 0.05,
                               predictor_format = "kronecker")
 summary(sim_tune_statistics(gu_et_al_g2))
 saveRDS(gu_et_al_g1, file = "gu_et_al_g2.rds")
 rm(gu_et_al_g2)
+```
 
+```{r, eval = FALSE}
 ##################################
 #Our different specifications
 ##################################
@@ -1383,40 +1388,109 @@ rm(gu_et_al_g2)
 
 # A design with NO error component seems to have ~7% annualized volatility already (not that will throw ignorable errors when trying to calculate the tuning statistics)
 
+#Playing around simulation specifications
+
+set.seed(27935248)
+
+#Overall Dimensionality
+N <- 200
+P_c <- 100
+Time <- 180
+
+#Number of realizations
+simN <- 30
+
+# A matrices
+# These are just kept here for now, not actually used because they don't seem to have much difference
+
+A1 <- matrix(c(
+  0.95, 0, 0,
+  0, 0.95, 0,
+  0, 0, 0.95),
+  nrow = 3, ncol = 3
+)
+
+#####################################
+## 0.01 Cross Sectional Correlation
+
 #G1
-g1_A1_panel <- sim_panel_data(simN, 
+g1_A1_sv_0.01 <- sim_panel_data(simN, 
                               char_rho_a = 0.5, char_rho_b = 1,
-                              cross_corr = 1, A1, xt_multi = 1, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1), 
+                              cross_corr = 1, cross_corr_degree = 0.01, 
+                              A1, xt_multi = 1, g_function = "g1", theta = matrix(c(0.015, 0.015, 0.015), nrow = 1), 
                               error_sv = 1, error_ep_sd = 1, 
                               error_omega = -1.8, error_gamma = 0.95, error_w = 0.2, error_v_sd = 0.05,
                               predictor_format = "kronecker")
-summary(sim_tune_statistics(g1_A1_panel))
-saveRDS(g1_A1_panel, file = "g1_A1.rds")
-rm(g1_A1_panel)
+summary(sim_tune_statistics(g1_A1_sv_0.01))
+saveRDS(g1_A1_sv_0.01, file = "g1_A1_sv_0.01.rds")
+rm(g1_A1_sv_0.01)
 
 #G2
 
-g2_A1_panel <- sim_panel_data(simN, 
+g2_A1_sv_0.01 <- sim_panel_data(simN, 
                               char_rho_a = 0.5, char_rho_b = 1,
-                              cross_corr = 1, A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.015, 0.015, 0.015), nrow = 1),
+                              cross_corr = 1, cross_corr_degree = 0.01, 
+                              A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.015, 0.015, 0.015), nrow = 1),
                               error_sv = 1, error_ep_sd = 1, 
                               error_omega = -1.8, error_gamma = 0.95, error_w = 0.2, error_v_sd = 0.05,
                               predictor_format = "kronecker")
-summary(sim_tune_statistics(g2_A1_panel))
-saveRDS(g2_A1_panel, file = "g2_A1.rds")
-rm(g2_A1_panel)
+summary(sim_tune_statistics(g2_A1_sv_0.01))
+saveRDS(g2_A1_sv_0.01, file = "g2_A1_sv_0.01.rds")
+rm(g2_A1_sv_0.01)
 
 #G3
 
-g3_A1_panel <- sim_panel_data(simN, 
+g3_A1_sv_0.01 <- sim_panel_data(simN, 
                               char_rho_a = 0.5, char_rho_b = 1,
-                              cross_corr = 1, A1, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.02), nrow = 1), 
+                              cross_corr = 1, cross_corr_degree = 0.01,
+                              A1, xt_multi = 1, g_function = "g3", theta = matrix(c(0.03, 0.03, 0.03, 0.03), nrow = 1), 
                               error_sv = 1, error_ep_sd = 1, 
                               error_omega = -0.9, error_gamma = 0.95, error_w = 0.2, error_v_sd = 0.05,
                               predictor_format = "kronecker")
-summary(sim_tune_statistics(g3_A1_panel))
-saveRDS(g3_A1_panel, file = "g3_A1.rds")
-rm(g3_A1_panel)
+summary(sim_tune_statistics(g3_A1_sv_0.01))
+saveRDS(g3_A1_sv_0.01, file = "g3_A1_sv_0.01.rds")
+rm(g3_A1_sv_0.01)
+
+#############################
+## 0.1 Cross Sectional Correlation
+
+#G1
+g1_A1_sv_0.1 <- sim_panel_data(simN, 
+                              char_rho_a = 0.5, char_rho_b = 1,
+                              cross_corr = 1, cross_corr_degree = 0.1, 
+                              A1, xt_multi = 1, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1), 
+                              error_sv = 1, error_ep_sd = 1, 
+                              error_omega = -1.8, error_gamma = 0.95, error_w = 0.2, error_v_sd = 0.05,
+                              predictor_format = "kronecker")
+summary(sim_tune_statistics(g1_A1_sv_0.1))
+saveRDS(g1_A1_sv_0.1, file = "g1_A1_sv_0.1.rds")
+rm(g1_A1_sv_0.1)
+
+#G2
+
+g2_A1_sv_0.1 <- sim_panel_data(simN, 
+                              char_rho_a = 0.5, char_rho_b = 1,
+                              cross_corr = 1, cross_corr_degree = 0.1, 
+                              A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.015, 0.015, 0.015), nrow = 1),
+                              error_sv = 1, error_ep_sd = 1, 
+                              error_omega = -1.8, error_gamma = 0.95, error_w = 0.2, error_v_sd = 0.05,
+                              predictor_format = "kronecker")
+summary(sim_tune_statistics(g2_A1_sv_0.1))
+saveRDS(g2_A1_sv_0.1, file = "g2_A1_sv_0.1.rds")
+rm(g2_A1_sv_0.1)
+
+#G3
+
+g3_A1_sv_0.1 <- sim_panel_data(simN, 
+                              char_rho_a = 0.5, char_rho_b = 1,
+                              cross_corr = 1, cross_corr_degree = 0.1,
+                              A1, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.02), nrow = 1), 
+                              error_sv = 1, error_ep_sd = 1, 
+                              error_omega = -0.9, error_gamma = 0.95, error_w = 0.2, error_v_sd = 0.05,
+                              predictor_format = "kronecker")
+summary(sim_tune_statistics(g3_A1_sv_0.1))
+saveRDS(g3_A1_sv_0.1, file = "g3_A1_sv_0.1.rds")
+rm(g3_A1_sv_0.1)
 
 ```
 

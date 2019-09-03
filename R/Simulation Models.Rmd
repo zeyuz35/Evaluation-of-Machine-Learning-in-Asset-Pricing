@@ -144,7 +144,7 @@ ELN_variable_importance <- function(test, eln_model, alpha, lambda) {
 RF_variable_importance <- function(test, rf_model) {
   test_x <- test[4:ncol(test)]
   
-  variable_importance_df <- foreach(i = (1:ncol(test_x)), .combine = "rbind", .packages = "randomForestSRC") %dopar% {
+  variable_importance_df <- foreach(i = (1:ncol(test_x)), .combine = "rbind", .packages = "randomForestSRC") %do% {
     test_x_zero <- test_x
     test_x_zero[, i] <- 0
     
@@ -300,13 +300,13 @@ LM_fit <- function(pooled_panel, timeSlices, loss_function, f) {
     # Doen for memory efficiency
     #MSE case
     if (loss_function == "mse") {
-      lm <- speedlm(f, data = train, model = FALSE, fitted = FALSE, y = FALSE)
+      lm <- lm(f, data = train, model = FALSE, y = FALSE)
     } else {
       # Use pfn as method here for much faster computation
       lm <- rq(f, data = train, tau = 0.5, method = "pfn")
     }
     
-    LM_stats[[set]]$model <- lm
+    #LM_stats[[set]]$model <- lm
     
     #No Tuning Needed
     
@@ -487,7 +487,8 @@ ELN_fit_stats <- function(ELN_grid, nlambda, timeSlices, pooled_panel, loss_func
     } else {
       model <- hqreg(train_x, train_y, method = "quantile", tau = 0.5, alpha = best_model_params$alpha, nlambda = nlambda)
     }
-    ELN_stats[[set]]$model <- model
+    
+    #ELN_stats[[set]]$model <- model
       
     #Loss Stats Dataframe
     #Train
@@ -642,7 +643,8 @@ ELN_fit_stats <- function(alpha_grid, nlamb, timeSlices, pooled_panel, loss_func
       
     #Model
     model <- ELN_model_grid[[best_model_params$list_index]]$model
-    ELN_stats[[set]]$model <- model
+    
+    #ELN_stats[[set]]$model <- model
     
     #Hyperparameters
     ELN_stats[[set]]$hyperparameters <- best_model_params
@@ -806,11 +808,9 @@ get_RF_best_tune <- function(RF_model_grid) {
   return(RF_tune_grid[which.min(RF_tune_grid$validation_loss), ])
 }
 
-RF_fit_stats <- function(pooled_panel, RF_grid, timeSlices, loss_function) {
+RF_fit_stats <- function(pooled_panel, RF_grid, timeSlices, loss_function, f) {
   #Initialize
   RF_stats <- rep(list(0), 3)
-  
-  f <- panel_formula(pooled_panel)
   
   #Load training, validation and test sets
   
@@ -864,7 +864,7 @@ RF_fit_stats <- function(pooled_panel, RF_grid, timeSlices, loss_function) {
                      )
     }
     
-    RF_stats[[set]]$model <- model
+    #RF_stats[[set]]$model <- model
     
     #Train
     train_predict <- predict(model, train)$predicted

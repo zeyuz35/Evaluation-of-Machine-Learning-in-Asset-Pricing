@@ -17,30 +17,31 @@
 \BOOKMARK [3][-]{subsubsection.2.8.3}{Computation}{subsection.2.8}% 17
 \BOOKMARK [3][-]{subsubsection.2.8.4}{Batch Normalization}{subsection.2.8}% 18
 \BOOKMARK [3][-]{subsubsection.2.8.5}{Initialization}{subsection.2.8}% 19
-\BOOKMARK [3][-]{subsubsection.2.8.6}{Known Limitations}{subsection.2.8}% 20
-\BOOKMARK [2][-]{subsection.2.9}{Simulation Design}{section.2}% 21
-\BOOKMARK [3][-]{subsubsection.2.9.1}{Overall Design}{subsection.2.9}% 22
-\BOOKMARK [3][-]{subsubsection.2.9.2}{Simulating Characteristics}{subsection.2.9}% 23
-\BOOKMARK [3][-]{subsubsection.2.9.3}{Simulating Macroeconomic Series}{subsection.2.9}% 24
-\BOOKMARK [3][-]{subsubsection.2.9.4}{Simulating Return Series}{subsection.2.9}% 25
-\BOOKMARK [3][-]{subsubsection.2.9.5}{Sample Splitting}{subsection.2.9}% 26
-\BOOKMARK [2][-]{subsection.2.10}{Model Evaluation}{section.2}% 27
-\BOOKMARK [3][-]{subsubsection.2.10.1}{R Squared}{subsection.2.10}% 28
-\BOOKMARK [3][-]{subsubsection.2.10.2}{Diebold-Mariano Test}{subsection.2.10}% 29
-\BOOKMARK [2][-]{subsection.2.11}{Variable Importance}{section.2}% 30
-\BOOKMARK [1][-]{section.3}{Study}{}% 31
-\BOOKMARK [2][-]{subsection.3.1}{Model}{section.3}% 32
-\BOOKMARK [1][-]{section.4}{Simulation Results}{}% 33
-\BOOKMARK [1][-]{section.5}{Empirical Data}{}% 34
-\BOOKMARK [2][-]{subsection.5.1}{Data \046 Cleaning Procedure}{section.5}% 35
-\BOOKMARK [2][-]{subsection.5.2}{Empirical Data Model Fitting}{section.5}% 36
-\BOOKMARK [2][-]{subsection.5.3}{Empirical Data Results}{section.5}% 37
-\BOOKMARK [1][-]{section.6}{Appendix}{}% 38
-\BOOKMARK [2][-]{subsection.6.1}{Data}{section.6}% 39
-\BOOKMARK [2][-]{subsection.6.2}{Algorithms}{section.6}% 40
-\BOOKMARK [3][-]{subsubsection.6.2.1}{Linear Models}{subsection.6.2}% 41
-\BOOKMARK [3][-]{subsubsection.6.2.2}{Penalized Linear}{subsection.6.2}% 42
-\BOOKMARK [3][-]{subsubsection.6.2.3}{Classification and Regression Trees}{subsection.6.2}% 43
-\BOOKMARK [3][-]{subsubsection.6.2.4}{Random Forest}{subsection.6.2}% 44
-\BOOKMARK [3][-]{subsubsection.6.2.5}{Neural Networks}{subsection.6.2}% 45
-\BOOKMARK [3][-]{subsubsection.6.2.6}{Tuning of Simulated Datasets}{subsection.6.2}% 46
+\BOOKMARK [2][-]{subsection.2.9}{Simulation Design}{section.2}% 20
+\BOOKMARK [3][-]{subsubsection.2.9.1}{Overall Design}{subsection.2.9}% 21
+\BOOKMARK [3][-]{subsubsection.2.9.2}{Simulating Characteristics}{subsection.2.9}% 22
+\BOOKMARK [3][-]{subsubsection.2.9.3}{Simulating Macroeconomic Series}{subsection.2.9}% 23
+\BOOKMARK [3][-]{subsubsection.2.9.4}{Simulating Return Series}{subsection.2.9}% 24
+\BOOKMARK [3][-]{subsubsection.2.9.5}{Sample Splitting}{subsection.2.9}% 25
+\BOOKMARK [2][-]{subsection.2.10}{Model Evaluation}{section.2}% 26
+\BOOKMARK [3][-]{subsubsection.2.10.1}{R Squared}{subsection.2.10}% 27
+\BOOKMARK [3][-]{subsubsection.2.10.2}{Diebold-Mariano Test}{subsection.2.10}% 28
+\BOOKMARK [2][-]{subsection.2.11}{Variable Importance}{section.2}% 29
+\BOOKMARK [1][-]{section.3}{Study}{}% 30
+\BOOKMARK [2][-]{subsection.3.1}{Model}{section.3}% 31
+\BOOKMARK [1][-]{section.4}{Simulation Results}{}% 32
+\BOOKMARK [1][-]{section.5}{Empirical Data}{}% 33
+\BOOKMARK [2][-]{subsection.5.1}{Data \046 Cleaning Procedure}{section.5}% 34
+\BOOKMARK [2][-]{subsection.5.2}{Empirical Data Model Fitting}{section.5}% 35
+\BOOKMARK [2][-]{subsection.5.3}{Empirical Data Results}{section.5}% 36
+\BOOKMARK [1][-]{section.6}{Limitations}{}% 37
+\BOOKMARK [1][-]{section.7}{Conclusion}{}% 38
+\BOOKMARK [1][-]{section.8}{Appendix}{}% 39
+\BOOKMARK [2][-]{subsection.8.1}{Data}{section.8}% 40
+\BOOKMARK [2][-]{subsection.8.2}{Computational Details}{section.8}% 41
+\BOOKMARK [3][-]{subsubsection.8.2.1}{Linear Models}{subsection.8.2}% 42
+\BOOKMARK [3][-]{subsubsection.8.2.2}{Penalized Linear}{subsection.8.2}% 43
+\BOOKMARK [3][-]{subsubsection.8.2.3}{Classification and Regression Trees}{subsection.8.2}% 44
+\BOOKMARK [3][-]{subsubsection.8.2.4}{Random Forest}{subsection.8.2}% 45
+\BOOKMARK [3][-]{subsubsection.8.2.5}{Neural Networks}{subsection.8.2}% 46
+\BOOKMARK [3][-]{subsubsection.8.2.6}{Tuning of Simulated Datasets}{subsection.8.2}% 47

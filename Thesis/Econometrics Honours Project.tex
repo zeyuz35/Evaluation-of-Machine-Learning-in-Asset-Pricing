@@ -295,10 +295,12 @@ For this study, only recursive binary trees (the most common and easy to impleme
 
 where $|C|$ denotes the number of observations in set C (partition). Given $C$, it is clear that the optimal choice for minimising the loss function when it is mean squared error is simply $\theta = \frac{1}{|C|} \sum_{z_{io,t}\in C}^{ }r_{i,t+1}$ i.e. the average of the partition, and the median of the partition when the loss function is mean absolute error.
 
-Trees, grown to a deep enough level, are highly unbiased and flexible. The tradeoff of course, is their high variance and instability. Thus, an ensemble method called "Random Forest" was proposed by \cite{breiman_random_2001} to regularize trees by combining many different trees into a single prediction.
+Trees, grown to a deep enough level, are highly unbiased and flexible. The trade-off is their high variance and instability. Thus, an ensemble method called "Random Forest" was proposed by \cite{breiman_random_2001} to regularize trees by combining many different trees into a single prediction.
 
 \subsection{Random Forests}
 Random Forests are an extension of trees that attempt to address some of their problems. A random forest algorithm creates $B$ different bootstrap samples from the training dataset, fits an overfit (and hence low bias) regression tree to each using only a random subset $m$ size from all available predictors (also known as dropout), and then averages their forecasts as the final output. The overfit trees means that the underlying trees has low bias, and the dropout procedure means that they have low correlation. Thus, averaging these low bias, uncorrelated trees results in a low bias, yet stable model. Specific details of the random forest algorithm are detailed in the appendix.
+
+Random forests were the most computationally intensive, and for feasibility purposes an ensemble of only $B = 30$ trees with $m = 20$ at most was considered for the simulation study, and $B = 50$ trees with $m = 40$ at most was considered for the empirical study.
 
 \pagebreak
 
@@ -378,35 +380,44 @@ Neural networks with up to 5 hidden layers were considered, each named NNX where
 
 \subsubsection{Activation Function}
 
-The ReLU activation function
+Several choices of activation functions exist in the literature, one of the most popular being the ReLU activation function (see \cite{lecun_deep_2015} and \cite{ramachandran_searching_2017}, among others):
 
 \begin{equation}
 	\operatorname{ReLU}(x) = max(0, x)
 \end{equation}
 
-was used for all hidden layers owing to its high computational speed, and hence popularity within recent literature  (see \cite{lecun_deep_2015} and \cite{ramachandran_searching_2017}, among others). Other potential choices for activation functions such as sigmoid, softmax, tanh etc. were not used due to the additional complexities and computational costs involved with validating the choice of activation function.
+owing to its high computational speed, ability to introduce sparseness into neural networks, and fewer vanishing gradient problems, as repeatedly applying ReLU tends to saturate less compared to other activation functions such as sigmoid and tanh. However, during the study it was observed that ReLU suffered tremendously from the "dying-ReLU problem," where ReLU neurons receive weight updates that fail to activate (output a 0), hence making it unable to receive further weight updates and learn. This resulted in networks which outputted the same value for the majority of, if not all inputs. To mitigate this, a variant of ReLU known as Leaky ReLU was used instead:
+
+\begin{align}
+	\operatorname{lReLU}(x) = 
+	\begin{cases}
+	x \quad &\text{if} \quad x > 0; \\
+	0.01x \quad &\text{otherwise}
+	\end{cases}
+\end{align}
+
+This activation function assigns a small non-zero gradient to each weight, hence enabling them to receive further weight updates.
 
 \subsubsection{Computation}
 
+\rhs{this, like all neural networks, is a mess. Re write}
+
 The neural network's weight and bias parameters for each layer are estimated by minimizing the loss function with respect to the parameters, i.e. by calculating the partial derivative with respect to a specific weight or bias element.
 
-The solution to this is typically found via backpropagation, an iterative alogrithm similar to Gauss-Newton steps and produces a local minimum. These steps can be visualized as a descent towards the local minimum of the loss function; it is thus also known as "gradient descent." Note that the lack of a global minimum is actually desirable, as global minimums tend to be overfit solutions to the problem, \citep{choromanska_loss_2014}. This is to be calculated and averaged across all training observations, and is thus extremely computationally intensive. 
+The solution to this is typically found via backpropagation, an iterative alogrithm similar to Gauss-Newton steps and produces a local minimum. These steps can be visualized as a descent towards the local minimum of the loss function; it is thus also known as "gradient descent." Note that the lack of a global minimum is actually desirable, as global minimums tend to be overfit solutions to the problem, \citep{choromanska_loss_2014}. 
+A common solution is to use ``stochastic gradient descent" (SGD) where instead of optimising the loss function with respect to the entire training sample, only a small, random subset of the data (batch) is used at each optimisation step. 
 
-A common solution is to use ``stochastic gradient descent" (SGD) where instead of optimising the loss function with respect to the entire training sample, only a small, random subset of the data (batch) is used at each optimisation step. This sacrifices some accuracy for a dramatic improvement in computational speed.
+\rhs{Define learning rate more properly}
 
-Due the noisiness (randomness) introduced by SGD, the path towards the local minimum is more of a quick ``zig zag" and has the potential to ``overshoot" the local minimum and not converge to a solution. This is typically controlled via a hyperparameter known as the learning rate, which controls the step size of each gradient descent iteration. Note that it is also common to apply a learning rate hyperparameter in non SGD environments as a way to control the magnitude of each step towards the solution to assist with convergence. The learning rate is to be tuned so that the solution path descends quickly enough to be computationally feasible, but slow enough so that it does not overshoot the local minimum and not converge. In this paper, a learning rate shrinkage algorithm which adaptively shrinks the learning rate as convergence occurs was employed (see \cite{kingma_adam:_2014}).
+Due the noisiness (randomness) introduced by SGD, the path towards the local minimum is more of a quick ``zig zag" and has the potential to ``overshoot" the local minimum and not converge to a solution. This is typically controlled via a hyperparameter known as the learning rate, which controls the step size of each gradient descent iteration. Note that it is also common to apply a learning rate hyperparameter in non SGD environments as a way to control the magnitude of each step towards the solution to assist with convergence. The learning rate is to be tuned so that the solution path descends quickly enough to be computationally feasible, but slow enough so that it does not overshoot the local minimum and not converge. In this paper, the learning rate shrinkage algorithm which adaptively shrinks the learning rate of each individual weight separately as convergence occurs known as ADAM was employed (see \cite{kingma_adam:_2014}). It should be noted that ADAM still requires a baseline learning rate which acts as a upper bound on the learning rate to be supplied, and this was tuned manually.
 
 \subsubsection{Batch Normalization}
 
-``Batch normalization" is a technique for addressing a phenomenon known as internal covariate shift, a particularly prevalent problem in training deep, complex neural networks, \citep{ioffe_batch_2015}. Internal covariate shift occurs when the distributions of each layers' inputs change as the parameters of the previous layer change, resulting in the need for much slower learning rates and more careful initialization of parameters. By normalizing (de-meaning and variance standardizing) each training step (batch) input, the representation power of each neuron (unit) is restored. Additionally, significant gains in computational speed may also be achieved.
+``Batch normalization" is a technique for addressing a phenomenon known as internal covariate shift, a particularly prevalent problem in training deep, complex neural networks, \citep{ioffe_batch_2015}. Internal covariate shift occurs when the distributions of each layers' inputs change as the parameters of the previous layer change, resulting in the need for much slower learning rates and more careful initialization of parameters. More crucially, batch normalization has been observed to help normalizing the outputs of activation layers, alleviating issue related to vanishing or exploding gradients. Additionally, significant gains in computational speed may also be achieved.
 
 \subsubsection{Initialization}
 
-Finally, multiple random starting values for the weights and biases (seeds) were used in training neural networks, with the resulting predictions averaged in an ensemble model, \cite{hansen_neural_1990}. This regularizes the variance associated with the initial starting values for the weights and biases. It should be noted however, that contemporary literature suggests that all local solutions are of similar quality and thus this is not strictly necessary, \citep{choromanska_loss_2014}.
-
-\subsubsection{Known Limitations}
-
-Despite their potential, neural networks have many known limitations. 
+Finally, multiple random starting values for the weights and biases (seeds) were used in training neural networks, with the resulting predictions averaged in an ensemble model, \cite{hansen_neural_1990}. This regularizes the variance associated with the initial starting values for the weights and biases. 
 
 \subsection{Simulation Design}
 
@@ -447,10 +458,10 @@ Then, define the matrix
 \begin{equation}
 	B:=\Lambda\Lambda' + \frac{1}{10}\mathbb{I}_{n}, \quad
 	\Lambda_i = (\lambda_{i1},\dots,\lambda_{i4}), \quad
-	\lambda_{ik}\sim N(0, 0.1), \; k=1, \dots, 4
+	\lambda_{ik}\sim N(0, \lambda_{sd}), \; k=1, \dots, 4
 \end{equation}
 
-which we transform into a correlation matrix $W$ via
+where $\lambda_{sd}$ values of 0.01 and 0.1 were considered to explore different degrees of cross sectional correlation. This is then transformed into a correlation matrix $W$ via the Cholesky Decomposition:
 
 \begin{equation}
 	W = \left( \operatorname{diag}(B) \right) ^{\frac{-1}{2}}
@@ -537,7 +548,7 @@ $\theta^0$ was tuned such that the cross sectional $R^2$ and predictive $R^2$ we
 
 \rhs{change this}
 
-The simulation design results in $3 \times 3 = 12$ different simulated datasets, each with $N = 200$ stocks, $T = 180$ periods and $P_c = 100$ characteristics. Each design was simulated 50 times to assess the robustness of machine learning algorithms.
+The simulation design results in $3 \times 3 = 12$ different simulated datasets, each with $N = 200$ stocks, $T = 180$ periods and $P_c = 100$ characteristics. Each design was simulated 30 times to assess the robustness of machine learning algorithms. The number of simulations was kept low for computational feasibility reasons.
 
 \subsubsection{Sample Splitting}
 
@@ -622,7 +633,14 @@ As all models in this paper will be producing forecasts for an entire cross sect
 
 \subsection{Variable Importance}
 
-The importance of each predictor $j$ is denoted as $VI_j$, and is defined as the reduction in predictive R-Squared from setting all values of predictor $j$ to 0, while holding the remaining model estimates fixed. These were then normalized to sum to 1 within each model as a way to assess the relative importance of each predictor for each model. As $VI_j$ can sometimes be negative, this was achieved by shifting all $VI_j$ positively by the magnitude of the smallest $VI_j$, then dividing all $VI_j$ by the total. This mechanism was chosen because the other popular mechanism "softmax" was observed to be unable to preserve the distances between each original $VI_j$ well enough, thus squishing together all importance metrics.
+The importance of each predictor $j$ is denoted as $VI_j$, and is defined as the reduction in predictive R-Squared from setting all values of predictor $j$ to 0, while holding the remaining model estimates fixed. These were then normalized to sum to 1 within each model as a way to assess the relative importance of each predictor for each model. As $VI_j$ can sometimes be negative, this was achieved by shifting all $VI_j$ positively by the magnitude of the smallest $VI_j$, then dividing all $VI_j$ by the total:
+
+\begin{equation}
+	VI_{j, norm} = \frac{VI_j + \operatorname{min}(VI_j)}
+	{\Sigma VI_j + \operatorname{min}(VI_j)}
+\end{equation}
+
+This mechanism was chosen because the other popular normalization mechanism "softmax" was observed to be unable to preserve the distances between each original $VI_j$ well enough, thus squishing together all importance metrics.
 
 \section{Study}
 
@@ -638,30 +656,41 @@ where \( c_{i,t} \) is a \( P_c \times 1 \) matrix of characteristics for each s
 
 \section{Simulation Results}
 
+\begin{table}
+	\caption{Simulation Results}
+\end{table}
+
+\begin{figure}
+	\caption{Simulation Variable Importance Plots}
+\end{figure}
+
+\begin{table}
+	\caption{Diebold Mariano Tests for Simulation Study}
+\end{table}
+
 When the underlying data generating process is linear with no cross sectional correlation we see that the linear and penalized linear models offer the best performance. Random forests and neural networks offer performance that is not too far behind, and it is likely due to these models overfitting the training and validation sets, thus generalizing more poorly to the test set. In terms of variable importance, the linear and penalized linear models are able to consistently pick out the correct factors in the DGP, while the random forests and neural networks cannot.
 
 Linear Models
 
-Perform very well in linear settings.
-Has difficulty with cross sectional correlation, even when there is no cross sectional correlation (picks out c * x3 and x * c3 terms when only x * c3 is important). Performance is significantly worse when cross sectional correlation is turned up
-Still does relatively OK in high dimensional settings. Turning up dimensionality affects the significance values of regressors a lot (increasing the amount "significant" regressors), though this was to be expected. Variable importance in terms of t statistics and significance values was not the focus of this paper, so this was not further explored.
-Variable importance measures very sensible as long as cross sectional correlation and linear DGP are involved. Cross sectional correlation does affect variable importance, but order is still relatively OK. Absolutely destroys significance values (almost all regressors appear significant).
-Variable importance affected by non-linear settings. Can pick out non linear terms such as sgn and logit, as these transformations do not affect the direction of the regressors. However, struggles with interaction terms, due to how the predictor set was set up. When interaction terms were explicitly fed to it, they did appear important. This was not fully explored, du eto computational complexity.
-Performance can be somewhat non-robust. Observed from out of sample r squared in validation and test sets, which both act as test sets for linear models. Difference between these can be quite large.
+The linear models performed very well in simple linear settings, with notably deteriorating performance as the specifications became more complex. They struggled greatly with cross sectional correlation even in specifications with no cross sectional correlation, as noted by the fact that they identify correlated interaction terms. When cross sectional correlation was increased
+
+The introduction of non-linear interactions in the data generating process affected its performance, though it was still able to pick out transformations such as sgn and logit functions. This is likely due to these transformations not changing the direction of their terms.
 
 Penalized Linear Models
 
-Very similar to linear models. Performs somewhat better most of the time. 
-Optimal alpha values on the validation set are very unstable. Most commonly, optimal alpha values of 1 (corresponding to LASSO and hence sparsity) are observed. It is not uncommon to see swings in the optimal values from 0 to 1 or vice versa as the validation set moves forward.
+The penalized linear models had markedly better performance than the linear models, though this was only apparent for more complex model specifications. 
+
+Of particular note is the instability of the optimal hyperparameter as the validation set moved forward in time. It was quite common to see optimal $\alpha$ values that changed from 1 (equivalent to the sparse case of LASSO regression), to 0.01 (almost equivalent to dense case of ridge regression). Increasing the size of the validation set seemed to help a little, but not by a lot. 
+
+Similarly to the linear models, penalized linear models which minimized mean absolute error (corresponding to quantile regression) offered consistent improvements over their mean squared error versions.
 
 Random Forests
 
-Quite robust. Performance is better than the linear and penalized linear models. 
-Variable importance does not make sense at all. Affected the most by cross sectional correlation. This is not unexpected, likely due to the mechanics of the random forest algorithm.
-Brief explanation of algorithm:
-Grow a set of very overfit trees, each only using a random subset of all possible predictors.
-This means that for the trees that do not has access to the true predictors, it is likely that they will pick up the best substitute for it, and in the case of cross sectionally correlated regressors, a correlated regressor. This means that the forest overall thinks that the cross sectionally correlated regressors are very important.
-Very computationally intensive, so only a conservative grid of hyperparameters was able to be implemented. In particular, a low ntree parameter was used for feasibility, and it was not feasible to explore which value of ntree stopped improving performance. This means that there could possibly be more room for performance.
+The random forests exhibited higher performance and robustness compared the linear and penalized linear models.
+
+The random forests struggle greatly with determining variable importance in the presence of cross sectional correlation. This is to be expected, likely due to how the random forest algorithms work. Recall that the random forest algorithm is an ensemble of tree models, with each tree model only having access to a subset of all available predictors. If this subset does not include the true data generating predictor, that particular tree will likely select the predictors which have the highest correlation with the true data generating predictor instead. Thus, the resulting ensemble model is likely to believe that cross sectionally correlated predictors are important.
+
+Very computationally intensive, so only a conservative grid of hyperparameters was able to be implemented. In particular, a low ntree parameter was used for feasibility, and it was not feasible to explore which value of ntree stopped improving performance. It is generally recommended to set the ntree parameter as high as computationally feasible, as doing so typically only increases performance. This means that there is possibly more room for higher performance from random forest models.
 
 Neural Networks
 
@@ -681,17 +710,19 @@ Once cross sectional correlation across factors is introduced into the DGP howev
 
 \section{Empirical Data}
 
-\subsection{Data \& Cleaning Procedure}
+\subsection{Data and Cleaning Procedure}
 
 We mimic the data procedure of \cite{gu_empirical_2018}. This means that we obtain the dataset provided by Gu on his website. This dataset contains 94 stock level characteristics: 61 updated annually, 13 updated quarterly and 20 updated monthly. In addition, 74 industry dummies corresponding the the first two digits of the Standard Industrial Classification (SIC) codes are included. It is noted that this dataset contains all securities traded, including those with a CRSP share code other than 10 or 11 and thus includes instruments such as REITs and mutual funds, and those with a share price of less than \$5.
 
-We detail our cleaning procedure of this dataset. To reduce the size and maintain computational feasibility, only shares traded on the NASDAQ exchange was included (filtered out using the PRIMEXCH variable). As the majority of the characteristics included in the dataset are only updated annually, this significantly decreases the overall variability present in the dataset. To increase the variability yet also maintain a large enough number of time periods, quarterly returns were constructed. This also had the benefit of decreasing the dataset size for computational feasibility. 
+We detail our cleaning procedure of this dataset. To reduce the size and maintain computational feasibility, only shares traded on the NASDAQ exchange was included (filtered out using the PRIMEXCH variable). The majority of the characteristics included in the dataset are only updated annually, resulting in many rows having column values that remained constant for multiple time periods. To increase the variability yet also maintain a large enough number of time periods, quarterly returns were constructed. This also had the benefit of decreasing the dataset size for computational feasibility. 
 
 We then follow \cite{gu_empirical_2018} and construct eight macroeconomic factors following the variable definitions in \cite{welch_comprehensive_2008}: dividend-price ratio (dp), earnings-price ratio (ep), book-to-market ratio (bm), net equity expansion (ntis), Treasury-bill rate (tbl), term spread (tms), default spread (dfy) and stock variance (svar).
 
 The full details of these factors are available in table X.
 
-Throughout all methods and analysis we define the basline set of covariates as:
+There exists a significant amount of missing data in the dataset. The dataset's columns were first examined, and any characteristics that had over 20\% of their data were removed. However, as the amount of missing data increases dramatically going further back in time, a balance between using more periods at the cost of removing more characteristics versus using less periods but keeping more characteristics was needed. In the end, it was decided that any data before 1993 Q2 was to be filtered out, as there was a noticeable increase in data availability after this period.
+
+Throughout all methods and analysis we define the baseline set of covariates as:
 
 \begin{equation}
 z_{i,t} = (1, x_t)' \otimes c_{i, t}
@@ -699,26 +730,60 @@ z_{i,t} = (1, x_t)' \otimes c_{i, t}
 
 where $c_{i,t}$ is a $P_c$ matrix of characteristics for each stock $i$, and $(1, x_t)'$ is a $P_x \times 1$ vector of macroeconomic predictors. $z_{i,t}$ is therefore a $P_x P_c$ vector of features for predicting individual stock returns and includes interactions between stock level characteristics and macroeconomic variables. The total number of covariates in this baseline set is $94 \times (8 + 1) + 74 = 920$.
 
-There exists a significant amount of missing data in the dataset. The dataset's columns were first examined, and any characteristics that had over 20\% of their data were removed. However, as the amount of missing data increases dramatically going further back in time, a balance between using more periods at the cost of removing more characteristics versus using less periods but keeping more characteristics was needed. In the end, it was decided that any data before 1993 Q2 was to be filtered out, as there was a noticeable increase in data availability after this date.
+The dataset was not normalized for all methods, as only penalized regression and neural networks are affected by normalization. For these two methods, the dataset was normalized such that each predictor column had 0 mean and 1 variance.
 
-The dataset was not normalized for all methods, as only penalized regression and neural networks are affected by normalization. For these two methods, the dataset was normalized such that each predictor had 0 mean and 1 variance.
-
-The final dataset spanned from 1993 Q3 to 2016 Q6 with ~20,000 
+The final dataset spanned from 1993 Q3 to 2016 Q6 with ~20,000
 
 \subsection{Empirical Data Model Fitting}
 
 We detail our model fitting procedure used specifically for the empirical dataset.
 
-We try to mimic the procedure used in the simulation study as much as possible. This means that the dataset was was split such that the training and validation sets were split such that the training set was 1.5 times the length of the validation set, in order to predict a test set that is one year in length.
+We try to mimic the procedure used in the simulation study. This means that the dataset was split such that the training and validation sets were split such that the training set was 1.5 times the length of the validation set, in order to predict a test set that is one year in length.
 
 \subsection{Empirical Data Results}
+
+\begin{table}
+	\caption{Empirical Data Results}
+\end{table}
+
+\begin{figure}
+	\caption{Simulation Variable Importance Plots}
+\end{figure}
+
+\begin{table}
+	\caption{Diebold Mariano Tests for Empirical Data}
+\end{table}
+
+In general, results from the simulation study were reproduced in the empirical study.
+
+Performance
+
+The linear models did the most poorly. 
+The penalized linear models offered a substantial increase in performance. 
+The random forest was the best performing model.
+The neural networks offered varying results.
+
+Variable Importance
+
+As the true underlying covariates for empirical returns is unknown, variable importance is only discussed with regards to how consistent each method is at picking out true covariates.
+
+The linear and penalized linear models appear to be mostly consistent.
+
+The neural networks in general identified similar groups of variables, but also omitted other variables.
+
+\section{Limitations}
+
+
+
+\section{Conclusion}
+
+
 
 \section{Appendix}
 
 \subsection{Data}
 
 \begin{landscape}
-	\caption{Stock Level Characteristics, data collected are in \citep{green_supraview_2013}}
 	\begin{center}
 		\begin{longtable}{llllllll} \hline 
 			No. & Acronym & Firm Characteristic & Author(s) & Data Source & Frequency \\ \hline
@@ -942,7 +1007,7 @@ We try to mimic the procedure used in the simulation study as much as possible. 
 	\end{center}
 \end{table}
 
-\subsection{Algorithms}
+\subsection{Computational Details}
 \label{Algorithms}
 
 \subsubsection{Linear Models}
@@ -954,6 +1019,10 @@ quantreg used for fitting wrt MAE. (minimizing 0.5 quantile loss is equivalent t
 \subsubsection{Penalized Linear}
 
 The package \textit{hqreg} was used to fit penalized regression models with respect to MSE and MAE.
+
+This package efficiently calculates a regularization path of penalization values given a value for $\alpha$. This means that it is much more efficient to instead only supply a grid for $\alpha$, let the algorithm decide its own path of penalization values. The combination of these two parameters which produces the best results on the validation set were then chosen.
+
+The more traditional method of supplying a grid of $\alpha$ and $\lambda$ was also implemented at first, and this was observed to give almost identical results to the above implementation, but at a much higher computational cost.
 
 \subsubsection{Classification and Regression Trees}
 

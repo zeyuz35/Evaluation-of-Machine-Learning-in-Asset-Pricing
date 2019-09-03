@@ -1,4 +1,4 @@
-\begin{thebibliography}{97}
+\begin{thebibliography}{96}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
 
 \bibitem[{Abarbanell and Bushee(1998)}]{abarbanell_abnormal_1998}
@@ -193,10 +193,6 @@ Goetzmann, W.~N., Jorion, P., 1993. Testing the predictive power of dividend
 \bibitem[{Goyal and Welch(2003)}]{goyal_predicting_2003}
 Goyal, A., Welch, I., 2003. Predicting the equity premium with dividend ratios.
   Management Science 49, 639--654.
-
-\bibitem[{Green et~al.(2013)Green, Hand, and Zhang}]{green_supraview_2013}
-Green, J., Hand, J. R.~M., Zhang, X.~F., 2013. The supraview of return
-  predictive signals. Review of Accounting Studies 18, 692--730.
 
 \bibitem[{Gu et~al.(2018)Gu, Kelly, and Xiu}]{gu_empirical_2018}
 Gu, S., Kelly, B., Xiu, D., 2018. Empirical asset pricing via machine learning.
