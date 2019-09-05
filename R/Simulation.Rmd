@@ -535,7 +535,7 @@ gen_error <- function(sv,
     ##Generate Sigma first (only indexed by time)
     logsigma2 <- rep(0, Time)
     #Initial sigma2
-    logsigma2[1] <- omega + rnorm(1, 0, w)
+    logsigma2[1] <- omega/(1-gamma)
     
     for (t in 2:(Time)) {
       logsigma2[t] <- omega + gamma*logsigma2[t-1] + rnorm(1, 0, w)
@@ -1398,7 +1398,7 @@ P_c <- 100
 Time <- 180
 
 #Number of realizations
-simN <- 30
+simN <- 10
 
 # A matrices
 # These are just kept here for now, not actually used because they don't seem to have much difference
@@ -1409,8 +1409,47 @@ A1 <- matrix(c(
   0, 0, 0.95),
   nrow = 3, ncol = 3
 )
+## No cross sectional correlation or stochastic errors
 
-#####################################
+#G1
+g1_A1_nosv_0 <- sim_panel_data(simN, 
+                              char_rho_a = 0.5, char_rho_b = 1,
+                              cross_corr = 0, cross_corr_degree = 0.01, 
+                              A1, xt_multi = 1, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1), 
+                              error_sv = 0, error_ep_sd = 0.05, 
+                              error_omega = -0.736, error_gamma = 0.9, error_w = 0.363, error_v_sd = 0.05,
+                              predictor_format = "kronecker")
+summary(sim_tune_statistics(g1_A1_nosv_0))
+saveRDS(g1_A1_nosv_0, file = "g1_A1_nosv_0.rds")
+rm(g1_A1_sv_0.01)
+
+#G2
+
+g2_A1_nosv_0 <- sim_panel_data(simN, 
+                              char_rho_a = 0.5, char_rho_b = 1,
+                              cross_corr = 0, cross_corr_degree = 0.01, 
+                              A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.015, 0.015, 0.015), nrow = 1),
+                              error_sv = 0, error_ep_sd = 0.05, 
+                              error_omega = -0.736, error_gamma = 0.9, error_w = 0.363, error_v_sd = 0.05,
+                              predictor_format = "kronecker")
+summary(sim_tune_statistics(g2_A1_nosv_0))
+saveRDS(g2_A1_nosv_0, file = "g2_A1_nosv_0.rds")
+rm(g2_A1_sv_0.01)
+
+#G3
+
+g3_A1_nosv_0 <- sim_panel_data(simN, 
+                              char_rho_a = 0.5, char_rho_b = 1,
+                              cross_corr = 0, cross_corr_degree = 0.01,
+                              A1, xt_multi = 1, g_function = "g3", theta = matrix(c(0.025, 0.025, 0.025, 0.025), nrow = 1), 
+                              error_sv = 0, error_ep_sd = 0.05, 
+                              error_omega = -0.736, error_gamma = 0.9, error_w = 0.363, error_v_sd = 0.05,
+                              predictor_format = "kronecker")
+summary(sim_tune_statistics(g3_A1_nosv_0))
+saveRDS(g3_A1_nosv_0, file = "g3_A1_nosv_0.rds")
+rm(g3_A1_sv_0.01)
+
+####################################################
 ## 0.01 Cross Sectional Correlation
 
 #G1
@@ -1419,37 +1458,52 @@ g1_A1_sv_0.01 <- sim_panel_data(simN,
                               cross_corr = 1, cross_corr_degree = 0.01, 
                               A1, xt_multi = 1, g_function = "g1", theta = matrix(c(0.015, 0.015, 0.015), nrow = 1), 
                               error_sv = 1, error_ep_sd = 1, 
-                              error_omega = -1.8, error_gamma = 0.95, error_w = 0.2, error_v_sd = 0.05,
+                              error_omega = -0.275, error_gamma = 0.95, error_w = 0.430, error_v_sd = 0,
                               predictor_format = "kronecker")
 summary(sim_tune_statistics(g1_A1_sv_0.01))
 saveRDS(g1_A1_sv_0.01, file = "g1_A1_sv_0.01.rds")
 rm(g1_A1_sv_0.01)
+
+g1_A1_sv_0.01[[2]]$panel %>%
+  ggplot() +
+  geom_line(aes(x = time, y = rt, colour = stock)) +
+  theme(legend.position = "none")
 
 #G2
 
 g2_A1_sv_0.01 <- sim_panel_data(simN, 
                               char_rho_a = 0.5, char_rho_b = 1,
                               cross_corr = 1, cross_corr_degree = 0.01, 
-                              A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.015, 0.015, 0.015), nrow = 1),
+                              A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.012, 0.012, 0.012), nrow = 1),
                               error_sv = 1, error_ep_sd = 1, 
-                              error_omega = -1.8, error_gamma = 0.95, error_w = 0.2, error_v_sd = 0.05,
+                              error_omega = -0.275, error_gamma = 0.95, error_w = 0.430, error_v_sd = 0,
                               predictor_format = "kronecker")
 summary(sim_tune_statistics(g2_A1_sv_0.01))
 saveRDS(g2_A1_sv_0.01, file = "g2_A1_sv_0.01.rds")
 rm(g2_A1_sv_0.01)
+
+g2_A1_sv_0.01[[2]]$panel %>%
+  ggplot() +
+  geom_line(aes(x = time, y = rt, colour = stock)) +
+  theme(legend.position = "none")
 
 #G3
 
 g3_A1_sv_0.01 <- sim_panel_data(simN, 
                               char_rho_a = 0.5, char_rho_b = 1,
                               cross_corr = 1, cross_corr_degree = 0.01,
-                              A1, xt_multi = 1, g_function = "g3", theta = matrix(c(0.03, 0.03, 0.03, 0.03), nrow = 1), 
+                              A1, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.02), nrow = 1), 
                               error_sv = 1, error_ep_sd = 1, 
-                              error_omega = -0.9, error_gamma = 0.95, error_w = 0.2, error_v_sd = 0.05,
+                              error_omega = -0.275, error_gamma = 0.95, error_w = 0.430, error_v_sd = 0,
                               predictor_format = "kronecker")
 summary(sim_tune_statistics(g3_A1_sv_0.01))
 saveRDS(g3_A1_sv_0.01, file = "g3_A1_sv_0.01.rds")
 rm(g3_A1_sv_0.01)
+
+g3_A1_sv_0.01[[2]]$panel %>%
+  ggplot() +
+  geom_line(aes(x = time, y = rt, colour = stock)) +
+  theme(legend.position = "none")
 
 #############################
 ## 0.1 Cross Sectional Correlation
@@ -1458,26 +1512,36 @@ rm(g3_A1_sv_0.01)
 g1_A1_sv_0.1 <- sim_panel_data(simN, 
                               char_rho_a = 0.5, char_rho_b = 1,
                               cross_corr = 1, cross_corr_degree = 0.1, 
-                              A1, xt_multi = 1, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1), 
+                              A1, xt_multi = 1, g_function = "g1", theta = matrix(c(0.015, 0.015, 0.015), nrow = 1), 
                               error_sv = 1, error_ep_sd = 1, 
-                              error_omega = -1.8, error_gamma = 0.95, error_w = 0.2, error_v_sd = 0.05,
+                              error_omega = -0.275, error_gamma = 0.95, error_w = 0.430, error_v_sd = 0,
                               predictor_format = "kronecker")
 summary(sim_tune_statistics(g1_A1_sv_0.1))
 saveRDS(g1_A1_sv_0.1, file = "g1_A1_sv_0.1.rds")
 rm(g1_A1_sv_0.1)
+
+g1_A1_sv_0.1[[2]]$panel %>%
+  ggplot() +
+  geom_line(aes(x = time, y = rt, colour = stock)) +
+  theme(legend.position = "none")
 
 #G2
 
 g2_A1_sv_0.1 <- sim_panel_data(simN, 
                               char_rho_a = 0.5, char_rho_b = 1,
                               cross_corr = 1, cross_corr_degree = 0.1, 
-                              A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.015, 0.015, 0.015), nrow = 1),
+                              A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.012, 0.012, 0.012), nrow = 1),
                               error_sv = 1, error_ep_sd = 1, 
-                              error_omega = -1.8, error_gamma = 0.95, error_w = 0.2, error_v_sd = 0.05,
+                              error_omega = -0.275, error_gamma = 0.95, error_w = 0.430, error_v_sd = 0,
                               predictor_format = "kronecker")
 summary(sim_tune_statistics(g2_A1_sv_0.1))
 saveRDS(g2_A1_sv_0.1, file = "g2_A1_sv_0.1.rds")
 rm(g2_A1_sv_0.1)
+
+g2_A1_sv_0.1[[2]]$panel %>%
+  ggplot() +
+  geom_line(aes(x = time, y = rt, colour = stock)) +
+  theme(legend.position = "none")
 
 #G3
 
@@ -1486,11 +1550,16 @@ g3_A1_sv_0.1 <- sim_panel_data(simN,
                               cross_corr = 1, cross_corr_degree = 0.1,
                               A1, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.02), nrow = 1), 
                               error_sv = 1, error_ep_sd = 1, 
-                              error_omega = -0.9, error_gamma = 0.95, error_w = 0.2, error_v_sd = 0.05,
+                              error_omega = -0.275, error_gamma = 0.95, error_w = 0.430, error_v_sd = 0,
                               predictor_format = "kronecker")
 summary(sim_tune_statistics(g3_A1_sv_0.1))
 saveRDS(g3_A1_sv_0.1, file = "g3_A1_sv_0.1.rds")
 rm(g3_A1_sv_0.1)
+
+g3_A1_sv_0.1[[3]]$panel %>%
+  ggplot() +
+  geom_line(aes(x = time, y = rt, colour = stock)) +
+  theme(legend.position = "none")
 
 ```
 

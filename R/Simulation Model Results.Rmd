@@ -100,8 +100,8 @@ fit_all_models <- function(dataset_list, batch_process_range,
       # Random Forests
       RF_grid <- expand.grid(
       #ntree usually isn't tuned. Just set to max of computationally feasible
-      ntree = 30,
-      mtry = seq(10, round(sqrt(ncol(pooled_panel[4:ncol(pooled_panel)])), 10))
+      ntree = 50,
+      mtry = seq(10, ncol(pooled_panel[4:ncol(pooled_panel)])/4, 10)
       # nodesize = seq(2, 14, 2)
       # nodedepth recommended not to be changed
       #nodedepth = 1
@@ -143,23 +143,29 @@ batch_process_range <- c(1:10)
 
 # Random Forest is too intensive, just run the simpler models for now
 
-g1_A1_sv_0.01_results <- fit_all_models(g1_A1_sv_0.01, batch_process_range, LM = 1, ELN = 1, RF = 0, NNet = 0)
-g2_A1_sv_0.01_results <- fit_all_models(g2_A1_sv_0.01, batch_process_range, LM = 1, ELN = 1, RF = 0, NNet = 0)
-g3_A1_sv_0.01_results <- fit_all_models(g3_A1_sv_0.01, batch_process_range, LM = 1, ELN = 1, RF = 0, NNet = 0)
+g1_A1_nosv_0_results <- fit_all_models(g1_A1_nosv_0, batch_process_range, LM = 1, ELN = 1, RF = 1, NNet = 0)
+g2_A1_nosv_0_results <- fit_all_models(g2_A1_nosv_0, batch_process_range, LM = 1, ELN = 1, RF = 1, NNet = 0)
+g3_A1_nosv_0_results <- fit_all_models(g3_A1_nosv_0, batch_process_range, LM = 1, ELN = 1, RF = 1, NNet = 0)
 
-g1_A1_sv_0.1_results <- fit_all_models(g1_A1_sv_0.1, batch_process_range, LM = 1, ELN = 1, RF = 0, NNet = 0)
-g2_A1_sv_0.1_results <- fit_all_models(g2_A1_sv_0.1, batch_process_range, LM = 1, ELN = 1, RF = 0, NNet = 0)
-g3_A1_sv_0.1_results <- fit_all_models(g3_A1_sv_0.1, batch_process_range, LM = 1, ELN = 1, RF = 0, NNet = 0)
+saveRDS(g1_A1_nosv_0_results, "g1_A1_nosv_0_results.rds")
+saveRDS(g2_A1_nosv_0_results, "g2_A1_nosv_0_results.rds")
+saveRDS(g3_A1_nosv_0_results, "g3_A1_nosv_0_results.rds")
 
-# Random Forest Results
+g1_A1_sv_0.01_results <- fit_all_models(g1_A1_sv_0.01, batch_process_range, LM = 1, ELN = 1, RF = 1, NNet = 0)
+g2_A1_sv_0.01_results <- fit_all_models(g2_A1_sv_0.01, batch_process_range, LM = 1, ELN = 1, RF = 1, NNet = 0)
+g3_A1_sv_0.01_results <- fit_all_models(g3_A1_sv_0.01, batch_process_range, LM = 1, ELN = 1, RF = 1, NNet = 0)
 
-g1_A1_sv_0.01_RF_results <- fit_all_models(g1_A1_sv_0.01, batch_process_range, LM = 0, ELN = 0, RF = 1, NNet = 0)
-g2_A1_sv_0.01_RF_results <- fit_all_models(g2_A1_sv_0.01, batch_process_range, LM = 0, ELN = 0, RF = 1, NNet = 0)
-g3_A1_sv_0.01_RF_results <- fit_all_models(g3_A1_sv_0.01, batch_process_range, LM = 0, ELN = 0, RF = 1, NNet = 0)
+saveRDS(g1_A1_sv_0.01_results, "g1_A1_sv_0.01_results.rds")
+saveRDS(g2_A1_sv_0.01_results, "g2_A1_sv_0.01_results.rds")
+saveRDS(g3_A1_sv_0.01_results, "g3_A1_sv_0.01_results.rds")
 
-g1_A1_sv_0.1_RF_results <- fit_all_models(g1_A1_sv_0.1, batch_process_range, LM = 0, ELN = 0, RF = 1, NNet = 0)
-g2_A1_sv_0.1_RF_results <- fit_all_models(g2_A1_sv_0.1, batch_process_range, LM = 0, ELN = 0, RF = 1, NNet = 0)
-g3_A1_sv_0.1_RF_results <- fit_all_models(g3_A1_sv_0.1, batch_process_range, LM = 0, ELN = 0, RF = 1, NNet = 0)
+g1_A1_sv_0.1_results <- fit_all_models(g1_A1_sv_0.1, batch_process_range, LM = 1, ELN = 1, RF = 1, NNet = 0)
+g2_A1_sv_0.1_results <- fit_all_models(g2_A1_sv_0.1, batch_process_range, LM = 1, ELN = 1, RF = 1, NNet = 0)
+g3_A1_sv_0.1_results <- fit_all_models(g3_A1_sv_0.1, batch_process_range, LM = 1, ELN = 1, RF = 1, NNet = 0)
+
+saveRDS(g1_A1_sv_0.1_results, "g1_A1_sv_0.1_results.rds")
+saveRDS(g2_A1_sv_0.1_results, "g2_A1_sv_0.1_results.rds")
+saveRDS(g3_A1_sv_0.1_results, "g3_A1_sv_0.1_results.rds")
 ```
 
 ```{r}
