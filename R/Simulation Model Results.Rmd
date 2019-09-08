@@ -166,7 +166,126 @@ g3_A1_sv_0.1_results <- fit_all_models(g3_A1_sv_0.1, batch_process_range, LM = 1
 saveRDS(g1_A1_sv_0.1_results, "g1_A1_sv_0.1_results.rds")
 saveRDS(g2_A1_sv_0.1_results, "g2_A1_sv_0.1_results.rds")
 saveRDS(g3_A1_sv_0.1_results, "g3_A1_sv_0.1_results.rds")
+
+g1_A1_sv_1_results <- fit_all_models(g1_A1_sv_1, batch_process_range, LM = 1, ELN = 1, RF = 1, NNet = 0)
+g2_A1_sv_1_results <- fit_all_models(g2_A1_sv_1, batch_process_range, LM = 1, ELN = 1, RF = 1, NNet = 0)
+g3_A1_sv_1_results <- fit_all_models(g3_A1_sv_1, batch_process_range, LM = 1, ELN = 1, RF = 1, NNet = 0)
+
+saveRDS(g1_A1_sv_1_results, "g1_A1_sv_1_results.rds")
+saveRDS(g2_A1_sv_1_results, "g2_A1_sv_1_results.rds")
+saveRDS(g3_A1_sv_1_results, "g3_A1_sv_1_results.rds")
 ```
+
+```{r}
+## Across the different realizations, compute the average statistics
+g1_A1_sv_0.01_results_average <- list(
+      # Panel Statistics
+      Dataset_stats = 0, 
+      # Models
+      LM_MSE = 0, LM_MAE = 0,
+      ELN_MSE = 0, ELN_MAE = 0,
+      RF_MSE = 0, RF_MAE = 0,
+      # Neural Networks
+      NN1_MSE = 0, NN1_MAE = 0,
+      NN2_MSE = 0, NN2_MAE = 0,
+      NN3_MSE = 0, NN3_MAE = 0,
+      NN4_MSE = 0, NN4_MAE = 0,
+      NN5_MSE = 0, NN5_MAE = 0
+    )
+
+results_df <- foreach(1 = (1:length(simulation_results)), .combine = "rbind") %do% {
+  cbind(realization_no = i)
+  rbind(simulation_results[[]])
+}
+
+## Given the simulation results list, return a dataframe of loss statistics for a single realization and time slice
+
+c_loss_df <- function(simulation_results, batch, sample) {
+  cbind(realization_no = batch, sample = sample, 
+      rbind(cbind(model = "LM_MSE", simulation_results[[batch]]$LM_MSE[[sample]]$loss_stats),
+            cbind(model = "LM_MAE", simulation_results[[batch]]$LM_MSE[[sample]]$loss_stats),
+            
+            cbind(model = "ELN_MSE", simulation_results[[batch]]$ELN_MSE[[sample]]$loss_stats),
+            cbind(model = "ELN_MAE", simulation_results[[batch]]$ELN_MAE[[sample]]$loss_stats),
+            
+            cbind(model = "RF_MSE", simulation_results[[batch]]$RF_MSE[[sample]]$loss_stats),
+            cbind(model = "RF_MAE", simulation_results[[batch]]$RF_MAE[[sample]]$loss_stats)
+            
+            # cbind(model = "NN1_MSE", simulation_results[[batch]]$NN1_MSE[[sample]]$loss_stats),
+            # cbind(model = "NN1_MAE", simulation_results[[batch]]$NN1_MAE[[sample]]$loss_stats),
+            # 
+            # cbind(model = "NN2_MSE", simulation_results[[batch]]$NN2_MSE[[sample]]$loss_stats),
+            # cbind(model = "NN2_MAE", simulation_results[[batch]]$NN2_MAE[[sample]]$loss_stats),
+            # 
+            # cbind(model = "NN3_MSE", simulation_results[[batch]]$NN3_MSE[[sample]]$loss_stats),
+            # cbind(model = "NN3_MAE", simulation_results[[batch]]$NN3_MAE[[sample]]$loss_stats),
+            # 
+            # cbind(model = "NN4_MSE", simulation_results[[batch]]$NN4_MSE[[sample]]$loss_stats),
+            # cbind(model = "NN4_MAE", simulation_results[[batch]]$NN4_MAE[[sample]]$loss_stats),
+            # 
+            # cbind(model = "NN5_MSE", simulation_results[[batch]]$NN5_MSE[[sample]]$loss_stats),
+            # cbind(model = "NN5_MAE", simulation_results[[batch]]$NN5_MAE[[sample]]$loss_stats)
+            )
+      )
+}
+
+## Function that uses above function to iterate over all samples
+
+c_iterate_samples <- function(simulation_results, batch) {
+  foreach(sample = 1:3, .combine = "rbind") %do% {
+    c_loss_df(g1_A1_sv_0.01_results, batch, sample)
+  }
+}
+
+## Function that returns everything in a big dataframe
+
+c_all_results <- function(simulation_results) {
+  foreach(batch = 1:10, .combine = "rbind") %do% {
+    c_iterate_samples(simulation_results, batch)
+  }
+}
+
+# Function that averages all statistics over all realizations
+
+average_over_realizations <- function(simulation_results) {
+  c_all_results(simulation_results) %>%
+    group_by(sample, model) %>%
+    summarise(train_MAE = mean(train_MAE), train_MSE = mean(train_MSE), 
+              train_RMSE = mean(train_RMSE), train_RSquare = mean(train_RSquare),
+              
+              validation_MAE = mean(validation_MAE), validation_MSE = mean(validation_MSE), 
+              validation_RMSE = mean(validation_RMSE), validation_RSquare = mean(validation_RSquare),
+              
+              test_MAE = mean(test_MAE), test_MSE = mean(test_MSE), 
+              test_RMSE = mean(test_RMSE), test_RSquare = mean(test_RSquare)
+              )
+}
+
+## Function that appends extra ID columns
+
+append_id_columns <- function(SV, cross_corr, specification, simulation_results) {
+  cbind(SV = rep(SV, nrow(average_over_realizations(simulation_results))), 
+        cross_corr = rep(cross_corr, nrow(average_over_realizations(simulation_results))),
+        dgp_spec = rep(specification, nrow(average_over_realizations(simulation_results))),
+        average_over_realizations(simulation_results))
+}
+
+all_results_df <- rbind(
+  append_id_columns(SV = 0, cross_corr = 0, specification = "g1", simulation_results = g1_A1_nosv_0_results),
+  append_id_columns(SV = 0, cross_corr = 0, specification = "g2", simulation_results = g2_A1_nosv_0_results),
+  append_id_columns(SV = 0, cross_corr = 0, specification = "g3", simulation_results = g3_A1_nosv_0_results),
+  
+  append_id_columns(SV = 1, cross_corr = 0.01, specification = "g1", simulation_results = g1_A1_sv_0.01_results),
+  append_id_columns(SV = 1, cross_corr = 0.01, specification = "g2", simulation_results = g2_A1_sv_0.01_results),
+  append_id_columns(SV = 1, cross_corr = 0.01, specification = "g3", simulation_results = g3_A1_sv_0.01_results),
+  
+  append_id_columns(SV = 1, cross_corr = 0.1, specification = "g1", simulation_results = g1_A1_sv_0.1_results),
+  append_id_columns(SV = 1, cross_corr = 0.1, specification = "g2", simulation_results = g2_A1_sv_0.1_results),
+  append_id_columns(SV = 1, cross_corr = 0.1, specification = "g3", simulation_results = g3_A1_sv_0.1_results)
+)
+  
+```
+
 
 ```{r}
 # Functions to process the raw loss statistics from earlier and create neat tables
