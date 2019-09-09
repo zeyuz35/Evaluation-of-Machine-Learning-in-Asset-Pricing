@@ -931,7 +931,7 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
     # The patience parameter is the amount of epochs to check for improvement.
     # Gu et al don't say what their early stopping parameter p is
     early_stop <- callback_early_stopping(monitor = "val_loss", patience = patience, restore_best_weights = TRUE)
-    lr_reduce <- callback_reduce_lr_on_plateau(monitor = "val_loss", factor = 0.1,
+    lr_reduce <- callback_reduce_lr_on_plateau(monitor = "val_loss", factor = 0.5,
                                                patience = 5, verbose = 0, mode = c("auto", "min", "max"),
                                                min_delta = 1e-04, cooldown = 0, min_lr = 0)
     
@@ -942,7 +942,7 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
       }
     ) 
     
-    l1_penalty <- 0.01
+    l1_penalty <- 0.05
     
     build_NN <- function(hidden_layers, loss_function) {
         
@@ -954,7 +954,7 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
         layer_dense(units = 32, input_shape = ncol(train_x),
                     bias_initializer = initializer_zeros(),
                     kernel_initializer = initializer_truncated_normal(mean = 0, stddev = 0.05, seed = NULL)) %>%
-          layer_activation_leaky_relu() %>%
+          layer_activation(activation = "tanh") %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
         # Output Layer
@@ -968,14 +968,14 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
         layer_dense(units = 32, input_shape = ncol(train_x),
                     bias_initializer = initializer_zeros(),
                     kernel_initializer = initializer_truncated_normal(mean = 0, stddev = 0.05, seed = NULL)) %>%
-          layer_activation_leaky_relu() %>%
+          layer_activation(activation = "tanh") %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
         # Layer 2
         layer_dense(units = 16,
                     bias_initializer = initializer_zeros(),
                     kernel_initializer = initializer_truncated_normal(mean = 0, stddev = 0.05, seed = NULL)) %>%
-          layer_activation_leaky_relu() %>%
+          layer_activation(activation = "tanh") %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
         # Output Layer
@@ -989,21 +989,21 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
         layer_dense(units = 32, input_shape = ncol(train_x),
                     bias_initializer = initializer_zeros(),
                     kernel_initializer = initializer_truncated_normal(mean = 0, stddev = 0.05, seed = NULL)) %>%
-          layer_activation_leaky_relu() %>%
+          layer_activation(activation = "tanh") %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
         # Layer 2
         layer_dense(units = 16,
                     bias_initializer = initializer_zeros(),
                     kernel_initializer = initializer_truncated_normal(mean = 0, stddev = 0.05, seed = NULL)) %>%
-          layer_activation_leaky_relu() %>%
+          layer_activation(activation = "tanh") %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
         #Layer 3
         layer_dense(units = 8,
                     bias_initializer = initializer_zeros(),
                     kernel_initializer = initializer_truncated_normal(mean = 0, stddev = 0.05, seed = NULL)) %>%
-          layer_activation_leaky_relu() %>%
+          layer_activation(activation = "tanh") %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
         # Output Layer
@@ -1017,28 +1017,28 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
         layer_dense(units = 32, input_shape = ncol(train_x),
                     bias_initializer = initializer_zeros(),
                     kernel_initializer = initializer_truncated_normal(mean = 0, stddev = 0.05, seed = NULL)) %>%
-          layer_activation_leaky_relu() %>%
+          layer_activation(activation = "tanh") %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
         # Layer 2
         layer_dense(units = 16,
                     bias_initializer = initializer_zeros(),
                     kernel_initializer = initializer_truncated_normal(mean = 0, stddev = 0.05, seed = NULL)) %>%
-          layer_activation_leaky_relu() %>%
+          layer_activation(activation = "tanh") %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
         #Layer 3
         layer_dense(units = 8,
                     bias_initializer = initializer_zeros(),
                     kernel_initializer = initializer_truncated_normal(mean = 0, stddev = 0.05, seed = NULL)) %>%
-          layer_activation_leaky_relu() %>%
+          layer_activation(activation = "tanh") %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
         #Layer 4
         layer_dense(units = 4,
                     bias_initializer = initializer_zeros(),
                     kernel_initializer = initializer_truncated_normal(mean = 0, stddev = 0.05, seed = NULL)) %>%
-          layer_activation_leaky_relu() %>%
+          layer_activation(activation = "tanh") %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
         # Output Layer
@@ -1052,35 +1052,35 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
         layer_dense(units = 32, input_shape = ncol(train_x),
                     bias_initializer = initializer_zeros(),
                     kernel_initializer = initializer_truncated_normal(mean = 0, stddev = 0.05, seed = NULL)) %>%
-          layer_activation_leaky_relu() %>%
+          layer_activation(activation = "tanh") %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
         # Layer 2
         layer_dense(units = 16,
                     bias_initializer = initializer_zeros(),
                     kernel_initializer = initializer_truncated_normal(mean = 0, stddev = 0.05, seed = NULL)) %>%
-          layer_activation_leaky_relu() %>%
+          layer_activation(activation = "tanh") %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
         #Layer 3
         layer_dense(units = 8,
                     bias_initializer = initializer_zeros(),
                     kernel_initializer = initializer_truncated_normal(mean = 0, stddev = 0.05, seed = NULL)) %>%
-          layer_activation_leaky_relu() %>%
+          layer_activation(activation = "tanh") %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
         #Layer 4
         layer_dense(units = 4,
                     bias_initializer = initializer_zeros(),
                     kernel_initializer = initializer_truncated_normal(mean = 0, stddev = 0.05, seed = NULL)) %>%
-          layer_activation_leaky_relu() %>%
+          layer_activation(activation = "tanh") %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
         #Layer 5
         layer_dense(units = 2,
                     bias_initializer = initializer_zeros(),
                     kernel_initializer = initializer_truncated_normal(mean = 0, stddev = 0.05, seed = NULL)) %>%
-          layer_activation_leaky_relu() %>%
+          layer_activation(activation = "tanh") %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
         # Output Layer
@@ -1089,7 +1089,7 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
       }
       model %>% compile(
         loss = loss_function,
-        optimizer = optimizer_adam(lr = 0.0005, beta_1 = 0.9, beta_2 = 0.999,
+        optimizer = optimizer_adam(lr = 0.001, beta_1 = 0.9, beta_2 = 0.999,
                                    epsilon = NULL, decay = 0, amsgrad = FALSE, clipnorm = NULL,
                                    clipvalue = NULL),
         metrics = list("mae", "mse")
@@ -1106,7 +1106,7 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
     neural_network %>% fit(as.matrix(train_x), as.matrix(train_y), 
                            batch_size = batch_size, epochs = 500, verbose = 1, 
                            validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
-                           callbacks = list(early_stop, lr_reduce, print_dot_callback))
+                           callbacks = list(early_stop, print_dot_callback))
     
     #Model
     NNet_stats[[set]]$model <- neural_network
@@ -1258,7 +1258,7 @@ f <- real_panel_formula(final_dataset)
 LM_stats_mse <- LM_fit(final_dataset, realdata_timeSlices, "mse", f,
                        macro_factor_names, individual_factor_names)
 
-LM_stats_mae <- LM_fit(final_dataset, realdata_timeSlices, "mse", f,
+LM_stats_mae <- LM_fit(final_dataset, realdata_timeSlices, "mae", f,
                        macro_factor_names, individual_factor_names)
 
 LM_stats_mse[[1]]$loss_stats
@@ -1272,6 +1272,9 @@ LM_stats_mse[[2]]$variable_importance %>%
 LM_stats_mse[[3]]$loss_stats
 LM_stats_mse[[3]]$variable_importance %>%
   arrange(desc(importance))
+
+saveRDS(LM_stats_mae, file = "LM_stats_mae.rds")
+saveRDS(LM_stats_mse, file = "LM_stats_mse.rds")
 
 ######################################################################################################################
 
@@ -1313,6 +1316,9 @@ ELN_stats_mae[[3]]$hyperparameters
 ELN_stats_mae[[3]]$variable_importance %>%
   arrange(desc(importance))
 
+saveRDS(ELN_stats_mse, file = "ELN_stats_mse.rds")
+saveRDS(ELN_stats_mae, file = "ELN_stats_mae.rds")
+
 ######################################################################################################################
 
 # Random Forests
@@ -1349,29 +1355,9 @@ saveRDS(RF_mae_stats, file = "RF_mae_stats_1.5_train_valid.rds")
 
 ######################################################################################################################
 
-NNet_1_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 1, "mse", batch_size = 128, 40,
+NNet_1_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 1, "mse", batch_size = 256, 20,
                                    macro_factor_names, individual_factor_names)
-NNet_1_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 1, "mae", batch_size = 128, 50,
-                                   macro_factor_names, individual_factor_names)
-
-NNet_2_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 2, "mse", batch_size = 128, 50,
-                                   macro_factor_names, individual_factor_names)
-NNet_2_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 2, "mae", batch_size = 128, 50,
-                                   macro_factor_names, individual_factor_names)
-
-NNet_3_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 3, "mse", batch_size = 128, 50,
-                                   macro_factor_names, individual_factor_names)
-NNet_3_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 3, "mae", batch_size = 128, 50,
-                                   macro_factor_names, individual_factor_names)
-
-NNet_4_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 4, "mse", batch_size = 128, 50,
-                                   macro_factor_names, individual_factor_names)
-NNet_4_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 4, "mae", batch_size = 128, 50,
-                                   macro_factor_names, individual_factor_names)
-
-NNet_5_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 5, "mse", batch_size = 128, 50,
-                                   macro_factor_names, individual_factor_names)
-NNet_5_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 5, "mae", batch_size = 128, 50,
+NNet_1_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 1, "mae", batch_size = 256, 20,
                                    macro_factor_names, individual_factor_names)
 
 NNet_1_mse_stats[[1]]$loss_stats
@@ -1384,6 +1370,14 @@ NNet_1_mae_stats[[1]]$forecasts
 NNet_1_mae_stats[[1]]$variable_importance %>%
   arrange(desc(importance))
 
+saveRDS(NNet_1_mse_stats, file = "NNet_1_mse_stats_1.5.rds")
+saveRDS(NNet_1_mae_stats, file = "NNet_1_mae_stats_1.5.rds")
+
+NNet_2_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 2, "mse", batch_size = 256, 20,
+                                   macro_factor_names, individual_factor_names)
+NNet_2_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 2, "mae", batch_size = 256, 20,
+                                   macro_factor_names, individual_factor_names)
+
 NNet_2_mse_stats[[1]]$loss_stats
 NNet_2_mse_stats[[1]]$forecasts
 NNet_2_mse_stats[[1]]$variable_importance %>%
@@ -1393,6 +1387,14 @@ NNet_2_mae_stats[[1]]$loss_stats
 NNet_2_mae_stats[[1]]$forecasts
 NNet_2_mae_stats[[1]]$variable_importance %>%
   arrange(desc(importance))
+
+saveRDS(NNet_2_mse_stats, file = "NNet_2_mse_stats_1.5.rds")
+saveRDS(NNet_2_mae_stats, file = "NNet_2_mae_stats_1.5.rds")
+
+NNet_3_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 3, "mse", batch_size = 256, 20,
+                                   macro_factor_names, individual_factor_names)
+NNet_3_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 3, "mae", batch_size = 256, 20,
+                                   macro_factor_names, individual_factor_names)
 
 NNet_3_mse_stats[[1]]$loss_stats
 NNet_3_mse_stats[[1]]$forecasts
@@ -1404,6 +1406,14 @@ NNet_3_mae_stats[[1]]$forecasts
 NNet_3_mae_stats[[1]]$variable_importance %>%
   arrange(desc(importance))
 
+saveRDS(NNet_3_mse_stats, file = "NNet_3_mse_stats_1.5.rds")
+saveRDS(NNet_3_mae_stats, file = "NNet_3_mae_stats_1.5.rds")
+
+NNet_4_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 4, "mse", batch_size = 256, 50,
+                                   macro_factor_names, individual_factor_names)
+NNet_4_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 4, "mae", batch_size = 256, 50,
+                                   macro_factor_names, individual_factor_names)
+
 NNet_4_mse_stats[[1]]$loss_stats
 NNet_4_mse_stats[[1]]$forecasts
 NNet_4_mse_stats[[1]]$variable_importance %>%
@@ -1413,6 +1423,14 @@ NNet_4_mae_stats[[1]]$loss_stats
 NNet_4_mae_stats[[1]]$forecasts
 NNet_4_mae_stats[[1]]$variable_importance %>%
   arrange(desc(importance))
+
+saveRDS(NNet_4_mse_stats, file = "NNet_4_mse_stats_1.5.rds")
+saveRDS(NNet_4_mae_stats, file = "NNet_4_mae_stats_1.5.rds")
+
+NNet_5_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 5, "mse", batch_size = 256, 50,
+                                   macro_factor_names, individual_factor_names)
+NNet_5_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 5, "mae", batch_size = 256, 50,
+                                   macro_factor_names, individual_factor_names)
 
 NNet_5_mse_stats[[1]]$loss_stats
 NNet_5_mse_stats[[1]]$forecasts
@@ -1424,5 +1442,46 @@ NNet_5_mae_stats[[1]]$forecasts
 NNet_5_mae_stats[[1]]$variable_importance %>%
   arrange(desc(importance))
 
+saveRDS(NNet_5_mse_stats, file = "NNet_5_mse_stats_1.5.rds")
+saveRDS(NNet_5_mae_stats, file = "NNet_5_mae_stats_1.5.rds")
+
 ```
+
+```{r}
+## Rbinding Loss Stats
+
+empirical_results_df <- foreach(sample = (1:3), .combine = "rbind") %do% {
+  cbind(Sample = sample, 
+    rbind(
+      cbind(model = "LM_MSE", LM_stats_mse[[sample]]$loss_stats),
+      cbind(model = "LM_MAE", LM_stats_mae[[sample]]$loss_stats),
+      
+      cbind(model = "ELN_MSE", ELN_stats_mse[[sample]]$loss_stats),
+      cbind(model = "ELN_MAE", ELN_stats_mae[[sample]]$loss_stats),
+      
+      cbind(model = "RF_MSE", RF_stats_mse[[sample]]$loss_stats),
+      cbind(model = "RF_MAE", RF_stats_mae[[sample]]$loss_stats),
+      
+      cbind(model = "NNet_1_MSE", NNet_1_mse_stats[[sample]]$loss_stats),
+      cbind(model = "NNet_1_MAE", NNet_1_mae_stats[[sample]]$loss_stats),
+      
+      cbind(model = "NNet_2_MSE", NNet_2_mse_stats[[sample]]$loss_stats),
+      cbind(model = "NNet_2_MAE", NNet_2_mae_stats[[sample]]$loss_stats),
+      
+      cbind(model = "NNet_3_MSE", NNet_3_mse_stats[[sample]]$loss_stats),
+      cbind(model = "NNet_3_MAE", NNet_3_mae_stats[[sample]]$loss_stats),
+      
+      cbind(model = "NNet_4_MSE", NNet_4_mse_stats[[sample]]$loss_stats),
+      cbind(model = "NNet_4_MAE", NNet_4_mae_stats[[sample]]$loss_stats),
+      
+      cbind(model = "NNet_5_MSE", NNet_5_mse_stats[[sample]]$loss_stats),
+      cbind(model = "NNet_5_MAE", NNet_5_mae_stats[[sample]]$loss_stats)
+    )
+  )
+}
+
+write.csv(empirical_results_df, file = "empirical_results.csv")
+
+```
+
 
