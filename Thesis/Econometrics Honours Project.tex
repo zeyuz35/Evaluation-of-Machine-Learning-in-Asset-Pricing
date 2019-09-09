@@ -427,17 +427,18 @@ Finally, multiple random starting values for the weights and biases (seeds) were
 
 Though \cite{gu_empirical_2018} explore the performance of machine learning on simulated returns series, their design used factors are uncorrelated across $i$, and, in particular, that the factors which enter the return equation are uncorrelated with the factors that do not enter the return equation. As note by \cite{harvey__2016} and many others, this is not what is observed in practice. 
 
-Therefore, we simulate an extension: a latent factor model with stochastic volatility for excess return, $r_{t+1}$, for $t=1,\dots,T$:
+Therefore, we simulate a latent factor model with a stochastic volatility process for excess returns  $r_{t+1}$, for $t=1,\dots,T$:
 
 \begin{flalign}
 r_{i, t+1} &= 
 g\left(z_{i, t}\right) + \beta_{i,t+1}v_{t+1} + e_{i, t+1}; 
-\quad z_{i, t}=\left(1, x_{t}\right)^{\prime} \otimes c_{i, t}, 
-\quad \beta_{i, t}=\left(c_{i 1, t}, c_{i 2, t}, c_{i 3, t}\right) \\ 
+	\quad z_{i, t}=\left(1, x_{t}\right)^{\prime} \otimes c_{i, t}, 
+		\quad \beta_{i, t}=\left(c_{i 1, t}, c_{i 2, t}, c_{i 3, t}\right) \\ 
 e_{i, t+1} &= 
-\exp\left( \frac{\sigma_{i, t+1}^2}{2} \right) \varepsilon_{i, t+1}; \\
-\sigma^2_{i,t+1} &= 
-\omega + \gamma \sigma^2_{t} + w_{t+1}
+	\sigma_{i, t+1} \varepsilon_{i, t+1}; \\
+\operatorname{log} (\sigma^2_{i,t+1}) &= 
+	\omega + \gamma \operatorname{log} (\sigma^2_{t}) + \sigma_{u}u; 
+	\quad u \sim N(0, 1)
 \end{flalign}
 
 Let $v_{t+1}$ be a $3\times 1$ vector of errors, and $w_{t+1} \sim N(0, 1)$ and $\varepsilon_{i,t+1} \sim N(0, 1)$ scalar error terms. The parameters of these are tuned such that the R squared for each individual return series was around 5\%, and the annualized volatility of each return series approximately 22\%, as is often observed empirically.
@@ -498,34 +499,32 @@ x_{t}=Ax_{t-1}+u_t,
 	\right) 
 \end{flalign*}
 
-where we specify $A$:
-
-\rhs{clean up}
-
-Other more complex and interactive matrix specifications were briefly explored, but these did not appear to have a significant impact on results. More complex designs were observed to only affect the variable importance metrics, but only to a small degree.
+where we specify $A$ as $A_1$:
 
 \begin{align}
-(1)\; A =
+(1)\; A_1 =
 	\begin{pmatrix}
 		.95 & 0 & 0 \\
 		0 & .95 & 0 \\
 		0 & 0 & .95
 	\end{pmatrix}\;
 \;
-(2)\; A=
+(2)\; A_2 =
 	\begin{pmatrix}
 		1 & 0 & .25 \\
 		0 & .95 & 0 \\
 		.25 & 0 &.95
 	\end{pmatrix}\;
 \;
-(3)\; A=
+(3)\; A_3 =
 	\begin{pmatrix}
 		.99 & .2 & .1 \\
 		.2 & .90 & -.3 \\
 		.1 & -.3 & -.99
 	\end{pmatrix}
 \end{align}
+
+Other more complex and interactive matrix specifications of $A_2$ and $A_3$ were briefly explored, but these did not appear to have a significant impact on results. More complex designs were observed to only affect the variable importance metrics, but only to a small degree.
 
 \subsubsection{Simulating Return Series}
 
@@ -552,32 +551,32 @@ The simulation design results in $3 \times 3 = 12$ different simulated datasets,
 
 \subsubsection{Sample Splitting}
 
-If viewed as monthly periods, $T = 180$ corresponds to 15 years. The training sample was set to start from $T = 108$ or 9 years, a validation set 3 years in length, and a test set 3 in length. We employ the hybrid growing window approach as described earlier in section \ref{sample_split} (see Figure \ref{sample_split_diag} for a graphical representation). The sample splitting scheme was chosen in a way which assisted with the stability of the advanced machine learning models, particularly neural networks. 
+If viewed as monthly periods, $T = 180$ corresponds to 15 years. A data splitting scheme similar to to the scheme to be used in the empirical data study was used: a training:validation length ratio of approximately 1.5 to begin, and a test set that is 1 year in length. We employ the hybrid growing window approach as described earlier in section \ref{sample_split} (see Figure \ref{sample_split_diag} for a graphical representation). The sample splitting scheme was chosen in a way which assisted with the stability of the advanced machine learning models, particularly neural networks. 
 
 \begin{figure}
 	\begin{center}
-		\begin{tabular}{|c|p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}|p{0.25cm}p{0.25cm}p{0.25cm}|}
+		\begin{tabular}{|c|p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}|}
 			\hline
 			Set No. &&&&&&&&&&&&&&& \\
 			\hline
 			%%%%%%%%
-			3 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
-			\cellcolor{pink} & 
-			\cellcolor{olive} & \cellcolor{olive} &	\cellcolor{olive} \\
+			3 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
+			\cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & 	
+			\cellcolor{olive} \\
 			%%%%%%%%
-			2 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
-			\cellcolor{pink} & 
-			\cellcolor{olive} & \cellcolor{olive} &	\cellcolor{olive} & \cellcolor{olive} \\
+			2 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
+			\cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & 	
+			\cellcolor{olive} & NA  \\
 			%%%%%%%%
-			1 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
-			\cellcolor{pink} & 
-			\cellcolor{olive} & \cellcolor{olive} &	\cellcolor{olive} & \cellcolor{olive} & \cellcolor{olive} \\
+			1 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
+			\cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & 	
+			\cellcolor{olive} & NA & NA \\
 			\hline
 			Year & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15\\
 			\hline
 		\end{tabular}
 		\medskip
-		\begin{tabular}{|c|p{0.25cm}|}
+		\begin{tabular}{|c|p{0.40cm}|}
 			\hline
 			Training & \cellcolor{cyan} \\
 			\hline
@@ -609,7 +608,7 @@ where $\mathcal{T}_3$ indicates that the fits are only assessed on the test subs
 
 \subsubsection{Diebold-Mariano Test}
 
-The Diebold-Mariano test (\cite{diebold_comparing_2002}, and \cite{harvey_testing_1997}) is a procedure which compares the forecast accuracy of two forecast methods. It is different to the overall R squared metric because it tests whether or not the models' forecast accuracy is significantly different. 
+The Diebold-Mariano test (\cite{diebold_comparing_2002}, and \cite{harvey_testing_1997}) is a procedure which compares the forecast accuracy of two forecast methods. It is different to the overall R squared metric because it tests whether the forecasts from two different models are different to a statistically significant degree. 
 
 Under the null hypothesis of the Diebold-Mariano test:
 
@@ -630,6 +629,8 @@ Under the null hypothesis of the Diebold-Mariano test:
 where $d_t$ represents the difference series between the forecast errors of the two models $e_1t - e_2t$, $\hat{\gamma}_k$ represents the sample $k$th autocovariance for $d_t$, and $S_1$ represents the original unmodified Diebold Mariano test statistic.
 
 As all models in this paper will be producing forecasts for an entire cross section of stocks, $e_1t$ and $e_2t$ will instead represent the cross sectional average forecast errors for each model.
+
+It must be noted that the DM test statistic assumes that the loss differential series $d_t$ is covariance stationary and short memory. The precise behaviour of the DM test statistic with regards to more complex non-linear models such as Random Forests and Neural Networks is not fully understood, which may impact on the validity of the null hypothesis distribution. 
 
 \subsection{Variable Importance}
 
@@ -670,13 +671,13 @@ where \( c_{i,t} \) is a \( P_c \times 1 \) matrix of characteristics for each s
 
 When the underlying data generating process is linear with no cross sectional correlation we see that the linear and penalized linear models offer the best performance. Random forests and neural networks offer performance that is not too far behind, and it is likely due to these models overfitting the training and validation sets, thus generalizing more poorly to the test set. In terms of variable importance, the linear and penalized linear models are able to consistently pick out the correct factors in the DGP, while the random forests and neural networks cannot.
 
-Linear Models
+\subsubsection{Linear Models}
 
 The linear models performed very well in simple linear settings, with notably deteriorating performance as the specifications became more complex. They struggled greatly with cross sectional correlation even in specifications with no cross sectional correlation, as noted by the fact that they identify correlated interaction terms. When cross sectional correlation was increased
 
 The introduction of non-linear interactions in the data generating process affected its performance, though it was still able to pick out transformations such as sgn and logit functions. This is likely due to these transformations not changing the direction of their terms.
 
-Penalized Linear Models
+\subsubsection{Penalized Linear Models}
 
 The penalized linear models had markedly better performance than the linear models, though this was only apparent for more complex model specifications. 
 
@@ -684,7 +685,7 @@ Of particular note is the instability of the optimal hyperparameter as the valid
 
 Similarly to the linear models, penalized linear models which minimized mean absolute error (corresponding to quantile regression) offered consistent improvements over their mean squared error versions.
 
-Random Forests
+\subsubsection{Random Forests}
 
 The random forests exhibited higher performance and robustness compared the linear and penalized linear models.
 
@@ -692,9 +693,7 @@ The random forests struggle greatly with determining variable importance in the 
 
 Very computationally intensive, so only a conservative grid of hyperparameters was able to be implemented. In particular, a low ntree parameter was used for feasibility, and it was not feasible to explore which value of ntree stopped improving performance. It is generally recommended to set the ntree parameter as high as computationally feasible, as doing so typically only increases performance. This means that there is possibly more room for higher performance from random forest models.
 
-Neural Networks
-
-These were a disaster in general.
+\subsubsection{Neural Networks}
 
 The neural networks had surprisingly very poor performance compared to the other models, in addition to being the most involved to fit well. 
 Due to computational environment having access to GPUs, higher batch sizes were faster. However, higher batch sizes were observed to almost universally producing poorer solutions.
@@ -754,26 +753,43 @@ We try to mimic the procedure used in the simulation study. This means that the 
 	\caption{Diebold Mariano Tests for Empirical Data}
 \end{table}
 
-In general, results from the simulation study were reproduced in the empirical study.
+In general, results from the simulation study were reproduced in the empirical study. We similarly see that the penalized linear models generally performing the best, with the random forest models offering slightly worse performance, occasionally outperforming penalized linear models. The neural networks offered lukewarm performance with the earlier training samples, but began to outperform random forests as the amount of training data increased.
 
-Performance
+Interestingly, 
 
-The linear models did the most poorly. 
-The penalized linear models offered a substantial increase in performance. 
-The random forest was the best performing model.
-The neural networks offered varying results.
+\subsubsection{Linear Models}
 
-Variable Importance
+The linear models typically performed among the worst of all models
 
-As the true underlying covariates for empirical returns is unknown, variable importance is only discussed with regards to how consistent each method is at picking out true covariates.
+\subsubsection{Penalized Linear Models}
 
-The linear and penalized linear models appear to be mostly consistent.
 
-The neural networks in general identified similar groups of variables, but also omitted other variables.
+
+\subsubsection{Random Forests}
+
+
+
+Similar to the simulation study, the random forests overfitted the training sample by a large margin, offering the greatest performance by far for in sample forecasts.
+
+\subsubsection{Neural Networks}
+
+The neural networks offered lukewarm performance in the first two training samples, trailing behind the random forest and penalized linear models. 
 
 \section{Limitations}
 
+There were many limitations in this study.
 
+Dataset limitations
+The dataset 
+As observed from both the simulation and empirical results, the neural networks' performance increases as the amount of training data does. 
+
+Data splitting limitations
+The data splitting scheme was decided in a pseudo-independent fashion: the training:validation length ratio of 1.5 was chosen to mimic the procedure of \cite{gu_empirical_2018}, in addition providing more stability for the neural network models. Crucially, this meant that no regards were given to large events affecting stock returns, including but not limited to the dot-com bubble, the 2008 Global Financial Crisis, and the 2015-2016 stock market sell-off. 
+
+Model specification limitations
+
+
+Computational limitations
 
 \section{Conclusion}
 
