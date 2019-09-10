@@ -669,6 +669,8 @@ where \( c_{i,t} \) is a \( P_c \times 1 \) matrix of characteristics for each s
 	\caption{Diebold Mariano Tests for Simulation Study}
 \end{table}
 
+Interestingly, there did not appear to be much different if at all across the different underlying data generating process specifications. I.e. all models produced identical results across all g() functions, holding other aspects constant. This suggests that none of the models are able to adequately discern differences across the specifications, 
+
 When the underlying data generating process is linear with no cross sectional correlation we see that the linear and penalized linear models offer the best performance. Random forests and neural networks offer performance that is not too far behind, and it is likely due to these models overfitting the training and validation sets, thus generalizing more poorly to the test set. In terms of variable importance, the linear and penalized linear models are able to consistently pick out the correct factors in the DGP, while the random forests and neural networks cannot.
 
 \subsubsection{Linear Models}
@@ -787,9 +789,7 @@ Data splitting limitations
 The data splitting scheme was decided in a pseudo-independent fashion: the training:validation length ratio of 1.5 was chosen to mimic the procedure of \cite{gu_empirical_2018}, in addition providing more stability for the neural network models. Crucially, this meant that no regards were given to large events affecting stock returns, including but not limited to the dot-com bubble, the 2008 Global Financial Crisis, and the 2015-2016 stock market sell-off. 
 
 Model specification limitations
-
-
-Computational limitations
+For each class of models considered, not all possible or reasonable specifications were explored. The linear and penalized linear models were not supplied with all possible higher order transformations, such as all possible pairwise interaction terms between all regressors as is the norm. This was mainly due to computational issues, as a model frame containing all possible pairwise interactions has exponentially higher memory requirements, in addition to computational feasibility. 
 
 \section{Conclusion}
 

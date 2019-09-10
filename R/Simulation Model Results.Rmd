@@ -177,27 +177,134 @@ saveRDS(g3_A1_sv_1_results, "g3_A1_sv_1_results.rds")
 ```
 
 ```{r}
-## Across the different realizations, compute the average statistics
-g1_A1_sv_0.01_results_average <- list(
-      # Panel Statistics
-      Dataset_stats = 0, 
-      # Models
-      LM_MSE = 0, LM_MAE = 0,
-      ELN_MSE = 0, ELN_MAE = 0,
-      RF_MSE = 0, RF_MAE = 0,
-      # Neural Networks
-      NN1_MSE = 0, NN1_MAE = 0,
-      NN2_MSE = 0, NN2_MAE = 0,
-      NN3_MSE = 0, NN3_MAE = 0,
-      NN4_MSE = 0, NN4_MAE = 0,
-      NN5_MSE = 0, NN5_MAE = 0
-    )
+## For a given simulation results list, collect all the loss dataframes into a big, tidy DF for a SINGLE realization
 
-results_df <- foreach(1 = (1:length(simulation_results)), .combine = "rbind") %do% {
-  cbind(realization_no = i)
-  rbind(simulation_results[[]])
+gen_tidy_loss_df <- function(simulation_results_list, realization_no, dgp_spec, SV, cross_corr) {
+  df <- foreach(sample = (1:3), .combine = "rbind") %do% {
+    rbind(
+      cbind(model = "LM_MSE", sample = sample, simulation_results_list[[realization_no]]$LM_MSE[[sample]]$loss_stats),
+      cbind(model = "LM_MAE", sample = sample, simulation_results_list[[realization_no]]$LM_MAE[[sample]]$loss_stats),
+      
+      ################################################################################################
+      
+      cbind(model = "ELN_MSE", sample = sample, simulation_results_list[[realization_no]]$ELN_MSE[[sample]]$loss_stats),
+      cbind(model = "ELN_MAE", sample = sample, simulation_results_list[[realization_no]]$ELN_MAE[[sample]]$loss_stats),
+      
+      ################################################################################################
+      
+      cbind(model = "RF_MSE", sample = sample, simulation_results_list[[realization_no]]$RF_MSE[[sample]]$loss_stats),
+      cbind(model = "RF_MAE", sample = sample, simulation_results_list[[realization_no]]$RF_MAE[[sample]]$loss_stats)
+      
+      ################################################################################################
+      
+      # cbind(model = "NN1_MSE", sample = sample, simulation_results_list[[realization_no]]$NN1_MSE[[sample]]$loss_stats),
+      # cbind(model = "NN1_MAE", sample = sample, simulation_results_list[[realization_no]]$NN1_MAE[[sample]]$loss_stats),
+      # 
+      # cbind(model = "NN2_MSE", sample = sample, simulation_results_list[[realization_no]]$NN2_MSE[[sample]]$loss_stats),
+      # cbind(model = "NN2_MAE", sample = sample, simulation_results_list[[realization_no]]$NN2_MAE[[sample]]$loss_stats),
+      # 
+      # cbind(model = "NN3_MSE", sample = sample, simulation_results_list[[realization_no]]$NN3_MSE[[sample]]$loss_stats),
+      # cbind(model = "NN3_MAE", sample = sample, simulation_results_list[[realization_no]]$NN3_MAE[[sample]]$loss_stats),
+      # 
+      # cbind(model = "NN4_MSE", sample = sample, simulation_results_list[[realization_no]]$NN4_MSE[[sample]]$loss_stats),
+      # cbind(model = "NN4_MAE", sample = sample, simulation_results_list[[realization_no]]$NN4_MAE[[sample]]$loss_stats),
+      # 
+      # cbind(model = "NN5_MSE", sample = sample, simulation_results_list[[realization_no]]$NN5_MSE[[sample]]$loss_stats),
+      # cbind(model = "NN5_MAE", sample = sample, simulation_results_list[[realization_no]]$NN5_MAE[[sample]]$loss_stats)
+    )
+  }
+  cbind(realization_no = realization_no, dgp_spec = dgp_spec, SV = SV, cross_corr = cross_corr, df)
 }
 
+# Function to iterate over all realizations
+
+all_realize_loss_df <- function(simulation_results_list, dgp_spec, SV, cross_corr) {
+  foreach(realization_no = (1:10), .combine = "rbind") %do% {
+    gen_tidy_loss_df(simulation_results_list, realization_no, dgp_spec, SV, cross_corr)
+  }
+}
+
+all_loss_df <- rbind(
+  all_realize_loss_df(g1_A1_nosv_0_results, dgp_spec = "g1", SV = 0, cross_corr = 0),
+  all_realize_loss_df(g2_A1_nosv_0_results, dgp_spec = "g2", SV = 0, cross_corr = 0),
+  all_realize_loss_df(g3_A1_nosv_0_results, dgp_spec = "g3", SV = 0, cross_corr = 0),
+  
+  all_realize_loss_df(g1_A1_sv_0.01_results, dgp_spec = "g1", SV = 1, cross_corr = 0.01),
+  all_realize_loss_df(g2_A1_sv_0.01_results, dgp_spec = "g2", SV = 1, cross_corr = 0.01),
+  all_realize_loss_df(g3_A1_sv_0.01_results, dgp_spec = "g3", SV = 1, cross_corr = 0.01),
+  
+  all_realize_loss_df(g1_A1_sv_0.1_results, dgp_spec = "g1", SV = 1, cross_corr = 0.1),
+  all_realize_loss_df(g2_A1_sv_0.1_results, dgp_spec = "g2", SV = 1, cross_corr = 0.1),
+  all_realize_loss_df(g3_A1_sv_0.1_results, dgp_spec = "g3", SV = 1, cross_corr = 0.1),
+  
+  all_realize_loss_df(g1_A1_sv_1_results, dgp_spec = "g1", SV = 1, cross_corr = 1),
+  all_realize_loss_df(g2_A1_sv_1_results, dgp_spec = "g2", SV = 1, cross_corr = 1),
+  all_realize_loss_df(g3_A1_sv_1_results, dgp_spec = "g3", SV = 1, cross_corr = 1)
+)
+
+all_loss_df_averaged <- all_loss_df %>%
+  group_by(model, dgp_spec, sample, SV, cross_corr) %>%
+  summarise(train_MAE = mean(train_MAE), train_MSE = mean(train_MSE), 
+            train_RMSE = mean(train_RMSE), train_RSquare = mean(train_RSquare),
+            
+            validation_MAE = mean(validation_MAE), validation_MSE = mean(validation_MSE), 
+            validation_RMSE = mean(validation_RMSE), validation_RSquare = mean(validation_RSquare),
+              
+            test_MAE = mean(test_MAE), test_MSE = mean(test_MSE), 
+            test_RMSE = mean(test_RMSE), test_RSquare = mean(test_RSquare)
+            )
+
+####
+# Function to collate variable importance
+
+normalize_variable_importance <- function(variable_importance_df) {
+  min <- min(variable_importance_df$importance)
+  sum <- sum(variable_importance_df$importance + min)
+  variable_importance_df %>%
+    mutate(importance = importance + min) %>%
+    mutate(importance = importance/sum)
+}
+
+gen_tidy_vi <- function(simulation_results_list, realization_no, dgp_spec, SV, cross_corr) {
+  df <- foreach(sample = 1:3, .combine = "rbind") %do% {
+    rbind(
+      cbind(model = "LM_MSE", sample = sample, simulation_results_list[[realization_no]]$LM_MSE[[sample]]$loss_stats),
+      cbind(model = "LM_MAE", sample = sample, simulation_results_list[[realization_no]]$LM_MAE[[sample]]$loss_stats),
+      
+      ################################################################################################
+      
+      cbind(model = "ELN_MSE", sample = sample, simulation_results_list[[realization_no]]$ELN_MSE[[sample]]$loss_stats),
+      cbind(model = "ELN_MAE", sample = sample, simulation_results_list[[realization_no]]$ELN_MAE[[sample]]$loss_stats),
+      
+      ################################################################################################
+      
+      cbind(model = "RF_MSE", sample = sample, simulation_results_list[[realization_no]]$RF_MSE[[sample]]$loss_stats),
+      cbind(model = "RF_MAE", sample = sample, simulation_results_list[[realization_no]]$RF_MAE[[sample]]$loss_stats)
+      
+      ################################################################################################
+      
+      # cbind(model = "NN1_MSE", sample = sample, simulation_results_list[[realization_no]]$NN1_MSE[[sample]]$loss_stats),
+      # cbind(model = "NN1_MAE", sample = sample, simulation_results_list[[realization_no]]$NN1_MAE[[sample]]$loss_stats),
+      # 
+      # cbind(model = "NN2_MSE", sample = sample, simulation_results_list[[realization_no]]$NN2_MSE[[sample]]$loss_stats),
+      # cbind(model = "NN2_MAE", sample = sample, simulation_results_list[[realization_no]]$NN2_MAE[[sample]]$loss_stats),
+      # 
+      # cbind(model = "NN3_MSE", sample = sample, simulation_results_list[[realization_no]]$NN3_MSE[[sample]]$loss_stats),
+      # cbind(model = "NN3_MAE", sample = sample, simulation_results_list[[realization_no]]$NN3_MAE[[sample]]$loss_stats),
+      # 
+      # cbind(model = "NN4_MSE", sample = sample, simulation_results_list[[realization_no]]$NN4_MSE[[sample]]$loss_stats),
+      # cbind(model = "NN4_MAE", sample = sample, simulation_results_list[[realization_no]]$NN4_MAE[[sample]]$loss_stats),
+      # 
+      # cbind(model = "NN5_MSE", sample = sample, simulation_results_list[[realization_no]]$NN5_MSE[[sample]]$loss_stats),
+      # cbind(model = "NN5_MAE", sample = sample, simulation_results_list[[realization_no]]$NN5_MAE[[sample]]$loss_stats)
+    )
+  }
+  cbind(realization_no = realization_no, dgp_spec = dgp_spec, SV = SV, cross_corr = cross_corr, df)
+}
+  
+```
+
+```{r}
 ## Given the simulation results list, return a dataframe of loss statistics for a single realization and time slice
 
 c_loss_df <- function(simulation_results, batch, sample) {
@@ -281,7 +388,11 @@ all_results_df <- rbind(
   
   append_id_columns(SV = 1, cross_corr = 0.1, specification = "g1", simulation_results = g1_A1_sv_0.1_results),
   append_id_columns(SV = 1, cross_corr = 0.1, specification = "g2", simulation_results = g2_A1_sv_0.1_results),
-  append_id_columns(SV = 1, cross_corr = 0.1, specification = "g3", simulation_results = g3_A1_sv_0.1_results)
+  append_id_columns(SV = 1, cross_corr = 0.1, specification = "g3", simulation_results = g3_A1_sv_0.1_results),
+  
+  append_id_columns(SV = 1, cross_corr = 1, specification = "g1", simulation_results = g1_A1_sv_1_results),
+  append_id_columns(SV = 1, cross_corr = 1, specification = "g2", simulation_results = g2_A1_sv_1_results),
+  append_id_columns(SV = 1, cross_corr = 1, specification = "g3", simulation_results = g3_A1_sv_1_results)
 )
   
 ```
