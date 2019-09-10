@@ -979,7 +979,7 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
     # Fit the model
     # The patience parameter is the amount of epochs to check for improvement.
     # Gu et al don't say what their early stopping parameter p is
-    early_stop <- callback_early_stopping(monitor = "val_loss", patience = patience, restore_best_weights = FALSE)
+    early_stop <- callback_early_stopping(monitor = "val_loss", patience = patience, restore_best_weights = TRUE)
     
     print_dot_callback <- callback_lambda(
       on_epoch_end = function(epoch, logs) {
@@ -1000,10 +1000,9 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
         layer_dense(units = 32, input_shape = ncol(train_x),
                     bias_initializer = initializer_zeros(),
                     kernel_initializer = initializer_truncated_normal(mean = 0, stddev = 0.05, seed = NULL)) %>%
-          layer_activation("relu") %>%
+          layer_activation("tanh") %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
-          layer_dropout(rate = 0.5) %>%
         # Output Layer
           layer_dense(units = 1, activation = "linear")
         
@@ -1015,18 +1014,16 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
         layer_dense(units = 32, input_shape = ncol(train_x),
                     bias_initializer = initializer_zeros(),
                     kernel_initializer = initializer_truncated_normal(mean = 0, stddev = 0.05, seed = NULL)) %>%
-          layer_activation("relu") %>%
+          layer_activation("tanh") %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
-          layer_dropout(rate = 0.5) %>%
         # Layer 2
         layer_dense(units = 16,
                     bias_initializer = initializer_zeros(),
                     kernel_initializer = initializer_truncated_normal(mean = 0, stddev = 0.05, seed = NULL)) %>%
-          layer_activation("relu") %>%
+          layer_activation("tanh") %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
-          layer_dropout(rate = 0.5) %>%
         # Output Layer
         layer_dense(units = 1, activation = "linear")
           
@@ -1038,21 +1035,21 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
         layer_dense(units = 32, input_shape = ncol(train_x),
                     bias_initializer = initializer_zeros(),
                     kernel_initializer = initializer_truncated_normal(mean = 0, stddev = 0.05, seed = NULL)) %>%
-          layer_activation("relu") %>%
+          layer_activation("tanh") %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
         # Layer 2
         layer_dense(units = 16,
                     bias_initializer = initializer_zeros(),
                     kernel_initializer = initializer_truncated_normal(mean = 0, stddev = 0.05, seed = NULL)) %>%
-          layer_activation("relu") %>%
+          layer_activation("tanh") %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
         #Layer 3
         layer_dense(units = 8,
                     bias_initializer = initializer_zeros(),
                     kernel_initializer = initializer_truncated_normal(mean = 0, stddev = 0.05, seed = NULL)) %>%
-          layer_activation("relu") %>%
+          layer_activation("tanh") %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
         # Output Layer
@@ -1066,28 +1063,28 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
         layer_dense(units = 32, input_shape = ncol(train_x),
                     bias_initializer = initializer_zeros(),
                     kernel_initializer = initializer_truncated_normal(mean = 0, stddev = 0.05, seed = NULL)) %>%
-          layer_activation("relu") %>%
+          layer_activation("tanh") %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
         # Layer 2
         layer_dense(units = 16,
                     bias_initializer = initializer_zeros(),
                     kernel_initializer = initializer_truncated_normal(mean = 0, stddev = 0.05, seed = NULL)) %>%
-          layer_activation("relu") %>%
+          layer_activation("tanh") %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
         #Layer 3
         layer_dense(units = 8,
                     bias_initializer = initializer_zeros(),
                     kernel_initializer = initializer_truncated_normal(mean = 0, stddev = 0.05, seed = NULL)) %>%
-          layer_activation("relu") %>%
+          layer_activation("tanh") %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
         #Layer 4
         layer_dense(units = 4,
                     bias_initializer = initializer_zeros(),
                     kernel_initializer = initializer_truncated_normal(mean = 0, stddev = 0.05, seed = NULL)) %>%
-          layer_activation("relu") %>%
+          layer_activation("tanh") %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
         # Output Layer
@@ -1101,49 +1098,44 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
         layer_dense(units = 32, input_shape = ncol(train_x),
                     bias_initializer = initializer_zeros(),
                     kernel_initializer = initializer_truncated_normal(mean = 0, stddev = 0.05, seed = NULL)) %>%
-          layer_activation("relu") %>%
+          layer_activation("tanh") %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
-          layer_dropout(rate = 0.5) %>%
         # Layer 2
         layer_dense(units = 16,
                     bias_initializer = initializer_zeros(),
                     kernel_initializer = initializer_truncated_normal(mean = 0, stddev = 0.05, seed = NULL)) %>%
-          layer_activation("relu") %>%
+          layer_activation("tanh") %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
-          layer_dropout(rate = 0.5) %>%
         #Layer 3
         layer_dense(units = 8,
                     bias_initializer = initializer_zeros(),
                     kernel_initializer = initializer_truncated_normal(mean = 0, stddev = 0.05, seed = NULL)) %>%
-          layer_activation("relu") %>%
+          layer_activation("tanh") %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
-          layer_dropout(rate = 0.5) %>%
         #Layer 4
         layer_dense(units = 4,
                     bias_initializer = initializer_zeros(),
                     kernel_initializer = initializer_truncated_normal(mean = 0, stddev = 0.05, seed = NULL)) %>%
-          layer_activation("relu") %>%
+          layer_activation("tanh") %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
-          layer_dropout(rate = 0.5) %>%
         #Layer 5
         layer_dense(units = 2,
                     bias_initializer = initializer_zeros(),
                     kernel_initializer = initializer_truncated_normal(mean = 0, stddev = 0.05, seed = NULL)) %>%
-          layer_activation("relu") %>%
+          layer_activation("tanh") %>%
           layer_activity_regularization(l1 = l1_penalty) %>%
           layer_batch_normalization() %>%
-          layer_dropout(rate = 0.5) %>%
         # Output Layer
         layer_dense(units = 1, activation = "linear")
           
       }
       model %>% compile(
         loss = loss_function,
-        optimizer = optimizer_nadam(lr = 0.002, beta_1 = 0.9, beta_2 = 0.999,
+        optimizer = optimizer_nadam(lr = 0.001, beta_1 = 0.9, beta_2 = 0.999,
                                    epsilon = NULL, clipnorm = NULL,
                                    clipvalue = NULL),
         metrics = list("mae", "mse")
@@ -1158,12 +1150,12 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
     # In general, larger batch sizes result in faster progress in training, but don't always converge as fast. Smaller batch sizes train slower, but can converge faster.
     # Default batch size is 32
     neural_network %>% fit(as.matrix(train_x), as.matrix(train_y), 
-                           batch_size = batch_size, epochs = 500, verbose = 1, 
+                           batch_size = batch_size, epochs = 500, verbose = 0, 
                            validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
                            callbacks = list(early_stop, print_dot_callback))
     
     #Model
-    NNet_stats[[set]]$model <- neural_network
+    #NNet_stats[[set]]$model <- neural_network
     
     #Train
     train_predict <- neural_network %>% predict(as.matrix(train_x))
@@ -1190,13 +1182,16 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
     NNet_stats[[set]]$loss_stats$test_RSquare <- R2(test_predict, test$rt, form = "traditional")
         
     #Forecasts
-    NNet_stats[[set]]$forecasts <- test_predict
+    #NNet_stats[[set]]$forecasts <- test_predict
       
     #Forecast residuals
     NNet_stats[[set]]$forecast_resids <- nnet_ave_forecast_resids(nnet_model = neural_network, test = test)
     
     #Variable Importance
     NNet_stats[[set]]$variable_importance <- NNet_variable_importance(test, neural_network)
+    
+    #Clear Kera Session
+    k_clear_session()
   }
   NNet_stats
 }

@@ -151,6 +151,16 @@ saveRDS(g1_A1_nosv_0_results, "g1_A1_nosv_0_results.rds")
 saveRDS(g2_A1_nosv_0_results, "g2_A1_nosv_0_results.rds")
 saveRDS(g3_A1_nosv_0_results, "g3_A1_nosv_0_results.rds")
 
+g1_A1_nosv_0_NN_results <- fit_all_models(g1_A1_nosv_0, batch_process_range, LM = 0, ELN = 0, RF = 0, NNet = 1)
+g2_A1_nosv_0_NN_results <- fit_all_models(g2_A1_nosv_0, batch_process_range, LM = 0, ELN = 0, RF = 0, NNet = 1)
+g3_A1_nosv_0_NN_results <- fit_all_models(g3_A1_nosv_0, batch_process_range, LM = 0, ELN = 0, RF = 0, NNet = 1)
+
+saveRDS(g1_A1_NN_nosv_0_results, "g1_A1_nosv_0_NN_results.rds")
+saveRDS(g2_A1_NN_nosv_0_results, "g2_A1_nosv_0_NN_results.rds")
+saveRDS(g3_A1_NN_nosv_0_results, "g3_A1_nosv_0_NN_results.rds")
+
+#############################################################################################################
+
 g1_A1_sv_0.01_results <- fit_all_models(g1_A1_sv_0.01, batch_process_range, LM = 1, ELN = 1, RF = 1, NNet = 0)
 g2_A1_sv_0.01_results <- fit_all_models(g2_A1_sv_0.01, batch_process_range, LM = 1, ELN = 1, RF = 1, NNet = 0)
 g3_A1_sv_0.01_results <- fit_all_models(g3_A1_sv_0.01, batch_process_range, LM = 1, ELN = 1, RF = 1, NNet = 0)
@@ -158,6 +168,16 @@ g3_A1_sv_0.01_results <- fit_all_models(g3_A1_sv_0.01, batch_process_range, LM =
 saveRDS(g1_A1_sv_0.01_results, "g1_A1_sv_0.01_results.rds")
 saveRDS(g2_A1_sv_0.01_results, "g2_A1_sv_0.01_results.rds")
 saveRDS(g3_A1_sv_0.01_results, "g3_A1_sv_0.01_results.rds")
+
+g1_A1_sv_0.01_NN_results <- fit_all_models(g1_A1_sv_0.01, batch_process_range, LM = 0, ELN = 0, RF = 0, NNet = 1)
+g2_A1_sv_0.01_NN_results <- fit_all_models(g2_A1_sv_0.01, batch_process_range, LM = 0, ELN = 0, RF = 0, NNet = 1)
+g3_A1_sv_0.01_NN_results <- fit_all_models(g3_A1_sv_0.01, batch_process_range, LM = 0, ELN = 0, RF = 0, NNet = 1)
+
+saveRDS(g1_A1_sv_0.01_NN_results, "g1_A1_sv_0.01_NN_results.rds")
+saveRDS(g2_A1_sv_0.01_NN_results, "g2_A1_sv_0.01_NN_results.rds")
+saveRDS(g3_A1_sv_0.01_NN_results, "g3_A1_sv_0.01_NN_results.rds")
+
+#############################################################################################################
 
 g1_A1_sv_0.1_results <- fit_all_models(g1_A1_sv_0.1, batch_process_range, LM = 1, ELN = 1, RF = 1, NNet = 0)
 g2_A1_sv_0.1_results <- fit_all_models(g2_A1_sv_0.1, batch_process_range, LM = 1, ELN = 1, RF = 1, NNet = 0)
@@ -167,6 +187,16 @@ saveRDS(g1_A1_sv_0.1_results, "g1_A1_sv_0.1_results.rds")
 saveRDS(g2_A1_sv_0.1_results, "g2_A1_sv_0.1_results.rds")
 saveRDS(g3_A1_sv_0.1_results, "g3_A1_sv_0.1_results.rds")
 
+g1_A1_sv_0.1_NN_results <- fit_all_models(g1_A1_sv_0.1, batch_process_range, LM = 0, ELN = 0, RF = 0, NNet = 1)
+g2_A1_sv_0.1_NN_results <- fit_all_models(g2_A1_sv_0.1, batch_process_range, LM = 0, ELN = 0, RF = 0, NNet = 1)
+g3_A1_sv_0.1_NN_results <- fit_all_models(g3_A1_sv_0.1, batch_process_range, LM = 0, ELN = 0, RF = 0, NNet = 1)
+
+saveRDS(g1_A1_sv_0.1_NN_results, "g1_A1_sv_0.1_NN_results.rds")
+saveRDS(g2_A1_sv_0.1_NN_results, "g2_A1_sv_0.1_NN_results.rds")
+saveRDS(g3_A1_sv_0.1_NN_results, "g3_A1_sv_0.1_NN_results.rds")
+
+#############################################################################################################
+
 g1_A1_sv_1_results <- fit_all_models(g1_A1_sv_1, batch_process_range, LM = 1, ELN = 1, RF = 1, NNet = 0)
 g2_A1_sv_1_results <- fit_all_models(g2_A1_sv_1, batch_process_range, LM = 1, ELN = 1, RF = 1, NNet = 0)
 g3_A1_sv_1_results <- fit_all_models(g3_A1_sv_1, batch_process_range, LM = 1, ELN = 1, RF = 1, NNet = 0)
@@ -174,7 +204,37 @@ g3_A1_sv_1_results <- fit_all_models(g3_A1_sv_1, batch_process_range, LM = 1, EL
 saveRDS(g1_A1_sv_1_results, "g1_A1_sv_1_results.rds")
 saveRDS(g2_A1_sv_1_results, "g2_A1_sv_1_results.rds")
 saveRDS(g3_A1_sv_1_results, "g3_A1_sv_1_results.rds")
+
+g1_A1_sv_1_NN_results <- fit_all_models(g1_A1_sv_1, batch_process_range, LM = 0, ELN = 0, RF = 0, NNet = 1)
+g2_A1_sv_1_NN_results <- fit_all_models(g2_A1_sv_1, batch_process_range, LM = 0, ELN = 0, RF = 0, NNet = 1)
+g3_A1_sv_1_NN_results <- fit_all_models(g3_A1_sv_1, batch_process_range, LM = 0, ELN = 0, RF = 0, NNet = 1)
+
+saveRDS(g1_A1_sv_1_NN_results, "g1_A1_sv_1_NN_results.rds")
+saveRDS(g2_A1_sv_1_NN_results, "g2_A1_sv_1_NN_results.rds")
+saveRDS(g3_A1_sv_1_NN_results, "g3_A1_sv_1_NN_results.rds")
 ```
+
+```{r}
+## Chunk to load all results lists
+
+g1_A1_nosv_0_results <- readRDS("g1_A1_nosv_0_results.RDS")
+g2_A1_nosv_0_results <- readRDS("g2_A1_nosv_0_results.RDS")
+g3_A1_nosv_0_results <- readRDS("g3_A1_nosv_0_results.RDS")
+
+g1_A1_sv_0.01_results <- readRDS("g1_A1_sv_0.01_results.RDS")
+g2_A1_sv_0.01_results <- readRDS("g2_A1_sv_0.01_results.RDS")
+g3_A1_sv_0.01_results <- readRDS("g3_A1_sv_0.01_results.RDS")
+
+g1_A1_sv_0.1_results <- readRDS("g1_A1_sv_0.1_results.RDS")
+g2_A1_sv_0.1_results <- readRDS("g2_A1_sv_0.1_results.RDS")
+g3_A1_sv_0.1_results <- readRDS("g3_A1_sv_0.1_results.RDS")
+
+g1_A1_sv_1_results <- readRDS("g1_A1_sv_1_results.RDS")
+g2_A1_sv_1_results <- readRDS("g2_A1_sv_1_results.RDS")
+g3_A1_sv_1_results <- readRDS("g3_A1_sv_1_results.RDS")
+
+```
+
 
 ```{r}
 ## For a given simulation results list, collect all the loss dataframes into a big, tidy DF for a SINGLE realization
@@ -254,297 +314,146 @@ all_loss_df_averaged <- all_loss_df %>%
             test_RMSE = mean(test_RMSE), test_RSquare = mean(test_RSquare)
             )
 
-####
+#############################################################################
 # Function to collate variable importance
 
 normalize_variable_importance <- function(variable_importance_df) {
-  min <- min(variable_importance_df$importance)
-  sum <- sum(variable_importance_df$importance + min)
   variable_importance_df %>%
-    mutate(importance = importance + min) %>%
-    mutate(importance = importance/sum)
+    # Add a very very tiny value so that division by zero does not occur
+    mutate(importance = importance + 1e-100) %>%
+    mutate(importance = importance + abs(min(importance))) %>%
+    mutate(importance = importance/sum(importance))
 }
 
 gen_tidy_vi <- function(simulation_results_list, realization_no, dgp_spec, SV, cross_corr) {
   df <- foreach(sample = 1:3, .combine = "rbind") %do% {
     rbind(
-      cbind(model = "LM_MSE", sample = sample, simulation_results_list[[realization_no]]$LM_MSE[[sample]]$loss_stats),
-      cbind(model = "LM_MAE", sample = sample, simulation_results_list[[realization_no]]$LM_MAE[[sample]]$loss_stats),
+      cbind(model = "LM_MSE", sample = sample, 
+            normalize_variable_importance(simulation_results_list[[realization_no]]$LM_MSE[[sample]]$variable_importance)),
+      cbind(model = "LM_MAE", sample = sample, 
+            normalize_variable_importance(simulation_results_list[[realization_no]]$LM_MAE[[sample]]$variable_importance)),
       
       ################################################################################################
       
-      cbind(model = "ELN_MSE", sample = sample, simulation_results_list[[realization_no]]$ELN_MSE[[sample]]$loss_stats),
-      cbind(model = "ELN_MAE", sample = sample, simulation_results_list[[realization_no]]$ELN_MAE[[sample]]$loss_stats),
+      cbind(model = "ELN_MSE", sample = sample, 
+            normalize_variable_importance(simulation_results_list[[realization_no]]$ELN_MSE[[sample]]$variable_importance)),
+      cbind(model = "ELN_MAE", sample = sample, 
+            normalize_variable_importance(simulation_results_list[[realization_no]]$ELN_MAE[[sample]]$variable_importance)),
       
       ################################################################################################
       
-      cbind(model = "RF_MSE", sample = sample, simulation_results_list[[realization_no]]$RF_MSE[[sample]]$loss_stats),
-      cbind(model = "RF_MAE", sample = sample, simulation_results_list[[realization_no]]$RF_MAE[[sample]]$loss_stats)
+      cbind(model = "RF_MSE", sample = sample, 
+            normalize_variable_importance(simulation_results_list[[realization_no]]$RF_MSE[[sample]]$variable_importance)),
+      cbind(model = "RF_MAE", sample = sample, 
+            normalize_variable_importance(simulation_results_list[[realization_no]]$RF_MAE[[sample]]$variable_importance))
       
       ################################################################################################
       
-      # cbind(model = "NN1_MSE", sample = sample, simulation_results_list[[realization_no]]$NN1_MSE[[sample]]$loss_stats),
-      # cbind(model = "NN1_MAE", sample = sample, simulation_results_list[[realization_no]]$NN1_MAE[[sample]]$loss_stats),
+      # cbind(model = "NN1_MSE", sample = sample, 
+      #       normalize_variable_importance(simulation_results_list[[realization_no]]$NN1_MSE[[sample]]$variable_importance)),
+      # cbind(model = "NN1_MAE", sample = sample, 
+      #       normalize_variable_importance(simulation_results_list[[realization_no]]$NN1_MAE[[sample]]$variable_importance)),
       # 
-      # cbind(model = "NN2_MSE", sample = sample, simulation_results_list[[realization_no]]$NN2_MSE[[sample]]$loss_stats),
-      # cbind(model = "NN2_MAE", sample = sample, simulation_results_list[[realization_no]]$NN2_MAE[[sample]]$loss_stats),
+      # cbind(model = "NN2_MSE", sample = sample, 
+      #       normalize_variable_importance(simulation_results_list[[realization_no]]$NN2_MSE[[sample]]$variable_importance)),
+      # cbind(model = "NN2_MAE", sample = sample, 
+      #       normalize_variable_importance(simulation_results_list[[realization_no]]$NN2_MAE[[sample]]$variable_importance)),
       # 
-      # cbind(model = "NN3_MSE", sample = sample, simulation_results_list[[realization_no]]$NN3_MSE[[sample]]$loss_stats),
-      # cbind(model = "NN3_MAE", sample = sample, simulation_results_list[[realization_no]]$NN3_MAE[[sample]]$loss_stats),
+      # cbind(model = "NN3_MSE", sample = sample, 
+      #       normalize_variable_importance(simulation_results_list[[realization_no]]$NN3_MSE[[sample]]$variable_importance)),
+      # cbind(model = "NN3_MAE", sample = sample, 
+      #       normalize_variable_importance(simulation_results_list[[realization_no]]$NN3_MAE[[sample]]$variable_importance)),
       # 
-      # cbind(model = "NN4_MSE", sample = sample, simulation_results_list[[realization_no]]$NN4_MSE[[sample]]$loss_stats),
-      # cbind(model = "NN4_MAE", sample = sample, simulation_results_list[[realization_no]]$NN4_MAE[[sample]]$loss_stats),
+      # cbind(model = "NN4_MSE", sample = sample, 
+      #       normalize_variable_importance(simulation_results_list[[realization_no]]$NN4_MSE[[sample]]$variable_importance)),
+      # cbind(model = "NN4_MAE", sample = sample, 
+      #       normalize_variable_importance(simulation_results_list[[realization_no]]$NN4_MAE[[sample]]$variable_importance)),
       # 
-      # cbind(model = "NN5_MSE", sample = sample, simulation_results_list[[realization_no]]$NN5_MSE[[sample]]$loss_stats),
-      # cbind(model = "NN5_MAE", sample = sample, simulation_results_list[[realization_no]]$NN5_MAE[[sample]]$loss_stats)
+      # cbind(model = "NN5_MSE", sample = sample, 
+      #       normalize_variable_importance(simulation_results_list[[realization_no]]$NN5_MSE[[sample]]$variable_importance)),
+      # cbind(model = "NN5_MAE", sample = sample, 
+      #       normalize_variable_importance(simulation_results_list[[realization_no]]$NN5_MAE[[sample]]$variable_importance))
     )
   }
   cbind(realization_no = realization_no, dgp_spec = dgp_spec, SV = SV, cross_corr = cross_corr, df)
 }
-  
-```
 
-```{r}
-## Given the simulation results list, return a dataframe of loss statistics for a single realization and time slice
+# Iterate over all realizations
 
-c_loss_df <- function(simulation_results, batch, sample) {
-  cbind(realization_no = batch, sample = sample, 
-      rbind(cbind(model = "LM_MSE", simulation_results[[batch]]$LM_MSE[[sample]]$loss_stats),
-            cbind(model = "LM_MAE", simulation_results[[batch]]$LM_MSE[[sample]]$loss_stats),
-            
-            cbind(model = "ELN_MSE", simulation_results[[batch]]$ELN_MSE[[sample]]$loss_stats),
-            cbind(model = "ELN_MAE", simulation_results[[batch]]$ELN_MAE[[sample]]$loss_stats),
-            
-            cbind(model = "RF_MSE", simulation_results[[batch]]$RF_MSE[[sample]]$loss_stats),
-            cbind(model = "RF_MAE", simulation_results[[batch]]$RF_MAE[[sample]]$loss_stats)
-            
-            # cbind(model = "NN1_MSE", simulation_results[[batch]]$NN1_MSE[[sample]]$loss_stats),
-            # cbind(model = "NN1_MAE", simulation_results[[batch]]$NN1_MAE[[sample]]$loss_stats),
-            # 
-            # cbind(model = "NN2_MSE", simulation_results[[batch]]$NN2_MSE[[sample]]$loss_stats),
-            # cbind(model = "NN2_MAE", simulation_results[[batch]]$NN2_MAE[[sample]]$loss_stats),
-            # 
-            # cbind(model = "NN3_MSE", simulation_results[[batch]]$NN3_MSE[[sample]]$loss_stats),
-            # cbind(model = "NN3_MAE", simulation_results[[batch]]$NN3_MAE[[sample]]$loss_stats),
-            # 
-            # cbind(model = "NN4_MSE", simulation_results[[batch]]$NN4_MSE[[sample]]$loss_stats),
-            # cbind(model = "NN4_MAE", simulation_results[[batch]]$NN4_MAE[[sample]]$loss_stats),
-            # 
-            # cbind(model = "NN5_MSE", simulation_results[[batch]]$NN5_MSE[[sample]]$loss_stats),
-            # cbind(model = "NN5_MAE", simulation_results[[batch]]$NN5_MAE[[sample]]$loss_stats)
-            )
-      )
-}
-
-## Function that uses above function to iterate over all samples
-
-c_iterate_samples <- function(simulation_results, batch) {
-  foreach(sample = 1:3, .combine = "rbind") %do% {
-    c_loss_df(g1_A1_sv_0.01_results, batch, sample)
+all_realize_vi <- function(simulation_results_list, dgp_spec, SV, cross_corr) {
+  foreach(realization_no = (1:10), .combine = "rbind") %do% {
+    gen_tidy_vi(simulation_results_list, realization_no, dgp_spec, SV, cross_corr)
   }
 }
 
-## Function that returns everything in a big dataframe
-
-c_all_results <- function(simulation_results) {
-  foreach(batch = 1:10, .combine = "rbind") %do% {
-    c_iterate_samples(simulation_results, batch)
-  }
-}
-
-# Function that averages all statistics over all realizations
-
-average_over_realizations <- function(simulation_results) {
-  c_all_results(simulation_results) %>%
-    group_by(sample, model) %>%
-    summarise(train_MAE = mean(train_MAE), train_MSE = mean(train_MSE), 
-              train_RMSE = mean(train_RMSE), train_RSquare = mean(train_RSquare),
-              
-              validation_MAE = mean(validation_MAE), validation_MSE = mean(validation_MSE), 
-              validation_RMSE = mean(validation_RMSE), validation_RSquare = mean(validation_RSquare),
-              
-              test_MAE = mean(test_MAE), test_MSE = mean(test_MSE), 
-              test_RMSE = mean(test_RMSE), test_RSquare = mean(test_RSquare)
-              )
-}
-
-## Function that appends extra ID columns
-
-append_id_columns <- function(SV, cross_corr, specification, simulation_results) {
-  cbind(SV = rep(SV, nrow(average_over_realizations(simulation_results))), 
-        cross_corr = rep(cross_corr, nrow(average_over_realizations(simulation_results))),
-        dgp_spec = rep(specification, nrow(average_over_realizations(simulation_results))),
-        average_over_realizations(simulation_results))
-}
-
-all_results_df <- rbind(
-  append_id_columns(SV = 0, cross_corr = 0, specification = "g1", simulation_results = g1_A1_nosv_0_results),
-  append_id_columns(SV = 0, cross_corr = 0, specification = "g2", simulation_results = g2_A1_nosv_0_results),
-  append_id_columns(SV = 0, cross_corr = 0, specification = "g3", simulation_results = g3_A1_nosv_0_results),
+all_vi_df <- rbind(
+  all_realize_vi(g1_A1_nosv_0_results, dgp_spec = "g1", SV = 0, cross_corr = 0),
+  all_realize_vi(g2_A1_nosv_0_results, dgp_spec = "g2", SV = 0, cross_corr = 0),
+  all_realize_vi(g3_A1_nosv_0_results, dgp_spec = "g3", SV = 0, cross_corr = 0),
   
-  append_id_columns(SV = 1, cross_corr = 0.01, specification = "g1", simulation_results = g1_A1_sv_0.01_results),
-  append_id_columns(SV = 1, cross_corr = 0.01, specification = "g2", simulation_results = g2_A1_sv_0.01_results),
-  append_id_columns(SV = 1, cross_corr = 0.01, specification = "g3", simulation_results = g3_A1_sv_0.01_results),
+  all_realize_vi(g1_A1_sv_0.01_results, dgp_spec = "g1", SV = 1, cross_corr = 0.01),
+  all_realize_vi(g2_A1_sv_0.01_results, dgp_spec = "g2", SV = 1, cross_corr = 0.01),
+  all_realize_vi(g3_A1_sv_0.01_results, dgp_spec = "g3", SV = 1, cross_corr = 0.01),
   
-  append_id_columns(SV = 1, cross_corr = 0.1, specification = "g1", simulation_results = g1_A1_sv_0.1_results),
-  append_id_columns(SV = 1, cross_corr = 0.1, specification = "g2", simulation_results = g2_A1_sv_0.1_results),
-  append_id_columns(SV = 1, cross_corr = 0.1, specification = "g3", simulation_results = g3_A1_sv_0.1_results),
+  all_realize_vi(g1_A1_sv_0.1_results, dgp_spec = "g1", SV = 1, cross_corr = 0.1),
+  all_realize_vi(g2_A1_sv_0.1_results, dgp_spec = "g2", SV = 1, cross_corr = 0.1),
+  all_realize_vi(g3_A1_sv_0.1_results, dgp_spec = "g3", SV = 1, cross_corr = 0.1),
   
-  append_id_columns(SV = 1, cross_corr = 1, specification = "g1", simulation_results = g1_A1_sv_1_results),
-  append_id_columns(SV = 1, cross_corr = 1, specification = "g2", simulation_results = g2_A1_sv_1_results),
-  append_id_columns(SV = 1, cross_corr = 1, specification = "g3", simulation_results = g3_A1_sv_1_results)
+  all_realize_vi(g1_A1_sv_1_results, dgp_spec = "g1", SV = 1, cross_corr = 1),
+  all_realize_vi(g2_A1_sv_1_results, dgp_spec = "g2", SV = 1, cross_corr = 1),
+  all_realize_vi(g3_A1_sv_1_results, dgp_spec = "g3", SV = 1, cross_corr = 1)
 )
-  
+
+all_vi_df_averaged <- all_vi_df %>%
+  group_by(model, dgp_spec, sample, SV, cross_corr, variable) %>%
+  summarise(importance = mean(importance))
+```
+
+```{r}
+## Error Statistic Plots
+
+## Focusing on Mean Absolute Error and Mean Squared Error
+
+
 ```
 
 
 ```{r}
-# Functions to process the raw loss statistics from earlier and create neat tables
+# Variable Importance Plots
 
-# Functions to visualize variable importance metrics from earlier
+g1_vi_plot <- all_vi_df_averaged %>%
+  filter(dgp_spec == "g1") %>%
+  mutate(variable = fct_reorder(variable, importance)) %>%
+  group_by(dgp_spec, model, sample, cross_corr, SV) %>%
+  top_n(3, importance) %>%
+  ggplot() + 
+  geom_tile(aes(x = model, y = variable, alpha = importance)) +
+  # Facet
+  facet_grid(rows = vars(cross_corr), cols = vars(sample))
+ggsave("g1_vi_plot.pdf")
 
-combined_importance_list <- function(results_list) {
-  combined_importance_list <- rep(list(0), length(results_list))
-  
-  for (batch in 1:length(results_list)) {
-    combined_importance_list[[batch]] <- rep(list(0), 3)
-    
-    for (set in 1:3) {
-      
-      # Linear Models
-      
-      if (typeof(results_list[[batch]]$LM_MSE) == "list") {
-        LM <- rbind(
-          data.frame(cbind(results_list[[batch]]$LM_MSE[[set]]$variable_importance, model = "LM_MSE")),
-          data.frame(cbind(results_list[[batch]]$LM_MAE[[set]]$variable_importance, model = "LM_MAE"))
-        )
-      } else {LM <- NULL}
-      
-      # Elastic Net
-      
-      if (typeof(results_list[[batch]]$ELN_MSE) == "list") {
-        ELN <- rbind(
-          data.frame(cbind(results_list[[batch]]$ELN_MSE[[set]]$variable_importance, model = "ELN_MSE")),
-          data.frame(cbind(results_list[[batch]]$ELN_MAE[[set]]$variable_importance, model = "ELN_MAE"))
-        )
-      } else {ELN <- NULL}
-      
-      # Random Forest
-      
-      if (typeof(results_list[[batch]]$RF_MSE) == "list") {
-        RF <- rbind(
-          data.frame(cbind(results_list[[batch]]$RF_MSE[[set]]$variable_importance, model = "RF_MSE")),
-          data.frame(cbind(results_list[[batch]]$RF_MAE[[set]]$variable_importance, model = "RF_MAE"))
-        )
-      } else {RF <- NULL}
-      
-      # Neural Networks
-      
-      if (typeof(results_list[[batch]]$NN1_MSE) == "list") {
-        NN <- rbind(
-          data.frame(cbind(results_list[[batch]]$NN1_MSE[[set]]$variable_importance, model = "NN1_MSE")),
-          data.frame(cbind(results_list[[batch]]$NN1_MAE[[set]]$variable_importance, model = "NN1_MAE")),
-          
-          data.frame(cbind(results_list[[batch]]$NN2_MSE[[set]]$variable_importance, model = "NN2_MSE")),
-          data.frame(cbind(results_list[[batch]]$NN2_MAE[[set]]$variable_importance, model = "NN2_MAE")),
-          
-          data.frame(cbind(results_list[[batch]]$NN3_MSE[[set]]$variable_importance, model = "NN3_MSE")),
-          data.frame(cbind(results_list[[batch]]$NN3_MAE[[set]]$variable_importance, model = "NN3_MAE")),
-          
-          data.frame(cbind(results_list[[batch]]$NN4_MSE[[set]]$variable_importance, model = "NN4_MSE")),
-          data.frame(cbind(results_list[[batch]]$NN4_MAE[[set]]$variable_importance, model = "NN4_MAE")),
-          
-          data.frame(cbind(results_list[[batch]]$NN5_MSE[[set]]$variable_importance, model = "NN5_MSE")),
-          data.frame(cbind(results_list[[batch]]$NN5_MAE[[set]]$variable_importance, model = "NN5_MAE"))
-        )
-      } else {NN <- NULL}
-      combined_importance_list[[batch]][[set]] <- rbind( LM, ELN, RF, NN)
-    }
-  }
-  combined_importance_list
-}
+g2_vi_plot <- all_vi_df_averaged %>%
+  filter(dgp_spec == "g2") %>%
+  mutate(variable = fct_reorder(variable, importance)) %>%
+  group_by(dgp_spec, model, sample, cross_corr, SV) %>%
+  top_n(2, importance) %>%
+  ggplot() + 
+  geom_tile(aes(x = model, y = variable, alpha = importance)) +
+  # Facet
+  facet_grid(rows = vars(cross_corr), cols = vars(sample))
+ggsave("g2_vi_plot.pdf")
 
-# Takes a combined importance list object as returned from previous function, and plots variable importance for a given batch and set
-# Also take an importance threshold
-combined_importance_plot <- function(combined_importance, batch_no, set_no, threshold) {
-  df <- combined_importance[[batch_no]][[set_no]] %>%
-    group_by(model) %>%
-    mutate(importance = (importance + min(importance)/sum(importance + min(importance)))) %>%
-    filter(importance > threshold)
-  
-  ggplot(df %>% mutate(variable = fct_reorder(variable, importance))) +
-    geom_tile(aes(x = model, y = variable, alpha = importance))
-}
-
-g1_A1_results_importance <- combined_importance_list(g1_A1)
-
-combined_importance_plot(g1_A1_results_importance, 1, 3, 0.005)
-
-# Function that takes a results list object and returns a combined loss statistics data frame
-
-combined_loss_stats <- function(results_list) {
-  results_loss <- rep(list(0), length(results_list))
-  for (batch in 1:length(results_list)) {
-    results_loss[[batch]] <- rep(list(0), 3)
-    for (set in 1:3) {
-      # Linear Models
-      
-      if (typeof(results_list[[batch]]$LM_MSE) == "list") {
-        LM <- rbind(
-          data.frame(cbind(results_list[[batch]]$LM_MSE[[set]]$loss_stats, model = "LM_MSE")),
-          data.frame(cbind(results_list[[batch]]$LM_MAE[[set]]$loss_stats, model = "LM_MAE"))
-        )
-      } else {LM <- NULL}
-      
-      # Elastic Net
-      
-      if (typeof(results_list[[batch]]$ELN_MSE) == "list") {
-        ELN <- rbind(
-          data.frame(cbind(results_list[[batch]]$ELN_MSE[[set]]$loss_stats, model = "ELN_MSE")),
-          data.frame(cbind(results_list[[batch]]$ELN_MAE[[set]]$loss_stats, model = "ELN_MAE"))
-        )
-      } else {ELN <- NULL}
-      
-      # Random Forest
-      
-      if (typeof(results_list[[batch]]$RF_MSE) == "list") {
-        RF <- rbind(
-          data.frame(cbind(results_list[[batch]]$RF_MSE[[set]]$loss_stats, model = "RF_MSE")),
-          data.frame(cbind(results_list[[batch]]$RF_MAE[[set]]$loss_stats, model = "RF_MAE"))
-        )
-      } else {RF <- NULL}
-      
-      # Neural Networks
-      
-      if (typeof(results_list[[batch]]$NN1_MSE) == "list") {
-        NN <- rbind(
-          data.frame(cbind(results_list[[batch]]$NN1_MSE[[set]]$loss_stats, model = "NN1_MSE")),
-          data.frame(cbind(results_list[[batch]]$NN1_MAE[[set]]$loss_stats, model = "NN1_MAE")),
-          
-          data.frame(cbind(results_list[[batch]]$NN2_MSE[[set]]$loss_stats, model = "NN2_MSE")),
-          data.frame(cbind(results_list[[batch]]$NN2_MAE[[set]]$loss_stats, model = "NN2_MAE")),
-          
-          data.frame(cbind(results_list[[batch]]$NN3_MSE[[set]]$loss_stats, model = "NN3_MSE")),
-          data.frame(cbind(results_list[[batch]]$NN3_MAE[[set]]$loss_stats, model = "NN3_MAE")),
-          
-          data.frame(cbind(results_list[[batch]]$NN4_MSE[[set]]$loss_stats, model = "NN4_MSE")),
-          data.frame(cbind(results_list[[batch]]$NN4_MAE[[set]]$loss_stats, model = "NN4_MAE")),
-          
-          data.frame(cbind(results_list[[batch]]$NN5_MSE[[set]]$loss_stats, model = "NN5_MSE")),
-          data.frame(cbind(results_list[[batch]]$NN5_MAE[[set]]$loss_stats, model = "NN5_MAE"))
-        )
-      } else {NN <- NULL}
-      results_loss[[batch]][[set]] <- rbind(LM, ELN, RF, NN)
-    }
-  }
-  results_loss
-}
-
-g1_A1_loss <- combined_loss_stats(g1_A1)
-
-g1_A1_loss[[1]][[1]]
-
-gu_et_al_g2_loss[[1]][[1]]
+g3_vi_plot <- all_vi_df_averaged %>%
+  filter(dgp_spec == "g3") %>%
+  mutate(variable = fct_reorder(variable, importance)) %>%
+  group_by(dgp_spec, model, sample, cross_corr, SV) %>%
+  top_n(3, importance) %>%
+  ggplot() + 
+  geom_tile(aes(x = model, y = variable, alpha = importance)) +
+  # Facet
+  facet_grid(rows = vars(cross_corr), cols = vars(sample))
+ggsave("g3_vi_plot.pdf")
 
 ```
+
 
