@@ -63,7 +63,7 @@ customTimeSlices <- function(start, initialWindow, horizon, validation_size, tes
 # 6 4 3
 # 7 4 3
 # 8 4 3
-timeSlices <- customTimeSlices(start = 2, initialWindow = 72, horizon = 12, validation_size = 48, test_size = 36, set_no = 3)
+timeSlices <- customTimeSlices(start = 2, initialWindow = 84, horizon = 12, validation_size = 60, test_size = 12, set_no = 3)
 
 #Formula Function, makes it easier for those packages with a formula interface
 
