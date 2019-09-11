@@ -314,6 +314,11 @@ all_loss_df_averaged <- all_loss_df %>%
             test_RMSE = mean(test_RMSE), test_RSquare = mean(test_RSquare)
             )
 
+## Save to csv
+
+write.csv(all_loss_df_averaged, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_loss_averaged.csv")
+write.csv(all_loss_df, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_loss.csv")
+
 #############################################################################
 # Function to collate variable importance
 
@@ -422,7 +427,7 @@ all_loss_df_averaged %>%
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired") +
   facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
-ggsave(filename = "simulation_train_mae.pdf")
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_train_mae.pdf")
 
 all_loss_df_averaged %>%
   ungroup() %>%
@@ -433,7 +438,7 @@ all_loss_df_averaged %>%
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired") +
   facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
-ggsave(filename = "simulation_train_mse.pdf")
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_train_mse.pdf")
 
 all_loss_df_averaged %>%
   ungroup() %>%
@@ -444,7 +449,7 @@ all_loss_df_averaged %>%
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired") +
   facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
-ggsave(filename = "simulation_train_rsquare.pdf")
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_train_rsquare.pdf")
 
 # Test Statistics
 all_loss_df_averaged %>%
@@ -456,7 +461,7 @@ all_loss_df_averaged %>%
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired") +
   facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
-ggsave(filename = "simulation_test_mae.pdf")
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_mae.pdf")
 
 all_loss_df_averaged %>%
   ungroup() %>%
@@ -467,7 +472,7 @@ all_loss_df_averaged %>%
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired") +
   facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
-ggsave(filename = "simulation_test_mse.pdf")
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_mse.pdf")
 
 all_loss_df_averaged %>%
   ungroup() %>%
@@ -478,7 +483,7 @@ all_loss_df_averaged %>%
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired") +
   facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
-ggsave(filename = "simulation_test_rsquare.pdf")
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_rsquare.pdf")
 ```
 
 

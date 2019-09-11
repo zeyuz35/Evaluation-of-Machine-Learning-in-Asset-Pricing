@@ -1515,7 +1515,7 @@ empirical_results_df <- foreach(sample = (1:3), .combine = "rbind") %do% {
   )
 }
 
-write.csv(empirical_results_df, file = "empirical_results.csv")
+write.csv(empirical_results_df, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_results.csv")
 
 #####################################################################
 ## Plot These Results
@@ -1530,7 +1530,7 @@ empirical_results_df %>%
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired")
-ggsave(filename = "empirical_test_mae.pdf")
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_test_mae.pdf")
 
 # Test MSE
 empirical_results_df %>%
@@ -1540,7 +1540,7 @@ empirical_results_df %>%
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired")
-ggsave(filename = "empirical_test_mse.pdf")
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_test_mse.pdf")
 
 # Test Rsquare
 empirical_results_df %>%
@@ -1550,7 +1550,7 @@ empirical_results_df %>%
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired")
-ggsave(filename = "empirical_test_rsquare.pdf")
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_test_rsquare.pdf")
 ####
 # Training Statistics
 
@@ -1562,7 +1562,7 @@ empirical_results_df %>%
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired")
-ggsave(filename = "empirical_train_mae.pdf")
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_train_mae.pdf")
 
 # Train MSE
 empirical_results_df %>%
@@ -1572,7 +1572,7 @@ empirical_results_df %>%
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired")
-ggsave(filename = "empirical_train_mse.pdf")
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_train_mse.pdf")
 
 # Train Rsquare
 empirical_results_df %>%
@@ -1582,7 +1582,7 @@ empirical_results_df %>%
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired")
-ggsave(filename = "empirical_train_rsquare.pdf")
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_train_rsquare.pdf")
 
 ```
 
@@ -1625,7 +1625,7 @@ empirical_tidy_vi <- foreach(sample = 1:3, .combine = "rbind") %do% {
   )
 }
 
-write.csv(empirical_tidy_vi, file = "empirical_tidy_vi.csv")
+write.csv(empirical_tidy_vi, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_tidy_vi.csv")
 
 ## Plot this
 
@@ -1644,7 +1644,7 @@ sample_1_vi_plot <- empirical_tidy_vi %>%
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-ggsave(filename= "empirical_sample_1_vi.pdf", width = 15, height = 15 * a4_aspect_ratio, units = "cm")
+ggsave(filename= "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_sample_1_vi.pdf", width = 15, height = 15 * a4_aspect_ratio, units = "cm")
 
 sample_2_vi_plot <- empirical_tidy_vi %>%
   filter(sample == 2) %>%
@@ -1657,7 +1657,7 @@ sample_2_vi_plot <- empirical_tidy_vi %>%
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-ggsave(filename= "empirical_sample_2_vi.pdf", width = 15, height = 15 * a4_aspect_ratio, units = "cm")
+ggsave(filename= "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_sample_2_vi.pdf", width = 15, height = 15 * a4_aspect_ratio, units = "cm")
 
 sample_3_vi_plot <- empirical_tidy_vi %>%
   filter(sample == 3) %>%
@@ -1670,7 +1670,7 @@ sample_3_vi_plot <- empirical_tidy_vi %>%
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-ggsave(filename= "empirical_sample_3_vi.pdf", width = 15, height = 15 * a4_aspect_ratio, units = "cm")
+ggsave(filename= "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_sample_3_vi.pdf", width = 15, height = 15 * a4_aspect_ratio, units = "cm")
 
 ```
 
