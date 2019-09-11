@@ -253,6 +253,46 @@ g1_A1_sv_1_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-
 g2_A1_sv_1_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_1_results.RDS")
 g3_A1_sv_1_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_1_results.RDS")
 
+## Neural Network versions
+
+g1_A1_nosv_0_NN_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_nosv_0_NN_results.RDS")
+g2_A1_nosv_0_NN_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_nosv_0_NN_results.RDS")
+g3_A1_nosv_0_NN_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_nosv_0_NN_results.RDS")
+
+g1_A1_sv_0.01_NN_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.01_NN_results.RDS")
+g2_A1_sv_0.01_NN_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.01_NN_results.RDS")
+g3_A1_sv_0.01_NN_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.01_NN_results.RDS")
+
+g1_A1_sv_0.1_NN_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.1_NN_results.RDS")
+g2_A1_sv_0.1_NN_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.1_NN_results.RDS")
+g3_A1_sv_0.1_NN_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.1_NN_results.RDS")
+
+g1_A1_sv_1_NN_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_1_NN_results.RDS")
+g2_A1_sv_1_NN_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_1_NN_results.RDS")
+g3_A1_sv_1_NN_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_1_NN_results.RDS")
+
+## Combining the results together
+
+combine_results_list <- function(normal_list, nn_list) {
+  for (i in 1:10) {
+    normal_list[[i]]$NN1_MSE <- nn_list[[i]]$NN1_MSE
+    normal_list[[i]]$NN1_MAE <- nn_list[[i]]$NN1_MAE
+    
+    normal_list[[i]]$NN2_MSE <- nn_list[[i]]$NN2_MSE
+    normal_list[[i]]$NN2_MAE <- nn_list[[i]]$NN2_MAE
+    
+    normal_list[[i]]$NN3_MSE <- nn_list[[i]]$NN3_MSE
+    normal_list[[i]]$NN3_MAE <- nn_list[[i]]$NN3_MAE
+    
+    normal_list[[i]]$NN4_MSE <- nn_list[[i]]$NN4_MSE
+    normal_list[[i]]$NN4_MAE <- nn_list[[i]]$NN4_MAE
+    
+    normal_list[[i]]$NN5_MSE <- nn_list[[i]]$NN5_MSE
+    normal_list[[i]]$NN5_MAE <- nn_list[[i]]$NN5_MAE
+  }
+  normal_list
+}
+
 ```
 
 
