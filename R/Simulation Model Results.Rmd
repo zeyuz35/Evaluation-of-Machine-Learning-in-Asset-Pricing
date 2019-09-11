@@ -412,9 +412,73 @@ all_vi_df_averaged <- all_vi_df %>%
 ```{r}
 ## Error Statistic Plots
 
-## Focusing on Mean Absolute Error and Mean Squared Error
+# Training Statistics
+all_loss_df_averaged %>%
+  ungroup() %>%
+  mutate(sample = as.factor(sample)) %>%
+  ggplot() +
+  geom_bar(aes(x = model, y = train_MAE, fill = sample), stat = "identity", position = position_dodge()) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  scale_fill_brewer(palette = "Paired") +
+  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
+ggsave(filename = "simulation_train_mae.pdf")
 
+all_loss_df_averaged %>%
+  ungroup() %>%
+  mutate(sample = as.factor(sample)) %>%
+  ggplot() +
+  geom_bar(aes(x = model, y = train_MSE, fill = sample), stat = "identity", position = position_dodge()) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  scale_fill_brewer(palette = "Paired") +
+  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
+ggsave(filename = "simulation_train_mse.pdf")
 
+all_loss_df_averaged %>%
+  ungroup() %>%
+  mutate(sample = as.factor(sample)) %>%
+  ggplot() +
+  geom_bar(aes(x = model, y = train_RSquare, fill = sample), stat = "identity", position = position_dodge()) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  scale_fill_brewer(palette = "Paired") +
+  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
+ggsave(filename = "simulation_train_rsquare.pdf")
+
+# Test Statistics
+all_loss_df_averaged %>%
+  ungroup() %>%
+  mutate(sample = as.factor(sample)) %>%
+  ggplot() +
+  geom_bar(aes(x = model, y = test_MAE, fill = sample), stat = "identity", position = position_dodge()) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  scale_fill_brewer(palette = "Paired") +
+  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
+ggsave(filename = "simulation_test_mae.pdf")
+
+all_loss_df_averaged %>%
+  ungroup() %>%
+  mutate(sample = as.factor(sample)) %>%
+  ggplot() +
+  geom_bar(aes(x = model, y = test_MSE, fill = sample), stat = "identity", position = position_dodge()) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  scale_fill_brewer(palette = "Paired") +
+  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
+ggsave(filename = "simulation_test_mse.pdf")
+
+all_loss_df_averaged %>%
+  ungroup() %>%
+  mutate(sample = as.factor(sample)) %>%
+  ggplot() +
+  geom_bar(aes(x = model, y = test_RSquare, fill = sample), stat = "identity", position = position_dodge()) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  scale_fill_brewer(palette = "Paired") +
+  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
+ggsave(filename = "simulation_test_rsquare.pdf")
 ```
 
 
@@ -428,9 +492,12 @@ g1_vi_plot <- all_vi_df_averaged %>%
   top_n(3, importance) %>%
   ggplot() + 
   geom_tile(aes(x = model, y = variable, alpha = importance)) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(legend.position = "none") +
   # Facet
   facet_grid(rows = vars(cross_corr), cols = vars(sample))
-ggsave("g1_vi_plot.pdf")
+ggsave("simulation_g1_vi_plot.pdf")
 
 g2_vi_plot <- all_vi_df_averaged %>%
   filter(dgp_spec == "g2") %>%
@@ -439,9 +506,12 @@ g2_vi_plot <- all_vi_df_averaged %>%
   top_n(2, importance) %>%
   ggplot() + 
   geom_tile(aes(x = model, y = variable, alpha = importance)) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(legend.position = "none") +
   # Facet
   facet_grid(rows = vars(cross_corr), cols = vars(sample))
-ggsave("g2_vi_plot.pdf")
+ggsave("simulation_g2_vi_plot.pdf")
 
 g3_vi_plot <- all_vi_df_averaged %>%
   filter(dgp_spec == "g3") %>%
@@ -450,9 +520,12 @@ g3_vi_plot <- all_vi_df_averaged %>%
   top_n(3, importance) %>%
   ggplot() + 
   geom_tile(aes(x = model, y = variable, alpha = importance)) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(legend.position = "none") +
   # Facet
   facet_grid(rows = vars(cross_corr), cols = vars(sample))
-ggsave("g3_vi_plot.pdf")
+ggsave("simulation_g3_vi_plot.pdf")
 
 ```
 
