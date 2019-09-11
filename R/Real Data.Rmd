@@ -1275,8 +1275,8 @@ LM_stats_mse[[3]]$loss_stats
 LM_stats_mse[[3]]$variable_importance %>%
   arrange(desc(importance))
 
-saveRDS(LM_stats_mae, file = "LM_stats_mae.rds")
-saveRDS(LM_stats_mse, file = "LM_stats_mse.rds")
+saveRDS(LM_stats_mae, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/LM_stats_mae.rds")
+saveRDS(LM_stats_mse, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/LM_stats_mse.rds")
 
 ######################################################################################################################
 
@@ -1318,8 +1318,8 @@ ELN_stats_mae[[3]]$hyperparameters
 ELN_stats_mae[[3]]$variable_importance %>%
   arrange(desc(importance))
 
-saveRDS(ELN_stats_mse, file = "ELN_stats_mse.rds")
-saveRDS(ELN_stats_mae, file = "ELN_stats_mae.rds")
+saveRDS(ELN_stats_mse, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/ELN_stats_mse.rds")
+saveRDS(ELN_stats_mae, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/ELN_stats_mae.rds")
 
 ######################################################################################################################
 
@@ -1351,9 +1351,9 @@ RF_mae_stats[[1]]$variable_importance %>%
 
 # Save Results
 
-saveRDS(RF_mse_stats, file = "RF_mse_stats_1.5_train_valid.rds")
+saveRDS(RF_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/RF_mse_stats_1.5_train_valid.rds")
 
-saveRDS(RF_mae_stats, file = "RF_mae_stats_1.5_train_valid.rds")
+saveRDS(RF_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/RF_mae_stats_1.5_train_valid.rds")
 
 ######################################################################################################################
 
@@ -1372,8 +1372,8 @@ NNet_1_mae_stats[[1]]$forecasts
 NNet_1_mae_stats[[1]]$variable_importance %>%
   arrange(desc(importance))
 
-saveRDS(NNet_1_mse_stats, file = "NNet_1_mse_stats_1.5.rds")
-saveRDS(NNet_1_mae_stats, file = "NNet_1_mae_stats_1.5.rds")
+saveRDS(NNet_1_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_1_mse_stats_1.5.rds")
+saveRDS(NNet_1_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_1_mae_stats_1.5.rds")
 
 NNet_2_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 2, "mse", batch_size = 256, 20,
                                    macro_factor_names, individual_factor_names)
@@ -1390,8 +1390,8 @@ NNet_2_mae_stats[[1]]$forecasts
 NNet_2_mae_stats[[1]]$variable_importance %>%
   arrange(desc(importance))
 
-saveRDS(NNet_2_mse_stats, file = "NNet_2_mse_stats_1.5.rds")
-saveRDS(NNet_2_mae_stats, file = "NNet_2_mae_stats_1.5.rds")
+saveRDS(NNet_2_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_2_mse_stats_1.5.rds")
+saveRDS(NNet_2_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_2_mae_stats_1.5.rds")
 
 NNet_3_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 3, "mse", batch_size = 256, 20,
                                    macro_factor_names, individual_factor_names)
@@ -1408,8 +1408,8 @@ NNet_3_mae_stats[[1]]$forecasts
 NNet_3_mae_stats[[1]]$variable_importance %>%
   arrange(desc(importance))
 
-saveRDS(NNet_3_mse_stats, file = "NNet_3_mse_stats_1.5.rds")
-saveRDS(NNet_3_mae_stats, file = "NNet_3_mae_stats_1.5.rds")
+saveRDS(NNet_3_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_3_mse_stats_1.5.rds")
+saveRDS(NNet_3_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_3_mae_stats_1.5.rds")
 
 NNet_4_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 4, "mse", batch_size = 256, 50,
                                    macro_factor_names, individual_factor_names)
@@ -1426,8 +1426,8 @@ NNet_4_mae_stats[[1]]$forecasts
 NNet_4_mae_stats[[1]]$variable_importance %>%
   arrange(desc(importance))
 
-saveRDS(NNet_4_mse_stats, file = "NNet_4_mse_stats_1.5.rds")
-saveRDS(NNet_4_mae_stats, file = "NNet_4_mae_stats_1.5.rds")
+saveRDS(NNet_4_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_4_mse_stats_1.5.rds")
+saveRDS(NNet_4_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_4_mae_stats_1.5.rds")
 
 NNet_5_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 5, "mse", batch_size = 256, 50,
                                    macro_factor_names, individual_factor_names)
@@ -1444,8 +1444,8 @@ NNet_5_mae_stats[[1]]$forecasts
 NNet_5_mae_stats[[1]]$variable_importance %>%
   arrange(desc(importance))
 
-saveRDS(NNet_5_mse_stats, file = "NNet_5_mse_stats_1.5.rds")
-saveRDS(NNet_5_mae_stats, file = "NNet_5_mae_stats_1.5.rds")
+saveRDS(NNet_5_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_5_mse_stats_1.5.rds")
+saveRDS(NNet_5_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_5_mae_stats_1.5.rds")
 
 ```
 
@@ -1453,31 +1453,31 @@ saveRDS(NNet_5_mae_stats, file = "NNet_5_mae_stats_1.5.rds")
 ```{r}
 ## Load in results
 
-LM_stats_mse <- readRDS("LM_stats_mse.rds")
-LM_stats_mae <- readRDS("LM_stats_mae.rds")
+LM_stats_mse <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/LM_stats_mse.rds")
+LM_stats_mae <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/LM_stats_mae.rds")
 
-ELN_stats_mse <- readRDS("ELN_stats_mse.rds")
-ELN_stats_mae <- readRDS("ELN_stats_mae.rds")
+ELN_stats_mse <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/ELN_stats_mse.rds")
+ELN_stats_mae <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/ELN_stats_mae.rds")
 
-RF_mse_stats <- readRDS("RF_mse_stats_1.5_train_valid.rds")
-RF_mae_stats <- readRDS("RF_mae_stats_1.5_train_valid.rds")
+RF_mse_stats <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/RF_mse_stats_1.5_train_valid.rds")
+RF_mae_stats <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/RF_mae_stats_1.5_train_valid.rds")
 
 ################################################################
 
-NNet_1_mse_stats <- readRDS("NNet_1_mse_stats_1.5.rds")
-NNet_1_mae_stats <- readRDS("NNet_1_mae_stats_1.5.rds")
+NNet_1_mse_stats <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_1_mse_stats_1.5.rds")
+NNet_1_mae_stats <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_1_mae_stats_1.5.rds")
 
-NNet_2_mse_stats <- readRDS("NNet_2_mse_stats_1.5.rds")
-NNet_2_mae_stats <- readRDS("NNet_2_mae_stats_1.5.rds")
+NNet_2_mse_stats <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_2_mse_stats_1.5.rds")
+NNet_2_mae_stats <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_2_mae_stats_1.5.rds")
 
-NNet_3_mse_stats <- readRDS("NNet_3_mse_stats_1.5.rds")
-NNet_3_mae_stats <- readRDS("NNet_3_mae_stats_1.5.rds")
+NNet_3_mse_stats <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_3_mse_stats_1.5.rds")
+NNet_3_mae_stats <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_3_mae_stats_1.5.rds")
 
-NNet_4_mse_stats <- readRDS("NNet_4_mse_stats_1.5.rds")
-NNet_4_mae_stats <- readRDS("NNet_4_mae_stats_1.5.rds")
+NNet_4_mse_stats <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_4_mse_stats_1.5.rds")
+NNet_4_mae_stats <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_4_mae_stats_1.5.rds")
 
-NNet_5_mse_stats <- readRDS("NNet_5_mse_stats_1.5.rds")
-NNet_5_mae_stats <- readRDS("NNet_5_mae_stats_1.5.rds")
+NNet_5_mse_stats <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_5_mse_stats_1.5.rds")
+NNet_5_mae_stats <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_5_mae_stats_1.5.rds")
 ```
 
 
