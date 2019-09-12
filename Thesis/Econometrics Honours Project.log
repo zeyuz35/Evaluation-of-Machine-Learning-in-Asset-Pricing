@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2019.9.2)  9 SEP 2019 16:03
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2019.9.2)  12 SEP 2019 14:04
 entering extended mode
 **Econometrics*Honours*Project.tex
 
@@ -1405,24 +1405,24 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 )
 \Hy@SectionHShift=\skip94
 )
-Package hyperref Info: Option `colorlinks' set `true' on input line 101.
+Package hyperref Info: Option `colorlinks' set `true' on input line 102.
 
 ("\\ad.monash.edu\home\User030\zyzho4\Documents\GitHub\Evaluation-of-Machine-Le
 arning-in-Asset-Pricing\Thesis\Econometrics Honours Project.aux")
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 110.
-LaTeX Font Info:    ... okay on input line 110.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 110.
-LaTeX Font Info:    ... okay on input line 110.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 110.
-LaTeX Font Info:    ... okay on input line 110.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 110.
-LaTeX Font Info:    ... okay on input line 110.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 110.
-LaTeX Font Info:    ... okay on input line 110.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 110.
-LaTeX Font Info:    ... okay on input line 110.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 110.
-LaTeX Font Info:    ... okay on input line 110.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 111.
+LaTeX Font Info:    ... okay on input line 111.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 111.
+LaTeX Font Info:    ... okay on input line 111.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 111.
+LaTeX Font Info:    ... okay on input line 111.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 111.
+LaTeX Font Info:    ... okay on input line 111.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 111.
+LaTeX Font Info:    ... okay on input line 111.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 111.
+LaTeX Font Info:    ... okay on input line 111.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 111.
+LaTeX Font Info:    ... okay on input line 111.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -1479,10 +1479,10 @@ Package marginnote Info: \pdfoutput not 0 and \pdflastxpos available.
 Package pgfplots Warning: running in backwards compatibility mode (unsuitable t
 ick labels; missing features). Consider writing \pgfplotsset{compat=1.11} into 
 your preamble.
- on input line 110.
+ on input line 111.
 
 \AtBeginShipoutBox=\box90
-Package hyperref Info: Link coloring ON on input line 110.
+Package hyperref Info: Link coloring ON on input line 111.
 ("C:\Program Files\MiKTeX 2.9\tex\latex\hyperref\nameref.sty"
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
 
@@ -1491,21 +1491,21 @@ Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 )
 \c@section@level=\count317
 )
-LaTeX Info: Redefining \ref on input line 110.
-LaTeX Info: Redefining \pageref on input line 110.
-LaTeX Info: Redefining \nameref on input line 110.
+LaTeX Info: Redefining \ref on input line 111.
+LaTeX Info: Redefining \pageref on input line 111.
+LaTeX Info: Redefining \nameref on input line 111.
 
 ("\\ad.monash.edu\home\User030\zyzho4\Documents\GitHub\Evaluation-of-Machine-Le
 arning-in-Asset-Pricing\Thesis\Econometrics Honours Project.out")
 ("\\ad.monash.edu\home\User030\zyzho4\Documents\GitHub\Evaluation-of-Machine-Le
 arning-in-Asset-Pricing\Thesis\Econometrics Honours Project.out")
 \@outlinefile=\write4
-LaTeX Font Info:    Try loading font information for U+msa on input line 113.
+LaTeX Font Info:    Try loading font information for U+msa on input line 114.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd"
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 113.
+LaTeX Font Info:    Try loading font information for U+msb on input line 114.
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
@@ -1956,7 +1956,7 @@ Missing character: There is no ; in font nullfont!
 
 [10]
 Package hyperref Info: bookmark level for unknown todo defaults to 0 on input l
-ine 403.
+ine 404.
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
@@ -1968,41 +1968,180 @@ Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 
-Overfull \hbox (3.61911pt too wide) in paragraph at lines 569--571
+Overfull \hbox (3.61911pt too wide) in paragraph at lines 570--572
 []|\OT1/cmr/m/n/10 NA| 
  []
 
 
-Overfull \hbox (3.61911pt too wide) in paragraph at lines 573--573
+Overfull \hbox (3.61911pt too wide) in paragraph at lines 574--574
 []|\OT1/cmr/m/n/10 NA| 
  []
 
 
-Overfull \hbox (3.61911pt too wide) in paragraph at lines 573--574
+Overfull \hbox (3.61911pt too wide) in paragraph at lines 574--575
 []|\OT1/cmr/m/n/10 NA| 
  []
 
 [14] [15]
+<../Results/simulation_test_mae.pdf, id=543, 526.96875pt x 325.215pt>
+File: ../Results/simulation_test_mae.pdf Graphic file (type pdf)
+
+<use ../Results/simulation_test_mae.pdf>
+Package pdftex.def Info: ../Results/simulation_test_mae.pdf used on input line 
+664.
+(pdftex.def)             Requested size: 526.96745pt x 325.2142pt.
+File: ../Results/simulation_test_mae.pdf Graphic file (type pdf)
+
+<use ../Results/simulation_test_mae.pdf>
+Package pdftex.def Info: ../Results/simulation_test_mae.pdf used on input line 
+665.
+(pdftex.def)             Requested size: 526.96745pt x 325.2142pt.
+
+Overfull \hbox (73.99956pt too wide) in paragraph at lines 664--666
+ [] 
+ []
+
+
+Overfull \hbox (73.99956pt too wide) in paragraph at lines 664--666
+ [] 
+ []
+
+
+LaTeX Warning: Float too large for page by 0.86598pt on input line 667.
+
+<../Results/simulation_ave_vi_plot.pdf, id=544, 505.89pt x 505.89pt>
+File: ../Results/simulation_ave_vi_plot.pdf Graphic file (type pdf)
+
+<use ../Results/simulation_ave_vi_plot.pdf>
+Package pdftex.def Info: ../Results/simulation_ave_vi_plot.pdf used on input li
+ne 672.
+(pdftex.def)             Requested size: 505.88875pt x 505.88875pt.
+
+<../Results/simulation_g1_vi_plot.pdf, id=545, 505.89pt x 505.89pt>
+File: ../Results/simulation_g1_vi_plot.pdf Graphic file (type pdf)
+
+<use ../Results/simulation_g1_vi_plot.pdf>
+Package pdftex.def Info: ../Results/simulation_g1_vi_plot.pdf used on input lin
+e 673.
+(pdftex.def)             Requested size: 505.88875pt x 505.88875pt.
+
+<../Results/simulation_g2_vi_plot.pdf, id=546, 505.89pt x 505.89pt>
+File: ../Results/simulation_g2_vi_plot.pdf Graphic file (type pdf)
+
+<use ../Results/simulation_g2_vi_plot.pdf>
+Package pdftex.def Info: ../Results/simulation_g2_vi_plot.pdf used on input lin
+e 674.
+(pdftex.def)             Requested size: 505.88875pt x 505.88875pt.
+
+<../Results/simulation_g3_vi_plot.pdf, id=547, 505.89pt x 505.89pt>
+File: ../Results/simulation_g3_vi_plot.pdf Graphic file (type pdf)
+
+<use ../Results/simulation_g3_vi_plot.pdf>
+Package pdftex.def Info: ../Results/simulation_g3_vi_plot.pdf used on input lin
+e 675.
+(pdftex.def)             Requested size: 505.88875pt x 505.88875pt.
+
+Overfull \hbox (52.92085pt too wide) in paragraph at lines 672--676
+ [] 
+ []
+
+
+Overfull \hbox (52.92085pt too wide) in paragraph at lines 672--676
+ [] 
+ []
+
+
+Overfull \hbox (52.92085pt too wide) in paragraph at lines 672--676
+ [] 
+ []
+
+
+Overfull \hbox (52.92085pt too wide) in paragraph at lines 672--676
+ [] 
+ []
+
+
+LaTeX Warning: Float too large for page by 1375.99257pt on input line 677.
+
 
 Package hyperref Warning: Difference (2) between bookmark levels is greater 
-(hyperref)                than one, level fixed on input line 672.
+(hyperref)                than one, level fixed on input line 687.
 
-[16] [17] [18] [19]
-Underfull \vbox (badness 10000) detected at line 829
+[16] [17 <//ad.monash.edu/home/User030/zyzho4/Documents/GitHub/Evaluation-of-Ma
+chine-Learning-in-Asset-Pricing/Results/simulation_test_mae.pdf>] [18 <//ad.mon
+ash.edu/home/User030/zyzho4/Documents/GitHub/Evaluation-of-Machine-Learning-in-
+Asset-Pricing/Results/simulation_ave_vi_plot.pdf> <//ad.monash.edu/home/User030
+/zyzho4/Documents/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Result
+s/simulation_g1_vi_plot.pdf> <//ad.monash.edu/home/User030/zyzho4/Documents/Git
+Hub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_g2_vi_pl
+ot.pdf> <//ad.monash.edu/home/User030/zyzho4/Documents/GitHub/Evaluation-of-Mac
+hine-Learning-in-Asset-Pricing/Results/simulation_g3_vi_plot.pdf>] [19]
+[20]
+(\\ad.monash.edu\home\User030\zyzho4\Documents\GitHub\Evaluation-of-Machine-Lea
+rning-in-Asset-Pricing\Results\empirical_results.tex
+Overfull \hbox (513.97284pt too wide) in paragraph at lines 5--59
+ [][] 
+ []
+
+) <../Results/empirical_sample_1_vi.pdf, id=853, 426.59375pt x 639.38875pt>
+File: ../Results/empirical_sample_1_vi.pdf Graphic file (type pdf)
+
+<use ../Results/empirical_sample_1_vi.pdf>
+Package pdftex.def Info: ../Results/empirical_sample_1_vi.pdf used on input lin
+e 761.
+(pdftex.def)             Requested size: 426.5927pt x 639.38718pt.
+
+<../Results/empirical_sample_2_vi.pdf, id=854, 426.59375pt x 639.38875pt>
+File: ../Results/empirical_sample_2_vi.pdf Graphic file (type pdf)
+
+<use ../Results/empirical_sample_2_vi.pdf>
+Package pdftex.def Info: ../Results/empirical_sample_2_vi.pdf used on input lin
+e 766.
+(pdftex.def)             Requested size: 426.5927pt x 639.38718pt.
+
+<../Results/empirical_sample_3_vi.pdf, id=855, 426.59375pt x 639.38875pt>
+File: ../Results/empirical_sample_3_vi.pdf Graphic file (type pdf)
+
+<use ../Results/empirical_sample_3_vi.pdf>
+Package pdftex.def Info: ../Results/empirical_sample_3_vi.pdf used on input lin
+e 770.
+(pdftex.def)             Requested size: 426.5927pt x 639.38718pt.
+
+<../Results/empirical_sample_all_vi.pdf, id=856, 426.59375pt x 639.38875pt>
+File: ../Results/empirical_sample_all_vi.pdf Graphic file (type pdf)
+
+<use ../Results/empirical_sample_all_vi.pdf>
+Package pdftex.def Info: ../Results/empirical_sample_all_vi.pdf used on input l
+ine 774.
+(pdftex.def)             Requested size: 426.5927pt x 639.38718pt.
+ [21] [22 <//ad.monash.edu/home/User030/zyzho4/Documents/GitHub/Evaluation-of-M
+achine-Learning-in-Asset-Pricing/Results/empirical_sample_1_vi.pdf>] [23 <//ad.
+monash.edu/home/User030/zyzho4/Documents/GitHub/Evaluation-of-Machine-Learning-
+in-Asset-Pricing/Results/empirical_sample_2_vi.pdf>] [24 <//ad.monash.edu/home/
+User030/zyzho4/Documents/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing
+/Results/empirical_sample_3_vi.pdf>] [25 <//ad.monash.edu/home/User030/zyzho4/D
+ocuments/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empiric
+al_sample_all_vi.pdf>] [26]
+[27]
+
+Package hyperref Warning: Ignoring empty anchor on input line 827.
+
+
+Underfull \vbox (badness 10000) detected at line 871
  []
 
 Missing character: There is no Ã in font cmr10!
 Missing character: There is no ³ in font cmr10!
-[20
+[28
 
-] [21] [22] [23] [24
+] [29] [30] [31] [32
 
-] [25] [26]
+] [33] [34]
 ("\\ad.monash.edu\home\User030\zyzho4\Documents\GitHub\Evaluation-of-Machine-Le
 arning-in-Asset-Pricing\Thesis\Econometrics Honours Project.bbl"
 Missing character: There is no Ã in font cmr10!
 Missing character: There is no ³ in font cmr10!
- [27]
+ [35]
 Missing character: There is no â in font cmr10!
 Missing character: There is no € in font cmr10!
 Missing character: There is no “ in font cmr10!
@@ -2012,8 +2151,8 @@ Missing character: There is no “ in font cmr10!
 Missing character: There is no â in font cmr10!
 Missing character: There is no € in font cmr10!
 Missing character: There is no “ in font cmr10!
- [28]
-[29]
+ [36]
+[37]
 Missing character: There is no â in font cmr10!
 Missing character: There is no € in font cmr10!
 Missing character: There is no ¦ in font cmr10!
@@ -2023,24 +2162,24 @@ Underfull \hbox (badness 1303) in paragraph at lines 293--295
 p-ti-miza-tion. arXiv preprint
  []
 
-[30] [31]) [32]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1165.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1165.
+[38] [39]) [40]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1207.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1207.
 
 ("\\ad.monash.edu\home\User030\zyzho4\Documents\GitHub\Evaluation-of-Machine-Le
 arning-in-Asset-Pricing\Thesis\Econometrics Honours Project.aux")
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1165.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1165.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1207.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1207.
 
 Package rerunfilecheck Info: File `Econometrics*Honours*Project.out' has not ch
 anged.
 (rerunfilecheck)             Checksum: <no file>.
  ) 
 Here is how much of TeX's memory you used:
- 41953 strings out of 493705
- 963177 string characters out of 3144568
- 1234783 words of memory out of 3000000
- 44384 multiletter control sequences out of 15000+200000
+ 42011 strings out of 493705
+ 965327 string characters out of 3144568
+ 1234798 words of memory out of 3000000
+ 44420 multiletter control sequences out of 15000+200000
  12508 words of font info for 48 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
  69i,17n,76p,10418b,1292s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -2054,16 +2193,17 @@ amsfonts/cm/cmmi7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/
 cm/cmr10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.
 pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/P
 rogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr5.pfb><C:/Program Fil
-es/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Program Files/MiKTeX 
-2.9/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Program Files/MiKTeX 2.9/fonts/
-type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/pu
-blic/amsfonts/cm/cmsy5.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsf
-onts/cm/cmsy7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/c
-mti10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti12.pf
-b><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on "Econometrics Honours Project.pdf" (32 pages, 471311 bytes).
+es/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Program Files/MiKTeX 
+2.9/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Program Files/MiKTeX 2.9/fonts/
+type1/public/amsfonts/cm/cmr8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/publ
+ic/amsfonts/cm/cmsy10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfo
+nts/cm/cmsy5.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cm
+sy7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb>
+<C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti12.pfb><C:/Prog
+ram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on "Econometrics Honours Project.pdf" (40 pages, 603669 bytes).
 PDF statistics:
- 1014 PDF objects out of 1200 (max. 8388607)
- 244 named destinations out of 1000 (max. 500000)
- 453 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1507 PDF objects out of 1728 (max. 8388607)
+ 252 named destinations out of 1000 (max. 500000)
+ 498 words of extra memory for PDF output out of 10000 (max. 10000000)
 

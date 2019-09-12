@@ -78,6 +78,7 @@
 %Graphs
 \usepackage{tikz}
 \usepackage{pgfplots}
+\graphicspath{{../Results/}}
 
 %Coloured Tables
 
@@ -659,10 +660,20 @@ where \( c_{i,t} \) is a \( P_c \times 1 \) matrix of characteristics for each s
 
 \begin{table}
 	\caption{Simulation Results}
+	\begin{center}
+		\includegraphics{simulation_test_mae.pdf}
+		\includegraphics{simulation_test_mae.pdf}
+	\end{center}
 \end{table}
 
 \begin{figure}
 	\caption{Simulation Variable Importance Plots}
+	\begin{center}
+		\includegraphics{simulation_ave_vi_plot.pdf}
+		\includegraphics{simulation_g1_vi_plot.pdf}
+		\includegraphics{simulation_g2_vi_plot.pdf}
+		\includegraphics{simulation_g3_vi_plot.pdf}
+	\end{center}
 \end{figure}
 
 \begin{table}
@@ -743,13 +754,26 @@ We try to mimic the procedure used in the simulation study. This means that the 
 
 \subsection{Empirical Data Results}
 
-\begin{table}
-	\caption{Empirical Data Results}
-\end{table}
+%% Empirical Results Data Table
+\input{../Results/empirical_results.tex}
 
 \begin{figure}
-	\caption{Simulation Variable Importance Plots}
+	\includegraphics{empirical_sample_1_vi.pdf}
+	\caption{Empirical Data Variable Importance Plots}
 \end{figure}
+
+\begin{figure}
+	\includegraphics{empirical_sample_2_vi.pdf}
+\end{figure}
+
+\begin{figure}
+	\includegraphics{empirical_sample_3_vi.pdf}
+\end{figure}
+
+\begin{figure}
+	\includegraphics{empirical_sample_all_vi.pdf}
+\end{figure}
+	
 
 \begin{table}
 	\caption{Diebold Mariano Tests for Empirical Data}
@@ -761,15 +785,13 @@ Interestingly,
 
 \subsubsection{Linear Models}
 
-The linear models typically performed among the worst of all models
+The linear models typically had the worst performance among all the models.
 
 \subsubsection{Penalized Linear Models}
 
 
 
 \subsubsection{Random Forests}
-
-
 
 Similar to the simulation study, the random forests overfitted the training sample by a large margin, offering the greatest performance by far for in sample forecasts.
 
@@ -800,12 +822,13 @@ For each class of models considered, not all possible or reasonable specificatio
 \subsection{Data}
 
 \begin{landscape}
+	\footnotetext{The factor was included in the original dataset provided by \cite{gu_empirical_2018}, but was not used due to missing data issues}
 	\begin{center}
 		\begin{longtable}{llllllll} \hline 
 			No. & Acronym & Firm Characteristic & Author(s) & Data Source & Frequency \\ \hline
-			1 & absacc & Absolute Accruals & 
+			1 & absacc\footnotemark[\value{footnote}] & Absolute Accruals & 
 				\cite{bandyopadhyay_accrual_2010} & Compustat & Annual \\
-			2 & acc & Working capital accruals & 
+			2 & acc\footnotemark[\value{footnote}] & Working capital accruals & 
 				\cite{sloan_stock_1996} & Compustat & Annual \\
 			3 & aeavol & Abnormal earnings announcement volume & 
 				\cite{lerman_high-volume_2008} & Compustat & Quarterly \\
@@ -830,22 +853,22 @@ For each class of models considered, not all possible or reasonable specificatio
 				\cite{ou_financial_1989} & Compustat & Annual \\
 			13 & cashpr & Cash productivity & 
 				\cite{chandrashekar_productivity_2009} & Compustat & Annual \\
-			14 & cfp & Cashflow to price ratio & 
+			14 & cfp\footnotemark[\value{footnote}] & Cashflow to price ratio & 
 				\cite{desai_value-glamour_2004} & Compustat & Annual \\
-			15 & cfp\_ia & Industry-adjusted cashfow to price ratio & 
+			15 & cfp\_ia\footnotemark[\value{footnote}] & Industry-adjusted cashfow to price ratio & 
 				\cite{asness_predicting_2000} & Compustat & Annual \\
-			16 & chatoia & Industry-adjusted change in asset turnover & 
+			16 & chatoia\footnotemark[\value{footnote}] & Industry-adjusted change in asset turnover & 
 				\cite{soliman_use_2008} & Compustat & Annual \\
 			17 & chcsho & Change in shares outstanding & 
 				\cite{pontiff_share_2008} & Compustat & Annual \\
 			18 & chempia & Industry-adjusted change in employee & 
 				\cite{asness_predicting_2000} & Compustat & Annual \\
-			19 & chinv & Change in inventory & 
+			19 & chinv\footnotemark[\value{footnote}] & Change in inventory & 
 				\cite{thomas_inventory_2002} & Compustat & Annual \\
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 			20 & chmom & Change in 6-month momentum & 
 				\cite{gettleman_acceleration_2006} & Compustat & Monthly \\
-			21 & chpmia & Industry-adjusted change in profit margin & 
+			21 & chpmia\footnotemark[\value{footnote}] & Industry-adjusted change in profit margin & 
 				\cite{soliman_use_2008} & Compustat & Annual \\
 			22 & chtx & Change in tax expense & 
 				\cite{thomas_tax_2011} & Compustat & Quarterly \\
@@ -874,9 +897,9 @@ For each class of models considered, not all possible or reasonable specificatio
 				\cite{basu_investment_1977} & Compustat & Annual \\
 			34 & gma & Gross profitability & 
 				\cite{novy-marx_other_2013} & Compustat & Annual \\
-			35 & grCAPX & Growth in capital expenditures & 
+			35 & grCAPX\footnotemark[\value{footnote}] & Growth in capital expenditures & 
 				\cite{anderson_empirical_2006} & Compustat & Annual \\
-			36 & grltnoa & Growth in long term net operating assets & 
+			36 & grltnoa\footnotemark[\value{footnote}] & Growth in long term net operating assets & 
 				\cite{fairfield_accrued_2003} & Compustat & Annual \\
 			37 & herf & Industry sales concentration & 
 				\cite{hou_industry_2006} & Compustat & Annual \\
@@ -889,7 +912,7 @@ For each class of models considered, not all possible or reasonable specificatio
 				\cite{amihud_illiquidity_2002} & Compustat & Monthly \\
 			41 & indmom & Industry momentum & 
 				\cite{moskowitz_industries_1999} & Compustat & Monthly \\
-			42 & invest & Capital expenditures and inventory & 
+			42 & invest\footnotemark[\value{footnote}] & Capital expenditures and inventory & 
 				\cite{chen_better_2010} & Compustat & Annual \\
 			43 & lev & Leverage & 
 				\cite{bhandari_debt/equity_1988} & Compustat & Annual \\
@@ -901,7 +924,7 @@ For each class of models considered, not all possible or reasonable specificatio
 				\cite{jegadeesh_evidence_1990} & Compustat & Monthly \\
 			47 & mom1 & 1-month momentum & 
 				\cite{jegadeesh_returns_1993} & Compustat & Monthly \\
-			48 & mom36m & 36-month momentum & 
+			48 & mom36m\footnotemark[\value{footnote}] & 36-month momentum & 
 				\cite{jegadeesh_returns_1993} & Compustat & Monthly \\
 			49 & mom6m & 6-month momentum & 
 				\cite{jegadeesh_returns_1993} & Compustat & Monthly \\
@@ -914,30 +937,30 @@ For each class of models considered, not all possible or reasonable specificatio
 				\cite{asness_predicting_2000} & Compustat & Annual \\
 			53 & nincr & Number of earnings increases & 
 				\cite{barth_market_1999} & Compustat & Quarterly \\
-			54 & operprof & Operating profitability & 
+			54 & operprof\footnotemark[\value{footnote}] & Operating profitability & 
 				\cite{fama_five-factor_2015} & Compustat & Annual \\
-			55 & orgcap & Organizational capital & 
+			55 & orgcap\footnotemark[\value{footnote}] & Organizational capital & 
 				\cite{eisfeldt_organization_2013} & Compustat & Annual \\
-			56 & pchcapx\_ia & Industry adjusted \% change in capital expenditures & 
+			56 & pchcapx\_ia\footnotemark[\value{footnote}] & Industry adjusted \% change in capital expenditures & 
 				\cite{abarbanell_abnormal_1998} & Compustat & Annual \\
-			57 & pchcurrat & \% change in current ratio & 
+			57 & pchcurrat\footnotemark[\value{footnote}] & \% change in current ratio & 
 				\cite{ou_financial_1989} & Compustat & Annual \\
-			58 & pchdepr & \% change in depreciation & 
+			58 & pchdepr\footnotemark[\value{footnote}] & \% change in depreciation & 
 				\cite{holthausen_prediction_1992} & Compustat & Annual \\
-			59 & pchgm\_pchsale & \% change in gross margin - \% change in sales & 
+			59 & pchgm\_pchsale\footnotemark[\value{footnote}] & \% change in gross margin - \% change in sales & 
 				\cite{abarbanell_abnormal_1998} & Compustat & Annual \\
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			60 & pchquick & \% change in quick ratio & 
+			60 & pchquick\footnotemark[\value{footnote}] & \% change in quick ratio & 
 				\cite{ou_financial_1989} & Compustat & Annual \\
-			61 & pchsale\_pchinvt & \% change in sales - \% change in inventory & 
+			61 & pchsale\_pchinvt\footnotemark[\value{footnote}] & \% change in sales - \% change in inventory & 
 				\cite{abarbanell_abnormal_1998} & Compustat & Annual \\
-			62 & pchsale\_pchrect & \% change in sales - \% change in A/R & 
+			62 & pchsale\_pchrect\footnotemark[\value{footnote}] & \% change in sales - \% change in A/R & 
 				\cite{abarbanell_abnormal_1998} & Compustat & Annual \\
-			63 & pchsale\_pchxsga & \% change in sales - \% change in SG & 
+			63 & pchsale\_pchxsga\footnotemark[\value{footnote}] & \% change in sales - \% change in SG & 
 				\cite{abarbanell_abnormal_1998} & Compustat & Annual \\
-			64 & pchsaleinv & \% change sales-to-inventory & 
+			64 & pchsaleinv\footnotemark[\value{footnote}] & \% change sales-to-inventory & 
 				\cite{ou_financial_1989} & Compustat & Annual \\
-			65 & pctacc & Percent accruals & 
+			65 & pctacc\footnotemark[\value{footnote}] & Percent accruals & 
 				\cite{hafzalla_percent_2011} & Compustat & Annual \\
 			66 & pricedelay & Price delay & 
 				\cite{hou_market_2005} & Compustat & Monthly \\
@@ -948,17 +971,17 @@ For each class of models considered, not all possible or reasonable specificatio
 			69 & rd & R\&D increase & 
 				\cite{eberhart_examination_2004} & Compustat & Annual \\
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			70 & rd\_mve & R\&D to market capitalization & 
+			70 & rd\_mve\footnotemark[\value{footnote}] & R\&D to market capitalization & 
 				\cite{guo_explaining_2006} & Compustat & Annual \\
-			71 & rd\_sale & R\&D to sales & 
+			71 & rd\_sale\footnotemark[\value{footnote}] & R\&D to sales & 
 				\cite{guo_explaining_2006} & Compustat & Annual \\
-			72 & realestate & Real estate holdings & 
+			72 & realestate\footnotemark[\value{footnote}] & Real estate holdings & 
 				\cite{tuzel_corporate_2010} & Compustat & Annual \\
 			73 & retvol & Return volatility & 
 				\cite{ang_cross-section_2006} & Compustat & Monthly \\
 			74 & roaq & Return on assets & 
 				\cite{balakrishnan_post_2010} & Compustat & Quarterly \\
-			75 & roavol & Earnings volatility & 
+			75 & roavol\footnotemark[\value{footnote}] & Earnings volatility & 
 				cite & Compustat & Quarterly \\
 			76 & roeq & Return on equity & 
 				\cite{hou_digesting_2015} & Compustat & Quarterly \\
@@ -969,15 +992,15 @@ For each class of models considered, not all possible or reasonable specificatio
 			79 & salecash & Sales to cash & 
 				\cite{ou_financial_1989} & Compustat & Annual \\
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			80 & saleinv & Sales to inventory & 
+			80 & saleinv\footnotemark[\value{footnote}] & Sales to inventory & 
 				\cite{ou_financial_1989} & Compustat & Annual \\
 			81 & salerec & Sales to receivables & 
 				\cite{ou_financial_1989} & Compustat & Annual \\
-			82 & secured & Secured debt & 
+			82 & secured\footnotemark[\value{footnote}] & Secured debt & 
 				\cite{valta_strategic_2016} & Compustat & Annual \\
 			83 & securedind & Secured debt indicator & 
 				\cite{valta_strategic_2016} & Compustat & Annual \\
-			84 & sgr & Sales growth & 
+			84 & sgr\footnotemark[\value{footnote}] & Sales growth & 
 				\cite{barbee_jr_salesprice_1996} & Compustat & Annual \\
 			85 & sin & Sin stocks & 
 				\cite{hong_price_2009} & Compustat & Annual \\
@@ -987,14 +1010,14 @@ For each class of models considered, not all possible or reasonable specificatio
 				\cite{chordia_trading_2001} & Compustat & Annual \\
 			88 & std\_turn & Volatility of liquidity (share turnover) & 
 				\cite{chordia_trading_2001} & Compustat & Monthly \\
-			89 & stdacc & Accrual volatility & 
-				\cite{bandyopadhyay_accrual_2010} & Compustat & Monthly \\ \hline
+			89 & stdacc\footnotemark[\value{footnote}] & Accrual volatility & 
+				\cite{bandyopadhyay_accrual_2010} & Compustat & Monthly \\
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			90 & stdcf & Cashflow volatility & 
+			90 & stdcf\footnotemark[\value{footnote}] & Cashflow volatility & 
 				\cite{huang_cross_2009} & Compustat & Quarterly \\
 			91 & tang & Debt capacity/rm tangibility & 
 				\cite{almeida_financial_2007} & Compustat & Quarterly \\
-			92 & tb & Tax income to book income & 
+			92 & tb\footnotemark[\value{footnote}] & Tax income to book income & 
 				\cite{lev_market-based_1982} & Compustat & Annual \\
 			93 & turn & Share turnover & 
 				\cite{datar_liquidity_1998} & Compustat & Monthly \\

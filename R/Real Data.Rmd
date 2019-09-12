@@ -156,6 +156,8 @@ missing_factors <- datashare %>%
   summarize(missing_share = mean(is.na(value))) %>%
   filter(missing_share > 0.20)
 
+write.csv(missing_factors, file = "missing_factors.csv")
+
 ## Remove previously identified factors
 datashare_filtered <- datashare %>%
   filter(time >= 1993.5) %>%
@@ -234,7 +236,7 @@ datashare_imputed <- impute_cross_section(datashare_filtered, impute_type = "med
   mutate(time = as.yearqtr(time)) %>%
   # Rename some factors
   mutate(beta1 = beta) %>%
-  select(-beta) %>%
+  dplyr::select(-beta) %>%
   # Make the names clearer
   rename_at(vars(-time, -stock, -rt), function(x) paste0("ind_", x))
 
@@ -350,7 +352,9 @@ macro_predictors <- PredictorData2017 %>%
 # This EXCLUDES macro factors by themselves
 
 macro_factor_names <- colnames(dplyr::select(macro_predictors, -time, -macro_Rfree))
+write.csv(macro_factor_names, file = "macro_factor_names.csv")
 individual_factor_names <- colnames(dplyr::select(datashare_imputed, -stock, -time, -rt))
+write.csv(individual_factor_names, file = "individual_factor_names.csv")
 ```
 
 ```{r generate_final_dataset}
@@ -1496,31 +1500,26 @@ empirical_results_df <- foreach(sample = (1:3), .combine = "rbind") %do% {
       cbind(model = "RF_MSE", RF_mse_stats[[sample]]$loss_stats),
       cbind(model = "RF_MAE", RF_mae_stats[[sample]]$loss_stats),
       
-      cbind(model = "NNet_1_MSE", NNet_1_mse_stats[[sample]]$loss_stats),
-      cbind(model = "NNet_1_MAE", NNet_1_mae_stats[[sample]]$loss_stats),
+      cbind(model = "NN1_MSE", NNet_1_mse_stats[[sample]]$loss_stats),
+      cbind(model = "NN1_MAE", NNet_1_mae_stats[[sample]]$loss_stats),
       
-      cbind(model = "NNet_2_MSE", NNet_2_mse_stats[[sample]]$loss_stats),
-      cbind(model = "NNet_2_MAE", NNet_2_mae_stats[[sample]]$loss_stats),
+      cbind(model = "NN2_MSE", NNet_2_mse_stats[[sample]]$loss_stats),
+      cbind(model = "NN2_MAE", NNet_2_mae_stats[[sample]]$loss_stats),
       
-      cbind(model = "NNet_3_MSE", NNet_3_mse_stats[[sample]]$loss_stats),
-      cbind(model = "NNet_3_MAE", NNet_3_mae_stats[[sample]]$loss_stats),
+      cbind(model = "NN3_MSE", NNet_3_mse_stats[[sample]]$loss_stats),
+      cbind(model = "NN3_MAE", NNet_3_mae_stats[[sample]]$loss_stats),
       
-      cbind(model = "NNet_4_MSE", NNet_4_mse_stats[[sample]]$loss_stats),
-      cbind(model = "NNet_4_MAE", NNet_4_mae_stats[[sample]]$loss_stats),
+      cbind(model = "NN4_MSE", NNet_4_mse_stats[[sample]]$loss_stats),
+      cbind(model = "NN4_MAE", NNet_4_mae_stats[[sample]]$loss_stats),
       
-      cbind(model = "NNet_5_MSE", NNet_5_mse_stats[[sample]]$loss_stats),
-      cbind(model = "NNet_5_MAE", NNet_5_mae_stats[[sample]]$loss_stats)
+      cbind(model = "NN5_MSE", NNet_5_mse_stats[[sample]]$loss_stats),
+      cbind(model = "NN5_MAE", NNet_5_mae_stats[[sample]]$loss_stats)
     )
   )
 }
 
-# Function to export something to latex format
-export_latex <- function(x, file) {
-  print(xtable(x), type="latex", file=paste0(deparse(substitute(x)), ".tex"))
-}
-
 write.csv(empirical_results_df, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_results.csv")
-export_latex(empirical_results_df, 
+print(xtable(empirical_results_df, caption = "Empirical Data Results"), 
              file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_results.tex")
 
 #####################################################################
@@ -1646,9 +1645,9 @@ sample_1_vi_plot <- empirical_tidy_vi %>%
   top_n(10, importance) %>%
   ggplot() +
   geom_tile(aes(x = model, y = variable, alpha = importance)) +
-  theme(legend.position = "none") +
   theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(legend.position = "none")
 ggsave(filename= "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_sample_1_vi.pdf", 
        width = 15, height = 15 * a4_aspect_ratio, units = "cm")
 
@@ -1659,9 +1658,9 @@ sample_2_vi_plot <- empirical_tidy_vi %>%
   top_n(10, importance) %>%
   ggplot() +
   geom_tile(aes(x = model, y = variable, alpha = importance)) +
-  theme(legend.position = "none") +
   theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(legend.position = "none")
 ggsave(filename= "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_sample_2_vi.pdf", 
        width = 15, height = 15 * a4_aspect_ratio, units = "cm")
 
@@ -1672,9 +1671,9 @@ sample_3_vi_plot <- empirical_tidy_vi %>%
   top_n(10, importance) %>%
   ggplot() +
   geom_tile(aes(x = model, y = variable, alpha = importance)) +
-  theme(legend.position = "none") +
   theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(legend.position = "none")
 ggsave(filename= "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_sample_3_vi.pdf", 
        width = 15, height = 15 * a4_aspect_ratio, units = "cm")
 

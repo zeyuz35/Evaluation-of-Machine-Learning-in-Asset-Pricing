@@ -32,25 +32,25 @@
 \contentsline {subsection}{\numberline {3.1}Model}{16}{subsection.3.1}
 \contentsline {section}{\numberline {4}Simulation Results}{16}{section.4}
 \contentsline {subsubsection}{\numberline {4.0.1}Linear Models}{16}{subsubsection.4.0.1}
-\contentsline {subsubsection}{\numberline {4.0.2}Penalized Linear Models}{17}{subsubsection.4.0.2}
-\contentsline {subsubsection}{\numberline {4.0.3}Random Forests}{17}{subsubsection.4.0.3}
-\contentsline {subsubsection}{\numberline {4.0.4}Neural Networks}{17}{subsubsection.4.0.4}
-\contentsline {section}{\numberline {5}Empirical Data}{18}{section.5}
-\contentsline {subsection}{\numberline {5.1}Data and Cleaning Procedure}{18}{subsection.5.1}
-\contentsline {subsection}{\numberline {5.2}Empirical Data Model Fitting}{18}{subsection.5.2}
-\contentsline {subsection}{\numberline {5.3}Empirical Data Results}{19}{subsection.5.3}
-\contentsline {subsubsection}{\numberline {5.3.1}Linear Models}{19}{subsubsection.5.3.1}
-\contentsline {subsubsection}{\numberline {5.3.2}Penalized Linear Models}{19}{subsubsection.5.3.2}
-\contentsline {subsubsection}{\numberline {5.3.3}Random Forests}{19}{subsubsection.5.3.3}
-\contentsline {subsubsection}{\numberline {5.3.4}Neural Networks}{19}{subsubsection.5.3.4}
-\contentsline {section}{\numberline {6}Limitations}{19}{section.6}
-\contentsline {section}{\numberline {7}Conclusion}{19}{section.7}
-\contentsline {section}{\numberline {8}Appendix}{19}{section.8}
-\contentsline {subsection}{\numberline {8.1}Data}{19}{subsection.8.1}
-\contentsline {subsection}{\numberline {8.2}Computational Details}{24}{subsection.8.2}
-\contentsline {subsubsection}{\numberline {8.2.1}Linear Models}{24}{subsubsection.8.2.1}
-\contentsline {subsubsection}{\numberline {8.2.2}Penalized Linear}{24}{subsubsection.8.2.2}
-\contentsline {subsubsection}{\numberline {8.2.3}Classification and Regression Trees}{25}{subsubsection.8.2.3}
-\contentsline {subsubsection}{\numberline {8.2.4}Random Forest}{26}{subsubsection.8.2.4}
-\contentsline {subsubsection}{\numberline {8.2.5}Neural Networks}{26}{subsubsection.8.2.5}
-\contentsline {subsubsection}{\numberline {8.2.6}Tuning of Simulated Datasets}{27}{subsubsection.8.2.6}
+\contentsline {subsubsection}{\numberline {4.0.2}Penalized Linear Models}{19}{subsubsection.4.0.2}
+\contentsline {subsubsection}{\numberline {4.0.3}Random Forests}{19}{subsubsection.4.0.3}
+\contentsline {subsubsection}{\numberline {4.0.4}Neural Networks}{19}{subsubsection.4.0.4}
+\contentsline {section}{\numberline {5}Empirical Data}{20}{section.5}
+\contentsline {subsection}{\numberline {5.1}Data and Cleaning Procedure}{20}{subsection.5.1}
+\contentsline {subsection}{\numberline {5.2}Empirical Data Model Fitting}{21}{subsection.5.2}
+\contentsline {subsection}{\numberline {5.3}Empirical Data Results}{21}{subsection.5.3}
+\contentsline {subsubsection}{\numberline {5.3.1}Linear Models}{21}{subsubsection.5.3.1}
+\contentsline {subsubsection}{\numberline {5.3.2}Penalized Linear Models}{21}{subsubsection.5.3.2}
+\contentsline {subsubsection}{\numberline {5.3.3}Random Forests}{21}{subsubsection.5.3.3}
+\contentsline {subsubsection}{\numberline {5.3.4}Neural Networks}{21}{subsubsection.5.3.4}
+\contentsline {section}{\numberline {6}Limitations}{21}{section.6}
+\contentsline {section}{\numberline {7}Conclusion}{26}{section.7}
+\contentsline {section}{\numberline {8}Appendix}{26}{section.8}
+\contentsline {subsection}{\numberline {8.1}Data}{26}{subsection.8.1}
+\contentsline {subsection}{\numberline {8.2}Computational Details}{32}{subsection.8.2}
+\contentsline {subsubsection}{\numberline {8.2.1}Linear Models}{32}{subsubsection.8.2.1}
+\contentsline {subsubsection}{\numberline {8.2.2}Penalized Linear}{32}{subsubsection.8.2.2}
+\contentsline {subsubsection}{\numberline {8.2.3}Classification and Regression Trees}{33}{subsubsection.8.2.3}
+\contentsline {subsubsection}{\numberline {8.2.4}Random Forest}{34}{subsubsection.8.2.4}
+\contentsline {subsubsection}{\numberline {8.2.5}Neural Networks}{34}{subsubsection.8.2.5}
+\contentsline {subsubsection}{\numberline {8.2.6}Tuning of Simulated Datasets}{35}{subsubsection.8.2.6}
