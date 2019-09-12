@@ -1190,9 +1190,9 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
     #Variable Importance
     NNet_stats[[set]]$variable_importance <- NNet_variable_importance(test, neural_network)
     
-    #Clear Kera Session
-    k_clear_session()
   }
+  #Clear Kera Session
+  k_clear_session()
   NNet_stats
 }
 

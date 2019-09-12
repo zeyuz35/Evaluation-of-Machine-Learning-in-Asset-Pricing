@@ -159,7 +159,7 @@ g3_A1_sv_1 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/
 
 
 ```{r}
-batch_process_range <- c(1:10)
+batch_process_range <- c(1:1)
 
 # Random Forest is too intensive, just run the simpler models for now
 
@@ -172,12 +172,11 @@ saveRDS(g2_A1_nosv_0_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-
 saveRDS(g3_A1_nosv_0_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_nosv_0_results.rds")
 
 g1_A1_nosv_0_NN_results <- fit_all_models(g1_A1_nosv_0, batch_process_range, LM = 0, ELN = 0, RF = 0, NNet = 1)
+saveRDS(g1_A1_nosv_0_NN_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_nosv_0_NN_results.rds")
 g2_A1_nosv_0_NN_results <- fit_all_models(g2_A1_nosv_0, batch_process_range, LM = 0, ELN = 0, RF = 0, NNet = 1)
+saveRDS(g2_A1_nosv_0_NN_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_nosv_0_NN_results.rds")
 g3_A1_nosv_0_NN_results <- fit_all_models(g3_A1_nosv_0, batch_process_range, LM = 0, ELN = 0, RF = 0, NNet = 1)
-
-saveRDS(g1_A1_NN_nosv_0_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_nosv_0_NN_results.rds")
-saveRDS(g2_A1_NN_nosv_0_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_nosv_0_NN_results.rds")
-saveRDS(g3_A1_NN_nosv_0_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_nosv_0_NN_results.rds")
+saveRDS(g3_A1_nosv_0_NN_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_nosv_0_NN_results.rds")
 
 #############################################################################################################
 
@@ -190,11 +189,10 @@ saveRDS(g2_A1_sv_0.01_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset
 saveRDS(g3_A1_sv_0.01_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.01_results.rds")
 
 g1_A1_sv_0.01_NN_results <- fit_all_models(g1_A1_sv_0.01, batch_process_range, LM = 0, ELN = 0, RF = 0, NNet = 1)
-g2_A1_sv_0.01_NN_results <- fit_all_models(g2_A1_sv_0.01, batch_process_range, LM = 0, ELN = 0, RF = 0, NNet = 1)
-g3_A1_sv_0.01_NN_results <- fit_all_models(g3_A1_sv_0.01, batch_process_range, LM = 0, ELN = 0, RF = 0, NNet = 1)
-
 saveRDS(g1_A1_sv_0.01_NN_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.01_NN_results.rds")
+g2_A1_sv_0.01_NN_results <- fit_all_models(g2_A1_sv_0.01, batch_process_range, LM = 0, ELN = 0, RF = 0, NNet = 1)
 saveRDS(g2_A1_sv_0.01_NN_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.01_NN_results.rds")
+g3_A1_sv_0.01_NN_results <- fit_all_models(g3_A1_sv_0.01, batch_process_range, LM = 0, ELN = 0, RF = 0, NNet = 1)
 saveRDS(g3_A1_sv_0.01_NN_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.01_NN_results.rds")
 
 #############################################################################################################
@@ -294,7 +292,6 @@ combine_results_list <- function(normal_list, nn_list) {
 }
 
 ```
-
 
 ```{r}
 ## For a given simulation results list, collect all the loss dataframes into a big, tidy DF for a SINGLE realization
