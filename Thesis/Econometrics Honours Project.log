@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2019.9.2)  12 SEP 2019 14:04
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2019.9.2)  13 SEP 2019 12:24
 entering extended mode
 **Econometrics*Honours*Project.tex
 
@@ -2124,10 +2124,10 @@ ocuments/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empiric
 al_sample_all_vi.pdf>] [26]
 [27]
 
-Package hyperref Warning: Ignoring empty anchor on input line 827.
+Package hyperref Warning: Ignoring empty anchor on input line 825.
 
 
-Underfull \vbox (badness 10000) detected at line 871
+Underfull \vbox (badness 10000) detected at line 869
  []
 
 Missing character: There is no Ã in font cmr10!
@@ -2163,13 +2163,13 @@ p-ti-miza-tion. arXiv preprint
  []
 
 [38] [39]) [40]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1207.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1207.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1205.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1205.
 
 ("\\ad.monash.edu\home\User030\zyzho4\Documents\GitHub\Evaluation-of-Machine-Le
 arning-in-Asset-Pricing\Thesis\Econometrics Honours Project.aux")
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1207.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1207.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1205.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1205.
 
 Package rerunfilecheck Info: File `Econometrics*Honours*Project.out' has not ch
 anged.
@@ -2201,7 +2201,7 @@ nts/cm/cmsy5.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cm
 sy7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb>
 <C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti12.pfb><C:/Prog
 ram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on "Econometrics Honours Project.pdf" (40 pages, 603669 bytes).
+Output written on "Econometrics Honours Project.pdf" (40 pages, 603791 bytes).
 PDF statistics:
  1507 PDF objects out of 1728 (max. 8388607)
  252 named destinations out of 1000 (max. 500000)

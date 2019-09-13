@@ -662,7 +662,7 @@ where \( c_{i,t} \) is a \( P_c \times 1 \) matrix of characteristics for each s
 	\caption{Simulation Results}
 	\begin{center}
 		\includegraphics{simulation_test_mae.pdf}
-		\includegraphics{simulation_test_mae.pdf}
+		\includegraphics{simulation_test_mse.pdf}
 	\end{center}
 \end{table}
 
@@ -722,9 +722,45 @@ Once cross sectional correlation across factors is introduced into the DGP howev
 
 \section{Empirical Data}
 
-\subsection{Data and Cleaning Procedure}
+\subsection{Data}
 
-We mimic the data procedure of \cite{gu_empirical_2018}. This means that we obtain the dataset provided by Gu on his website. This dataset contains 94 stock level characteristics: 61 updated annually, 13 updated quarterly and 20 updated monthly. In addition, 74 industry dummies corresponding the the first two digits of the Standard Industrial Classification (SIC) codes are included. It is noted that this dataset contains all securities traded, including those with a CRSP share code other than 10 or 11 and thus includes instruments such as REITs and mutual funds, and those with a share price of less than \$5.
+% Description of original dataset
+% mention how these variables are already adjusted for lags
+We mimic the data procedure of \cite{gu_empirical_2018}. This means that we obtain the dataset provided by Gu on his website. This dataset sample begins in March 1957 (the start date of the S\&P 500) and ends in December 2016, totalling 60 years. It contains 94 stock level characteristics: 61 updated annually, 13 updated quarterly and 20 updated monthly, in addition to 74 industry dummies corresponding the the first two digits of the Standard Industrial Classification (SIC) codes. It is noted that this dataset contains all securities traded, including those with a CRSP share code other than 10 or 11 and thus includes instruments such as REITs and mutual funds, and those with a share price of less than \$5.
+
+% Begin Cleaning
+
+To reduce the size of the dataset and increase feasibility, the dataset was filtered so that only stocks traded primarily on NASDAQ were included (using the PRIMEXCH variable from WRDS). Then, penny stocks (also referred to as microcaps in the literature) with a stock price of less than \$5 were filtered out, as is commonly done in the literature to reduce variability. Stocks without a share code of 10 or 11 (referring to equities) were filtered out, so that securities that are not equities were not included (such as REITs and trust funds). The dataset is provided in a monthly format, which means that many of the factors which are updated only quarterly or annually have very low levels of variability, which can lead to misleading results in the model fitting process. The achieve of a balance between having a dataset with enough data points and variability among factors, the dataset was converted to a quarterly format. Quarterly returns were then constructed using the PRC variable according to actual returns (ie not logged differences):
+
+\begin{equation}
+	RET_t = \frac{PRC_t PRC_{t-1}}{PRC_{t-1}}
+\end{equation}
+
+%% Process in terms of pipes
+% filter to only contain NASDAQ, share code = 10 or 11, PRC > $5, drop PRC = 0 (indicates not enough datain WRDS), drop industry dummies
+% Convert to quarterly format so that dataset is smaller and more feasible
+% Also helps with maintaing high variability in factors, as majority of these are updated annually
+% Quarterly returns were then constructed using non-log process. May have slight differents compared to log version, and ignored dividend effect on prices. Should not have large differences
+% Filter by time such that missing data is not so much of an issue. Noted that beginning from 1993 Q3 data quality improves dramatically, therefore filtered to start from 1993 Q3
+% Drop any columns that had more than 20% missing
+% Summarise data at this point
+% Then, do cross sectional imputation of medians to fill in missing
+% No normalization was done at this stage. Instead, each column was normalized for only the elasticnet and neural network methods
+
+% Welch Goyal Data
+% Quarterly version of Welch Goyal data was used
+% New factor were constructed from this dataset, as with Gu et al
+% Lagged by one period to be consistent with timing of other factors
+% Treasury bill obtained to proxy for risk free rate of return to construct excess returns
+
+% Two datasets were combined together
+% To avoid confusion, individual factors were prefixed with ind_, and macro factors with macro_
+
+% Splitting Scheme
+% Similar splitting scheme to simulation study used
+% Training:Validation size ratio of 1.5, growing and moving forwards by 1 year
+% To maintain feasibility, only 3 samples were conducted
+
 
 We detail our cleaning procedure of this dataset. To reduce the size and maintain computational feasibility, only shares traded on the NASDAQ exchange was included (filtered out using the PRIMEXCH variable). The majority of the characteristics included in the dataset are only updated annually, resulting in many rows having column values that remained constant for multiple time periods. To increase the variability yet also maintain a large enough number of time periods, quarterly returns were constructed. This also had the benefit of decreasing the dataset size for computational feasibility. 
 
@@ -746,7 +782,7 @@ The dataset was not normalized for all methods, as only penalized regression and
 
 The final dataset spanned from 1993 Q3 to 2016 Q6 with ~20,000
 
-\subsection{Empirical Data Model Fitting}
+\subsection{Empirical Data Model Fitting and Methodology Differences}
 
 We detail our model fitting procedure used specifically for the empirical dataset.
 
@@ -982,13 +1018,13 @@ For each class of models considered, not all possible or reasonable specificatio
 			74 & roaq & Return on assets & 
 				\cite{balakrishnan_post_2010} & Compustat & Quarterly \\
 			75 & roavol\footnotemark[\value{footnote}] & Earnings volatility & 
-				cite & Compustat & Quarterly \\
+				\cite{francis_costs_2004} & Compustat & Quarterly \\
 			76 & roeq & Return on equity & 
 				\cite{hou_digesting_2015} & Compustat & Quarterly \\
 			77 & roic & Return on invested capital & 
 				\cite{brown_productivity_2007} & Compustat & Annual \\
 			78 & rsup & Revenue surprise & 
-				cite & Compustat & Quarterly \\
+				\cite{kama_market_2009} & Compustat & Quarterly \\
 			79 & salecash & Sales to cash & 
 				\cite{ou_financial_1989} & Compustat & Annual \\
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1005,7 +1041,7 @@ For each class of models considered, not all possible or reasonable specificatio
 			85 & sin & Sin stocks & 
 				\cite{hong_price_2009} & Compustat & Annual \\
 			86 & sp & Sales to price & 
-				cite & Compustat & Annual \\
+				\cite{barbee_jr_salesprice_1996} & Compustat & Annual \\
 			87 & std\_dolvol & Volatility of liquidity (dollar trading volume) & 
 				\cite{chordia_trading_2001} & Compustat & Annual \\
 			88 & std\_turn & Volatility of liquidity (share turnover) & 
@@ -1053,11 +1089,11 @@ For each class of models considered, not all possible or reasonable specificatio
 
 OLS used for fitting wrt MSE.
 
-quantreg used for fitting wrt MAE. (minimizing 0.5 quantile loss is equivalent to minimizing mae).
+quantreg package used for fitting wrt MAE. (minimizing 0.5 quantile loss is equivalent to minimizing mae).
 
 \subsubsection{Penalized Linear}
 
-The package \textit{hqreg} was used to fit penalized regression models with respect to MSE and MAE.
+The package  was used to fit penalized regression models with respect to MSE and MAE.
 
 This package efficiently calculates a regularization path of penalization values given a value for $\alpha$. This means that it is much more efficient to instead only supply a grid for $\alpha$, let the algorithm decide its own path of penalization values. The combination of these two parameters which produces the best results on the validation set were then chosen.
 
@@ -1129,7 +1165,7 @@ For full details of the Random Forest algorithm see \cite{breiman_random_2001}.
 
 \subsubsection{Neural Networks}
 
-Fit using keras package (cite)
+Fit using {keras} package (cite)
 
 ADAM algorithm for stochastic gradient descent and learning rate shrinkage as detailed by \cite{kingma_adam:_2014}.
 

@@ -41,49 +41,44 @@
   >
 ]>
 <requests version="1.0">
-  <internal package="biblatex" priority="9" active="0">
+  <internal package="biblatex" priority="9" active="1">
     <generic>latex</generic>
     <provides type="dynamic">
-      <file>"Econometrics Honours Project".bcf</file>
+      <file>Econometrics*Honours*Project.bcf</file>
     </provides>
     <requires type="dynamic">
-      <file>"Econometrics Honours Project".bbl</file>
+      <file>Econometrics*Honours*Project.bbl</file>
     </requires>
     <requires type="static">
       <file>blx-dm.def</file>
-      <file>apa.dbx</file>
       <file>blx-compat.def</file>
       <file>biblatex.def</file>
+      <file>blx-natbib.def</file>
+      <file>authoryear-comp.bbx</file>
+      <file>authoryear.bbx</file>
       <file>standard.bbx</file>
-      <file>apa.bbx</file>
-      <file>apa.cbx</file>
+      <file>authoryear-comp.cbx</file>
       <file>biblatex.cfg</file>
       <file>english.lbx</file>
-      <file>american.lbx</file>
-      <file>american-apa.lbx</file>
-      <file>english-apa.lbx</file>
     </requires>
   </internal>
-  <external package="biblatex" priority="5" active="0">
+  <external package="biblatex" priority="5" active="1">
     <generic>biber</generic>
     <cmdline>
       <binary>biber</binary>
-      <infile>"Econometrics Honours Project"</infile>
+      <infile>Econometrics*Honours*Project</infile>
     </cmdline>
     <input>
-      <file>"Econometrics Honours Project".bcf</file>
+      <file>Econometrics*Honours*Project.bcf</file>
     </input>
     <output>
-      <file>"Econometrics Honours Project".bbl</file>
+      <file>Econometrics*Honours*Project.bbl</file>
     </output>
     <provides type="dynamic">
-      <file>"Econometrics Honours Project".bbl</file>
+      <file>Econometrics*Honours*Project.bbl</file>
     </provides>
     <requires type="dynamic">
-      <file>"Econometrics Honours Project".bcf</file>
-    </requires>
-    <requires type="editable">
-      <file>Econometrics Honours Project.bib</file>
+      <file>Econometrics*Honours*Project.bcf</file>
     </requires>
   </external>
 </requests>
