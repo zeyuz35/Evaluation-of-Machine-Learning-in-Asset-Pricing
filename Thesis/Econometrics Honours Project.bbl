@@ -1,4 +1,4 @@
-\begin{thebibliography}{96}
+\begin{thebibliography}{97}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
 
 \bibitem[{Abarbanell and Bushee(1998)}]{abarbanell_abnormal_1998}
@@ -177,6 +177,11 @@ Feng, G., Giglio, S., Xiu, D., 2019. Taming the {Factor} {Zoo}: {A} {Test} of
 Feng, G., He, J., Polson, N.~G., 2018. Deep {Learning} for {Predicting} {Asset}
   {Returns}. arXiv:1804.09314 [cs, econ, stat] ArXiv: 1804.09314.
 
+\bibitem[{Francis et~al.(2004)Francis, LaFond, Olsson, and
+  Schipper}]{francis_costs_2004}
+Francis, J., LaFond, R., Olsson, P.~M., Schipper, K., 2004. Costs of equity and
+  earnings attributes. The accounting review 79, 967--1010.
+
 \bibitem[{Freyberger et~al.(2017)Freyberger, Neuhierl, and
   Weber}]{freyberger_dissecting_2017}
 Freyberger, J., Neuhierl, A., Weber, M., 2017. Dissecting characteristics
@@ -207,10 +212,6 @@ Guo, R.-J., Lev, B., Shi, C., 2006. Explaining the {Short}-and {Long}-{Term}
   Van~Winkle}]{hafzalla_percent_2011}
 Hafzalla, N., Lundholm, R., Matthew Van~Winkle, E., 2011. Percent accruals. The
   Accounting Review 86, 209--236.
-
-\bibitem[{Hansen and Salamon(1990)}]{hansen_neural_1990}
-Hansen, L.~K., Salamon, P., 1990. Neural network ensembles. IEEE Transactions
-  on Pattern Analysis \& Machine Intelligence pp. 993--1001.
 
 \bibitem[{Harvey and Liu(2019)}]{harvey_census_2019}
 Harvey, C.~R., Liu, Y., 2019. A {Census} of the {Factor} {Zoo}. Social Science
@@ -288,6 +289,10 @@ Jegadeesh, N., Titman, S., 1993. Returns to buying winners and selling losers:
 \bibitem[{Jiang et~al.(2005)Jiang, Lee, and Zhang}]{jiang_information_2005}
 Jiang, G., Lee, C.~M., Zhang, Y., 2005. Information uncertainty and expected
   returns. Review of Accounting Studies 10, 185--221.
+
+\bibitem[{Kama(2009)}]{kama_market_2009}
+Kama, I., 2009. On the market reaction to revenue and earnings surprises.
+  Journal of Business Finance \& Accounting 36, 31--50.
 
 \bibitem[{Kingma and Ba(2014)}]{kingma_adam:_2014}
 Kingma, D.~P., Ba, J., 2014. Adam: {A} method for stochastic optimization.
