@@ -11,3 +11,15 @@ R/data/datashare/datashare_PRC.csv
 R/g3_A1.rds
 R/gu_et_al_g1.rds
 R/.Rhistory
+R/Simulated_dataset/g1_A1_nosv_0.rds
+R/Simulated_dataset/g1_A1_sv_0.01.rds
+R/Simulated_dataset/g1_A1_sv_0.1.rds
+R/Simulated_dataset/g1_A1_sv_1.rds
+R/Simulated_dataset/g2_A1_nosv_0.rds
+R/Simulated_dataset/g2_A1_sv_0.01.rds
+R/Simulated_dataset/g2_A1_sv_0.1.rds
+R/Simulated_dataset/g2_A1_sv_1.rds
+R/Simulated_dataset/g3_A1_nosv_0.rds
+R/Simulated_dataset/g3_A1_sv_0.01.rds
+R/Simulated_dataset/g3_A1_sv_0.1.rds
+R/Simulated_dataset/g3_A1_sv_1.rds

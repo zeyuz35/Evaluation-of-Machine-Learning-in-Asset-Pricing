@@ -1,6 +1,0 @@
-"0","#Data Prep"
-"0","train_y <- train %>%"
-"0","  select(cmedv)"
-"2","Error in UseMethod(""select_"") : 
-  no applicable method for 'select_' applied to an object of class ""c('matrix', 'double', 'numeric')""
-"
