@@ -721,11 +721,21 @@ We mimic the data procedure of \cite{gu_empirical_2018}. This means that we obta
 
 % Begin Cleaning
 
-To reduce the size of the dataset and increase feasibility, the dataset was filtered so that only stocks traded primarily on NASDAQ were included (using the PRIMEXCH variable from WRDS). Then, penny stocks (also referred to as microcaps in the literature) with a stock price of less than \$5 were filtered out, as is commonly done in the literature to reduce variability. Stocks without a share code of 10 or 11 (referring to equities) were filtered out, so that securities that are not equities were not included (such as REITs and trust funds). The dataset is provided in a monthly format, which means that many of the factors which are updated only quarterly or annually have very low levels of variability, which can lead to misleading results in the model fitting process. The achieve of a balance between having a dataset with enough data points and variability among factors, the dataset was converted to a quarterly format. Quarterly returns were then constructed using the PRC variable according to actual returns (ie not logged differences):
+We detail our cleaning procedure of this dataset. To reduce the size of the dataset and increase feasibility, the dataset was filtered so that only stocks traded primarily on NASDAQ were included (using the PRIMEXCH variable from WRDS). Then, penny stocks (also referred to as microcaps in the literature) with a stock price of less than \$5 were filtered out, as is commonly done in the literature to reduce variability. Stocks without a share code of 10 or 11 (referring to equities) were filtered out, so that securities that are not equities were not included (such as REITs and trust funds). The dataset is provided in a monthly format, which means that many of the factors which are updated only quarterly or annually have very low levels of variability, which can lead to misleading results in the model fitting process. The achieve of a balance between having a dataset with enough data points and variability among factors, the dataset was converted to a quarterly format. Quarterly returns were then constructed using the PRC variable according to actual returns (ie not logged differences):
 
 \begin{equation}
 	RET_t = \frac{PRC_t PRC_{t-1}}{PRC_{t-1}}
 \end{equation}
+
+We allow all stocks which have a quarterly return to enter the dataset, even if they disappear from the dataset for certain periods, as opposed to only keeping stocks which appear continuously throughout the entire period. This was primarily done to reduce survivorship bias in the dataset, which can be very prevalent in financial data, and also allows for stocks which were unlisted and relisted again to feature in the dataset. This has the obvious drawback of introducing some bias in the dataset, as attrition in the dataset is likely to be non-random and correlated with the stocks' returns. 
+
+\rhs{proper example of sic codes being not very useful}
+
+The sic2 variable, corresponding to the stocks' Standard Industrial Classification (SIC) codes was also dropped. This is because the SIC code system was established . Indeed, WRDS explicitly cautions the use of SIC codes beyond the use of rough grouping of industries, as SIC codes are not strictly enforced by government agencies for accuracy, as well most large companies belonging to multiple SIC codes over time. Additionally, dropping the sic2 variable also reduced the dimensionality of the dataset by 74 columns, contributing to computational feasibility.
+
+There exists a significant amount of missing data in the dataset. The dataset's columns were first examined, and any characteristics that had over 20\% of their data were removed. However, as the amount of missing data increases dramatically going further back in time, a balance between using more periods at the cost of removing more characteristics versus using less periods but keeping more characteristics was needed. 1993 Q3 was determined to be a reasonable time frame to begin the dataset, as was a noticeable increase in data availability after this time.  Missing characteristics were then imputed using their cross sectional medians across all years. 
+
+This final dataset of individual factors consists of X rows and N columns, with the average number of stocks in each time period being ~. 
 
 %% Process in terms of pipes
 % filter to only contain NASDAQ, share code = 10 or 11, PRC > $5, drop PRC = 0 (indicates not enough datain WRDS), drop industry dummies
@@ -746,7 +756,13 @@ To reduce the size of the dataset and increase feasibility, the dataset was filt
 
 We then follow \cite{gu_empirical_2018} and construct eight macroeconomic factors following the variable definitions in \cite{welch_comprehensive_2008}: dividend-price ratio (dp), earnings-price ratio (ep), book-to-market ratio (bm), net equity expansion (ntis), Treasury-bill rate (tbl), term spread (tms), default spread (dfy) and stock variance (svar). The treasury bill rate was also used from this source to construct excess quarterly returns. 
 
-The two sets of factors were then combined according to
+The two sets of factors were then combined to form a baseline set of covariates, which we define throughout all methods and analysis as:
+
+\begin{equation}
+z_{i,t} = (1, x_t)' \otimes c_{i, t}
+\end{equation}
+
+where $c_{i,t}$ is a $P_c$ matrix of characteristics for each stock $i$, and $(1, x_t)'$ is a $P_x \times 1$ vector of macroeconomic predictors. $z_{i,t}$ is therefore a $P_x P_c$ vector of features for predicting individual stock returns and includes interactions between stock level characteristics and macroeconomic variables. The total number of covariates in this baseline set is $94 \times (8 + 1) + 74 = 920$.
  
 As the individual and macroeconomic factors can have similar names, individual and macroeconomic factors were prefixed with ind\_ and macro\_ respectively.
 
@@ -756,23 +772,6 @@ As the individual and macroeconomic factors can have similar names, individual a
 % To maintain feasibility, only 3 samples were conducted
 
 
-We detail our cleaning procedure of this dataset. To reduce the size and maintain computational feasibility, only shares traded on the NASDAQ exchange was included (filtered out using the PRIMEXCH variable). The majority of the characteristics included in the dataset are only updated annually, resulting in many rows having column values that remained constant for multiple time periods. To increase the variability yet also maintain a large enough number of time periods, quarterly returns were constructed. This also had the benefit of decreasing the dataset size for computational feasibility. 
-
-\rhs{proper example of sic codes being not very useful}
-
-The sic2 variable, corresponding to the stocks' Standard Industrial Classification (SIC) codes was also dropped. This is because the SIC code system was established . Indeed, WRDS explicitly cautions the use of SIC codes beyond the use of rough grouping of industries, as SIC codes are not strictly enforced by government agencies for accuracy, as well most large companies belonging to multiple SIC codes over time. Additionally, dropping the sic2 variable also reduced the dimensionality of the dataset by 74 columns, contributing to computational feasibility.
-
-The full details of these factors are available in table X.
-
-There exists a significant amount of missing data in the dataset. The dataset's columns were first examined, and any characteristics that had over 20\% of their data were removed. However, as the amount of missing data increases dramatically going further back in time, a balance between using more periods at the cost of removing more characteristics versus using less periods but keeping more characteristics was needed. In the end, it was decided that any data before 1993 Q2 was to be filtered out, as there was a noticeable increase in data availability after this period.
-
-Throughout all methods and analysis we define the baseline set of covariates as:
-
-\begin{equation}
-z_{i,t} = (1, x_t)' \otimes c_{i, t}
-\end{equation}
-
-where $c_{i,t}$ is a $P_c$ matrix of characteristics for each stock $i$, and $(1, x_t)'$ is a $P_x \times 1$ vector of macroeconomic predictors. $z_{i,t}$ is therefore a $P_x P_c$ vector of features for predicting individual stock returns and includes interactions between stock level characteristics and macroeconomic variables. The total number of covariates in this baseline set is $94 \times (8 + 1) + 74 = 920$.
 
 The dataset was not normalized for all methods, as only penalized regression and neural networks are affected by normalization. For these two methods, the dataset was normalized such that each predictor column had 0 mean and 1 variance.
 
@@ -1101,7 +1100,7 @@ The package  was used to fit penalized regression models with respect to MSE and
 
 This package efficiently calculates a regularization path of penalization values given a value for $\alpha$. This means that it is much more efficient to instead only supply a grid for $\alpha$, let the algorithm decide its own path of penalization values. The combination of these two parameters which produces the best results on the validation set were then chosen.
 
-The more traditional method of supplying a grid of $\alpha$ and $\lambda$ was also implemented at first, and this was observed to give almost identical results to the above implementation, but at a much higher computational cost.
+The more traditional approach of supplying a grid of $\alpha$ and $\lambda$ was also implemented at first, and this was observed to give almost identical results to the above implementation, but at a much higher computational cost.
 
 \subsubsection{Classification and Regression Trees}
 
@@ -1146,6 +1145,12 @@ For full details of the Classification and Regression Tree algorithm see \cite{b
 \end{algorithm}
 
 \subsubsection{Random Forest}
+
+The randomforestSRC package was used to fit both random forests for mean regression and quantile regression.
+
+To maintain computational feasibility, all random forest models were grown using 50 trees, and only had their \textit{mtry} hyperparameter tuned. This is because it has been empirically observed that the \textit{mtry} hyperparameter is often the most "tunable," i.e. offering the largest amount of performance gains when tuned, when compared to other hyperparameters such as \textit{nodesize}, \cite{bibid}. 
+
+Rather than use the randomly determined out of bag (OOB) observations for hyperparameter tuning, we explicitly use a separate validation set that is closer to the test set in time, in order to maintain temporal ordering of the data.
 
 For full details of the Random Forest algorithm see \cite{breiman_random_2001}. 
 
