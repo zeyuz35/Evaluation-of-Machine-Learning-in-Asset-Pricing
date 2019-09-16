@@ -532,36 +532,6 @@ ELN_fit_stats <- function(ELN_grid, nlambda, timeSlices, pooled_panel, loss_func
 
 alpha_grid <- seq(0, 1, 0.01)
 
-ELN_model_grid <- function(alpha_grid, train_x, train_y, validation_x, validation_y, loss_function, nlamb) {
-  #Initialize List
-  ELN_model_grid <- rep(list(0), length(alpha_grid))
-  
-  for (i in 1:(length(alpha_grid))) {
-    
-    ELN_model_grid[[i]] <- list(ELN_grid = 0, model = 0)
-    
-    #MSE Case
-    if (loss_function == "mse") {
-      ELN <- hqreg(train_x, train_y, method = "ls", alpha = alpha_grid[i], nlambda = nlamb)
-      ELN_model_grid[[i]]$model <- ELN
-    
-      ELN_model_grid[[i]]$ELN_grid <- cbind(alpha = alpha_grid[i], lambda = ELN$lambda,
-                                            train_loss = apply(predict(ELN, train_x), 2, mse, actual = train_y), 
-                                            validation_loss = apply(predict(ELN, validation_x), 2, mse, actual = validation_y))
-    } else {
-      #MAE Case
-      ELN <- hqreg(train_x, train_y, method = "quantile", tau = 0.5, alpha = alpha_grid[i], nlambda = nlamb)
-      ELN_model_grid[[i]]$model <- ELN
-    
-      ELN_model_grid[[i]]$ELN_grid <- cbind(alpha = alpha_grid[i], lambda = ELN$lambda,
-                                            train_loss = apply(predict(ELN, train_x), 2, mse, actual = train_y), 
-                                            validation_loss = apply(predict(ELN, validation_x), 2, mae, actual = validation_y))
-    }
-  }
-  return(ELN_model_grid)
-  
-}
-
 # Foreach implementation of above function
 # This is much much faster
 

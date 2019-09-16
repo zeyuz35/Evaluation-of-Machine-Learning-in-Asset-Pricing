@@ -105,6 +105,21 @@ datashare <- datashare_RAW_join %>%
   # Also don't make much consistent sense either
   # Personal decision: drop them entirely
   dplyr::select(-sic2) %>%
+  # Adjust lags for monthly data, such that they will correspond to quaterly conversion
+  mutate(baspread = lag(baspread, 2)) %>%
+  mutate(baspread = lag(beta, 2)) %>%
+  mutate(baspread = lag(betasq, 2)) %>%
+  mutate(idiovol = lag(idiovol, 2)) %>%
+  mutate(ill = lag(ill, 2)) %>%
+  mutate(indmom = lag(indmom, 2)) %>%
+  mutate(mvel1 = lag(mvel1, 2)) %>%
+  mutate(pricedelay = lag(pricedelay, 2)) %>%
+  mutate(retvol = lag(retvol, 2)) %>%
+  mutate(sp = lag(sp, 2)) %>%
+  mutate(std_dolvol = lag(std_dolvol, 2)) %>%
+  mutate(std_turn = lag(std_turn, 2)) %>%
+  mutate(turn = lag(turn, 2)) %>%
+  mutate(zerotrade = lag(zerotrade, 2)) %>%
   # We will construct quarterly returns using the end of each month
   # Ie using the 3rd, 6th, 9th and 12th month of each year
   # yearmon stores year + 0 for January. Exploit this to filter out non-quarter months
@@ -113,9 +128,6 @@ datashare <- datashare_RAW_join %>%
   # yearqtr stores data as year + 0/4 for q1, 1/4 for q2, etc
   mutate(time = as.yearqtr(time - 2/12)) %>%
   dplyr::select(-RET)
-
-datashare_sample <- sample_frac(datashare, 0.25)
-write.csv(datashare_sample, file = "datashare_sample.csv")
 
 ## Generate quarterly returns
 ## This approach keeps companies that were were unlisted and relisted
@@ -345,7 +357,7 @@ macro_predictors <- PredictorData2017 %>%
   mutate(macro_constant = 1) %>%
   # Reorder
   dplyr::select(time, macro_constant, everything()) %>%
-  filter(time >= 1993.5)
+  filter(time >= 1993.5 & time < 2017)
 
 # DONE WITH WELCH GOYAL
 ```
@@ -398,6 +410,8 @@ final_dataset <- data.frame(stock = datashare_combined$stock,
                             final_dataset_x)
 
 rm(final_dataset_x)
+
+write.csv(final_dataset, file = "final_dataset.csv")
 ```
 
 ```{r}
@@ -449,8 +463,13 @@ real_panel_formula <- function(panel){
 # These are the settings working with a dataset going from 1993 - 2016
 # Results in a traing:validation size ratio of 1.5
 realdata_timeSlices <- realdata_custom_timeslices(
-  start = 1993.5, initialWindow = 11, horizon = 1, validation_size = 8, test_size = 1, set_no = 3
+  start = 1994, initialWindow = 11, horizon = 1, validation_size = 8, test_size = 1, set_no = 3
   )
+
+# Add the two quarters in from 1993
+for(i in 1:3) {
+  realdata_timeSlices[[i]]$train <- c(1993.5, 1993.75, realdata_timeSlices[[i]]$train)
+}
 ```
 
 ```{r variable_importance_function}
@@ -727,6 +746,45 @@ LM_fit <- function(pooled_panel, timeSlices, loss_function, f,
   return(LM_stats)
 }
 ###################################################################################################################
+
+ELN_model_grid <- function(alpha_grid, train_x, train_y, validation_x, validation_y, loss_function, nlamb) {
+  
+  ELN_model_grid_list <- foreach(i = (1:length(alpha_grid))) %dopar% {
+    ELN_model_grid <- list(ELN_grid = 0, model = 0)
+    
+    #MSE Case
+    if (loss_function == "mse") {
+      ELN <- hqreg(train_x, train_y, method = "ls", alpha = alpha_grid[i], nlambda = nlamb)
+      ELN_model_grid$model <- ELN
+    
+      ELN_model_grid$ELN_grid <- cbind(alpha = alpha_grid[i], lambda = ELN$lambda,
+                                       train_loss = apply(predict(ELN, train_x), 2, mse, actual = train_y), 
+                                       validation_loss = apply(predict(ELN, validation_x), 2, mse, actual = validation_y))
+    } else {
+      #MAE Case
+      ELN <- hqreg(train_x, train_y, method = "quantile", tau = 0.5, alpha = alpha_grid[i], nlambda = nlamb)
+      ELN_model_grid$model <- ELN
+    
+      ELN_model_grid$ELN_grid <- cbind(alpha = alpha_grid[i], lambda = ELN$lambda,
+                                       train_loss = apply(predict(ELN, train_x), 2, mse, actual = train_y), 
+                                       validation_loss = apply(predict(ELN, validation_x), 2, mae, actual = validation_y))
+    }
+    ELN_model_grid
+  }
+  ELN_model_grid_list
+}
+
+# Given a list containing the model grid, return the "best" model according to validation loss
+# Use in conjunction with previous function
+
+get_ELN_best_tune <- function(model_grid) {
+  ELN_tune_dataframe <- cbind(model_grid[[1]]$ELN_grid, list_index = 1)
+  for (i in 2:length(model_grid)) {
+    ELN_tune_dataframe <- rbind(ELN_tune_dataframe, cbind(model_grid[[i]]$ELN_grid, list_index = i))
+  }
+  ELN_tune_dataframe <- data.frame(ELN_tune_dataframe)
+  return(ELN_tune_dataframe[which.min(ELN_tune_dataframe$validation_loss), ])
+}
 
 ELN_fit_stats <- function(alpha_grid, nlamb, timeSlices, pooled_panel, loss_function,
                           macro_factor_names, individual_factor_names) {
@@ -1272,9 +1330,13 @@ real_data_results <- fit_all_models_real_data(final_dataset,
 f <- real_panel_formula(final_dataset)
 LM_stats_mse <- LM_fit(final_dataset, realdata_timeSlices, "mse", f,
                        macro_factor_names, individual_factor_names)
+saveRDS(LM_stats_mae, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/LM_stats_mae.rds")
 
 LM_stats_mae <- LM_fit(final_dataset, realdata_timeSlices, "mae", f,
                        macro_factor_names, individual_factor_names)
+saveRDS(LM_stats_mse, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/LM_stats_mse.rds")
+
+####
 
 LM_stats_mse[[1]]$loss_stats
 LM_stats_mse[[1]]$variable_importance %>%
@@ -1287,19 +1349,15 @@ LM_stats_mse[[2]]$variable_importance %>%
 LM_stats_mse[[3]]$loss_stats
 LM_stats_mse[[3]]$variable_importance %>%
   arrange(desc(importance))
-
-saveRDS(LM_stats_mae, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/LM_stats_mae.rds")
-saveRDS(LM_stats_mse, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/LM_stats_mse.rds")
-
 ######################################################################################################################
-
 ELN_stats_mse <- ELN_fit_stats(alpha_grid = seq(0, 1, 0.01), nlamb = 100, 
                                realdata_timeSlices, final_dataset, "mse",
                                macro_factor_names, individual_factor_names)
-
+saveRDS(ELN_stats_mse, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/ELN_stats_mse.rds")
 ELN_stats_mae <- ELN_fit_stats(alpha_grid = seq(0, 1, 0.01), nlamb = 100, 
                                realdata_timeSlices, final_dataset, "mae",
                                macro_factor_names, individual_factor_names)
+saveRDS(ELN_stats_mae, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/ELN_stats_mae.rds")
 
 ELN_stats_mse[[1]]$loss_stats
 ELN_stats_mse[[1]]$hyperparameters
@@ -1331,9 +1389,6 @@ ELN_stats_mae[[3]]$hyperparameters
 ELN_stats_mae[[3]]$variable_importance %>%
   arrange(desc(importance))
 
-saveRDS(ELN_stats_mse, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/ELN_stats_mse.rds")
-saveRDS(ELN_stats_mae, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/ELN_stats_mae.rds")
-
 ######################################################################################################################
 
 # Random Forests
@@ -1341,16 +1396,17 @@ RF_grid <- expand.grid(
   #ntree usually isn't tuned. Just set to max of computationally feasible
   ntree = 50,
   mtry = seq(20, round(ncol(final_dataset[4:ncol(final_dataset)])/4), 20), 
-  nodesize = seq(2, 14, 2)
+  nodesize = seq(6, 15, 3)
   # nodedepth recommended not to be changed
   #nodedepth = 1
   )
 
 RF_mse_stats <- RF_fit_stats(final_dataset, RF_grid, realdata_timeSlices, "mse", f,
                              macro_factor_names, individual_factor_names)
-
+saveRDS(RF_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/RF_mse_stats_1.5_train_valid.rds")
 RF_mae_stats <- RF_fit_stats(final_dataset, RF_grid, realdata_timeSlices, "mae", f,
                              macro_factor_names, individual_factor_names)
+saveRDS(RF_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/RF_mae_stats_1.5_train_valid.rds")
 
 RF_mse_stats[[1]]$loss_stats
 RF_mse_stats[[1]]$hyperparameters
@@ -1361,12 +1417,9 @@ RF_mae_stats[[1]]$loss_stats
 RF_mae_stats[[1]]$hyperparameters
 RF_mae_stats[[1]]$variable_importance %>%
   arrange(desc(importance))
+```
 
-# Save Results
-
-saveRDS(RF_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/RF_mse_stats_1.5_train_valid.rds")
-
-saveRDS(RF_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/RF_mae_stats_1.5_train_valid.rds")
+```{r}
 
 ######################################################################################################################
 

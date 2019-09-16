@@ -204,6 +204,15 @@ where
 
 with stocks indexed as $i = 1, \dots, N$ and time domain by $t = 1, \dots, T$. $g^*(z_{i,t})$ represents the model approximation using the $P$ dimensional predictor set $z_{i,t}$. We allow $g^*(z_{i,t})$ to be a flexible function of the predictor set $z_{i,t}$, and most notably, not depend on $i$ or $t$ directly. This means that we do not re-estimate a model for each time period, or independently estimate a model for each stock. Note that $g^*(z_{i,t})$ only contains information in time $t$ for individual stock $i$, meaning that while the model and its parameters will be estimated using $\mathcal{F}_t$ for stock $i$, predictions for $r_{i, t+1}$ will only use information at time $t$ as an input, analogous to using variables lagged by one period. 
 
+All machine learning methods are designed to approximate the empirical model \( E_t(r_{i, t+1}) = g*(z_{i,t}) \) defined in equation (2). We define the baseline set of stock-level covariates \( z_{i,t} \) as:
+
+\begin{equation}
+\label{kronecker_equation}
+z_{i,t} = x_t \otimes c_{i,t}
+\end{equation}
+
+where \( c_{i,t} \) is a \( P_c \times 1 \) matrix of characteristics for each stock \(i\), and \(x_t\) is a $P_x \times 1$ vector of macroeconomic predictors (and are this common to all stocks, including a constant). Thus $z_{i,t}$ is a $P \times 1$ vector of features for predicting individual stock returns ($P = P_cP_x$) and includes interactions between individual characteristics and macroeconomic characteristics. 
+
 \subsection{Sample Splitting}
 \label{sample_split}
 
@@ -246,21 +255,21 @@ The mean squared error (MSE) and root mean squared error (RMSE) are quadratic sc
 
 \subsection{Linear Model}
 
-\rhs{explain how linear models struggle with high dimensionality}
-
-The least complex model considered is the simple linear regression model. Linear models struggle with high-dimensionality. Nevertheless, despite being expected to perform poorly it was implemented as a ``control."
-
-The simple linear model assumes that the underlying conditional expectation \( g^*(z_{i, t}) \) can be modelled as a linear function of the predictors and the parameter vector \( \theta \):
+The least complex model considered is the simple linear regression model. The simple linear model assumes that the underlying conditional expectation \( g^*(z_{i, t}) \) can be modelled as a linear function of the predictors and the parameter vector \( \theta \):
 
 \begin{equation}
 	g(z_{i, t};\theta) = z_{i, t}' \theta
-\end{equation}
+\end{equation} 
 
-This model can capture non-linearities only if the predictor set \(z^*_{i, t}\) contains specified non-linear transformations or interaction terms. 
+Computing this model with respect to minimizing the mean squared error yields the pooled ordinary least squares estimator (POLS), while minimizing the mean absolute error corresponds to quantile regression predicting the 0.5th quantile, also known as the Least Absolute Deviation (LAD) estimator. 
 
-Note that computing this model with respect to minimizing the mean squared error yields the pooled ordinary least squares estimator (POLS), while minimizing the mean absolute error corresponds to quantile regression predicting the 0.5th quantile.
+The OLS estimator is known to be consistent when the regressors are exogeneous, and is optimal in the class of linear unbiased etimators when the errors are homoscedastic and serially uncorrelated. This unbiasedness consequently means that linear models have a large amount of variance due to the bias-variance trade-off, which can lead to poorer predictive ability as the estimator's variance will be very high and therefore inefficient. Additionally, OLS struggles when multicollinearity (also known as cross sectional correlation in empirical finance settings) is present, as the coefficients of different variables can behave erratically to small changes in the data or model. This impreciseness in the coefficient estimates further leads to poor predictive performance. The LAD estimator attempts to improve upon the OLS estimator through the use of loss function that is more robust to outliers. The mean absolute error weights all residuals equally, compared to mean squared error which through considering squared residuals gives more emphasis to large residuals. 
+
+Linear models can capture non-linearities only if the predictor set \(z^*_{i, t}\) contains specified non-linear transformations or interaction terms. Despite being expected to perform poorly, linear models were implemented as a ``control."
 
 \subsection{Penalized Linear Model}
+
+Penalized linear models attempt to improve upon linear models through regularization, and are particularly well suited to addressing problems of multicollinearity, which can commonly occur in models with a large number of regressors. They achieve this by lowering the variance of their estimates (thus increasing efficiency) in exchange for introducing a tolerable amount of bias. This can be viewed as the model mechanically decreasing its in sample, in hopes that the model will overfit less, particularly to noise in the dataset, and correctly preserving its fit to true underlying regressors.
 
 Penalized linear models have the same underlying statistical model as simple linear models, but differ in their addition of a new penalty term in the loss function:
 
@@ -280,15 +289,13 @@ Several choices exist for the choice of penalty function \( \phi(\theta;.) \). W
 
 The elastic net has two hyperparameters: $\lambda$, which controls the overall magnitude of the loss, and $\rho$, which controls the shape of the penalization. 
 
-The $\rho = 1$ case corresponds to ridge regression proposed by \cite{hoerl_ridge_1970}, which uses $l_2$ that shrinks all coefficients closer to 0, but not to 0. Ridge regression is therefore a shrinkage method which prevents coefficients from becoming too large and overpowering. For \(0 < \rho < 1\), the elastic net aims to produce parsimonious models through both shrinkage and selection.
+The $\rho = 1$ case corresponds to ridge regression proposed by \cite{hoerl_ridge_1970}, which uses $l_2$ penalty that shrinks all coefficients closer to 0, but not to 0. Ridge regression is therefore a shrinkage method which prevents coefficients from becoming too large and overpowering. 
 
 The $\rho = 0$ case corresponds to the popular LASSO and uses absolute ($l_1$) parameter penalization proposed by \cite{tibshirani_regression_1996}, which geometrically allows the coefficients to be shrunk to 0. This allows it to impose sparsity, and can be thought of as a variable selection tool.
 
-By combining the properties of LASSO and ridge regression, the elastic net aims to produce parsimonious models through both coefficient shrinkage and selection.
+For \(0 < \rho < 1\), the elastic net aims to produce parsimonious models through both shrinkage and selection by combining the properties of LASSO and ridge regression.
 
-The hyperparameters $\lambda$ and $\rho$ are both tuned using the validation sample (see \ref{Algorithms}). 
-
-\pagebreak
+The hyperparameters $\lambda$ and $\rho$ are both tuned using the validation sample (see \ref{computation}). 
 
 \subsection{Classification and Regression Trees}
 
@@ -317,7 +324,7 @@ Random Forests are an extension of regression trees that attempt to address some
 
 Random forests were the most computationally intensive, and for feasibility purposes an ensemble of only $B = 30$ trees with $m = 20$ at most was considered for the simulation study, and $B = 50$ trees with $m = 40$ at most was considered for the empirical study.
 
-\pagebreak
+\newpage
 
 \subsection{Neural Networks}
 
@@ -326,6 +333,39 @@ Random forests were the most computationally intensive, and for feasibility purp
 Neural networks have theoretical underpinnings as ``universal approximators" for any function, (\cite{hornik_multilayer_1989}). They are arguably the most complex type of model available, able to capture several non-linear interactions through their many layers, hence its other name ``deep learning."  On the flipside, their high flexibility often means that they are among the most parameterized and least interpretable models, earning them the reputation as a black box model.
 
 Per this analysis, we focus on traditional ``feed-forward" networks. The feed forward network consists of an ``input layer" of scaled data inputs, one or more ``hidden layers" which interact and non-linearly transform the inputs, and finally an output layer that aggregates the hidden layers and transform them a final time for the final output. 
+
+\begin{figure}
+	\begin{center}
+	\begin{neuralnetwork}
+		%Options
+		[nodespacing=9.5mm, layerspacing=18mm,
+		maintitleheight=1em, layertitleheight=2em,
+		height=7, toprow=false, nodesize=24pt, style={},
+		title={}, titlestyle={}]
+		\newcommand{\nodetextclear}[2]{}
+		%use \ifnum to get different labels, such as x_n on the last neuron
+		\newcommand{\nodetextx}[2]{\ifnum #2=8 $x_n^{(0)}$ \else $x_#2^{(0)}$ \fi}
+		\newcommand{\nodetexty}[2]{$y_#2$}
+		%Hidden layer textcommands
+		%32 neurons
+		\newcommand{\nodetextxa}[2]{\ifnum #2=7 $x_{32}^{(1)}$ \else $x_#2^{(1)}$ \fi}
+		%16 neurons
+		\newcommand{\nodetextxb}[2]{\ifnum #2=6 $x_{16}^{(2)}$ \else $x_#2^{(2)}$ \fi}
+		%8 neurons
+		\newcommand{\nodetextxc}[2]{\ifnum #2=5 $x_{8}^{(3)}$ \else $x_#2^{(3)}$ \fi}
+		\newcommand{\nodetextxd}[2]{$x_#2^{(4)}$}
+		\newcommand{\nodetextxe}[2]{$x_#2^{(5)}$}
+		%Input Layer
+		\inputlayer[count=3, bias=true, title=, text=\nodetextx]
+		%Hidden Layer 1
+		\hiddenlayer[count=1, bias=true, title=, text=\nodetextxa] 
+		\linklayers[]
+		%Final Layer
+		\outputlayer[count=1, title=, text=\nodetexty] \linklayers
+	\end{neuralnetwork}
+	\end{center}
+	\caption{Example Neural Network}
+\end{figure}
 
 More specifcally, a neural network consists of layers denoted by $l = 0, 1, \dots, L$, with $l = 0$ denoting the input layer and $l = L$ denoting the output layer, and $K^{(l)}$ denoting the number of neurons in each hidden layer. The input layer is defined using predictors, $x^{(0)} = (1, z_1, \dots, z_N)'$. The output of neuron $k$ in layer $l$ is then $x_k^{(l)}$. Next, define the vector of outputs for this layer as $x^{(l)} = (1, x_1^{(l)}, \dots, x_{K^(l)}^{(l)})'$.  The recursive output formula for the neural network at each neuron in layer $l > 0$ is then:
 
@@ -642,21 +682,7 @@ The importance of each predictor $j$ is denoted as $VI_j$, and is defined as the
 This mechanism was chosen because the other popular normalization mechanism "softmax" was observed to be unable to preserve the distances between each original $VI_j$ well enough, thus squishing together all importance metrics.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Study}
-
-\subsection{Model}
-
-All machine learning methods are designed to approximate the empirical model \( E_t(r_{i, t+1}) = g*(z_{i,t}) \) defined in equation (2). The baseline set of stock-level covariates \( z_{i,t} \) as:
-
-\begin{equation}
-\label{kronecker_equation}
-	z_{i,t} = x_t \otimes c_{i,t}
-\end{equation}
-
-where \( c_{i,t} \) is a \( P_c \times 1 \) matrix of characteristics for each stock \(i\), and \(x_t\) is a $P_x \times 1$ vector of macroeconomic predictors (and are this common to all stocks, including a constant). $z_{i,t}$ is a $P \times 1$ vector of features for predicting individual stock returns ($P = P_cP_x$) and includes interactions between individual characteristics and macroeconomic characteristics. 
-
-\section{Simulation Results}
+\section{Simulation Study}
 
 %% Basic overview of results
 
@@ -790,19 +816,22 @@ We try to mimic the procedure used in the simulation study. This means that the 
 
 \begin{figure}
 	\includegraphics{empirical_sample_1_vi.pdf}
-	\caption{Empirical Data Variable Importance Plots}
+	\caption{Empirical Data Variable Importance for Sample 1}
 \end{figure}
 
 \begin{figure}
 	\includegraphics{empirical_sample_2_vi.pdf}
+	\caption{Empirical Data Variable Importance for Sample 2}
 \end{figure}
 
 \begin{figure}
 	\includegraphics{empirical_sample_3_vi.pdf}
+	\caption{Empirical Data Variable Importance for Sample 3}
 \end{figure}
 
 \begin{figure}
 	\includegraphics{empirical_sample_all_vi.pdf}
+	\caption{Empirical Data Variable Importance Averaged Across All Samples}
 \end{figure}
 	
 
@@ -1086,7 +1115,7 @@ ind\_
 \end{table}
 
 \subsection{Computational Details}
-\label{Algorithms}
+\label{computation}
 
 \subsubsection{Linear Models}
 
