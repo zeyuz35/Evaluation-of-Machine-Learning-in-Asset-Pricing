@@ -658,6 +658,18 @@ where \( c_{i,t} \) is a \( P_c \times 1 \) matrix of characteristics for each s
 
 \section{Simulation Results}
 
+%% Basic overview of results
+
+In our simulation study, we find that the penalized linear models consistently perform the best, followed extremely closely by random forests. 
+
+We also find that models fitted with respect to minimizing mean absolute error (quantile loss) generally perform better, even in terms of the mean squared error metrics. This is not a surprising result, especially considering the stochastic error design which introduces significant shocks to the returns process, leading to large outliers which the mean squared error metric is more sensitive to. 
+
+In terms of finding the correct underlying causal regressors, we find that the penalized linear models perform the best at identifying the true data generating regressors, and that this appears to be mostly robust regardless of the amount of cross sectional correlation. The penalized linear models are not perfect, particularly in the $g_2$ specification, where the true covariates enter in the returns process via a \textit{sgn} function, which is more difficult to estimate that other non-linear specifications, such as an indicator function. On these more difficult specifications, the penalized linear models are generally very conservative, sometimes only identifying a single covariate as important. 
+
+Of particular note the instability of the penalized linear models' hyperparameters across different training samples. Though the optimal value for $\alpha$ is generally 1 (corresponding to LASSO and thus a sparse representation), it was not uncommon to see $\alpha$ values swinging between values close to 0 (corresponding to ridge regression, and thus a dense representation) to 1 as the training sample moved forwards in time. As the penalized linear models consistently performed the best and still remained able to correctly identify the true covariates this is not a large issue, but it should be noted that this can lead to interpretation issues.
+
+The random forest models were typically able to correctly identify the true data generating covariates, but struggled with discerning them adequately from other covariates. This is to be expected, likely due to how the random forest algorithms work. Recall that the random forest algorithm is an ensemble of tree models, with each tree model only having access to a subset of all available predictors. If this subset does not include the true data generating predictor, that particular tree will likely select the predictors which have the highest correlation with the true data generating predictor instead. Thus, the resulting ensemble model is likely to believe that cross sectionally correlated predictors are important.
+
 \begin{table}
 	\caption{Simulation Results}
 	\begin{center}
@@ -680,9 +692,6 @@ where \( c_{i,t} \) is a \( P_c \times 1 \) matrix of characteristics for each s
 	\caption{Diebold Mariano Tests for Simulation Study}
 \end{table}
 
-%% Basic overview of results
-
-
 
 \subsubsection{Linear Models}
 
@@ -698,17 +707,9 @@ Of particular note is the instability of the optimal hyperparameter as the valid
 
 Similarly to the linear models, penalized linear models which minimized mean absolute error (corresponding to quantile regression) offered consistent improvements over their mean squared error versions.
 
-\subsubsection{Random Forests}
-
-The random forests exhibited higher performance and robustness compared the linear and penalized linear models.
-
-The random forests struggle greatly with determining variable importance in the presence of cross sectional correlation. This is to be expected, likely due to how the random forest algorithms work. Recall that the random forest algorithm is an ensemble of tree models, with each tree model only having access to a subset of all available predictors. If this subset does not include the true data generating predictor, that particular tree will likely select the predictors which have the highest correlation with the true data generating predictor instead. Thus, the resulting ensemble model is likely to believe that cross sectionally correlated predictors are important.
-
-Very computationally intensive, so only a conservative grid of hyperparameters was able to be implemented. In particular, a low ntree parameter was used for feasibility, and it was not feasible to explore which value of ntree stopped improving performance. It is generally recommended to set the ntree parameter as high as computationally feasible, as doing so typically only increases performance. This means that there is possibly more room for higher performance from random forest models.
-
 \subsubsection{Neural Networks}
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Empirical Data}
 
@@ -745,7 +746,7 @@ To reduce the size of the dataset and increase feasibility, the dataset was filt
 
 We then follow \cite{gu_empirical_2018} and construct eight macroeconomic factors following the variable definitions in \cite{welch_comprehensive_2008}: dividend-price ratio (dp), earnings-price ratio (ep), book-to-market ratio (bm), net equity expansion (ntis), Treasury-bill rate (tbl), term spread (tms), default spread (dfy) and stock variance (svar). The treasury bill rate was also used from this source to construct excess quarterly returns. 
 
-The two sets of factors were then combined according to \ref
+The two sets of factors were then combined according to
  
 As the individual and macroeconomic factors can have similar names, individual and macroeconomic factors were prefixed with ind\_ and macro\_ respectively.
 
@@ -756,6 +757,10 @@ As the individual and macroeconomic factors can have similar names, individual a
 
 
 We detail our cleaning procedure of this dataset. To reduce the size and maintain computational feasibility, only shares traded on the NASDAQ exchange was included (filtered out using the PRIMEXCH variable). The majority of the characteristics included in the dataset are only updated annually, resulting in many rows having column values that remained constant for multiple time periods. To increase the variability yet also maintain a large enough number of time periods, quarterly returns were constructed. This also had the benefit of decreasing the dataset size for computational feasibility. 
+
+\rhs{proper example of sic codes being not very useful}
+
+The sic2 variable, corresponding to the stocks' Standard Industrial Classification (SIC) codes was also dropped. This is because the SIC code system was established . Indeed, WRDS explicitly cautions the use of SIC codes beyond the use of rough grouping of industries, as SIC codes are not strictly enforced by government agencies for accuracy, as well most large companies belonging to multiple SIC codes over time. Additionally, dropping the sic2 variable also reduced the dimensionality of the dataset by 74 columns, contributing to computational feasibility.
 
 The full details of these factors are available in table X.
 
@@ -806,23 +811,25 @@ We try to mimic the procedure used in the simulation study. This means that the 
 	\caption{Diebold Mariano Tests for Empirical Data}
 \end{table}
 
-In general, results from the simulation study were reproduced in the empirical study. We similarly see that the penalized linear models generally performing the best, with the random forest models offering slightly worse performance, occasionally outperforming penalized linear models. The neural networks offered lukewarm performance with the earlier training samples, but began to outperform random forests as the amount of training data increased.
+In general, results from the simulation study were reproduced in the empirical study. 
+
+We similarly see that the penalized linear models generally performing the best, with the random forest models offering slightly worse performance, occasionally outperforming penalized linear models. The neural networks offered lukewarm performance with the earlier training samples, but began to outperform random forests as the amount of training data increased.
 
 Interestingly, 
 
-\subsubsection{Linear Models}
+%% Linear Models
 
 The linear models typically had the worst performance among all the models.
 
-\subsubsection{Penalized Linear Models}
+%% Penalized Linear Models
 
 
 
-\subsubsection{Random Forests}
+%% Random Forests
 
 Similar to the simulation study, the random forests overfitted the training sample by a large margin, offering the greatest performance by far for in sample forecasts.
 
-\subsubsection{Neural Networks}
+%% Neural Networks
 
 The neural networks offered lukewarm performance in the first two training samples, trailing behind the random forest and penalized linear models. 
 
@@ -842,225 +849,231 @@ For each class of models considered, not all possible or reasonable specificatio
 
 \section{Conclusion}
 
-
+ind\_
 
 \section{Appendix}
 
 \subsection{Data}
 
+%% Individual Factor Table
+
 \begin{landscape}
 	\footnotetext{The factor was included in the original dataset provided by \cite{gu_empirical_2018}, but was not used due to missing data issues}
 	\begin{center}
-		\begin{longtable}{llllllll} \hline 
+		\label{ind_factors}
+		\begin{longtable}{lllllll}
+			\caption{Individual Factors} \\ \hline
 			No. & Acronym & Firm Characteristic & Author(s) & Data Source & Frequency \\ \hline
-			1 & absacc\footnotemark[\value{footnote}] & Absolute Accruals & 
+			1 & ind\_absacc\footnotemark[\value{footnote}] & Absolute Accruals & 
 				\cite{bandyopadhyay_accrual_2010} & Compustat & Annual \\
-			2 & acc\footnotemark[\value{footnote}] & Working capital accruals & 
+			2 & ind\_acc\footnotemark[\value{footnote}] & Working capital accruals & 
 				\cite{sloan_stock_1996} & Compustat & Annual \\
-			3 & aeavol & Abnormal earnings announcement volume & 
+			3 & ind\_aeavol & Abnormal earnings announcement volume & 
 				\cite{lerman_high-volume_2008} & Compustat & Quarterly \\
-			4 & age & \# years since first Compustat coverage & 
+			4 & ind\_age & \# years since first Compustat coverage & 
 				\cite{jiang_information_2005} & Compustat & Annual \\
-			5 & agr & Asset growth & 
+			5 & ind\_agr & Asset growth & 
 				\cite{cooper_asset_2008} & Compustat & Annual \\
-			6 & baspread & Bid-ask spread & 
+			6 & ind\_baspread & Bid-ask spread & 
 				\cite{amihud_effects_1989} & Compustat & Monthly \\
-			7 & beta & Beta & 
+			7 & ind\_beta & Beta & 
 				\cite{fama_risk_1973} & Compustat & Monthly \\
-			8 & betasq & Beta squared & 
+			8 & ind\_betasq & Beta squared & 
 				\cite{fama_risk_1973} & Compustat & Monthly \\
-			9 & bm & Book-to-market & 
+			9 & ind\_bm & Book-to-market & 
 				\cite{rosenberg_persuasive_1985} & Compustat & Annual \\
-			10 & bm\_ia & Industry-adjusted book to market & 
+			10 & ind\_bm\_ia & Industry-adjusted book to market & 
 				\cite{asness_predicting_2000} & Compustat & Quarterly \\
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			11 & cash & Cash holdings & 
+			11 & ind\_cash & Cash holdings & 
 				\cite{palazzo_cash_2012} & Compustat & Annual \\
-			12 & cashdebt & Cashflow to debt & 
+			12 & ind\_cashdebt & Cashflow to debt & 
 				\cite{ou_financial_1989} & Compustat & Annual \\
-			13 & cashpr & Cash productivity & 
+			13 & ind\_cashpr & Cash productivity & 
 				\cite{chandrashekar_productivity_2009} & Compustat & Annual \\
-			14 & cfp\footnotemark[\value{footnote}] & Cashflow to price ratio & 
+			14 & ind\_cfp\footnotemark[\value{footnote}] & Cashflow to price ratio & 
 				\cite{desai_value-glamour_2004} & Compustat & Annual \\
-			15 & cfp\_ia\footnotemark[\value{footnote}] & Industry-adjusted cashfow to price ratio & 
+			15 & ind\_cfp\_ia\footnotemark[\value{footnote}] & Industry-adjusted cashfow to price ratio & 
 				\cite{asness_predicting_2000} & Compustat & Annual \\
-			16 & chatoia\footnotemark[\value{footnote}] & Industry-adjusted change in asset turnover & 
+			16 & ind\_chatoia\footnotemark[\value{footnote}] & Industry-adjusted change in asset turnover & 
 				\cite{soliman_use_2008} & Compustat & Annual \\
-			17 & chcsho & Change in shares outstanding & 
+			17 & ind\_chcsho & Change in shares outstanding & 
 				\cite{pontiff_share_2008} & Compustat & Annual \\
-			18 & chempia & Industry-adjusted change in employee & 
+			18 & ind\_chempia & Industry-adjusted change in employee & 
 				\cite{asness_predicting_2000} & Compustat & Annual \\
-			19 & chinv\footnotemark[\value{footnote}] & Change in inventory & 
+			19 & ind\_chinv\footnotemark[\value{footnote}] & Change in inventory & 
 				\cite{thomas_inventory_2002} & Compustat & Annual \\
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			20 & chmom & Change in 6-month momentum & 
+			20 & ind\_chmom & Change in 6-month momentum & 
 				\cite{gettleman_acceleration_2006} & Compustat & Monthly \\
-			21 & chpmia\footnotemark[\value{footnote}] & Industry-adjusted change in profit margin & 
+			21 & ind\_chpmia\footnotemark[\value{footnote}] & Industry-adjusted change in profit margin & 
 				\cite{soliman_use_2008} & Compustat & Annual \\
-			22 & chtx & Change in tax expense & 
+			22 & ind\_chtx & Change in tax expense & 
 				\cite{thomas_tax_2011} & Compustat & Quarterly \\
-			23 & cinvest & Corporate investment & 
+			23 & ind\_cinvest & Corporate investment & 
 				\cite{titman_capital_2004} & Compustat & Quarterly \\
-			24 & convind & Convertible debt indicator & 
+			24 & ind\_convind & Convertible debt indicator & 
 				\cite{valta_strategic_2016} & Compustat & Annual \\
-			25 & currat & Current ratio & 
+			25 & ind\_currat & Current ratio & 
 				\cite{ou_financial_1989} & Compustat & Annual \\
-			26 & depr & Depreciation / PP\&E & 
+			26 & ind\_depr & Depreciation / PP\&E & 
 				\cite{holthausen_prediction_1992} & Compustat & Annual \\
-			27 & divi & Dividend initiation & 
+			27 & ind\_divi & Dividend initiation & 
 				\cite{michaely_price_1995} & Compustat & Annual \\
-			28 & divo & Dividend omission & 
+			28 & ind\_divo & Dividend omission & 
 				\cite{michaely_price_1995} & Compustat & Annual \\
-			29 & dolvol & Dollar trading volume & 
+			29 & ind\_dolvol & Dollar trading volume & 
 				\cite{chordia_trading_2001} & Compustat & Monthly \\
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			30 & dy & Dividend to price & 
+			30 & ind\_dy & Dividend to price & 
 				\cite{litzenberger_effects_1982} & Compustat & Annual \\
-			31 & ear & Earnings announcement return & 
+			31 & ind\_ear & Earnings announcement return & 
 				\cite{brandt_earnings_2008} & Compustat & Quarterly \\
-			32 & egr & Growth in common shareholder eq & 
+			32 & ind\_egr & Growth in common shareholder eq & 
 				\cite{richardson_accrual_2005} & Compustat & Annual \\
-			33 & ep & Earnings to price & 
+			33 & ind\_ep & Earnings to price & 
 				\cite{basu_investment_1977} & Compustat & Annual \\
-			34 & gma & Gross profitability & 
+			34 & ind\_gma & Gross profitability & 
 				\cite{novy-marx_other_2013} & Compustat & Annual \\
-			35 & grCAPX\footnotemark[\value{footnote}] & Growth in capital expenditures & 
+			35 & ind\_grCAPX\footnotemark[\value{footnote}] & Growth in capital expenditures & 
 				\cite{anderson_empirical_2006} & Compustat & Annual \\
-			36 & grltnoa\footnotemark[\value{footnote}] & Growth in long term net operating assets & 
+			36 & ind\_grltnoa\footnotemark[\value{footnote}] & Growth in long term net operating assets & 
 				\cite{fairfield_accrued_2003} & Compustat & Annual \\
-			37 & herf & Industry sales concentration & 
+			37 & ind\_herf & Industry sales concentration & 
 				\cite{hou_industry_2006} & Compustat & Annual \\
-			38 & hire & Employee growth rate & 
+			38 & ind\_hire & Employee growth rate & 
 				\cite{belo_labor_2014} & Compustat & Annual \\
-			39 & idiovol & Idiosyncratic return volatility & 
+			39 & ind\_idiovol & Idiosyncratic return volatility & 
 				\cite{ali_arbitrage_2003} & Compustat & Monthly \\
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			40 & ill & Illiquidity & 
+			40 & ind\_ill & Illiquidity & 
 				\cite{amihud_illiquidity_2002} & Compustat & Monthly \\
-			41 & indmom & Industry momentum & 
+			41 & ind\_indmom & Industry momentum & 
 				\cite{moskowitz_industries_1999} & Compustat & Monthly \\
-			42 & invest\footnotemark[\value{footnote}] & Capital expenditures and inventory & 
+			42 & ind\_invest\footnotemark[\value{footnote}] & Capital expenditures and inventory & 
 				\cite{chen_better_2010} & Compustat & Annual \\
-			43 & lev & Leverage & 
+			43 & ind\_lev & Leverage & 
 				\cite{bhandari_debt/equity_1988} & Compustat & Annual \\
-			44 & lgr & Growth in long-term debt & 
+			44 & ind\_lgr & Growth in long-term debt & 
 				\cite{richardson_accrual_2005} & Compustat & Annual \\
-			45 & maxret & Maximum daily return & 
+			45 & ind\_maxret & Maximum daily return & 
 				\cite{bali_maxing_2011} & Compustat & Monthly \\
-			46 & mom12m & 12-month momentum & 
+			46 & ind\_mom12m & 12-month momentum & 
 				\cite{jegadeesh_evidence_1990} & Compustat & Monthly \\
-			47 & mom1 & 1-month momentum & 
+			47 & ind\_mom1 & 1-month momentum & 
 				\cite{jegadeesh_returns_1993} & Compustat & Monthly \\
-			48 & mom36m\footnotemark[\value{footnote}] & 36-month momentum & 
+			48 & ind\_mom36m\footnotemark[\value{footnote}] & 36-month momentum & 
 				\cite{jegadeesh_returns_1993} & Compustat & Monthly \\
-			49 & mom6m & 6-month momentum & 
+			49 & ind\_mom6m & 6-month momentum & 
 				\cite{jegadeesh_returns_1993} & Compustat & Monthly \\
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			50 & ms & Financial statement score & 
+			50 & ind\_ms & Financial statement score & 
 				\cite{mohanram_separating_2005} & Compustat & Quarterly \\
-			51 & mvel1 & Size & 
+			51 & ind\_mvel1 & Size & 
 				\cite{banz_relationship_1981} & Compustat & Monthly \\
-			52 & mve\_ia & Industry-adjusted size & 
+			52 & ind\_mve\_ia & Industry-adjusted size & 
 				\cite{asness_predicting_2000} & Compustat & Annual \\
-			53 & nincr & Number of earnings increases & 
+			53 & ind\_nincr & Number of earnings increases & 
 				\cite{barth_market_1999} & Compustat & Quarterly \\
-			54 & operprof\footnotemark[\value{footnote}] & Operating profitability & 
+			54 & ind\_operprof\footnotemark[\value{footnote}] & Operating profitability & 
 				\cite{fama_five-factor_2015} & Compustat & Annual \\
-			55 & orgcap\footnotemark[\value{footnote}] & Organizational capital & 
+			55 & ind\_orgcap\footnotemark[\value{footnote}] & Organizational capital & 
 				\cite{eisfeldt_organization_2013} & Compustat & Annual \\
-			56 & pchcapx\_ia\footnotemark[\value{footnote}] & Industry adjusted \% change in capital expenditures & 
+			56 & ind\_pchcapx\_ia\footnotemark[\value{footnote}] & Industry adjusted \% change in capital expenditures & 
 				\cite{abarbanell_abnormal_1998} & Compustat & Annual \\
-			57 & pchcurrat\footnotemark[\value{footnote}] & \% change in current ratio & 
+			57 & ind\_pchcurrat\footnotemark[\value{footnote}] & \% change in current ratio & 
 				\cite{ou_financial_1989} & Compustat & Annual \\
-			58 & pchdepr\footnotemark[\value{footnote}] & \% change in depreciation & 
+			58 & ind\_pchdepr\footnotemark[\value{footnote}] & \% change in depreciation & 
 				\cite{holthausen_prediction_1992} & Compustat & Annual \\
-			59 & pchgm\_pchsale\footnotemark[\value{footnote}] & \% change in gross margin - \% change in sales & 
+			59 & ind\_pchgm\_pchsale\footnotemark[\value{footnote}] & \% change in gross margin - \% change in sales & 
 				\cite{abarbanell_abnormal_1998} & Compustat & Annual \\
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			60 & pchquick\footnotemark[\value{footnote}] & \% change in quick ratio & 
+			60 & ind\_pchquick\footnotemark[\value{footnote}] & \% change in quick ratio & 
 				\cite{ou_financial_1989} & Compustat & Annual \\
-			61 & pchsale\_pchinvt\footnotemark[\value{footnote}] & \% change in sales - \% change in inventory & 
+			61 & ind\_pchsale\_pchinvt\footnotemark[\value{footnote}] & \% change in sales - \% change in inventory & 
 				\cite{abarbanell_abnormal_1998} & Compustat & Annual \\
-			62 & pchsale\_pchrect\footnotemark[\value{footnote}] & \% change in sales - \% change in A/R & 
+			62 & ind\_pchsale\_pchrect\footnotemark[\value{footnote}] & \% change in sales - \% change in A/R & 
 				\cite{abarbanell_abnormal_1998} & Compustat & Annual \\
-			63 & pchsale\_pchxsga\footnotemark[\value{footnote}] & \% change in sales - \% change in SG & 
+			63 & ind\_pchsale\_pchxsga\footnotemark[\value{footnote}] & \% change in sales - \% change in SG & 
 				\cite{abarbanell_abnormal_1998} & Compustat & Annual \\
-			64 & pchsaleinv\footnotemark[\value{footnote}] & \% change sales-to-inventory & 
+			64 & ind\_pchsaleinv\footnotemark[\value{footnote}] & \% change sales-to-inventory & 
 				\cite{ou_financial_1989} & Compustat & Annual \\
-			65 & pctacc\footnotemark[\value{footnote}] & Percent accruals & 
+			65 & ind\_pctacc\footnotemark[\value{footnote}] & Percent accruals & 
 				\cite{hafzalla_percent_2011} & Compustat & Annual \\
-			66 & pricedelay & Price delay & 
+			66 & ind\_pricedelay & Price delay & 
 				\cite{hou_market_2005} & Compustat & Monthly \\
-			67 & ps & Financial statements score & 
-				\cite{piotroski_value_2000} & Categorical & Compustat & Annual \\
-			68 & quick & Quick ratio & 
+			67 & ind\_ps & Financial statements score & 
+				\cite{piotroski_value_2000} & Compustat & Annual \\
+			68 & ind\_quick & Quick ratio & 
 				\cite{ou_financial_1989} & Compustat & Annual \\
-			69 & rd & R\&D increase & 
+			69 & ind\_rd & R\&D increase & 
 				\cite{eberhart_examination_2004} & Compustat & Annual \\
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			70 & rd\_mve\footnotemark[\value{footnote}] & R\&D to market capitalization & 
+			70 & ind\_rd\_mve\footnotemark[\value{footnote}] & R\&D to market capitalization & 
 				\cite{guo_explaining_2006} & Compustat & Annual \\
-			71 & rd\_sale\footnotemark[\value{footnote}] & R\&D to sales & 
+			71 & ind\_rd\_sale\footnotemark[\value{footnote}] & R\&D to sales & 
 				\cite{guo_explaining_2006} & Compustat & Annual \\
-			72 & realestate\footnotemark[\value{footnote}] & Real estate holdings & 
+			72 & ind\_realestate\footnotemark[\value{footnote}] & Real estate holdings & 
 				\cite{tuzel_corporate_2010} & Compustat & Annual \\
-			73 & retvol & Return volatility & 
+			73 & ind\_retvol & Return volatility & 
 				\cite{ang_cross-section_2006} & Compustat & Monthly \\
-			74 & roaq & Return on assets & 
+			74 & ind\_roaq & Return on assets & 
 				\cite{balakrishnan_post_2010} & Compustat & Quarterly \\
-			75 & roavol\footnotemark[\value{footnote}] & Earnings volatility & 
+			75 & ind\_roavol\footnotemark[\value{footnote}] & Earnings volatility & 
 				\cite{francis_costs_2004} & Compustat & Quarterly \\
-			76 & roeq & Return on equity & 
+			76 & ind\_roeq & Return on equity & 
 				\cite{hou_digesting_2015} & Compustat & Quarterly \\
-			77 & roic & Return on invested capital & 
+			77 & ind\_roic & Return on invested capital & 
 				\cite{brown_productivity_2007} & Compustat & Annual \\
-			78 & rsup & Revenue surprise & 
+			78 & ind\_rsup & Revenue surprise & 
 				\cite{kama_market_2009} & Compustat & Quarterly \\
-			79 & salecash & Sales to cash & 
+			79 & ind\_salecash & Sales to cash & 
 				\cite{ou_financial_1989} & Compustat & Annual \\
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			80 & saleinv\footnotemark[\value{footnote}] & Sales to inventory & 
+			80 & ind\_saleinv\footnotemark[\value{footnote}] & Sales to inventory & 
 				\cite{ou_financial_1989} & Compustat & Annual \\
-			81 & salerec & Sales to receivables & 
+			81 & ind\_salerec & Sales to receivables & 
 				\cite{ou_financial_1989} & Compustat & Annual \\
-			82 & secured\footnotemark[\value{footnote}] & Secured debt & 
+			82 & ind\_secured\footnotemark[\value{footnote}] & Secured debt & 
 				\cite{valta_strategic_2016} & Compustat & Annual \\
-			83 & securedind & Secured debt indicator & 
+			83 & ind\_securedind & Secured debt indicator & 
 				\cite{valta_strategic_2016} & Compustat & Annual \\
-			84 & sgr\footnotemark[\value{footnote}] & Sales growth & 
+			84 & ind\_sgr\footnotemark[\value{footnote}] & Sales growth & 
 				\cite{barbee_jr_salesprice_1996} & Compustat & Annual \\
-			85 & sin & Sin stocks & 
+			85 & ind\_sin & Sin stocks & 
 				\cite{hong_price_2009} & Compustat & Annual \\
-			86 & sp & Sales to price & 
+			86 & ind\_sp & Sales to price & 
 				\cite{barbee_jr_salesprice_1996} & Compustat & Annual \\
-			87 & std\_dolvol & Volatility of liquidity (dollar trading volume) & 
+			87 & ind\_std\_dolvol & Volatility of liquidity (dollar trading volume) & 
 				\cite{chordia_trading_2001} & Compustat & Annual \\
-			88 & std\_turn & Volatility of liquidity (share turnover) & 
+			88 & ind\_std\_turn & Volatility of liquidity (share turnover) & 
 				\cite{chordia_trading_2001} & Compustat & Monthly \\
-			89 & stdacc\footnotemark[\value{footnote}] & Accrual volatility & 
+			89 & ind\_stdacc\footnotemark[\value{footnote}] & Accrual volatility & 
 				\cite{bandyopadhyay_accrual_2010} & Compustat & Monthly \\
 			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-			90 & stdcf\footnotemark[\value{footnote}] & Cashflow volatility & 
+			90 & ind\_stdcf\footnotemark[\value{footnote}] & Cashflow volatility & 
 				\cite{huang_cross_2009} & Compustat & Quarterly \\
-			91 & tang & Debt capacity/rm tangibility & 
+			91 & ind\_tang & Debt capacity/rm tangibility & 
 				\cite{almeida_financial_2007} & Compustat & Quarterly \\
-			92 & tb\footnotemark[\value{footnote}] & Tax income to book income & 
+			92 & ind\_tb\footnotemark[\value{footnote}] & Tax income to book income & 
 				\cite{lev_market-based_1982} & Compustat & Annual \\
-			93 & turn & Share turnover & 
+			93 & ind\_turn & Share turnover & 
 				\cite{datar_liquidity_1998} & Compustat & Monthly \\
-			94 & zerotrade & Zero trading days & 
-				\cite{liu_liquidity-augmented_2006} & Compustat & Monthly \\	
+			94 & ind\_zerotrade & Zero trading days & 
+				\cite{liu_liquidity-augmented_2006} & Compustat & Monthly \\ \hline	
 		\end{longtable}
 	\end{center}
 \end{landscape}
 
 \newpage
 
+%% Macroeconomic Factor Table
+
 \begin{table}
 	\caption{Macroeconomic Factors}
 	\begin{center}
-	\begin{tabular}{lccc} \hline \hline
-		No. & Acronym & Macroeconomic Factor \\ \hline \hline
+	\begin{tabular}{lccc} \hline
+		No. & Acronym & Macroeconomic Factor \\ \hline
 		1 & macro\_dp & Dividend Price Ratio \\
 		2 & macro\_ep & Earnings Price Ratio \\
 		3 & macro\_bm & Book to Market Ratio \\
@@ -1068,7 +1081,7 @@ For each class of models considered, not all possible or reasonable specificatio
 		5 & macro\_tbl & Treasury Bill Rate \\
 		6 & macro\_tms & Term Spread \\
 		7 & macro\_dfy & Default Spread \\
-		8 & macro\_svar & Stock Variance \\
+		8 & macro\_svar & Stock Variance \\ \hline
 	\end{tabular}
 	\end{center}
 \end{table}

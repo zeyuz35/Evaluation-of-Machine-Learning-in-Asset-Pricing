@@ -330,6 +330,16 @@ PredictorData2017 <- PredictorData2017_RAW %>%
 # Filter it so that we only have the years we are interested in (same filtering as datashare)
 macro_predictors <- PredictorData2017 %>%
   dplyr::select(time, dp, ep, bm, ntis, tbl, tms, dfy, svar, Rfree) %>%
+  # Lag Variables
+  mutate(dp = lag(dp)) %>%
+  mutate(ep = lag(ep)) %>%
+  mutate(bm = lag(bm)) %>%
+  mutate(ntis = lag(ntis)) %>%
+  mutate(tbl = lag(tbl)) %>%
+  mutate(tms = lag(tms)) %>%
+  mutate(dfy = lag(dfy)) %>%
+  mutate(svar = lag(svar)) %>%
+  # Rename
   rename_at(vars(-time), function(x) paste0("macro_", x)) %>%
   # Create constant
   mutate(macro_constant = 1) %>%
@@ -1330,8 +1340,8 @@ saveRDS(ELN_stats_mae, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-
 RF_grid <- expand.grid(
   #ntree usually isn't tuned. Just set to max of computationally feasible
   ntree = 50,
-  mtry = seq(20, round(ncol(final_dataset[4:ncol(final_dataset)])/4), 20)
-  # nodesize = seq(2, 14, 2)
+  mtry = seq(20, round(ncol(final_dataset[4:ncol(final_dataset)])/4), 20), 
+  nodesize = seq(2, 14, 2)
   # nodedepth recommended not to be changed
   #nodedepth = 1
   )

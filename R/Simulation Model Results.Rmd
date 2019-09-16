@@ -115,8 +115,8 @@ fit_all_models <- function(dataset_list, batch_process_range,
       # Neural Networks
       # Commented for now because honours lab computers don't have keras/tensorflow
       
-      batch_size <- 32
-      patience <- 20
+      batch_size <- 128
+      patience <- 40
       
       simulation_results_list[[batch]]$NN1_MSE <- NNet_fit_stats(pooled_panel, timeSlices, 1, "mse", batch_size = batch_size, patience = patience)
       simulation_results_list[[batch]]$NN1_MAE <- NNet_fit_stats(pooled_panel, timeSlices, 1, "mae", batch_size = batch_size, patience = patience)
@@ -231,7 +231,7 @@ saveRDS(g3_A1_sv_1_NN_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset
 ```
 
 ```{r}
-batch_process_range <- c(2:2)
+batch_process_range <- c(1:5)
 
 g1_A1_nosv_0_NN_results <- fit_all_models(g1_A1_nosv_0, batch_process_range, LM = 0, ELN = 0, RF = 0, NNet = 1)
 saveRDS(g1_A1_nosv_0_NN_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_nosv_0_NN_results.rds")
@@ -246,6 +246,20 @@ g2_A1_sv_0.01_NN_results <- fit_all_models(g2_A1_sv_0.01, batch_process_range, L
 saveRDS(g2_A1_sv_0.01_NN_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.01_NN_results.rds")
 g3_A1_sv_0.01_NN_results <- fit_all_models(g3_A1_sv_0.01, batch_process_range, LM = 0, ELN = 0, RF = 0, NNet = 1)
 saveRDS(g3_A1_sv_0.01_NN_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.01_NN_results.rds")
+
+g1_A1_sv_0.1_NN_results15 <- fit_all_models(g1_A1_sv_0.1, batch_process_range, LM = 0, ELN = 0, RF = 0, NNet = 1)
+saveRDS(g1_A1_sv_0.1_NN_results15, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.1_NN_results15.rds")
+g2_A1_sv_0.1_NN_results15 <- fit_all_models(g2_A1_sv_0.1, batch_process_range, LM = 0, ELN = 0, RF = 0, NNet = 1)
+saveRDS(g2_A1_sv_0.1_NN_results15, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.1_NN_results15.rds")
+g3_A1_sv_0.1_NN_results15 <- fit_all_models(g3_A1_sv_0.1, batch_process_range, LM = 0, ELN = 0, RF = 0, NNet = 1)
+saveRDS(g3_A1_sv_0.1_NN_results15, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.1_NN_results15.rds")
+
+g1_A1_sv_1_NN_results15 <- fit_all_models(g1_A1_sv_1, batch_process_range, LM = 0, ELN = 0, RF = 0, NNet = 1)
+saveRDS(g1_A1_sv_1_NN_results15, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_1_NN_results15.rds")
+g2_A1_sv_1_NN_results15 <- fit_all_models(g2_A1_sv_1, batch_process_range, LM = 0, ELN = 0, RF = 0, NNet = 1)
+saveRDS(g2_A1_sv_1_NN_results15, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_1_NN_results15.rds")
+g3_A1_sv_1_NN_results15 <- fit_all_models(g3_A1_sv_1, batch_process_range, LM = 0, ELN = 0, RF = 0, NNet = 1)
+saveRDS(g3_A1_sv_1_NN_results15, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_1_NN_results15.rds")
 ```
 
 
