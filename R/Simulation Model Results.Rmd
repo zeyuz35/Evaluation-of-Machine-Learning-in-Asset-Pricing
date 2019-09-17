@@ -159,7 +159,7 @@ g3_A1_sv_1 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/
 
 
 ```{r}
-batch_process_range <- c(1:1)
+batch_process_range <- c(1:5)
 
 # Random Forest is too intensive, just run the simpler models for now
 
