@@ -1,48 +1,45 @@
-\select@language {english}
-\contentsline {section}{\numberline {1}Introduction}{2}{section.1}
-\contentsline {subsection}{\numberline {1.1}Topic}{2}{subsection.1.1}
-\contentsline {subsection}{\numberline {1.2}Background Literature and Motivations}{2}{subsection.1.2}
-\contentsline {section}{\numberline {2}Methodology}{5}{section.2}
-\contentsline {subsection}{\numberline {2.1}Overall Model Design}{5}{subsection.2.1}
-\contentsline {subsection}{\numberline {2.2}Sample Splitting}{6}{subsection.2.2}
-\contentsline {subsection}{\numberline {2.3}Loss Function}{6}{subsection.2.3}
-\contentsline {subsubsection}{\numberline {2.3.1}Mean Absolute Error}{6}{subsubsection.2.3.1}
-\contentsline {subsubsection}{\numberline {2.3.2}Mean Squared Error and Root Mean Squared Error}{7}{subsubsection.2.3.2}
-\contentsline {subsection}{\numberline {2.4}Linear Model}{7}{subsection.2.4}
-\contentsline {subsection}{\numberline {2.5}Penalized Linear Model}{7}{subsection.2.5}
-\contentsline {subsection}{\numberline {2.6}Classification and Regression Trees}{8}{subsection.2.6}
-\contentsline {subsection}{\numberline {2.7}Random Forests}{9}{subsection.2.7}
-\contentsline {subsection}{\numberline {2.8}Neural Networks}{10}{subsection.2.8}
-\contentsline {subsubsection}{\numberline {2.8.1}Introduction}{10}{subsubsection.2.8.1}
-\contentsline {subsubsection}{\numberline {2.8.2}Activation Function}{11}{subsubsection.2.8.2}
-\contentsline {subsubsection}{\numberline {2.8.3}Computation}{12}{subsubsection.2.8.3}
-\contentsline {subsubsection}{\numberline {2.8.4}Batch Normalization}{12}{subsubsection.2.8.4}
-\contentsline {subsection}{\numberline {2.9}Simulation Design}{12}{subsection.2.9}
-\contentsline {subsubsection}{\numberline {2.9.1}Overall Design}{12}{subsubsection.2.9.1}
-\contentsline {subsubsection}{\numberline {2.9.2}Simulating Characteristics}{13}{subsubsection.2.9.2}
-\contentsline {subsubsection}{\numberline {2.9.3}Simulating Macroeconomic Series}{13}{subsubsection.2.9.3}
-\contentsline {subsubsection}{\numberline {2.9.4}Simulating Return Series}{14}{subsubsection.2.9.4}
-\contentsline {subsubsection}{\numberline {2.9.5}Sample Splitting}{14}{subsubsection.2.9.5}
-\contentsline {subsection}{\numberline {2.10}Model Evaluation}{15}{subsection.2.10}
-\contentsline {subsubsection}{\numberline {2.10.1}R Squared}{15}{subsubsection.2.10.1}
-\contentsline {subsubsection}{\numberline {2.10.2}Diebold-Mariano Test}{15}{subsubsection.2.10.2}
-\contentsline {subsection}{\numberline {2.11}Variable Importance}{16}{subsection.2.11}
-\contentsline {section}{\numberline {3}Simulation Study}{16}{section.3}
-\contentsline {subsubsection}{\numberline {3.0.1}Linear Models}{17}{subsubsection.3.0.1}
-\contentsline {subsubsection}{\numberline {3.0.2}Penalized Linear Models}{17}{subsubsection.3.0.2}
-\contentsline {subsubsection}{\numberline {3.0.3}Neural Networks}{17}{subsubsection.3.0.3}
-\contentsline {section}{\numberline {4}Empirical Data}{17}{section.4}
-\contentsline {subsection}{\numberline {4.1}Data}{17}{subsection.4.1}
-\contentsline {subsection}{\numberline {4.2}Empirical Data Model Fitting and Methodology Differences}{21}{subsection.4.2}
-\contentsline {subsection}{\numberline {4.3}Empirical Data Results}{21}{subsection.4.3}
-\contentsline {section}{\numberline {5}Limitations}{21}{section.5}
-\contentsline {section}{\numberline {6}Conclusion}{21}{section.6}
-\contentsline {section}{\numberline {7}Appendix}{26}{section.7}
-\contentsline {subsection}{\numberline {7.1}Data}{26}{subsection.7.1}
-\contentsline {subsection}{\numberline {7.2}Computational Details}{32}{subsection.7.2}
-\contentsline {subsubsection}{\numberline {7.2.1}Linear Models}{32}{subsubsection.7.2.1}
-\contentsline {subsubsection}{\numberline {7.2.2}Penalized Linear}{32}{subsubsection.7.2.2}
-\contentsline {subsubsection}{\numberline {7.2.3}Classification and Regression Trees}{33}{subsubsection.7.2.3}
-\contentsline {subsubsection}{\numberline {7.2.4}Random Forest}{33}{subsubsection.7.2.4}
-\contentsline {subsubsection}{\numberline {7.2.5}Neural Networks}{34}{subsubsection.7.2.5}
-\contentsline {subsubsection}{\numberline {7.2.6}Tuning of Simulated Datasets}{34}{subsubsection.7.2.6}
+\babel@toc {english}{}
+\contentsline {section}{\numberline {1}Introduction}{2}{section.1}% 
+\contentsline {subsection}{\numberline {1.1}Topic}{2}{subsection.1.1}% 
+\contentsline {subsection}{\numberline {1.2}Background Literature and Motivations}{2}{subsection.1.2}% 
+\contentsline {section}{\numberline {2}Methodology}{5}{section.2}% 
+\contentsline {subsection}{\numberline {2.1}Overall Model Design}{5}{subsection.2.1}% 
+\contentsline {subsection}{\numberline {2.2}Sample Splitting}{6}{subsection.2.2}% 
+\contentsline {subsection}{\numberline {2.3}Loss Function}{6}{subsection.2.3}% 
+\contentsline {subsubsection}{\numberline {2.3.1}Mean Absolute Error}{6}{subsubsection.2.3.1}% 
+\contentsline {subsubsection}{\numberline {2.3.2}Mean Squared Error and Root Mean Squared Error}{6}{subsubsection.2.3.2}% 
+\contentsline {subsection}{\numberline {2.4}Linear Model}{7}{subsection.2.4}% 
+\contentsline {subsection}{\numberline {2.5}Penalized Linear Model}{7}{subsection.2.5}% 
+\contentsline {subsection}{\numberline {2.6}Classification and Regression Trees}{8}{subsection.2.6}% 
+\contentsline {subsection}{\numberline {2.7}Random Forests}{9}{subsection.2.7}% 
+\contentsline {subsection}{\numberline {2.8}Neural Networks}{10}{subsection.2.8}% 
+\contentsline {subsubsection}{\numberline {2.8.1}Introduction}{10}{subsubsection.2.8.1}% 
+\contentsline {subsubsection}{\numberline {2.8.2}Activation Function}{11}{subsubsection.2.8.2}% 
+\contentsline {subsubsection}{\numberline {2.8.3}Computation}{11}{subsubsection.2.8.3}% 
+\contentsline {subsubsection}{\numberline {2.8.4}Batch Normalization}{12}{subsubsection.2.8.4}% 
+\contentsline {subsection}{\numberline {2.9}Simulation Design}{12}{subsection.2.9}% 
+\contentsline {subsubsection}{\numberline {2.9.1}Overall Design}{12}{subsubsection.2.9.1}% 
+\contentsline {subsubsection}{\numberline {2.9.2}Simulating Characteristics}{13}{subsubsection.2.9.2}% 
+\contentsline {subsubsection}{\numberline {2.9.3}Simulating Macroeconomic Series}{13}{subsubsection.2.9.3}% 
+\contentsline {subsubsection}{\numberline {2.9.4}Simulating Return Series}{14}{subsubsection.2.9.4}% 
+\contentsline {subsubsection}{\numberline {2.9.5}Sample Splitting}{14}{subsubsection.2.9.5}% 
+\contentsline {subsection}{\numberline {2.10}Model Evaluation}{15}{subsection.2.10}% 
+\contentsline {subsubsection}{\numberline {2.10.1}R Squared}{15}{subsubsection.2.10.1}% 
+\contentsline {subsubsection}{\numberline {2.10.2}Diebold-Mariano Test}{15}{subsubsection.2.10.2}% 
+\contentsline {subsection}{\numberline {2.11}Variable Importance}{16}{subsection.2.11}% 
+\contentsline {section}{\numberline {3}Simulation Study Results}{16}{section.3}% 
+\contentsline {section}{\numberline {4}Empirical Data}{17}{section.4}% 
+\contentsline {subsection}{\numberline {4.1}Data}{17}{subsection.4.1}% 
+\contentsline {subsection}{\numberline {4.2}Empirical Data Model Fitting and Methodology Differences}{20}{subsection.4.2}% 
+\contentsline {subsection}{\numberline {4.3}Empirical Data Results}{20}{subsection.4.3}% 
+\contentsline {section}{\numberline {5}Limitations}{21}{section.5}% 
+\contentsline {section}{\numberline {6}Conclusion}{26}{section.6}% 
+\contentsline {section}{\numberline {7}Appendix}{26}{section.7}% 
+\contentsline {subsection}{\numberline {7.1}Data}{26}{subsection.7.1}% 
+\contentsline {subsection}{\numberline {7.2}Computational Details}{32}{subsection.7.2}% 
+\contentsline {subsubsection}{\numberline {7.2.1}Linear Models}{32}{subsubsection.7.2.1}% 
+\contentsline {subsubsection}{\numberline {7.2.2}Penalized Linear}{32}{subsubsection.7.2.2}% 
+\contentsline {subsubsection}{\numberline {7.2.3}Classification and Regression Trees}{33}{subsubsection.7.2.3}% 
+\contentsline {subsubsection}{\numberline {7.2.4}Random Forest}{33}{subsubsection.7.2.4}% 
+\contentsline {subsubsection}{\numberline {7.2.5}Neural Networks}{34}{subsubsection.7.2.5}% 
+\contentsline {subsubsection}{\numberline {7.2.6}Tuning of Simulated Datasets}{34}{subsubsection.7.2.6}% 

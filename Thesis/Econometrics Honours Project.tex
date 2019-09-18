@@ -320,9 +320,7 @@ where $|C|$ denotes the number of observations in set C (partition). Given $C$, 
 Trees, grown to a deep enough level, are highly unbiased and flexible. The trade-off is their high variance and instability. Thus, an ensemble method called "Random Forest" was proposed by \cite{breiman_random_2001} to regularize trees by combining many different trees into a single prediction.
 
 \subsection{Random Forests}
-Random Forests are an extension of regression trees that attempt to address some of their problems. A random forest algorithm creates $B$ different bootstrap samples from the training dataset, fits an overfit (and hence low bias) regression tree to each dataset using only a random subset $m$ size from all available predictors (also known as dropout), and then averages their forecasts as the final output. The overfit trees means that the underlying trees has low bias, and the dropout procedure means that they have low correlation. Thus, averaging these low bias, uncorrelated trees results in a low bias, yet stable model. Specific details of the random forest algorithm are detailed in the appendix.
-
-Random forests were the most computationally intensive, and for feasibility purposes an ensemble of only $B = 30$ trees with $m = 20$ at most was considered for the simulation study, and $B = 50$ trees with $m = 40$ at most was considered for the empirical study.
+Random Forests are an extension of regression trees that attempt to address some of their problems, proposed by \cite{breiman_random_2001}. A random forest algorithm creates $B$ different bootstrap samples from the training dataset, fits an overfit (and hence low bias) regression tree to each dataset using only a random subset $m$ size from all available predictors (also known as dropout), and then averages their forecasts as the final output. The overfit trees means that the underlying trees has low bias, and the dropout procedure means that they have low correlation. Thus, averaging these low bias, uncorrelated trees results in a low bias, yet stable model. Specific details of the random forest algorithm are detailed in the appendix.
 
 \newpage
 
@@ -472,6 +470,59 @@ Due the noisiness (randomness) introduced by SGD, the path towards the local min
 
 ``Batch normalization" is a technique for addressing a phenomenon known as internal covariate shift, a particularly prevalent problem in training deep, complex neural networks, \citep{ioffe_batch_2015}. Internal covariate shift occurs when the distributions of each layers' inputs change as the parameters of the previous layer change, resulting in the need for much slower learning rates and more careful initialization of parameters. More crucially, batch normalization has been observed to help normalizing the outputs of activation layers, alleviating issues related to vanishing or exploding gradients. By normalizing (de-meaning and variance standardizing) each training step (batch) input, the representative power of each neuron is restored. Additionally, significant gains in computational speed may also be achieved.
 
+\subsection{Model Evaluation}
+\label{model_evaluation}
+
+\subsubsection{R Squared}
+
+Overall predictive performance for individual excess stock returns were assessed using the out of sample $R^2$:
+
+\begin{equation}
+R^2_{OOS} = 1 - \frac{\sum_{(i, t)\in\mathcal{T}_3}(r_{i, t+1} - \widehat{r}_{i, t+1})^2}
+{\sum_{(i, t)\in\mathcal{T}_3} \left( r_{i, t+1} - \bar{r}_{i, t+1} \right) ^2}
+\end{equation}
+
+where $\mathcal{T}_3$ indicates that the fits are only assessed on the test subsample, which is never used for training or tuning. 
+
+\subsubsection{Diebold-Mariano Test}
+
+The Diebold-Mariano test (\cite{diebold_comparing_2002}, and \cite{harvey_testing_1997}) is a procedure which compares the forecast accuracy of two forecast methods. It is different to the overall R squared metric because it tests whether the forecasts from two different models are different to a statistically significant degree. 
+
+Under the null hypothesis of the Diebold-Mariano test:
+
+\begin{align}
+S_1^* &= \left[ 
+\frac{n + 1 - 2h + n^{-1}h(h-1)}
+{n} 
+\right]^{1/2}S_1 ; \quad S_1^* \sim N(0,1) \\
+S_1 &= \left[ 
+\hat{V}(\bar{d})
+\right] ^{-1/2}\bar{d} \\
+\hat{\gamma}_k &= n^{-1} \sum_{t = k + 1}^{n}(d_t - \bar{d})(d_{t-k} - \bar{d}) \\
+V(\bar{d}) &\approx n^{-1}\left[ 
+\gamma_0 + 2 \sum_{k = 1}^{h - 1}\gamma_k
+\right] 
+\end{align}
+
+where $d_t$ represents the difference series between the forecast errors of the two models $e_1t - e_2t$, $\hat{\gamma}_k$ represents the sample $k$th autocovariance for $d_t$, and $S_1$ represents the original unmodified Diebold Mariano test statistic.
+
+As all models in this paper will be producing forecasts for an entire cross section of stocks, $e_1t$ and $e_2t$ will instead represent the cross sectional average forecast errors for each model.
+
+It must be noted that the DM test statistic assumes that the loss differential series $d_t$ is covariance stationary and short memory. The precise behaviour of the DM test statistic with regards to more complex non-linear models such as Random Forests and Neural Networks is not fully understood, which may impact on the validity of the null hypothesis distribution. 
+
+\subsubsection{Variable Importance}
+
+The importance of each predictor $j$ is denoted as $VI_j$, and is defined as the reduction in predictive R-Squared from setting all values of predictor $j$ to 0, while holding the remaining model estimates fixed. These were then normalized to sum to 1 within each model as a way to assess the relative importance of each predictor for each model. As $VI_j$ can sometimes be negative, this was achieved by shifting all $VI_j$ positively by the magnitude of the smallest $VI_j$, then dividing all $VI_j$ by the total:
+
+\begin{equation}
+VI_{j, norm} = \frac{VI_j + \operatorname{min}(VI_j)}
+{\Sigma VI_j + \operatorname{min}(VI_j)}
+\end{equation}
+
+This mechanism was chosen because the other popular normalization mechanism "softmax" was observed to be unable to preserve the distances between each original $VI_j$ well enough, thus squishing together all importance metrics.
+
+\section{Simulation Study}
+
 \subsection{Simulation Design}
 
 \subsubsection{Overall Design}
@@ -513,7 +564,7 @@ Then, define the matrix
 	\lambda_{ik}\sim N(0, \lambda_{sd}), \; k=1, \dots, 4
 \end{equation}
 
-where different $\lambda_{sd}$ values were considered to explore different degrees of cross sectional correlation. This is decomposed via the Cholesky Decomposition to yielf the lower triangle matrix $L$:
+where different $\lambda_{sd}$ values were considered to explore different degrees of cross sectional correlation. This is decomposed via the Cholesky Decomposition to yield the lower triangle matrix $L$:
 
 \begin{equation}
 	B = LL'
@@ -572,7 +623,7 @@ $\theta^0$ was tuned such that the cross sectional $R^2$ and predictive $R^2$ we
 
 \rhs{change this}
 
-The simulation design results in $3 \times 3 = 12$ different simulated datasets, each with $N = 200$ stocks, $T = 180$ periods and $P_c = 100$ characteristics. Each design was simulated 30 times to assess the robustness of machine learning algorithms. The number of simulations was kept low for computational feasibility reasons.
+The simulation design results in $3 \times 3 = 12$ different simulated datasets, each with $N = 200$ stocks, $T = 180$ periods and $P_c = 100$ characteristics. Each design was simulated 10 times to assess the robustness of machine learning algorithms. The number of simulations was kept low for computational feasibility.
 
 Our final simulation specifications are as follows:
 
@@ -630,59 +681,10 @@ If viewed as monthly periods, $T = 180$ corresponds to 15 years. A data splittin
 
 Other popular schemes in the forecasting literature such as using an "inner" rolling window validation loop to find the best hyperparameters on average, finally aggregating them in an "outer" loop for a robust error were considered but not implemented for a variety of reasons. Firstly, many of the models are computationally too intensive for this to be feasible for this to be feasible. More importantly, during the model fitting process it was observed that the optimal hyperparameters for the different rolling windows were highly unstable. Thus, this would have made the selection of the best hyperparameters on average across all windows significantly less meaningful.
 
-\subsection{Model Evaluation}
-\label{model_evaluation}
 
-\subsubsection{R Squared}
-
-Overall predictive performance for individual excess stock returns were assessed using the out of sample $R^2$:
-
-\begin{equation}
-	R^2_{OOS} = 1 - \frac{\sum_{(i, t)\in\mathcal{T}_3}(r_{i, t+1} - \widehat{r}_{i, t+1})^2}
-		{\sum_{(i, t)\in\mathcal{T}_3} \left( r_{i, t+1} - \bar{r}_{i, t+1} \right) ^2}
-\end{equation}
-
-where $\mathcal{T}_3$ indicates that the fits are only assessed on the test subsample, which is never used for training or tuning. 
-
-\subsubsection{Diebold-Mariano Test}
-
-The Diebold-Mariano test (\cite{diebold_comparing_2002}, and \cite{harvey_testing_1997}) is a procedure which compares the forecast accuracy of two forecast methods. It is different to the overall R squared metric because it tests whether the forecasts from two different models are different to a statistically significant degree. 
-
-Under the null hypothesis of the Diebold-Mariano test:
-
-\begin{align}
-	S_1^* &= \left[ 
-		\frac{n + 1 - 2h + n^{-1}h(h-1)}
-			{n} 
-	\right]^{1/2}S_1 ; \quad S_1^* \sim N(0,1) \\
-	S_1 &= \left[ 
-		\hat{V}(\bar{d})
-	\right] ^{-1/2}\bar{d} \\
-	\hat{\gamma}_k &= n^{-1} \sum_{t = k + 1}^{n}(d_t - \bar{d})(d_{t-k} - \bar{d}) \\
-	V(\bar{d}) &\approx n^{-1}\left[ 
-		\gamma_0 + 2 \sum_{k = 1}^{h - 1}\gamma_k
-	\right] 
-\end{align}
-
-where $d_t$ represents the difference series between the forecast errors of the two models $e_1t - e_2t$, $\hat{\gamma}_k$ represents the sample $k$th autocovariance for $d_t$, and $S_1$ represents the original unmodified Diebold Mariano test statistic.
-
-As all models in this paper will be producing forecasts for an entire cross section of stocks, $e_1t$ and $e_2t$ will instead represent the cross sectional average forecast errors for each model.
-
-It must be noted that the DM test statistic assumes that the loss differential series $d_t$ is covariance stationary and short memory. The precise behaviour of the DM test statistic with regards to more complex non-linear models such as Random Forests and Neural Networks is not fully understood, which may impact on the validity of the null hypothesis distribution. 
-
-\subsection{Variable Importance}
-
-The importance of each predictor $j$ is denoted as $VI_j$, and is defined as the reduction in predictive R-Squared from setting all values of predictor $j$ to 0, while holding the remaining model estimates fixed. These were then normalized to sum to 1 within each model as a way to assess the relative importance of each predictor for each model. As $VI_j$ can sometimes be negative, this was achieved by shifting all $VI_j$ positively by the magnitude of the smallest $VI_j$, then dividing all $VI_j$ by the total:
-
-\begin{equation}
-	VI_{j, norm} = \frac{VI_j + \operatorname{min}(VI_j)}
-	{\Sigma VI_j + \operatorname{min}(VI_j)}
-\end{equation}
-
-This mechanism was chosen because the other popular normalization mechanism "softmax" was observed to be unable to preserve the distances between each original $VI_j$ well enough, thus squishing together all importance metrics.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Simulation Study}
+\subsection{Simulation Study Results}
 
 %% Basic overview of results
 
@@ -690,11 +692,13 @@ In our simulation study, we find that the penalized linear models consistently p
 
 We also find that models fitted with respect to minimizing mean absolute error (quantile loss) generally perform better, even in terms of the mean squared error metrics. This is not a surprising result, especially considering the stochastic error design which introduces significant shocks to the returns process, leading to large outliers which the mean squared error metric is more sensitive to. 
 
-In terms of finding the correct underlying causal regressors, we find that the penalized linear models perform the best at identifying the true data generating regressors, and that this appears to be mostly robust regardless of the amount of cross sectional correlation. The penalized linear models are not perfect, particularly in the $g_2$ specification, where the true covariates enter in the returns process via a \textit{sgn} function, which is more difficult to estimate that other non-linear specifications, such as an indicator function. On these more difficult specifications, the penalized linear models are generally very conservative, sometimes only identifying a single covariate as important. 
+In terms of finding the correct underlying causal regressors, we find that the penalized linear models perform the best at identifying the true data generating regressors, and that this appears to be mostly robust regardless of the amount of cross sectional correlation. The penalized linear models are not perfect, particularly in the $g_2$ specification, where the true covariates enter in the returns process via a \textit{sgn} function, which is more difficult to estimate that other non-linear specifications, such as an indicator function. On these more difficult specifications, the penalized linear models are generally very conservative, sometimes only identifying a single covariate as important. The penalized linear models also occasionally identified the incorrect covariates completely, though the relative importance assigned to them was small.
 
 Of particular note the instability of the penalized linear models' hyperparameters across different training samples. Though the optimal value for $\alpha$ is generally 1 (corresponding to LASSO and thus a sparse representation), it was not uncommon to see $\alpha$ values swinging between values close to 0 (corresponding to ridge regression, and thus a dense representation) to 1 as the training sample moved forwards in time. As the penalized linear models consistently performed the best and still remained able to correctly identify the true covariates this is not a large issue, but it should be noted that this can lead to interpretation issues.
 
-The random forest models were typically able to correctly identify the true data generating covariates, but struggled with discerning them adequately from other covariates. This is to be expected, likely due to how the random forest algorithms work. Recall that the random forest algorithm is an ensemble of tree models, with each tree model only having access to a subset of all available predictors. If this subset does not include the true data generating predictor, that particular tree will likely select the predictors which have the highest correlation with the true data generating predictor instead. Thus, the resulting ensemble model is likely to believe that cross sectionally correlated predictors are important.
+The random forest models were typically able to correctly identify the true data generating covariates, but struggled with discerning them adequately from other covariates. This is to be expected, likely due to how the random forest algorithms work. The random forest algorithm is an ensemble of tree models, with each tree model only having access to a subset of all available predictors. If this subset does not include the true data generating predictor, that particular tree will likely select the predictors which have the highest correlation with the true data generating predictor instead. Thus, the resulting ensemble model is likely to believe that cross sectionally correlated predictors are important.
+
+The neural networks
 
 \begin{table}
 	\caption{Simulation Results}
@@ -718,26 +722,9 @@ The random forest models were typically able to correctly identify the true data
 	\caption{Diebold Mariano Tests for Simulation Study}
 \end{table}
 
-
-\subsubsection{Linear Models}
-
-The linear models performed very well in simple linear settings, with notably deteriorating performance as the specifications became more complex. They struggled greatly with cross sectional correlation even in specifications with no cross sectional correlation, as noted by the fact that they identify correlated interaction terms. When cross sectional correlation was increased
-
-The introduction of non-linear interactions in the data generating process affected its performance, though it was still able to pick out transformations such as sgn and logit functions. This is likely due to these transformations not changing the direction of their terms.
-
-\subsubsection{Penalized Linear Models}
-
-The penalized linear models had markedly better performance than the linear models, though this was only apparent for more complex model specifications. 
-
-Of particular note is the instability of the optimal hyperparameter as the validation set moved forward in time. It was quite common to see optimal $\alpha$ values that changed from 1 (equivalent to the sparse case of LASSO regression), to 0.01 (almost equivalent to dense case of ridge regression). Increasing the size of the validation set seemed to help a little, but not by a lot. 
-
-Similarly to the linear models, penalized linear models which minimized mean absolute error (corresponding to quantile regression) offered consistent improvements over their mean squared error versions.
-
-\subsubsection{Neural Networks}
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Empirical Data}
+\section{Empirical Study}
 
 \subsection{Data}
 
@@ -747,7 +734,7 @@ We mimic the data procedure of \cite{gu_empirical_2018}. This means that we obta
 
 % Begin Cleaning
 
-We detail our cleaning procedure of this dataset. To reduce the size of the dataset and increase feasibility, the dataset was filtered so that only stocks traded primarily on NASDAQ were included (using the PRIMEXCH variable from WRDS). Then, penny stocks (also referred to as microcaps in the literature) with a stock price of less than \$5 were filtered out, as is commonly done in the literature to reduce variability. Stocks without a share code of 10 or 11 (referring to equities) were filtered out, so that securities that are not equities were not included (such as REITs and trust funds). The dataset is provided in a monthly format, which means that many of the factors which are updated only quarterly or annually have very low levels of variability, which can lead to misleading results in the model fitting process. The achieve of a balance between having a dataset with enough data points and variability among factors, the dataset was converted to a quarterly format. Quarterly returns were then constructed using the PRC variable according to actual returns (ie not logged differences):
+We detail our cleaning procedure of this dataset. To reduce the size of the dataset and increase feasibility, the dataset was filtered so that only stocks traded primarily on NASDAQ were included (using the PRIMEXCH variable from WRDS). Then, penny stocks (also referred to as microcaps in the literature) with a stock price of less than \$5 were filtered out, as is commonly done in the literature to reduce variability. Stocks without a share code of 10 or 11 (referring to equities) were filtered out, so that securities that are not equities were not included (such as REITs and trust funds). The dataset is provided in a monthly format, which means that many of the factors which are updated only quarterly or annually have very low levels of variability, which can lead to misleading results in the model fitting process. To achieve a balance between having a dataset with enough data points and variability among factors, the dataset was converted to a quarterly format. Quarterly returns were then constructed using the PRC variable according to actual returns (ie not logged differences):
 
 \begin{equation}
 	RET_t = \frac{PRC_t PRC_{t-1}}{PRC_{t-1}}
@@ -757,22 +744,11 @@ We allow all stocks which have a quarterly return to enter the dataset, even if 
 
 \rhs{proper example of sic codes being not very useful}
 
-The sic2 variable, corresponding to the stocks' Standard Industrial Classification (SIC) codes was also dropped. This is because the SIC code system was established . Indeed, WRDS explicitly cautions the use of SIC codes beyond the use of rough grouping of industries, as SIC codes are not strictly enforced by government agencies for accuracy, as well most large companies belonging to multiple SIC codes over time. Additionally, dropping the sic2 variable also reduced the dimensionality of the dataset by 74 columns, contributing to computational feasibility.
+The sic2 variable, corresponding to the stocks' Standard Industrial Classification (SIC) codes was also dropped. The SIC code system suffers from inconsistent logic in classifying companies, and as a system built for pre-1970s traditional industries has been slow in recognizing new and emerging industries. Indeed, WRDS explicitly cautions the use of SIC codes beyond the use of rough grouping of industries, as SIC codes are not strictly enforced by government agencies for accuracy, in addition most large companies belonging to multiple SIC codes over time. Because of this latter point in particular, there can be inconsistencies on the correct SIC code for the same company depending on the data source. Dropping the sic2 variable also reduced the dimensionality of the dataset by 74 columns, significant increasing computational feasibility.
 
-There exists a significant amount of missing data in the dataset. The dataset's columns were first examined, and any characteristics that had over 20\% of their data were removed. However, as the amount of missing data increases dramatically going further back in time, a balance between using more periods at the cost of removing more characteristics versus using less periods but keeping more characteristics was needed. 1993 Q3 was determined to be a reasonable time frame to begin the dataset, as was a noticeable increase in data availability after this time.  Missing characteristics were then imputed using their cross sectional medians across all years. 
+There existed a significant amount of missing data in the dataset. The dataset's columns were first examined, and any characteristics that had over 20\% of their data were removed. However, as the amount of missing data increases dramatically going further back in time, a balance between using more periods at the cost of removing more characteristics versus using less periods but keeping more characteristics was needed. 1993 Q3 was determined to be a reasonable time frame to begin the dataset, as was a noticeable increase in data availability after this time.  Missing characteristics were then imputed using their cross sectional medians for each year. 
 
 This final dataset of individual factors consists of X rows and N columns, with the average number of stocks in each time period being ~. 
-
-%% Process in terms of pipes
-% filter to only contain NASDAQ, share code = 10 or 11, PRC > $5, drop PRC = 0 (indicates not enough datain WRDS), drop industry dummies
-% Convert to quarterly format so that dataset is smaller and more feasible
-% Also helps with maintaing high variability in factors, as majority of these are updated annually
-% Quarterly returns were then constructed using non-log process. May have slight differents compared to log version, and ignored dividend effect on prices. Should not have large differences
-% Filter by time such that missing data is not so much of an issue. Noted that beginning from 1993 Q3 data quality improves dramatically, therefore filtered to start from 1993 Q3
-% Drop any columns that had more than 20% missing
-% Summarise data at this point
-% Then, do cross sectional imputation of medians to fill in missing
-% No normalization was done at this stage. Instead, each column was normalized for only the elasticnet and neural network methods
 
 % Welch Goyal Data
 % Quarterly version of Welch Goyal data was used
@@ -780,7 +756,7 @@ This final dataset of individual factors consists of X rows and N columns, with 
 % Lagged by one period to be consistent with timing of other factors
 % Treasury bill obtained to proxy for risk free rate of return to construct excess returns
 
-We then follow \cite{gu_empirical_2018} and construct eight macroeconomic factors following the variable definitions in \cite{welch_comprehensive_2008}: dividend-price ratio (dp), earnings-price ratio (ep), book-to-market ratio (bm), net equity expansion (ntis), Treasury-bill rate (tbl), term spread (tms), default spread (dfy) and stock variance (svar). The treasury bill rate was also used from this source to construct excess quarterly returns. 
+We then follow \cite{gu_empirical_2018} and construct eight macroeconomic factors following the variable definitions in \cite{welch_comprehensive_2008}: dividend-price ratio (dp), earnings-price ratio (ep), book-to-market ratio (bm), net equity expansion (ntis), Treasury-bill rate (tbl), term spread (tms), default spread (dfy) and stock variance (svar). These factors were lagged by one period so as to be used to predict one period ahead quarterly returns. The treasury bill rate was also used from this source to proxy for the risk free rate in order to construct excess quarterly returns. 
 
 The two sets of factors were then combined to form a baseline set of covariates, which we define throughout all methods and analysis as:
 
@@ -788,7 +764,7 @@ The two sets of factors were then combined to form a baseline set of covariates,
 z_{i,t} = (1, x_t)' \otimes c_{i, t}
 \end{equation}
 
-where $c_{i,t}$ is a $P_c$ matrix of characteristics for each stock $i$, and $(1, x_t)'$ is a $P_x \times 1$ vector of macroeconomic predictors. $z_{i,t}$ is therefore a $P_x P_c$ vector of features for predicting individual stock returns and includes interactions between stock level characteristics and macroeconomic variables. The total number of covariates in this baseline set is $94 \times (8 + 1) + 74 = 920$.
+where $c_{i,t}$ is a $P_c$ matrix of characteristics for each stock $i$, and $(1, x_t)'$ is a $P_x \times 1$ vector of macroeconomic predictors. $z_{i,t}$ is therefore a $P_x P_c$ vector of features for predicting individual stock returns and includes interactions between stock level characteristics and macroeconomic variables. The total number of covariates in this baseline set is $61 \times (8 + 1) = 549$.
  
 As the individual and macroeconomic factors can have similar names, individual and macroeconomic factors were prefixed with ind\_ and macro\_ respectively.
 
@@ -797,17 +773,50 @@ As the individual and macroeconomic factors can have similar names, individual a
 % Training:Validation size ratio of 1.5, growing and moving forwards by 1 year
 % To maintain feasibility, only 3 samples were conducted
 
+The dataset was not normalized for all methods, as only penalized regression and neural networks are sensitive to normalization. For these two methods, the dataset was normalized such that each predictor column had 0 mean and 1 variance.
 
-
-The dataset was not normalized for all methods, as only penalized regression and neural networks are affected by normalization. For these two methods, the dataset was normalized such that each predictor column had 0 mean and 1 variance.
-
-The final dataset spanned from 1993 Q3 to 2016 Q6 with ~20,000
+The final dataset spanned from 1993 Q3 to 2016 Q4 with ~20,000
 
 \subsection{Empirical Data Model Fitting and Methodology Differences}
 
 We detail our model fitting procedure used specifically for the empirical dataset.
 
-We try to mimic the procedure used in the simulation study. This means that the dataset was split such that the training and validation sets were split such that the training set was 1.5 times the length of the validation set, in order to predict a test set that is one year in length.
+We mimic the procedure used in the simulation study. This means that the dataset was split such that the training and validation sets were split such that the training set was approximately 1.5 times the length of the validation set, in order to predict a test set that is one year in length.
+
+\begin{figure}
+	\begin{center}
+		\begin{tabular}{|c|p{1.2cm}p{0.60cm}p{0.60cm}p{0.60cm}p{0.60cm}p{0.60cm}p{0.60cm}p{0.60cm}p{0.60cm}p{0.60cm}p{0.60cm}p{0.60cm}p{0.60cm}p{0.60cm}p{0.60cm}|}
+			\hline
+			Set No. &&&&&&&&&&&&&&& \\
+			\hline
+			%%%%%%%%
+			3 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
+			\cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{olive} \\
+			%%%%%%%%
+			2 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & 
+			\cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & 	
+			\cellcolor{olive} & NA \\
+			%%%%%%%%
+			1 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} 
+			& \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{olive} & NA & NA \\
+			\hline
+			Time & 1993 Q3 Q4 & 1994 & 1995 & 1996 & ... & 2006 & 2007 & 2008 & ... & 2011 & 2012 & 2013 & 2014 & 2015 & 2016 \\
+			\hline
+		\end{tabular}
+		\medskip
+		\begin{tabular}{|c|p{0.60cm}|}
+			\hline
+			Training & \cellcolor{cyan} \\
+			\hline
+			Validation & \cellcolor{pink} \\
+			\hline
+			Test & \cellcolor{olive} \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\caption{Empirical Data Sample Splitting Procedure}
+	\label{emp_sample_split_diag}
+\end{figure}
 
 \subsection{Empirical Data Results}
 
@@ -841,7 +850,13 @@ We try to mimic the procedure used in the simulation study. This means that the 
 
 In general, results from the simulation study were reproduced in the empirical study. 
 
-We similarly see that the penalized linear models generally performing the best, with the random forest models offering slightly worse performance, occasionally outperforming penalized linear models. The neural networks offered lukewarm performance with the earlier training samples, but began to outperform random forests as the amount of training data increased.
+We similarly see that the penalized linear models generally performing the best, with the random forest models offering slightly worse performance, occasionally outperforming penalized linear models. Models fitted with respect to median quantile loss were similarly observed to offer improvements in all loss metrics in general at best, with very little performance drops at worst. 
+
+In the empirical data setting, the underlying data generating process of returns is unknown so the ability of the different models at picking out the correct covariates cannot be evaluated. However, we can see that the penalized linear models and random forests (the models with the highest out of sample prediction performance) decide on a similar subset of factors which are determined to be important. In particular, we find that the 1 month momentum 6 month momentum factors to be the most important factors by far. 
+
+Interestingly, we find that the linear models assign the controversial dividend price ratio macroeconomic factor as highly important. 
+
+The neural networks have very inconsistent 
 
 Interestingly, 
 
@@ -862,8 +877,6 @@ Similar to the simulation study, the random forests overfitted the training samp
 The neural networks offered lukewarm performance in the first two training samples, trailing behind the random forest and penalized linear models. 
 
 \section{Limitations}
-
-There were many limitations in this study.
 
 Dataset limitations
 The dataset 
