@@ -16,29 +16,33 @@
 \BOOKMARK [3][-]{subsubsection.2.8.2}{Activation Function}{subsection.2.8}% 16
 \BOOKMARK [3][-]{subsubsection.2.8.3}{Computation}{subsection.2.8}% 17
 \BOOKMARK [3][-]{subsubsection.2.8.4}{Batch Normalization}{subsection.2.8}% 18
-\BOOKMARK [2][-]{subsection.2.9}{Simulation Design}{section.2}% 19
-\BOOKMARK [3][-]{subsubsection.2.9.1}{Overall Design}{subsection.2.9}% 20
-\BOOKMARK [3][-]{subsubsection.2.9.2}{Simulating Characteristics}{subsection.2.9}% 21
-\BOOKMARK [3][-]{subsubsection.2.9.3}{Simulating Macroeconomic Series}{subsection.2.9}% 22
-\BOOKMARK [3][-]{subsubsection.2.9.4}{Simulating Return Series}{subsection.2.9}% 23
-\BOOKMARK [3][-]{subsubsection.2.9.5}{Sample Splitting}{subsection.2.9}% 24
-\BOOKMARK [2][-]{subsection.2.10}{Model Evaluation}{section.2}% 25
-\BOOKMARK [3][-]{subsubsection.2.10.1}{R Squared}{subsection.2.10}% 26
-\BOOKMARK [3][-]{subsubsection.2.10.2}{Diebold-Mariano Test}{subsection.2.10}% 27
-\BOOKMARK [2][-]{subsection.2.11}{Variable Importance}{section.2}% 28
-\BOOKMARK [1][-]{section.3}{Simulation Study Results}{}% 29
-\BOOKMARK [1][-]{section.4}{Empirical Data}{}% 30
-\BOOKMARK [2][-]{subsection.4.1}{Data}{section.4}% 31
-\BOOKMARK [2][-]{subsection.4.2}{Empirical Data Model Fitting and Methodology Differences}{section.4}% 32
-\BOOKMARK [2][-]{subsection.4.3}{Empirical Data Results}{section.4}% 33
-\BOOKMARK [1][-]{section.5}{Limitations}{}% 34
-\BOOKMARK [1][-]{section.6}{Conclusion}{}% 35
-\BOOKMARK [1][-]{section.7}{Appendix}{}% 36
-\BOOKMARK [2][-]{subsection.7.1}{Data}{section.7}% 37
-\BOOKMARK [2][-]{subsection.7.2}{Computational Details}{section.7}% 38
-\BOOKMARK [3][-]{subsubsection.7.2.1}{Linear Models}{subsection.7.2}% 39
-\BOOKMARK [3][-]{subsubsection.7.2.2}{Penalized Linear}{subsection.7.2}% 40
-\BOOKMARK [3][-]{subsubsection.7.2.3}{Classification and Regression Trees}{subsection.7.2}% 41
-\BOOKMARK [3][-]{subsubsection.7.2.4}{Random Forest}{subsection.7.2}% 42
-\BOOKMARK [3][-]{subsubsection.7.2.5}{Neural Networks}{subsection.7.2}% 43
-\BOOKMARK [3][-]{subsubsection.7.2.6}{Tuning of Simulated Datasets}{subsection.7.2}% 44
+\BOOKMARK [2][-]{subsection.2.9}{Model Evaluation}{section.2}% 19
+\BOOKMARK [3][-]{subsubsection.2.9.1}{R Squared}{subsection.2.9}% 20
+\BOOKMARK [3][-]{subsubsection.2.9.2}{Diebold-Mariano Test}{subsection.2.9}% 21
+\BOOKMARK [3][-]{subsubsection.2.9.3}{Variable Importance}{subsection.2.9}% 22
+\BOOKMARK [1][-]{section.3}{Simulation Study}{}% 23
+\BOOKMARK [2][-]{subsection.3.1}{Simulation Design}{section.3}% 24
+\BOOKMARK [3][-]{subsubsection.3.1.1}{Overall Design}{subsection.3.1}% 25
+\BOOKMARK [3][-]{subsubsection.3.1.2}{Simulating Characteristics}{subsection.3.1}% 26
+\BOOKMARK [3][-]{subsubsection.3.1.3}{Simulating Macroeconomic Series}{subsection.3.1}% 27
+\BOOKMARK [3][-]{subsubsection.3.1.4}{Simulating Return Series}{subsection.3.1}% 28
+\BOOKMARK [3][-]{subsubsection.3.1.5}{Sample Splitting}{subsection.3.1}% 29
+\BOOKMARK [2][-]{subsection.3.2}{Simulation Study Results}{section.3}% 30
+\BOOKMARK [1][-]{section.4}{Empirical Study}{}% 31
+\BOOKMARK [2][-]{subsection.4.1}{Data}{section.4}% 32
+\BOOKMARK [2][-]{subsection.4.2}{Empirical Data Model Fitting and Methodology Differences}{section.4}% 33
+\BOOKMARK [2][-]{subsection.4.3}{Empirical Data Results}{section.4}% 34
+\BOOKMARK [1][-]{section.5}{Limitations}{}% 35
+\BOOKMARK [1][-]{section.6}{Conclusion}{}% 36
+\BOOKMARK [1][-]{section.7}{Appendix}{}% 37
+\BOOKMARK [2][-]{subsection.7.1}{Data}{section.7}% 38
+\BOOKMARK [2][-]{subsection.7.2}{Computational Details}{section.7}% 39
+\BOOKMARK [2][-]{subsection.7.3}{Additional Results}{section.7}% 40
+\BOOKMARK [3][-]{subsubsection.7.3.1}{Simulation Study}{subsection.7.3}% 41
+\BOOKMARK [3][-]{subsubsection.7.3.2}{Empirical Study}{subsection.7.3}% 42
+\BOOKMARK [3][-]{subsubsection.7.3.3}{Linear Models}{subsection.7.3}% 43
+\BOOKMARK [3][-]{subsubsection.7.3.4}{Penalized Linear}{subsection.7.3}% 44
+\BOOKMARK [3][-]{subsubsection.7.3.5}{Classification and Regression Trees}{subsection.7.3}% 45
+\BOOKMARK [3][-]{subsubsection.7.3.6}{Random Forest}{subsection.7.3}% 46
+\BOOKMARK [3][-]{subsubsection.7.3.7}{Neural Networks}{subsection.7.3}% 47
+\BOOKMARK [3][-]{subsubsection.7.3.8}{Tuning of Simulated Datasets}{subsection.7.3}% 48
