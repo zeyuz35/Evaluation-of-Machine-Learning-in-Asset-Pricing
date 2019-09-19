@@ -36,13 +36,13 @@
 \BOOKMARK [1][-]{section.6}{Conclusion}{}% 36
 \BOOKMARK [1][-]{section.7}{Appendix}{}% 37
 \BOOKMARK [2][-]{subsection.7.1}{Data}{section.7}% 38
-\BOOKMARK [2][-]{subsection.7.2}{Computational Details}{section.7}% 39
-\BOOKMARK [2][-]{subsection.7.3}{Additional Results}{section.7}% 40
-\BOOKMARK [3][-]{subsubsection.7.3.1}{Simulation Study}{subsection.7.3}% 41
-\BOOKMARK [3][-]{subsubsection.7.3.2}{Empirical Study}{subsection.7.3}% 42
-\BOOKMARK [3][-]{subsubsection.7.3.3}{Linear Models}{subsection.7.3}% 43
-\BOOKMARK [3][-]{subsubsection.7.3.4}{Penalized Linear}{subsection.7.3}% 44
-\BOOKMARK [3][-]{subsubsection.7.3.5}{Classification and Regression Trees}{subsection.7.3}% 45
-\BOOKMARK [3][-]{subsubsection.7.3.6}{Random Forest}{subsection.7.3}% 46
-\BOOKMARK [3][-]{subsubsection.7.3.7}{Neural Networks}{subsection.7.3}% 47
-\BOOKMARK [3][-]{subsubsection.7.3.8}{Tuning of Simulated Datasets}{subsection.7.3}% 48
+\BOOKMARK [2][-]{subsection.7.2}{Additional Results}{section.7}% 39
+\BOOKMARK [3][-]{subsubsection.7.2.1}{Simulation Study}{subsection.7.2}% 40
+\BOOKMARK [3][-]{subsubsection.7.2.2}{Empirical Study}{subsection.7.2}% 41
+\BOOKMARK [2][-]{subsection.7.3}{Computational Details}{section.7}% 42
+\BOOKMARK [3][-]{subsubsection.7.3.1}{Linear Models}{subsection.7.3}% 43
+\BOOKMARK [3][-]{subsubsection.7.3.2}{Penalized Linear}{subsection.7.3}% 44
+\BOOKMARK [3][-]{subsubsection.7.3.3}{Classification and Regression Trees}{subsection.7.3}% 45
+\BOOKMARK [3][-]{subsubsection.7.3.4}{Random Forest}{subsection.7.3}% 46
+\BOOKMARK [3][-]{subsubsection.7.3.5}{Neural Networks}{subsection.7.3}% 47
+\BOOKMARK [3][-]{subsubsection.7.3.6}{Tuning of Simulated Datasets}{subsection.7.3}% 48

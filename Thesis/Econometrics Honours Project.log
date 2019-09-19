@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2019.9.16)  19 SEP 2019 15:04
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2019.9.16)  19 SEP 2019 19:52
 entering extended mode
 **Econometrics*Honours*Project.tex
 
@@ -2010,21 +2010,18 @@ Missing character: There is no ; in font nullfont!
  [11]
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
- [12] [13] [14]
-Missing character: There is no ; in font nullfont!
-Missing character: There is no ; in font nullfont!
- [15]
-Overfull \hbox (3.61911pt too wide) in paragraph at lines 658--660
+ [12] [13] [14] [15]
+Overfull \hbox (3.61911pt too wide) in paragraph at lines 653--655
 []|\OT1/cmr/m/n/10 NA| 
  []
 
 
-Overfull \hbox (3.61911pt too wide) in paragraph at lines 662--662
+Overfull \hbox (3.61911pt too wide) in paragraph at lines 657--657
 []|\OT1/cmr/m/n/10 NA| 
  []
 
 
-Overfull \hbox (3.61911pt too wide) in paragraph at lines 662--663
+Overfull \hbox (3.61911pt too wide) in paragraph at lines 657--658
 []|\OT1/cmr/m/n/10 NA| 
  []
 
@@ -2033,7 +2030,7 @@ File: ../Results/simulation_test_mae.pdf Graphic file (type pdf)
 
 <use ../Results/simulation_test_mae.pdf>
 Package pdftex.def Info: ../Results/simulation_test_mae.pdf used on input line 
-706.
+699.
 (pdftex.def)             Requested size: 526.96745pt x 325.2142pt.
 
 <../Results/simulation_test_mse.pdf, id=520, 526.96875pt x 325.215pt>
@@ -2041,27 +2038,27 @@ File: ../Results/simulation_test_mse.pdf Graphic file (type pdf)
 
 <use ../Results/simulation_test_mse.pdf>
 Package pdftex.def Info: ../Results/simulation_test_mse.pdf used on input line 
-707.
+700.
 (pdftex.def)             Requested size: 526.96745pt x 325.2142pt.
 
-Overfull \hbox (73.99956pt too wide) in paragraph at lines 706--708
+Overfull \hbox (73.99956pt too wide) in paragraph at lines 699--701
  [] 
  []
 
 
-Overfull \hbox (73.99956pt too wide) in paragraph at lines 706--708
+Overfull \hbox (73.99956pt too wide) in paragraph at lines 699--701
  [] 
  []
 
 
-LaTeX Warning: Float too large for page by 0.86598pt on input line 709.
+LaTeX Warning: Float too large for page by 0.86598pt on input line 702.
 
 <../Results/simulation_ave_vi_plot.pdf, id=521, 505.89pt x 505.89pt>
 File: ../Results/simulation_ave_vi_plot.pdf Graphic file (type pdf)
 
 <use ../Results/simulation_ave_vi_plot.pdf>
 Package pdftex.def Info: ../Results/simulation_ave_vi_plot.pdf used on input li
-ne 714.
+ne 707.
 (pdftex.def)             Requested size: 505.88875pt x 505.88875pt.
 
 <../Results/simulation_g1_vi_plot.pdf, id=522, 505.89pt x 505.89pt>
@@ -2069,7 +2066,7 @@ File: ../Results/simulation_g1_vi_plot.pdf Graphic file (type pdf)
 
 <use ../Results/simulation_g1_vi_plot.pdf>
 Package pdftex.def Info: ../Results/simulation_g1_vi_plot.pdf used on input lin
-e 715.
+e 708.
 (pdftex.def)             Requested size: 505.88875pt x 505.88875pt.
 
 <../Results/simulation_g2_vi_plot.pdf, id=523, 505.89pt x 505.89pt>
@@ -2077,7 +2074,7 @@ File: ../Results/simulation_g2_vi_plot.pdf Graphic file (type pdf)
 
 <use ../Results/simulation_g2_vi_plot.pdf>
 Package pdftex.def Info: ../Results/simulation_g2_vi_plot.pdf used on input lin
-e 716.
+e 709.
 (pdftex.def)             Requested size: 505.88875pt x 505.88875pt.
 
 <../Results/simulation_g3_vi_plot.pdf, id=524, 505.89pt x 505.89pt>
@@ -2085,30 +2082,30 @@ File: ../Results/simulation_g3_vi_plot.pdf Graphic file (type pdf)
 
 <use ../Results/simulation_g3_vi_plot.pdf>
 Package pdftex.def Info: ../Results/simulation_g3_vi_plot.pdf used on input lin
-e 717.
+e 710.
 (pdftex.def)             Requested size: 505.88875pt x 505.88875pt.
 
-Overfull \hbox (52.92085pt too wide) in paragraph at lines 714--718
+Overfull \hbox (52.92085pt too wide) in paragraph at lines 707--711
  [] 
  []
 
 
-Overfull \hbox (52.92085pt too wide) in paragraph at lines 714--718
+Overfull \hbox (52.92085pt too wide) in paragraph at lines 707--711
  [] 
  []
 
 
-Overfull \hbox (52.92085pt too wide) in paragraph at lines 714--718
+Overfull \hbox (52.92085pt too wide) in paragraph at lines 707--711
  [] 
  []
 
 
-Overfull \hbox (52.92085pt too wide) in paragraph at lines 714--718
+Overfull \hbox (52.92085pt too wide) in paragraph at lines 707--711
  [] 
  []
 
 
-LaTeX Warning: Float too large for page by 1375.99257pt on input line 719.
+LaTeX Warning: Float too large for page by 1375.99257pt on input line 712.
 
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
@@ -2123,98 +2120,93 @@ b/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_g1_vi_plot
 ne-Learning-in-Asset-Pricing/Results/simulation_g2_vi_plot.pdf> <//ad.monash.ed
 u/home/User030/zyzho4/Documents/GitHub/Evaluation-of-Machine-Learning-in-Asset-
 Pricing/Results/simulation_g3_vi_plot.pdf>]
-Overfull \hbox (3.61911pt too wide) in paragraph at lines 792--794
+Overfull \hbox (0.77367pt too wide) in paragraph at lines 785--787
 []|\OT1/cmr/m/n/10 NA| 
  []
 
 
-Overfull \hbox (3.61911pt too wide) in paragraph at lines 795--795
+Overfull \hbox (0.77367pt too wide) in paragraph at lines 788--788
 []|\OT1/cmr/m/n/10 NA| 
  []
 
 
-Overfull \hbox (3.61911pt too wide) in paragraph at lines 795--796
+Overfull \hbox (0.77367pt too wide) in paragraph at lines 788--789
 []|\OT1/cmr/m/n/10 NA| 
  []
 
 
-Overfull \hbox (8.61914pt too wide) in paragraph at lines 797--797
-[]|\OT1/cmr/m/n/10 1993
+Overfull \hbox (18.55151pt too wide) in paragraph at lines 790--790
+[]|\OT1/cmr/m/n/10 1993Q3| 
  []
 
 
-Overfull \hbox (1.3969pt too wide) in paragraph at lines 797--797
-\OT1/cmr/m/n/10 Q3| 
+Overfull \hbox (18.55151pt too wide) in paragraph at lines 790--790
+[]|\OT1/cmr/m/n/10 1993Q4| 
  []
 
 
-Overfull \hbox (8.61914pt too wide) in paragraph at lines 797--797
-[]|\OT1/cmr/m/n/10 1993
- []
-
-
-Overfull \hbox (1.3969pt too wide) in paragraph at lines 797--797
-\OT1/cmr/m/n/10 Q4| 
- []
-
-
-Overfull \hbox (8.61914pt too wide) in paragraph at lines 797--797
+Overfull \hbox (5.7737pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10 1994| 
  []
 
 
-Overfull \hbox (8.61914pt too wide) in paragraph at lines 797--797
+Overfull \hbox (5.7737pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10 1995| 
  []
 
 
-Overfull \hbox (8.61914pt too wide) in paragraph at lines 797--797
+Overfull \hbox (5.7737pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10 1996| 
  []
 
 
-Overfull \hbox (8.61914pt too wide) in paragraph at lines 797--797
+Overfull \hbox (5.7737pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10 2006| 
  []
 
 
-Overfull \hbox (8.61914pt too wide) in paragraph at lines 797--797
+Overfull \hbox (5.7737pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10 2007| 
  []
 
 
-Overfull \hbox (8.61914pt too wide) in paragraph at lines 797--797
+Overfull \hbox (5.7737pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10 2008| 
  []
 
 
-Overfull \hbox (8.61914pt too wide) in paragraph at lines 797--797
+Overfull \hbox (5.7737pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10 2011| 
  []
 
 
-Overfull \hbox (8.61914pt too wide) in paragraph at lines 797--797
+Overfull \hbox (5.7737pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10 2012| 
  []
 
 
-Overfull \hbox (8.61914pt too wide) in paragraph at lines 797--797
+Overfull \hbox (5.7737pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10 2013| 
  []
 
 
-Overfull \hbox (8.61914pt too wide) in paragraph at lines 797--797
+Overfull \hbox (5.7737pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10 2014| 
  []
 
 
-Overfull \hbox (8.61914pt too wide) in paragraph at lines 797--797
+Overfull \hbox (5.7737pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10 2015| 
  []
 
 
-Overfull \hbox (8.61914pt too wide) in paragraph at lines 797--798
+Overfull \hbox (5.7737pt too wide) in paragraph at lines 790--791
 []|\OT1/cmr/m/n/10 2016| 
+ []
+
+
+Overfull \hbox (12.35397pt too wide) in paragraph at lines 775--803
+ [] 
  []
 
 
@@ -2224,81 +2216,161 @@ Overfull \hbox (513.97284pt too wide) in paragraph at lines 5--59
  [][] 
  []
 
-) <../Results/empirical_sample_all_vi.pdf, id=825, 426.59375pt x 639.38875pt>
+[20])
+<../Results/empirical_sample_all_vi.pdf, id=831, 426.59375pt x 639.38875pt>
 File: ../Results/empirical_sample_all_vi.pdf Graphic file (type pdf)
 
 <use ../Results/empirical_sample_all_vi.pdf>
 Package pdftex.def Info: ../Results/empirical_sample_all_vi.pdf used on input l
-ine 821.
+ine 814.
 (pdftex.def)             Requested size: 426.5927pt x 639.38718pt.
 
-<../Results/empirical_sample_all_vi_macro_facet.pdf, id=826, 639.38875pt x 426.
+<../Results/empirical_sample_all_vi_macro_facet.pdf, id=832, 639.38875pt x 426.
 59375pt>
 File: ../Results/empirical_sample_all_vi_macro_facet.pdf Graphic file (type pdf
 )
  <use ../Results/empirical_sample_all_vi_macro_facet.pdf>
 Package pdftex.def Info: ../Results/empirical_sample_all_vi_macro_facet.pdf use
-d on input line 826.
+d on input line 819.
 (pdftex.def)             Requested size: 639.38718pt x 426.5927pt.
 
-Overfull \hbox (186.41928pt too wide) in paragraph at lines 826--827
+Overfull \hbox (186.41928pt too wide) in paragraph at lines 819--820
 [][] 
  []
 
-[20] [21] [22 <//ad.monash.edu/home/User030/zyzho4/Documents/GitHub/Evaluation-
-of-Machine-Learning-in-Asset-Pricing/Results/empirical_sample_all_vi.pdf>]
-[23 <//ad.monash.edu/home/User030/zyzho4/Documents/GitHub/Evaluation-of-Machine
--Learning-in-Asset-Pricing/Results/empirical_sample_all_vi_macro_facet.pdf>]
-[24] [25]
+[21] [22 <//ad.monash.edu/home/User030/zyzho4/Documents/GitHub/Evaluation-of-Ma
+chine-Learning-in-Asset-Pricing/Results/empirical_sample_all_vi.pdf>] [23 <//ad
+.monash.edu/home/User030/zyzho4/Documents/GitHub/Evaluation-of-Machine-Learning
+-in-Asset-Pricing/Results/empirical_sample_all_vi_macro_facet.pdf>] [24]
+[25]
 
-Package hyperref Warning: Ignoring empty anchor on input line 887.
+Package hyperref Warning: Ignoring empty anchor on input line 864.
 
 Missing character: There is no Ã in font cmr10!
 Missing character: There is no ³ in font cmr10!
 [26
 
 ] [27] [28] [29]
-<../Results/empirical_sample_1_vi_ind.pdf, id=1263, 426.59375pt x 639.38875pt>
+File: ../Results/simulation_test_mae.pdf Graphic file (type pdf)
+ <use ../Results/simulation_test_mae.pdf>
+Package pdftex.def Info: ../Results/simulation_test_mae.pdf used on input line 
+1099.
+(pdftex.def)             Requested size: 526.96745pt x 325.2142pt.
+
+Overfull \hbox (73.99956pt too wide) in paragraph at lines 1099--1100
+[][] 
+ []
+
+File: ../Results/simulation_test_mse.pdf Graphic file (type pdf)
+<use ../Results/simulation_test_mse.pdf>
+Package pdftex.def Info: ../Results/simulation_test_mse.pdf used on input line 
+1104.
+(pdftex.def)             Requested size: 526.96745pt x 325.2142pt.
+
+Overfull \hbox (73.99956pt too wide) in paragraph at lines 1104--1105
+[][] 
+ []
+
+<../Results/simulation_test_rsquare.pdf, id=1263, 526.96875pt x 325.215pt>
+File: ../Results/simulation_test_rsquare.pdf Graphic file (type pdf)
+
+<use ../Results/simulation_test_rsquare.pdf>
+Package pdftex.def Info: ../Results/simulation_test_rsquare.pdf used on input l
+ine 1109.
+(pdftex.def)             Requested size: 526.96745pt x 325.2142pt.
+
+Overfull \hbox (73.99956pt too wide) in paragraph at lines 1109--1110
+[][] 
+ []
+
+<../Results/simulation_train_mae.pdf, id=1264, 526.96875pt x 325.215pt>
+File: ../Results/simulation_train_mae.pdf Graphic file (type pdf)
+
+<use ../Results/simulation_train_mae.pdf>
+Package pdftex.def Info: ../Results/simulation_train_mae.pdf used on input line
+ 1114.
+(pdftex.def)             Requested size: 526.96745pt x 325.2142pt.
+
+Overfull \hbox (73.99956pt too wide) in paragraph at lines 1114--1115
+[][] 
+ []
+
+<../Results/simulation_train_mse.pdf, id=1265, 526.96875pt x 325.215pt>
+File: ../Results/simulation_train_mse.pdf Graphic file (type pdf)
+
+<use ../Results/simulation_train_mse.pdf>
+Package pdftex.def Info: ../Results/simulation_train_mse.pdf used on input line
+ 1119.
+(pdftex.def)             Requested size: 526.96745pt x 325.2142pt.
+
+Overfull \hbox (73.99956pt too wide) in paragraph at lines 1119--1120
+[][] 
+ []
+
+<../Results/simulation_train_rsquare.pdf, id=1266, 526.96875pt x 325.215pt>
+File: ../Results/simulation_train_rsquare.pdf Graphic file (type pdf)
+
+<use ../Results/simulation_train_rsquare.pdf>
+Package pdftex.def Info: ../Results/simulation_train_rsquare.pdf used on input 
+line 1124.
+(pdftex.def)             Requested size: 526.96745pt x 325.2142pt.
+
+Overfull \hbox (73.99956pt too wide) in paragraph at lines 1124--1125
+[][] 
+ []
+
+
+<../Results/empirical_sample_1_vi_ind.pdf, id=1267, 426.59375pt x 639.38875pt>
 File: ../Results/empirical_sample_1_vi_ind.pdf Graphic file (type pdf)
 
 <use ../Results/empirical_sample_1_vi_ind.pdf>
 Package pdftex.def Info: ../Results/empirical_sample_1_vi_ind.pdf used on input
- line 1124.
+ line 1131.
 (pdftex.def)             Requested size: 426.5927pt x 639.38718pt.
 
-<../Results/empirical_sample_2_vi_ind.pdf, id=1264, 426.59375pt x 639.38875pt>
+<../Results/empirical_sample_2_vi_ind.pdf, id=1268, 426.59375pt x 639.38875pt>
 File: ../Results/empirical_sample_2_vi_ind.pdf Graphic file (type pdf)
 
 <use ../Results/empirical_sample_2_vi_ind.pdf>
 Package pdftex.def Info: ../Results/empirical_sample_2_vi_ind.pdf used on input
- line 1129.
+ line 1136.
 (pdftex.def)             Requested size: 426.5927pt x 639.38718pt.
 
-<../Results/empirical_sample_3_vi_ind.pdf, id=1265, 426.59375pt x 639.38875pt>
+<../Results/empirical_sample_3_vi_ind.pdf, id=1269, 426.59375pt x 639.38875pt>
 File: ../Results/empirical_sample_3_vi_ind.pdf Graphic file (type pdf)
 
 <use ../Results/empirical_sample_3_vi_ind.pdf>
 Package pdftex.def Info: ../Results/empirical_sample_3_vi_ind.pdf used on input
- line 1134.
+ line 1141.
 (pdftex.def)             Requested size: 426.5927pt x 639.38718pt.
  [30
 
-] [31 <//ad.monash.edu/home/User030/zyzho4/Documents/GitHub/Evaluation-of-Machi
-ne-Learning-in-Asset-Pricing/Results/empirical_sample_1_vi_ind.pdf>] [32 <//ad.
-monash.edu/home/User030/zyzho4/Documents/GitHub/Evaluation-of-Machine-Learning-
-in-Asset-Pricing/Results/empirical_sample_2_vi_ind.pdf>] [33 <//ad.monash.edu/h
-ome/User030/zyzho4/Documents/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pri
-cing/Results/empirical_sample_3_vi_ind.pdf>]
+] [31] [32]
+Overfull \vbox (187.19556pt too high) has occurred while \output is active []
 
-Package natbib Warning: Citation `bibid' on page 34 undefined on input line 120
-0.
 
-[34] [35]
+[33 <//ad.monash.edu/home/User030/zyzho4/Documents/GitHub/Evaluation-of-Machine
+-Learning-in-Asset-Pricing/Results/simulation_test_rsquare.pdf>] [34 <//ad.mona
+sh.edu/home/User030/zyzho4/Documents/GitHub/Evaluation-of-Machine-Learning-in-A
+sset-Pricing/Results/simulation_train_mae.pdf>]
+Overfull \hbox (36.1558pt too wide) in paragraph at lines 1240--1251
+[][] 
+ []
+
+[35 <//ad.monash.edu/home/User030/zyzho4/Documents/GitHub/Evaluation-of-Machine
+-Learning-in-Asset-Pricing/Results/simulation_train_mse.pdf>] [36 <//ad.monash.
+edu/home/User030/zyzho4/Documents/GitHub/Evaluation-of-Machine-Learning-in-Asse
+t-Pricing/Results/simulation_train_rsquare.pdf>] [37 <//ad.monash.edu/home/User
+030/zyzho4/Documents/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Res
+ults/empirical_sample_1_vi_ind.pdf>] [38 <//ad.monash.edu/home/User030/zyzho4/D
+ocuments/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empiric
+al_sample_2_vi_ind.pdf>] [39 <//ad.monash.edu/home/User030/zyzho4/Documents/Git
+Hub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_sample_3_
+vi_ind.pdf>] [40]
 ("\\ad.monash.edu\home\User030\zyzho4\Documents\GitHub\Evaluation-of-Machine-Le
 arning-in-Asset-Pricing\Thesis\Econometrics Honours Project.bbl"
 Missing character: There is no Ã in font cmr10!
 Missing character: There is no ³ in font cmr10!
- [36]
 Missing character: There is no â in font cmr10!
 Missing character: There is no € in font cmr10!
 Missing character: There is no “ in font cmr10!
@@ -2308,39 +2380,35 @@ Missing character: There is no “ in font cmr10!
 Missing character: There is no â in font cmr10!
 Missing character: There is no € in font cmr10!
 Missing character: There is no “ in font cmr10!
- [37]
+ [41] [42]
 Missing character: There is no â in font cmr10!
 Missing character: There is no € in font cmr10!
 Missing character: There is no ¦ in font cmr10!
 
-[38]
+[43]
 Underfull \hbox (badness 1303) in paragraph at lines 298--300
 []\OT1/cmr/m/n/10 Kingma, D. P., Ba, J., 2014. Adam: A method for stochas-tic o
 p-ti-miza-tion. arXiv preprint
  []
 
-[39] [40])
-
-Package natbib Warning: There were undefined citations.
-
-[41]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1299.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1299.
+[44] [45]) [46]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1324.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1324.
 
 ("\\ad.monash.edu\home\User030\zyzho4\Documents\GitHub\Evaluation-of-Machine-Le
 arning-in-Asset-Pricing\Thesis\Econometrics Honours Project.aux")
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1299.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1299.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1324.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1324.
 
 Package rerunfilecheck Info: File `Econometrics*Honours*Project.out' has not ch
 anged.
 (rerunfilecheck)             Checksum: <no file>.
  ) 
 Here is how much of TeX's memory you used:
- 42078 strings out of 493705
- 967018 string characters out of 3144567
- 1265294 words of memory out of 3000000
- 44479 multiletter control sequences out of 15000+200000
+ 42104 strings out of 493705
+ 967742 string characters out of 3144567
+ 1265215 words of memory out of 3000000
+ 44489 multiletter control sequences out of 15000+200000
  12508 words of font info for 48 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
  69i,17n,76p,10418b,1271s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -2362,9 +2430,9 @@ nts/cm/cmsy5.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cm
 sy7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb>
 <C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti12.pfb><C:/Prog
 ram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on "Econometrics Honours Project.pdf" (41 pages, 628936 bytes).
+Output written on "Econometrics Honours Project.pdf" (46 pages, 669761 bytes).
 PDF statistics:
- 1548 PDF objects out of 1728 (max. 8388607)
- 258 named destinations out of 1000 (max. 500000)
- 452 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1613 PDF objects out of 1728 (max. 8388607)
+ 270 named destinations out of 1000 (max. 500000)
+ 472 words of extra memory for PDF output out of 10000 (max. 10000000)
 

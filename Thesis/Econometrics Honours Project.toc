@@ -27,7 +27,7 @@
 \contentsline {subsubsection}{\numberline {3.1.2}Simulating Characteristics}{14}{subsubsection.3.1.2}
 \contentsline {subsubsection}{\numberline {3.1.3}Simulating Macroeconomic Series}{15}{subsubsection.3.1.3}
 \contentsline {subsubsection}{\numberline {3.1.4}Simulating Return Series}{15}{subsubsection.3.1.4}
-\contentsline {subsubsection}{\numberline {3.1.5}Sample Splitting}{15}{subsubsection.3.1.5}
+\contentsline {subsubsection}{\numberline {3.1.5}Sample Splitting}{16}{subsubsection.3.1.5}
 \contentsline {subsection}{\numberline {3.2}Simulation Study Results}{16}{subsection.3.2}
 \contentsline {section}{\numberline {4}Empirical Study}{17}{section.4}
 \contentsline {subsection}{\numberline {4.1}Data}{17}{subsection.4.1}
@@ -37,13 +37,13 @@
 \contentsline {section}{\numberline {6}Conclusion}{24}{section.6}
 \contentsline {section}{\numberline {7}Appendix}{24}{section.7}
 \contentsline {subsection}{\numberline {7.1}Data}{24}{subsection.7.1}
-\contentsline {subsection}{\numberline {7.2}Computational Details}{30}{subsection.7.2}
-\contentsline {subsection}{\numberline {7.3}Additional Results}{30}{subsection.7.3}
-\contentsline {subsubsection}{\numberline {7.3.1}Simulation Study}{30}{subsubsection.7.3.1}
-\contentsline {subsubsection}{\numberline {7.3.2}Empirical Study}{30}{subsubsection.7.3.2}
-\contentsline {subsubsection}{\numberline {7.3.3}Linear Models}{30}{subsubsection.7.3.3}
-\contentsline {subsubsection}{\numberline {7.3.4}Penalized Linear}{30}{subsubsection.7.3.4}
-\contentsline {subsubsection}{\numberline {7.3.5}Classification and Regression Trees}{34}{subsubsection.7.3.5}
-\contentsline {subsubsection}{\numberline {7.3.6}Random Forest}{34}{subsubsection.7.3.6}
-\contentsline {subsubsection}{\numberline {7.3.7}Neural Networks}{35}{subsubsection.7.3.7}
-\contentsline {subsubsection}{\numberline {7.3.8}Tuning of Simulated Datasets}{35}{subsubsection.7.3.8}
+\contentsline {subsection}{\numberline {7.2}Additional Results}{30}{subsection.7.2}
+\contentsline {subsubsection}{\numberline {7.2.1}Simulation Study}{30}{subsubsection.7.2.1}
+\contentsline {subsubsection}{\numberline {7.2.2}Empirical Study}{30}{subsubsection.7.2.2}
+\contentsline {subsection}{\numberline {7.3}Computational Details}{31}{subsection.7.3}
+\contentsline {subsubsection}{\numberline {7.3.1}Linear Models}{31}{subsubsection.7.3.1}
+\contentsline {subsubsection}{\numberline {7.3.2}Penalized Linear}{31}{subsubsection.7.3.2}
+\contentsline {subsubsection}{\numberline {7.3.3}Classification and Regression Trees}{33}{subsubsection.7.3.3}
+\contentsline {subsubsection}{\numberline {7.3.4}Random Forest}{34}{subsubsection.7.3.4}
+\contentsline {subsubsection}{\numberline {7.3.5}Neural Networks}{35}{subsubsection.7.3.5}
+\contentsline {subsubsection}{\numberline {7.3.6}Tuning of Simulated Datasets}{40}{subsubsection.7.3.6}

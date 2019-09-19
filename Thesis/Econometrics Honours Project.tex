@@ -126,7 +126,7 @@ This thesis aims to evaluate the application of machine learning algorithms in e
 
 This paper is motivated by evaluating the performance of machine learning algorithms in empirical asset pricing, focusing on how well they deal with the many unique problems in financial returns data. Here, we define ``performance" to refer to two forms of metrics conventional in the literature: $R^2$ (and more specifically, out of sample $R^2$), and forecast errors (see \ref{model_evaluation} for more details).
 
-We first begin by defining ``factors" with the more contemporary definition as suggested by \cite{harvey__2016}: a collection of regressors to be used in pricing returns that can be used to proxy for unknown underlying risk factors due to their correlation with cross sectional returns. Most notably, their definition rejects the more strict view that risk factors should be variables that have unpredictable variation through time, and that they should be able explain cross sectional return patterns. \cite{harvey__2016} further groups factors into the two broad categories of ``common" and individual firm ``characteristics." ``Common" factors under this definition can be viewed as proxies for sources of risk constant across all firms, such as macroeconomic variables. They note that individual firm characteristics are unlikely to satisfy the more strict definition because they are often pre-known and display limited time series variation.
+We first begin by defining ``factors" with the more contemporary definition as suggested by \cite{harvey__2016}: a collection of regressors to be used in pricing returns that can be used to proxy for unknown underlying risk factors due to their correlation with cross sectional returns. Most notably, their definition rejects the more strict view that risk factors should be variables that have unpredictable variation through time, and that they should be able explain cross sectional return patterns. \cite{harvey__2016} further groups factors into the two broad categories of ``common" and individual firm ``characteristics." ``Common" factors under this definition can be viewed as proxies for sources of risk constant across all firms, such as macroeconomic variables. Examples of this include the Fama-French factors, which are portfolios of assets sorted by certain characteristics to proxy for them. \cite{harvey__2016} notes that individual firm characteristics are unlikely to satisfy the more strict definition because they are often pre-known and display limited time series variation.
 
 Because of this less strict definition, factors introduced and used in the literature often exhibit properties which makes them unsuitable for inclusion in models, such as high persistence, high levels of non-stationarity and cross sectional correlation. 
 
@@ -144,9 +144,7 @@ Furthermore, \cite{feng_taming_2019} note that the number of potential factors d
 
 It does not help that many factors are cross sectionally correlated, meaning that factors which are discovered to be significant may simply be so because they are correlated with a true, underlying factor and do not provide independent information themselves, a concern which \cite{cochrane_presidential_2011} calls the multidimensional challenge. \cite{freyberger_dissecting_2017} notes that this is especially challenging for traditional regression models, which make strong functional form assumptions and are sensitive to outliers. 
 
-\rhs{More reasoning on why ML is good here}
-
-More recently, machine learning algorithms have emerged within the literature and appear to be well suited to the task of predicting asset returns. The definition of machine learning can be vague and is often context specific; \cite{hastie_elements_2009} in \textit{An Introduction to Statistical Learning} describes statistical (machine) learning as a vast set of tools for understanding data, and \textit{supervised} learning specifically as the process of building a statistical model for the prediction or estimation of an output based on input(s). In the context of asset pricing, we use the term to refer to a diverse collection of:
+More recently, machine learning has emerged within the literature and appear to be well suited to the task of predicting asset returns. The definition of machine learning can be vague and is often context specific; \cite{hastie_elements_2009} in \textit{An Introduction to Statistical Learning} describes statistical (machine) learning as a vast set of tools for understanding data, and \textit{supervised} learning specifically as the process of building a statistical model for the prediction or estimation of an output based on input(s). In the context of asset pricing, we use the term to refer to a diverse collection of:
 
 \begin{enumerate}
 	\item high-dimensional models for statistical prediction, 
@@ -154,35 +152,23 @@ More recently, machine learning algorithms have emerged within the literature an
 	\item and the efficient systematic methods for searching potential model specifications.
 \end{enumerate}
 
-\rhs{provide some examples of regularization, such as train vs validation}
-
-The high dimensional and hence flexible nature of machine learning brings more hope to approximating unknown and likely complex data generating processes that underlie excess returns. The flexibility however, comes at a cost of potentially over-fitting in sample data (referred to as training data in the machine learning literature), generalizing poorly and producing poor forecasts. The regularization aspect of machine learning explicitly guards against over-fitting problems and emphasizes out of sample performance. The most explicit example of regularization is the splitting of the dataset into an explicit "training" set used for model fitting, and a "test" set withheld and used solely for evaluating out of sample performance. Finally, machine learning offers tools which are designed to produce an optimal model specification from all possible models with manageable computational cost, all in a systematically consistent way.
+The high dimensional and hence flexible nature of machine learning brings more hope to approximating unknown and likely complex data generating processes that underlie excess returns. The flexibility however, comes at a cost of potentially over-fitting in sample data (referred to as training data in the machine learning literature), generalizing poorly and producing poor forecasts. The regularization aspect of machine learning explicitly guards against over-fitting problems and emphasizes out of sample performance. The most explicit example of regularization is the splitting of the dataset into an explicit "training" set used for model fitting, and a "test" set withheld and used solely for evaluating out of sample performance. Finally, machine learning offers tools which are designed to produce an optimal model specification from all possible models with manageable computational cost, all in a systematically consistent way. 
 
 \rhs{better linkage needed here}
 
-\cite{kozak_shrinking_2017}, \cite{rapach_forecasting_2013} and \cite{freyberger_dissecting_2017} all apply shrinkage and selection methods from machine learning in factor selection.  
+The financial literature already has some applications of machine learning. For example, \cite{kozak_shrinking_2017}, \cite{rapach_forecasting_2013} and \cite{freyberger_dissecting_2017} all apply shrinkage and selection methods from machine learning to assist with the problem of factor selection.
 
 Most importantly, portfolios constructed using machine learning have been demonstrated to outperform traditional models in predicting stock returns (\cite{gu_empirical_2018}, \cite{hsu_finding_2014} and \cite{feng_deep_2018}) in terms of out of sample predictive $R^2$ and Sharpe Ratios. \cite{gu_empirical_2018} attribute this to machine learning's ability to evaluate and consider non-linear complexities among factors that cannot be feasibly achieved using traditional techniques. 
 
 \rhs{emphasize why the limited simulation design is a problem}
 
-However, there is little work done on how machine learning actually recognises and deals with the challenges of returns prediction documented in the literature. Prior work has been done by \cite{gu_empirical_2018}, however; only basic simulation designs which were not representative of real financial data were considered. This is problematic, 
+However, there is little work done on how machine learning actually recognises and deals with the challenges of returns prediction documented in the literature. Prior work has been done by \cite{gu_empirical_2018}, however; only basic simulation designs which were not representative of real financial data were considered. This is problematic, the theoretical performance of machine learning in finite samples is not well understood. 
 
 Furthermore, \cite{feng_deep_2018} in particular use cross validation as part of their model building procedure, destroying the temporal aspect of returns data, in addition to only using a handful of factors. \cite{gu_empirical_2018} produce models using a training sample which ends in the 1970s to ultimately produce forecasts for the most recent 30 years. Given the non-robustness of financial data affecting even traditional regressions which are considered to be more inflexible, more research should be done into the robustness of more flexible machine learning methods with regards to sample selection and periods of returns predictability.
 
 For the aspect of factor selection specifically, \cite{gu_empirical_2018} concludes that all of the machine methods agree on the same subset of important factors. However, while their factor importance metrics for regression-tree based methods and neural networks (the most complex methods considered) are mostly consistent, they have differences in terms of the relative importance of each factor, in addition to completely different conclusions for the dividend yield factor.
 
-This paper will be the first in focusing on how machine learning algorithms perform in environments with problems exhibited by financial returns data through extending the simulation designs of \cite{gu_empirical_2018}. In addition, these algorithms will once again be evaluated on real world data, but with only more recent and representative data included in order to test their short term robustness in predicting stock returns. These two aspects of the study together are able to offer a better glimpse as to how ``black box" machine learning algorithms deal with the challenges present in asset pricing, if at all.
-
-%\subsection{Main Findings}
-
-%\rhs{Pending}
-
-%\subsection{Limitations of Machine Learning}
-
-%Machine learning excels at prediction problems, namely estimating \( E(r_{i, t+1}|\mathcal{F}_t) \), where \( r_{i, t+1} \) is an asset's excess return over the risk free rate, and \( \mathcal{F}_t \) is the set of all information (including unobservable) available to market participants in this context.
-
-%This means that machine learning algorithms do not, nor do they aim to, explain how the market works in terms of underlying dynamics and equilibria. Though a machine learning algorithm may be able to identify patterns that otherwise cannot be easily found, an economist is still required to analyse these patterns to construct and hypothesize economic theory.
+This paper is the first in focusing on how machine learning algorithms perform in environments with problems exhibited by financial returns data through extending the simulation designs of \cite{gu_empirical_2018}. In addition, these algorithms will once again be evaluated on real world data, but with only more recent and representative data included in order to test their short term robustness in predicting stock returns. These two aspects of the study together are able to offer a better glimpse as to how ``black box" machine learning algorithms deal with the challenges present in asset pricing, if at all.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -512,14 +498,14 @@ It must be noted that the DM test statistic assumes that the loss differential s
 
 \subsubsection{Variable Importance}
 
-The importance of each predictor $j$ is denoted as $VI_j$, and is defined as the reduction in predictive R-Squared from setting all values of predictor $j$ to 0, while holding the remaining model estimates fixed. These were then normalized to sum to 1 within each model as a way to assess the relative importance of each predictor for each model. As $VI_j$ can sometimes be negative, this was achieved by shifting all $VI_j$ positively by the magnitude of the smallest $VI_j$, then dividing all $VI_j$ by the total:
+The importance of each predictor $j$ is denoted as $VI_j$, and is defined as the reduction in predictive R-Squared from setting all values of predictor $j$ to 0, while holding the remaining model estimates fixed. These were then normalized to sum to 1 within each model as a way to assess the relative importance of each predictor for each model. As $VI_j$ can sometimes be negative, or in some cases be 0 across most of the factors, $VI_j$ positively shifted by the magnitude of the smallest $VI_j$ plus a minor offset, then dividing all $VI_j$ by the total:
 
 \begin{equation}
-VI_{j, norm} = \frac{VI_j + \operatorname{min}(VI_j)}
-{\Sigma VI_j + \operatorname{min}(VI_j)}
+VI_{j, norm} = \frac{VI_j + \operatorname{min}(VI_j) + 1e^{-100}}
+{\Sigma VI_j + \operatorname{min}(VI_j) + 1e^{-100}}
 \end{equation}
 
-This mechanism was chosen because the other popular normalization mechanism "softmax" was observed to be unable to preserve the distances between each original $VI_j$ well enough, thus squishing together all importance metrics.
+This mechanism was chosen because the other popular normalization mechanism "softmax" was observed to be unable to preserve the distances between each original $VI_j$ well enough, squishing together all variable importance measures and making discernment between each variable difficult.
 
 \section{Simulation Study}
 
@@ -549,14 +535,14 @@ The matrix $C_t$ is an $N\times P_c$ vector of latent factors, where the first t
 
 \subsubsection{Simulating Characteristics}
 
-A simulation mechanism for $C_t$ that gives some correlation across the factors and across time was used. First consider drawing normal random numbers for each $1\leq i\leq N$ and $1\leq j\leq P_{c}$, according to 
+A simulation mechanism for $C_t$ that gives some correlation across the factors and across time was used. We build in correlation across time among factors by drawing normal random numbers for each $1\leq i\leq N$ and $1\leq j\leq P_{c}$, according to 
 
 \begin{equation}
 	\overline{c}_{i j, t} = \rho_{j} \overline{c}_{i j, t-1}+\epsilon_{i j, t} ;
 	\quad \rho_{j} \sim \mathcal{U} \left( \frac{1}{2},1 \right) 
 \end{equation}
 
-Then, define the matrix 
+Then, define the matrix $B$:
 
 \begin{equation}
 	B:=\Lambda\Lambda' + \frac{1}{10}\mathbb{I}_{n}, \quad
@@ -564,17 +550,15 @@ Then, define the matrix
 	\lambda_{ik}\sim N(0, \lambda_{sd}), \; k=1, \dots, 4
 \end{equation}
 
-where different $\lambda_{sd}$ values were considered to explore different degrees of cross sectional correlation. This is decomposed via the Cholesky Decomposition to yield the lower triangle matrix $L$:
-
-\begin{equation}
-	B = LL'
-\end{equation}
+Note that $B$ is a positive-semidefinite matrix, and thus can serve as a variance covariance matrix with $\lambda_{sd}$ controlling the density of the matrix, and hence degree of cross sectional correlation. 
 
 To build in cross-sectional correlation, from the $N\times P_{c}$ matrix $\bar{C}_t$, we simulate characteristics according to
  
 \begin{equation}
-	\widehat{C}_{t}=L\overline{C}_{t}
+	\widehat{C}_{t}=L\overline{C}_{t} ; \quad B = LL' 
 \end{equation}
+
+where $L$ represents the lower triangle matrix of $B$ using the Cholesky decomposition.
  
 Finally, the "observed" characteristics for each $1\leq i\leq N$ and for $j=1, \dots, P_{c}$ are constructed according to:
 
@@ -606,22 +590,19 @@ Other more complex and interactive matrix specifications of $A$ were briefly exp
 
 We consider three different function for $g(z_{i, t})$:
 
-\begin{flalign*}
-(1)\; & g_1 \left(z_{i, t}\right)=\left(c_{i 1, t}, c_{i 2, t}, c_{i 3, t} \times x_{t}'\right) \theta_{0};
-	\quad \theta_{0} = (0.02, 0.02, 0.02)^{\prime} \\
-(2)\; & g_2 \left(z_{i, t}\right)=\left(c_{i 1, t}^{2}, c_{i 1, t} \times c_{i 2, t}, \operatorname{sgn}\left(c_{i 3, t} \times  x_{t}'\right)\right) \theta_{0}; 
-	\quad \theta_{0} = (0.04, 0.035, 0.01)^{\prime} \\
-(3)\; & g_3 \left(z_{i, t}\right) = \left(1[c_{i3,t}>0],c_{i 2, t}^{3}, c_{i 1, t} \times c_{i 2, t}\times 1[c_{i3,t}>0], \text{logit}\left({c}_{i 3, t} \right)\right) \theta_{0};
-	\quad \theta_{0} = (0.04, 0.035, 0.01, 0.01)^{\prime}
-\end{flalign*}
+\begin{align}
+(1)\; & g_1 \left(z_{i, t}\right)=\left(c_{i 1, t}, c_{i 2, t}, c_{i 3, t} \times x_{t}'[3,]\right) \theta_{0} \\
+(2)\; & g_2 \left(z_{i, t}\right)=\left(c_{i 1, t}^{2}, c_{i 1, t} \times c_{i 2, t}, \operatorname{sgn}\left(c_{i 3, t} \times  x_{t}'[3,]\right)\right) \theta_{0} \\
+(3)\; & g_3 \left(z_{i, t}\right) = \left(1[c_{i3,t}>0],c_{i 2, t}^{3}, c_{i 1, t} \times c_{i 2, t}\times 1[c_{i3,t}>0], \text{logit}\left({c}_{i 3, t} \right)\right) \theta_{0}
+\end{align}
 
-$g_1 \left(z_{i, t}\right)$ allows the characteristics to enter the return equation linearly, and $g_2 \left(z_{i, t}\right)$ allows the characteristics to enter the return equation interactively and non-linearly. These two specifications correspond to the simulation design proposed by \cite{gu_empirical_2018}. 
+where $x_{t}'[3,]$ denotes the third element of the $x_{t}'$ vector.
 
-$g_3 \left(z_{i, t}\right)$ allows the characteristics to enter in a highly complex and non-linear fashion.
+$g_1 \left(z_{i, t}\right)$ allows the characteristics to enter the return equation linearly, and $g_2 \left(z_{i, t}\right)$ allows the characteristics to enter the return equation interactively and non-linearly. These two specifications correspond to the simulation design used by \cite{gu_empirical_2018}. 
 
-$\theta^0$ was tuned such that the cross sectional $R^2$ and predictive $R^2$ were approximately 5\%.
+$g_3 \left(z_{i, t}\right)$ allows the characteristics to enter in a complex and non-linear fashion. In should be noted however, that because $g_2 \left(z_{i, t}\right)$ has a large part of its signal entering through a $\operatorname{sgn}$ function, this should make it the most difficult to estimate given the regressors and resulting returns process.
 
-\rhs{change this}
+$\theta^0$ was tuned such that the predictive $R^2$ was approximately 5\%.
 
 The simulation design results in $3 \times 3 = 12$ different simulated datasets, each with $N = 200$ stocks, $T = 180$ periods and $P_c = 100$ characteristics. Each design was simulated 10 times to assess the robustness of machine learning algorithms. The number of simulations was kept low for computational feasibility.
 
@@ -640,7 +621,7 @@ Our final simulation specifications are as follows:
 
 \subsubsection{Sample Splitting}
 
-If viewed as monthly periods, $T = 180$ corresponds to 15 years. A data splitting scheme similar to to the scheme to be used in the empirical data study was used: a training:validation length ratio of approximately 1.5 to begin, and a test set that is 1 year in length. We employ the hybrid growing window approach as described earlier in section \ref{sample_split} (see Figure \ref{sample_split_diag} for a graphical representation). The sample splitting scheme was chosen in a way which assisted with the stability of the advanced machine learning models, particularly neural networks. 
+If viewed as monthly periods, $T = 180$ corresponds to 15 years. A data splitting scheme similar to to the scheme to be used in the empirical data study was used: a training:validation length ratio of approximately 1.5 to begin, and a test set that is 1 year in length. We employ the hybrid growing window approach as described earlier in section \ref{sample_split} (see Figure \ref{sample_split_diag} for a graphical representation).
 
 \begin{figure}
 	\begin{center}
@@ -679,9 +660,7 @@ If viewed as monthly periods, $T = 180$ corresponds to 15 years. A data splittin
 	\label{sample_split_diag}
 \end{figure}
 
-Other popular schemes in the forecasting literature such as using an "inner" rolling window validation loop to find the best hyperparameters on average, finally aggregating them in an "outer" loop for a robust error were considered but not implemented for a variety of reasons. Firstly, many of the models are computationally too intensive for this to be feasible for this to be feasible. More importantly, during the model fitting process it was observed that the optimal hyperparameters for the different rolling windows were highly unstable. Thus, this would have made the selection of the best hyperparameters on average across all windows significantly less meaningful.
-
-
+Other schemes in the forecasting literature such as using an "inner" rolling window validation loop to find the best hyperparameters on average, finally aggregating them in an "outer" loop for a robust error were considered but not implemented for a variety of reasons. Firstly, many of the models are computationally too intensive for this to be feasible for this to be feasible. More importantly, during the model fitting process it was observed that the optimal hyperparameters for the different rolling windows were highly unstable. Thus, this would have made the selection of the best hyperparameters on average across all windows significantly less meaningful.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Simulation Study Results}
@@ -1096,11 +1075,41 @@ The overall findings of this paper differ from the sparse literature on similar 
 	\end{center}
 \end{table}
 
-\subsection{Computational Details}
+\newpage
 
 \subsection{Additional Results}
 
 \subsubsection{Simulation Study}
+
+\begin{figure}
+	\includegraphics{simulation_test_mae.pdf}
+	\caption{Simulation Test MAE}
+\end{figure}
+
+\begin{figure}
+	\includegraphics{simulation_test_mse.pdf}
+	\caption{Simulation Test MSE}
+\end{figure}
+
+\begin{figure}
+	\includegraphics{simulation_test_rsquare.pdf}
+	\caption{Simulation Test R Squared}
+\end{figure}
+
+\begin{figure}
+	\includegraphics{simulation_train_mae.pdf}
+	\caption{Simulation Train MAE}
+\end{figure}
+
+\begin{figure}
+	\includegraphics{simulation_train_mse.pdf}
+	\caption{Simulation Train MSE}
+\end{figure}
+
+\begin{figure}
+	\includegraphics{simulation_train_rsquare.pdf}
+	\caption{Simulation Train R Squared}
+\end{figure}
 
 \subsubsection{Empirical Study}
 
@@ -1121,6 +1130,10 @@ The overall findings of this paper differ from the sparse literature on similar 
 
 \label{computation}
 
+\newpage
+
+\subsection{Computational Details}
+
 \subsubsection{Linear Models}
 
 OLS used for fitting wrt MSE.
@@ -1129,11 +1142,9 @@ quantreg package used for fitting wrt MAE. (minimizing 0.5 quantile loss is equi
 
 \subsubsection{Penalized Linear}
 
-The package  was used to fit penalized regression models with respect to MSE and MAE.
+The package \textbf{hqreg} was used to fit penalized regression models with respect to MSE and MAE.
 
-This package efficiently calculates a regularization path of penalization values given a value for $\alpha$. This means that it is much more efficient to instead only supply a grid for $\alpha$, let the algorithm decide its own path of penalization values. The combination of these two parameters which produces the best results on the validation set were then chosen.
-
-The more traditional approach of supplying a grid of $\alpha$ and $\lambda$ was also implemented at first, and this was observed to give almost identical results to the above implementation, but at a much higher computational cost.
+This package efficiently calculates a regularization path of penalization values given a value for $\alpha$. This means that it is much more efficient to instead only supply a grid for $\alpha$, let the algorithm decide its own path of penalization values. The combination of these two parameters which produces the best results on the validation set were then chosen. Note that this is the approach originally suggested by \cite{zou_regularization_2005}.
 
 \subsubsection{Classification and Regression Trees}
 
@@ -1179,9 +1190,9 @@ For full details of the Classification and Regression Tree algorithm see \cite{b
 
 \subsubsection{Random Forest}
 
-The randomforestSRC package was used to fit both random forests for mean regression and quantile regression.
+The \textbf{randomforestSRC} package was used to fit both random forests for mean regression and quantile regression.
 
-To maintain computational feasibility, all random forest models were grown using 50 trees, and only had their \textit{mtry} hyperparameter tuned. This is because it has been empirically observed that the \textit{mtry} hyperparameter is often the most "tunable," i.e. offering the largest amount of performance gains when tuned, when compared to other hyperparameters such as \textit{nodesize}, \cite{bibid}. 
+To maintain computational feasibility, all random forest models were grown using 50 trees, and their \textit{mtry} \textit{nodesize} hyperparameters tuned. 
 
 Rather than use the randomly determined out of bag (OOB) observations for hyperparameter tuning, we explicitly use a separate validation set that is closer to the test set in time, in order to maintain temporal ordering of the data.
 
@@ -1207,7 +1218,25 @@ For full details of the Random Forest algorithm see \cite{breiman_random_2001}.
 
 \subsubsection{Neural Networks}
 
-Fit using {keras} package (cite)
+Nueral Networks were fit using the \textbf{keras} package, using the \textbf{tensorflow} backend. 
+
+Due to computational limitations, a systematic grid search or random search approach for hyperparameters was not feasible. Instead, common hyperparameters that are usually grid searched were tuned manually. 
+
+\begin{table}
+	\begin{tabular}{|lll|}
+		\hline
+		Hyperparameter & Options Considered & Optimal Choice \\ \hline
+		Activation Function & ReLU, Leaky ReLU with $\alpha = (0.01, 0.1)$, tanh & tanh \\
+		Optimizer & ADAM, NADAM & ADAM \\
+		Learning Rate & (0.1, 0.01, 0.001, 0.0001) & 0.01 \\
+		L1 Penalty & (1, 0.1, 0.01) & 0.01 \\
+		Batch Size & (32, 64, 128, 256, 512, 1024, 2048, 4096) & 256 (Empirical), 128 (Simulated) \\
+		Early Stopping Patience & (10, 20, 30, 40, 50) & 40 \\ \hline
+	\end{tabular}
+	\caption{Hyperparameters Considered for Neural Networks}
+\end{table}
+
+
 
 ADAM algorithm for stochastic gradient descent and learning rate shrinkage as detailed by \cite{kingma_adam:_2014}.
 
