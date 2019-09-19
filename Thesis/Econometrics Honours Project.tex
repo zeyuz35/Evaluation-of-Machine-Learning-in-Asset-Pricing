@@ -527,7 +527,7 @@ This mechanism was chosen because the other popular normalization mechanism "sof
 
 \subsubsection{Overall Design}
 
-Though \cite{gu_empirical_2018} explore the performance of machine learning on simulated returns series, their design used factors are uncorrelated across $i$, and, in particular, that the factors which enter the return equation are uncorrelated with the factors that do not enter the return equation. As note by \cite{harvey__2016} and many others, this is not what is observed in practice. 
+Though \cite{gu_empirical_2018} explore the performance of machine learning on simulated returns series, their specification used factors are uncorrelated across $i$, and, in particular, that the factors which enter the return equation are uncorrelated with the factors that do not enter the return equation. As note by \cite{harvey__2016} and many others, this is not what is observed in practice. Furthermore, their error specification is a white noise process consisting of a gaussian term and a student t error term. 
 
 Therefore, we simulate a latent factor model with a stochastic volatility process for excess returns  $r_{t+1}$, for $t=1,\dots,T$:
 
@@ -748,13 +748,7 @@ The sic2 variable, corresponding to the stocks' Standard Industrial Classificati
 
 There existed a significant amount of missing data in the dataset. The dataset's columns were first examined, and any characteristics that had over 20\% of their data were removed. However, as the amount of missing data increases dramatically going further back in time, a balance between using more periods at the cost of removing more characteristics versus using less periods but keeping more characteristics was needed. 1993 Q3 was determined to be a reasonable time frame to begin the dataset, as was a noticeable increase in data availability after this time.  Missing characteristics were then imputed using their cross sectional medians for each year. 
 
-This final dataset of individual factors consists of X rows and N columns, with the average number of stocks in each time period being ~. 
-
-% Welch Goyal Data
-% Quarterly version of Welch Goyal data was used
-% New factor were constructed from this dataset, as with Gu et al
-% Lagged by one period to be consistent with timing of other factors
-% Treasury bill obtained to proxy for risk free rate of return to construct excess returns
+This final dataset of individual factors consists of X rows and N columns, with the average number of stocks in each time period being ~.
 
 We then follow \cite{gu_empirical_2018} and construct eight macroeconomic factors following the variable definitions in \cite{welch_comprehensive_2008}: dividend-price ratio (dp), earnings-price ratio (ep), book-to-market ratio (bm), net equity expansion (ntis), Treasury-bill rate (tbl), term spread (tms), default spread (dfy) and stock variance (svar). These factors were lagged by one period so as to be used to predict one period ahead quarterly returns. The treasury bill rate was also used from this source to proxy for the risk free rate in order to construct excess quarterly returns. 
 
@@ -785,22 +779,22 @@ We mimic the procedure used in the simulation study. This means that the dataset
 
 \begin{figure}
 	\begin{center}
-		\begin{tabular}{|c|p{1.2cm}p{0.60cm}p{0.60cm}p{0.60cm}p{0.60cm}p{0.60cm}p{0.60cm}p{0.60cm}p{0.60cm}p{0.60cm}p{0.60cm}p{0.60cm}p{0.60cm}p{0.60cm}p{0.60cm}|}
+		\begin{tabular}{|c|p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}|}
 			\hline
-			Set No. &&&&&&&&&&&&&&& \\
+			Set No. &&&&&&&&&&&&&&&& \\
 			\hline
 			%%%%%%%%
-			3 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
+			3 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
 			\cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{olive} \\
 			%%%%%%%%
-			2 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & 
+			2 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
 			\cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & 	
 			\cellcolor{olive} & NA \\
 			%%%%%%%%
-			1 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} 
-			& \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{olive} & NA & NA \\
+			1 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
+			\cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{olive} & NA & NA \\
 			\hline
-			Time & 1993 Q3 Q4 & 1994 & 1995 & 1996 & ... & 2006 & 2007 & 2008 & ... & 2011 & 2012 & 2013 & 2014 & 2015 & 2016 \\
+			Time & 1993Q3 & 1993Q4 & 1994 & 1995 & 1996 & ... & 2006 & 2007 & 2008 & ... & 2011 & 2012 & 2013 & 2014 & 2015 & 2016 \\
 			\hline
 		\end{tabular}
 		\medskip
@@ -824,57 +818,24 @@ We mimic the procedure used in the simulation study. This means that the dataset
 \input{../Results/empirical_results.tex}
 
 \begin{figure}
-	\includegraphics{empirical_sample_1_vi.pdf}
-	\caption{Empirical Data Variable Importance for Sample 1}
-\end{figure}
-
-\begin{figure}
-	\includegraphics{empirical_sample_2_vi.pdf}
-	\caption{Empirical Data Variable Importance for Sample 2}
-\end{figure}
-
-\begin{figure}
-	\includegraphics{empirical_sample_3_vi.pdf}
-	\caption{Empirical Data Variable Importance for Sample 3}
-\end{figure}
-
-\begin{figure}
 	\includegraphics{empirical_sample_all_vi.pdf}
-	\caption{Empirical Data Variable Importance Averaged Across All Samples}
+	\caption{Empirical Data Individual Factor Variable Importance Averaged Across All Samples}
 \end{figure}
-	
 
-\begin{table}
-	\caption{Diebold Mariano Tests for Empirical Data}
-\end{table}
+\begin{figure}
+	\includegraphics{empirical_sample_all_vi_macro_facet.pdf}
+	\caption{Empirical Data Macroeconomic Factor variable Importance Averaged Across All Samples}
+\end{figure}
 
 In general, results from the simulation study were reproduced in the empirical study. 
 
-We similarly see that the penalized linear models generally performing the best, with the random forest models offering slightly worse performance, occasionally outperforming penalized linear models. Models fitted with respect to median quantile loss were similarly observed to offer improvements in all loss metrics in general at best, with very little performance drops at worst. 
+We similarly see that the penalized linear models generally performing the best, with the random forest models offering slightly worse performance, occasionally outperforming penalized linear models. Models fitted with respect to median quantile loss were similarly observed to offer improvements across all machine learning models across all loss metrics, with the exception of linear models, which had worse performance when minimizing quantile loss.
 
-In the empirical data setting, the underlying data generating process of returns is unknown so the ability of the different models at picking out the correct covariates cannot be evaluated. However, we can see that the penalized linear models and random forests (the models with the highest out of sample prediction performance) decide on a similar subset of factors which are determined to be important. In particular, we find that the 1 month momentum 6 month momentum factors to be the most important factors by far. 
+In the empirical data setting, the underlying data generating process of returns is unknown so the ability of the different models at picking out the correct covariates cannot be evaluated. However, we can see that the penalized linear models and random forests (the models with the highest out of sample prediction performance) decide on a similar subset of factors which are determined to be important. In particular, we find that the 1 month momentum and 6 month momentum factors to be the most important factors by far. 
 
-Interestingly, we find that the linear models assign the controversial dividend price ratio macroeconomic factor as highly important. 
+The linear models had the worst performance of all the models considered. Interestingly, we find that the linear models assign the controversial dividend price ratio macroeconomic factor as highly important. 
 
 The neural networks have very inconsistent 
-
-Interestingly, 
-
-%% Linear Models
-
-The linear models typically had the worst performance among all the models.
-
-%% Penalized Linear Models
-
-
-
-%% Random Forests
-
-Similar to the simulation study, the random forests overfitted the training sample by a large margin, offering the greatest performance by far for in sample forecasts.
-
-%% Neural Networks
-
-The neural networks offered lukewarm performance in the first two training samples, trailing behind the random forest and penalized linear models. 
 
 \section{Limitations}
 
@@ -890,7 +851,15 @@ For each class of models considered, not all possible or reasonable specificatio
 
 \section{Conclusion}
 
-ind\_
+Using the 
+
+Our findings demonstrate that within the contexts considered, the field of machine learning offers tools to improve stock prediction and identification of true underlying regressors. Penalized linear models and to a lesser extent, random forests are the best performing methods.
+
+Importantly, we find that the feed-forward neural network architectures considered fail in the context of stock return prediction. This is a result consistent across a variety of simulated datasets, as well as empirical data. We also find weak evidence that deeper neural networks with more hidden layers perform better, though this result, like the performance of neural networks in general, is non-robust.
+
+Lastly, we find that the top performing models - the penalized linear models and random forests, tend to agree and correctly identify the correct causal regressors in simulated contexts, as well as agree on the same subset of factors which are important in empirical contexts. We find that the of all the most considered, the penalized linear models are the most consistent at identifying true causal regressors through the simulation study. We find that in the empirical setting, among the individual the individual 1 and 6 month momentum factors are the most powerful predictors of stock returns, according to the penalized linear models and random forests. 
+
+The overall findings of this paper differ from the sparse literature on similar topics. However, the performance of the penalized linear models with respect to both out of sample prediction performance and variable importance analysis is promising, and our findings show that machine learning provides some tools which may aid in the problems of stock return prediction and risk factor selection in the financial world. 
 
 \section{Appendix}
 
@@ -1128,6 +1097,28 @@ ind\_
 \end{table}
 
 \subsection{Computational Details}
+
+\subsection{Additional Results}
+
+\subsubsection{Simulation Study}
+
+\subsubsection{Empirical Study}
+
+\begin{figure}
+	\includegraphics{empirical_sample_1_vi_ind.pdf}
+	\caption{Empirical Data Individual Factor Variable Importance for Sample 1}
+\end{figure}
+
+\begin{figure}
+	\includegraphics{empirical_sample_2_vi_ind.pdf}
+	\caption{Empirical Data Individual Factor Variable Importance for Sample 2}
+\end{figure}
+
+\begin{figure}
+	\includegraphics{empirical_sample_3_vi_ind.pdf}
+	\caption{Empirical Data Individual Factor Variable Importance for Sample 3}
+\end{figure}
+
 \label{computation}
 
 \subsubsection{Linear Models}
