@@ -18,7 +18,7 @@
 \contentsline {subsubsection}{\numberline {2.8.3}Computation}{12}{subsubsection.2.8.3}
 \contentsline {subsubsection}{\numberline {2.8.4}Batch Normalization}{12}{subsubsection.2.8.4}
 \contentsline {subsection}{\numberline {2.9}Model Evaluation}{12}{subsection.2.9}
-\contentsline {subsubsection}{\numberline {2.9.1}R Squared}{12}{subsubsection.2.9.1}
+\contentsline {subsubsection}{\numberline {2.9.1}Loss Metrics}{12}{subsubsection.2.9.1}
 \contentsline {subsubsection}{\numberline {2.9.2}Diebold-Mariano Test}{13}{subsubsection.2.9.2}
 \contentsline {subsubsection}{\numberline {2.9.3}Variable Importance}{13}{subsubsection.2.9.3}
 \contentsline {section}{\numberline {3}Simulation Study}{14}{section.3}
@@ -33,17 +33,17 @@
 \contentsline {subsection}{\numberline {4.1}Data}{17}{subsection.4.1}
 \contentsline {subsection}{\numberline {4.2}Empirical Data Model Fitting and Methodology Differences}{20}{subsection.4.2}
 \contentsline {subsection}{\numberline {4.3}Empirical Data Results}{21}{subsection.4.3}
-\contentsline {section}{\numberline {5}Limitations}{21}{section.5}
-\contentsline {section}{\numberline {6}Conclusion}{24}{section.6}
-\contentsline {section}{\numberline {7}Appendix}{24}{section.7}
-\contentsline {subsection}{\numberline {7.1}Data}{24}{subsection.7.1}
-\contentsline {subsection}{\numberline {7.2}Additional Results}{30}{subsection.7.2}
-\contentsline {subsubsection}{\numberline {7.2.1}Simulation Study}{30}{subsubsection.7.2.1}
-\contentsline {subsubsection}{\numberline {7.2.2}Empirical Study}{30}{subsubsection.7.2.2}
-\contentsline {subsection}{\numberline {7.3}Computational Details}{31}{subsection.7.3}
-\contentsline {subsubsection}{\numberline {7.3.1}Linear Models}{31}{subsubsection.7.3.1}
-\contentsline {subsubsection}{\numberline {7.3.2}Penalized Linear}{31}{subsubsection.7.3.2}
-\contentsline {subsubsection}{\numberline {7.3.3}Classification and Regression Trees}{33}{subsubsection.7.3.3}
-\contentsline {subsubsection}{\numberline {7.3.4}Random Forest}{34}{subsubsection.7.3.4}
-\contentsline {subsubsection}{\numberline {7.3.5}Neural Networks}{35}{subsubsection.7.3.5}
-\contentsline {subsubsection}{\numberline {7.3.6}Tuning of Simulated Datasets}{40}{subsubsection.7.3.6}
+\contentsline {section}{\numberline {5}Limitations}{25}{section.5}
+\contentsline {section}{\numberline {6}Conclusion}{25}{section.6}
+\contentsline {section}{\numberline {7}Appendix}{26}{section.7}
+\contentsline {subsection}{\numberline {7.1}Data}{26}{subsection.7.1}
+\contentsline {subsection}{\numberline {7.2}Additional Results}{31}{subsection.7.2}
+\contentsline {subsubsection}{\numberline {7.2.1}Simulation Study}{31}{subsubsection.7.2.1}
+\contentsline {subsubsection}{\numberline {7.2.2}Empirical Study}{31}{subsubsection.7.2.2}
+\contentsline {subsection}{\numberline {7.3}Computational Details}{32}{subsection.7.3}
+\contentsline {subsubsection}{\numberline {7.3.1}Linear Models}{32}{subsubsection.7.3.1}
+\contentsline {subsubsection}{\numberline {7.3.2}Penalized Linear}{32}{subsubsection.7.3.2}
+\contentsline {subsubsection}{\numberline {7.3.3}Classification and Regression Trees}{34}{subsubsection.7.3.3}
+\contentsline {subsubsection}{\numberline {7.3.4}Random Forest}{35}{subsubsection.7.3.4}
+\contentsline {subsubsection}{\numberline {7.3.5}Neural Networks}{36}{subsubsection.7.3.5}
+\contentsline {subsubsection}{\numberline {7.3.6}Tuning of Simulated Datasets}{41}{subsubsection.7.3.6}

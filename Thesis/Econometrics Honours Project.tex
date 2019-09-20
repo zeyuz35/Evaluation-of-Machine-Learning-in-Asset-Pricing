@@ -677,6 +677,8 @@ Of particular note the instability of the penalized linear models' hyperparamete
 
 The random forest models were typically able to correctly identify the true data generating covariates, but struggled with discerning them adequately from other covariates. This is to be expected, likely due to how the random forest algorithms work. The random forest algorithm is an ensemble of tree models, with each tree model only having access to a subset of all available predictors. If this subset does not include the true data generating predictor, that particular tree will likely select the predictors which have the highest correlation with the true data generating predictor instead. Thus, the resulting ensemble model is likely to believe that cross sectionally correlated predictors are important.
 
+Overall, it appears that the penalized linear models offered the best performance, both in terms of actual prediction accuracy and identifying true regressors, even when the predictor set contained high degrees of cross sectional correlation and non-linearities. 
+
 The neural networks
 
 \begin{table}
@@ -716,7 +718,7 @@ We mimic the data procedure of \cite{gu_empirical_2018}. This means that we obta
 We detail our cleaning procedure of this dataset. To reduce the size of the dataset and increase feasibility, the dataset was filtered so that only stocks traded primarily on NASDAQ were included (using the PRIMEXCH variable from WRDS). Then, penny stocks (also referred to as microcaps in the literature) with a stock price of less than \$5 were filtered out, as is commonly done in the literature to reduce variability. Stocks without a share code of 10 or 11 (referring to equities) were filtered out, so that securities that are not equities were not included (such as REITs and trust funds). The dataset is provided in a monthly format, which means that many of the factors which are updated only quarterly or annually have very low levels of variability, which can lead to misleading results in the model fitting process. To achieve a balance between having a dataset with enough data points and variability among factors, the dataset was converted to a quarterly format. Quarterly returns were then constructed using the PRC variable according to actual returns (ie not logged differences):
 
 \begin{equation}
-	RET_t = \frac{PRC_t PRC_{t-1}}{PRC_{t-1}}
+	RET_t = \frac{PRC_t - PRC_{t-1}}{PRC_{t-1}}
 \end{equation}
 
 We allow all stocks which have a quarterly return to enter the dataset, even if they disappear from the dataset for certain periods, as opposed to only keeping stocks which appear continuously throughout the entire period. This was primarily done to reduce survivorship bias in the dataset, which can be very prevalent in financial data, and also allows for stocks which were unlisted and relisted again to feature in the dataset. This has the obvious drawback of introducing some bias in the dataset, as attrition in the dataset is likely to be non-random and correlated with the stocks' returns. 
@@ -748,7 +750,7 @@ As the individual and macroeconomic factors can have similar names, individual a
 
 The dataset was not normalized for all methods, as only penalized regression and neural networks are sensitive to normalization. For these two methods, the dataset was normalized such that each predictor column had 0 mean and 1 variance.
 
-The final dataset spanned from 1993 Q3 to 2016 Q4 with ~20,000
+The final dataset spanned from 1993 Q3 to 2016 Q4 with 
 
 \subsection{Empirical Data Model Fitting and Methodology Differences}
 
@@ -797,14 +799,16 @@ We mimic the procedure used in the simulation study. This means that the dataset
 \input{../Results/empirical_results.tex}
 
 \begin{figure}
-	\includegraphics{empirical_sample_all_vi.pdf}
+	\includegraphics{empirical_sample_all_vi_ind.pdf}
 	\caption{Empirical Data Individual Factor Variable Importance Averaged Across All Samples}
 \end{figure}
 
+\begin{landscape}
 \begin{figure}
 	\includegraphics{empirical_sample_all_vi_macro_facet.pdf}
-	\caption{Empirical Data Macroeconomic Factor variable Importance Averaged Across All Samples}
+	\caption{Empirical Data Macroeconomic Factor variable Importance Averaged Across All Samples, faceted by training sample}
 \end{figure}
+\end{landscape}
 
 In general, results from the simulation study were reproduced in the empirical study. 
 
@@ -814,7 +818,9 @@ In the empirical data setting, the underlying data generating process of returns
 
 The linear models had the worst performance of all the models considered. Interestingly, we find that the linear models assign the controversial dividend price ratio macroeconomic factor as highly important. 
 
-The neural networks have very inconsistent 
+The neural networks similarly had non-robust results. There is weak evidence to suggest that more complex neural networks with more layers give better performance. The neural networks were also the only models to assign high variable importance to the individual market value factor, a result that is somewhat consistent across all neural networks considered. 
+
+Interestingly, all models considered typically preferred extremely sparse parameterizations. That is, most if not all of the individual factors had little to no importance across all models. When looking at macroeconomic variables, all models tend to produce inconsistent importance measures when compared. Penalized linear models tend to identify the average book to market ratio
 
 \section{Limitations}
 

@@ -17,7 +17,7 @@
 \BOOKMARK [3][-]{subsubsection.2.8.3}{Computation}{subsection.2.8}% 17
 \BOOKMARK [3][-]{subsubsection.2.8.4}{Batch Normalization}{subsection.2.8}% 18
 \BOOKMARK [2][-]{subsection.2.9}{Model Evaluation}{section.2}% 19
-\BOOKMARK [3][-]{subsubsection.2.9.1}{R Squared}{subsection.2.9}% 20
+\BOOKMARK [3][-]{subsubsection.2.9.1}{Loss Metrics}{subsection.2.9}% 20
 \BOOKMARK [3][-]{subsubsection.2.9.2}{Diebold-Mariano Test}{subsection.2.9}% 21
 \BOOKMARK [3][-]{subsubsection.2.9.3}{Variable Importance}{subsection.2.9}% 22
 \BOOKMARK [1][-]{section.3}{Simulation Study}{}% 23
