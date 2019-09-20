@@ -23,3 +23,6 @@ R/Simulated_dataset/g3_A1_nosv_0.rds
 R/Simulated_dataset/g3_A1_sv_0.01.rds
 R/Simulated_dataset/g3_A1_sv_0.1.rds
 R/Simulated_dataset/g3_A1_sv_1.rds
+R/final_dataset.csv
+R/.Rhistory
+R/.RDataTmp2
