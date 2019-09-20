@@ -318,54 +318,53 @@ Neural networks have theoretical underpinnings as ``universal approximators" for
 
 Per this analysis, we focus on traditional ``feed-forward" networks. The feed forward network consists of an ``input layer" of scaled data inputs, one or more ``hidden layers" which interact and non-linearly transform the inputs, and finally an output layer that aggregates the hidden layers and transform them a final time for the final output. 
 
-\begin{figure}
-	\begin{center}
-	\begin{neuralnetwork}
-		%Options
-		[nodespacing=9.5mm, layerspacing=18mm,
-		maintitleheight=1em, layertitleheight=2em,
-		height=7, toprow=false, nodesize=24pt, style={},
-		title={}, titlestyle={}]
-		\newcommand{\nodetextclear}[2]{}
-		%use \ifnum to get different labels, such as x_n on the last neuron
-		\newcommand{\nodetextx}[2]{\ifnum #2=8 $x_n^{(0)}$ \else $x_#2^{(0)}$ \fi}
-		\newcommand{\nodetexty}[2]{$y_#2$}
-		%Hidden layer textcommands
-		%32 neurons
-		\newcommand{\nodetextxa}[2]{\ifnum #2=7 $x_{32}^{(1)}$ \else $x_#2^{(1)}$ \fi}
-		%16 neurons
-		\newcommand{\nodetextxb}[2]{\ifnum #2=6 $x_{16}^{(2)}$ \else $x_#2^{(2)}$ \fi}
-		%8 neurons
-		\newcommand{\nodetextxc}[2]{\ifnum #2=5 $x_{8}^{(3)}$ \else $x_#2^{(3)}$ \fi}
-		\newcommand{\nodetextxd}[2]{$x_#2^{(4)}$}
-		\newcommand{\nodetextxe}[2]{$x_#2^{(5)}$}
-		%Input Layer
-		\inputlayer[count=3, bias=true, title=, text=\nodetextx]
-		%Hidden Layer 1
-		\hiddenlayer[count=1, bias=true, title=, text=\nodetextxa] 
-		\linklayers[]
-		%Final Layer
-		\outputlayer[count=1, title=, text=\nodetexty] \linklayers
-	\end{neuralnetwork}
-	\end{center}
-	\caption{Example Neural Network}
-\end{figure}
-
-More specifcally, a neural network consists of layers denoted by $l = 0, 1, \dots, L$, with $l = 0$ denoting the input layer and $l = L$ denoting the output layer, and $K^{(l)}$ denoting the number of neurons in each hidden layer. The input layer is defined using predictors, $x^{(0)} = (1, z_1, \dots, z_N)'$. The output of neuron $k$ in layer $l$ is then $x_k^{(l)}$. Next, define the vector of outputs for this layer as $x^{(l)} = (1, x_1^{(l)}, \dots, x_{K^(l)}^{(l)})'$.  The recursive output formula for the neural network at each neuron in layer $l > 0$ is then:
+More specifically, a neural network consists of layers denoted by $l = 0, 1, \dots, L$, with $l = 0$ denoting the input layer and $l = L$ denoting the output layer. The input layer is defined by the scaled predictor set, $x^{(0)} = (1, z_1, \dots, z_N)'$. The model adds complexity through the use of one or more hidden layer, each containing $K^{(l)}$ "neurons". Each neuron linearly aggregates the values of the previous layer, and applies some non-linear "activation function" which we denote as $\alpha$ to its aggregated signal before sending its output to the next layer. The output of neuron $k$ in layer $l$ is then $x_k^{(l)}$. Next, define the vector of outputs for this layer as $x^{(l)} = (1, x_1^{(l)}, \dots, x_{K^(l)}^{(l)})'$.  The recursive output formula for the neural network at each neuron in layer $l > 0$ is then:
 
 \begin{equation}
 x_k^{(l)} = \alpha(x^{(l-1)'}\theta_k^{l-1}),
 \end{equation}
 
-where $\alpha()$ represents the activation function for that layer (see next section) with the final output
+where $\alpha()$ represents the activation function for that layer with the final output \footnote{Note that the specification of a constant ``1" at the beginning of each layer is the same as specifying a bias term as is popular in other parametrizations. }
 
 \begin{equation}
 g(z;\theta) = x^{(L-1)'}\theta^{L-1}
 \end{equation}
 
-Note that the specification of a constant ``1" at the beginning of each layer is the same as specifying a bias term as is popular in other parametrizations. 
-
 \rhs{move this paragraph elsewhere}
+
+\subsubsection{Activation Function}
+
+Several choices of activation functions exist in the literature. One of the most popular being the ReLU activation function (see \cite{lecun_deep_2015} and \cite{ramachandran_searching_2017}, among others):
+
+\begin{equation}
+\operatorname{ReLU}(x) = max(0, x)
+\end{equation}
+
+owing to its high computational speed, ability to introduce sparseness into neural networks, and fewer vanishing gradient problems, as repeatedly applying ReLU tends to saturate less compared to other activation functions such as sigmoid and tanh. However, during the study it was observed that ReLU suffered tremendously from the "dying-ReLU problem," where ReLU neurons receive weight updates that fail to activate (output a 0), hence making it unable to receive further weight updates and learn. This resulted in networks which outputted the same value for the majority of, if not all inputs. Variants of the ReLU activation function aimed at addressing this issue such as the leaky ReLU, which allows a small, non-zeor gradient for negative weights were explored, but still suffered from poor convergence. The more "traditional" hyperbolic tangent function:
+
+\begin{equation}
+\operatorname{tanh}(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}
+\end{equation}
+
+was observed to have good performance, and was hence used.
+
+\subsubsection{Computation}
+
+\rhs{this, like all neural networks, is a mess. Re write}
+
+The neural network's weight and bias parameters for each layer are estimated by minimizing the loss function with respect to the parameters, i.e. by calculating the partial derivative with respect to a specific weight or bias element. 
+
+The solution to this is typically found via backpropagation, an iterative alogrithm similar to Gauss-Newton steps and produces a local minimum. These steps can be visualized as a descent towards the local minimum of the loss function; it is thus also known as "gradient descent." Note that the lack of a global minimum is actually desirable, as global minimums tend to be overfit solutions to the problem, \citep{choromanska_loss_2014}. 
+
+A common solution is to use ``stochastic gradient descent" (SGD) where instead of optimising the loss function with respect to the entire training sample, only a small, random subset of the data (batch) is used at each optimisation step. 
+
+\rhs{Define learning rate more properly}
+
+Due the noisiness (randomness) introduced by SGD, the path towards the local minimum is more of a quick ``zig zag" and has the potential to ``overshoot" the local minimum and not converge to a solution. This is typically controlled via a hyperparameter known as the learning rate, which controls the step size of each gradient descent iteration. Note that it is also common to apply a learning rate hyperparameter in non SGD environments as a way to control the magnitude of each step towards the solution to assist with convergence. The learning rate is to be tuned so that the solution path descends quickly enough to be computationally feasible, but slow enough so that it does not overshoot the local minimum and not converge. In this paper, the learning rate shrinkage algorithm which adaptively shrinks the learning rate of each individual weight separately as convergence occurs known as ADAM was employed (see \cite{kingma_adam:_2014}). It should be noted that ADAM still requires a baseline learning rate which acts as a upper bound on the learning rate to be supplied, and this was tuned manually.
+
+``Batch normalization" is a technique for addressing a phenomenon known as internal covariate shift, which occurs when the distributions of each layers' inputs change as the parameters of the previous layer change \citep{ioffe_batch_2015}. This occurs due to how neural networks repeatedly apply the activation function many times over different hidden layers. For activation functions such as tanh, this results in weight parameters getting pushed and thus "saturated" towards -1 and 1, leading to difficult and slow training. Batch normalization addresses this by normalizing (de-meaning and variance standardizing) the outputs of each layer, hence restoring the representative power of each neuron.
+
+\subsubsection{Model Architecture}
 
 Neural networks with up to 5 hidden layers were considered, each named NNX where X represents the number of hidden layers. The number of neurons is each layer was chosen according to the geometric pyramid rule \citep{masters_practical_1993}: NN1 has 32 neurons, NN2 has 32 and 16 neurons in the first and second hidden layers respectively, NN3 has 32, 16, and 8 neurons, NN4 has 32, 16, 8, and 4 neurons, and NN5 has 32, 16, 8, 4, 2 neurons respectively. All units are fully connected; that is, each neurons receives input from all neurons the layer before it (see Figure \ref{Neural_Network}). This mimics the methodology in \cite{gu_empirical_2018}.
 
@@ -419,56 +418,30 @@ Neural networks with up to 5 hidden layers were considered, each named NNX where
 \label{Neural_Network}
 \end{figure}
 
-\subsubsection{Activation Function}
-
-Several choices of activation functions exist in the literature, one of the most popular being the ReLU activation function (see \cite{lecun_deep_2015} and \cite{ramachandran_searching_2017}, among others):
-
-\begin{equation}
-	\operatorname{ReLU}(x) = max(0, x)
-\end{equation}
-
-owing to its high computational speed, ability to introduce sparseness into neural networks, and fewer vanishing gradient problems, as repeatedly applying ReLU tends to saturate less compared to other activation functions such as sigmoid and tanh. However, during the study it was observed that ReLU suffered tremendously from the "dying-ReLU problem," where ReLU neurons receive weight updates that fail to activate (output a 0), hence making it unable to receive further weight updates and learn. This resulted in networks which outputted the same value for the majority of, if not all inputs. To mitigate this, a variant of ReLU known as Leaky ReLU was used instead:
-
-\begin{align}
-	\operatorname{lReLU}(x) = 
-	\begin{cases}
-	x \quad &\text{if} \quad x > 0; \\
-	0.01x \quad &\text{otherwise}
-	\end{cases}
-\end{align}
-
-This activation function assigns a small non-zero gradient to each weight, hence enabling them to receive further weight updates.
-
-\subsubsection{Computation}
-
-\rhs{this, like all neural networks, is a mess. Re write}
-
-The neural network's weight and bias parameters for each layer are estimated by minimizing the loss function with respect to the parameters, i.e. by calculating the partial derivative with respect to a specific weight or bias element.
-
-The solution to this is typically found via backpropagation, an iterative alogrithm similar to Gauss-Newton steps and produces a local minimum. These steps can be visualized as a descent towards the local minimum of the loss function; it is thus also known as "gradient descent." Note that the lack of a global minimum is actually desirable, as global minimums tend to be overfit solutions to the problem, \citep{choromanska_loss_2014}. 
-A common solution is to use ``stochastic gradient descent" (SGD) where instead of optimising the loss function with respect to the entire training sample, only a small, random subset of the data (batch) is used at each optimisation step. 
-
-\rhs{Define learning rate more properly}
-
-Due the noisiness (randomness) introduced by SGD, the path towards the local minimum is more of a quick ``zig zag" and has the potential to ``overshoot" the local minimum and not converge to a solution. This is typically controlled via a hyperparameter known as the learning rate, which controls the step size of each gradient descent iteration. Note that it is also common to apply a learning rate hyperparameter in non SGD environments as a way to control the magnitude of each step towards the solution to assist with convergence. The learning rate is to be tuned so that the solution path descends quickly enough to be computationally feasible, but slow enough so that it does not overshoot the local minimum and not converge. In this paper, the learning rate shrinkage algorithm which adaptively shrinks the learning rate of each individual weight separately as convergence occurs known as ADAM was employed (see \cite{kingma_adam:_2014}). It should be noted that ADAM still requires a baseline learning rate which acts as a upper bound on the learning rate to be supplied, and this was tuned manually.
-
-\subsubsection{Batch Normalization}
-
-``Batch normalization" is a technique for addressing a phenomenon known as internal covariate shift, a particularly prevalent problem in training deep, complex neural networks, \citep{ioffe_batch_2015}. Internal covariate shift occurs when the distributions of each layers' inputs change as the parameters of the previous layer change, resulting in the need for much slower learning rates and more careful initialization of parameters. More crucially, batch normalization has been observed to help normalizing the outputs of activation layers, alleviating issues related to vanishing or exploding gradients. By normalizing (de-meaning and variance standardizing) each training step (batch) input, the representative power of each neuron is restored. Additionally, significant gains in computational speed may also be achieved.
-
 \subsection{Model Evaluation}
 \label{model_evaluation}
 
 \subsubsection{Loss Metrics}
 
-Overall predictive performance for individual excess stock returns were assessed using the Mean Absolute Error (MAE), Root Mean Squared Error (RMSE):
+Overall predictive performance for individual excess stock returns were assessed using the Mean Absolute Error (MAE), Root Mean Squared Error (RMSE). An out of sample $R^2$ metric was also reported, as is popular in the literature, which we define as:
 
 \begin{equation}
 R^2_{OOS} = 1 - \frac{\sum_{(i, t)\in\mathcal{T}_3}(r_{i, t+1} - \widehat{r}_{i, t+1})^2}
 {\sum_{(i, t)\in\mathcal{T}_3} \left( r_{i, t+1} - \bar{r}_{i, t+1} \right) ^2}
 \end{equation}
 
-where $\mathcal{T}_3$ indicates that the fits are only assessed on the test subsample, which is never used for training or tuning. 
+where $\mathcal{T}_3$ indicates that the fits are only assessed on the test subsample, which is never used for training or tuning. However, as $R^2$ measures were originally formulated for assessing in sample fit for linear models, the interpretation of this metric is less meaningful in the contexts of forecasting out of sample and non linear models.
+
+\subsubsection{Variable Importance}
+
+The importance of each predictor $j$ is denoted as $VI_j$, and is defined as the reduction in predictive R-Squared from setting all values of predictor $j$ to 0, while holding the remaining model estimates fixed. These were then normalized to sum to 1 within each model as a way to assess the relative importance of each predictor for each model. As $VI_j$ can sometimes be negative, or in some cases be 0 across most of the factors, $VI_j$ positively shifted by the magnitude of the smallest $VI_j$ plus a minor offset, then dividing all $VI_j$ by the total:
+
+\begin{equation}
+VI_{j, norm} = \frac{VI_j + \operatorname{min}(VI_j) + 1e^{-100}}
+{\Sigma VI_j + \operatorname{min}(VI_j) + 1e^{-100}}
+\end{equation}
+
+This mechanism was chosen because the other popular normalization mechanism "softmax" was observed to be unable to preserve the distances between each original $VI_j$ well enough, squishing together all variable importance measures and making discernment between each variable difficult.
 
 \subsubsection{Diebold-Mariano Test}
 
@@ -494,18 +467,7 @@ where $d_t$ represents the difference series between the forecast errors of the 
 
 As all models in this paper will be producing forecasts for an entire cross section of stocks, $e_1t$ and $e_2t$ will instead represent the cross sectional average forecast errors for each model.
 
-It must be noted that the DM test statistic assumes that the loss differential series $d_t$ is covariance stationary and short memory. The precise behaviour of the DM test statistic with regards to more complex non-linear models such as Random Forests and Neural Networks is not fully understood, which may impact on the validity of the null hypothesis distribution. 
-
-\subsubsection{Variable Importance}
-
-The importance of each predictor $j$ is denoted as $VI_j$, and is defined as the reduction in predictive R-Squared from setting all values of predictor $j$ to 0, while holding the remaining model estimates fixed. These were then normalized to sum to 1 within each model as a way to assess the relative importance of each predictor for each model. As $VI_j$ can sometimes be negative, or in some cases be 0 across most of the factors, $VI_j$ positively shifted by the magnitude of the smallest $VI_j$ plus a minor offset, then dividing all $VI_j$ by the total:
-
-\begin{equation}
-VI_{j, norm} = \frac{VI_j + \operatorname{min}(VI_j) + 1e^{-100}}
-{\Sigma VI_j + \operatorname{min}(VI_j) + 1e^{-100}}
-\end{equation}
-
-This mechanism was chosen because the other popular normalization mechanism "softmax" was observed to be unable to preserve the distances between each original $VI_j$ well enough, squishing together all variable importance measures and making discernment between each variable difficult.
+It must be noted that the DM test statistic assumes that the loss differential series $d_t$ is covariance stationary and short memory. The precise behaviour of the DM test statistic with regards to more complex non-linear models such as Random Forests and Neural Networks is not fully understood, which may impact on the validity of the null hypothesis distribution. As such 
 
 \section{Simulation Study}
 
@@ -513,7 +475,7 @@ This mechanism was chosen because the other popular normalization mechanism "sof
 
 \subsubsection{Overall Design}
 
-Though \cite{gu_empirical_2018} explore the performance of machine learning on simulated returns series, their specification used factors are uncorrelated across $i$, and, in particular, that the factors which enter the return equation are uncorrelated with the factors that do not enter the return equation. As note by \cite{harvey__2016} and many others, this is not what is observed in practice. Furthermore, their error specification is a white noise process consisting of a gaussian term and a student t error term. 
+Though \cite{gu_empirical_2018} explore the performance of machine learning on simulated returns series, their specification used factors are uncorrelated across $i$, and, in particular, that the factors which enter the return equation are uncorrelated with the factors that do not enter the return equation. As noted by \cite{harvey__2016} and many others, this is not what is observed in practice. Furthermore, their error specification is a white noise process consisting of a gaussian term and a student t error term. Added on to a weak underlying signal representing the predictable portion of the returns process, this amounts to a constant mean white noise process, which fails to capture characteristics of empirical returns, such as time varying volatility and volatility clustering.
 
 Therefore, we simulate a latent factor model with a stochastic volatility process for excess returns  $r_{t+1}$, for $t=1,\dots,T$:
 
@@ -529,7 +491,7 @@ e_{i, t+1} &=
 	\quad u \sim N(0, 1)
 \end{flalign}
 
-Let $v_{t+1}$ be a $3\times 1$ vector of errors, and $w_{t+1} \sim N(0, 1)$ and $\varepsilon_{i,t+1} \sim N(0, 1)$ scalar error terms. The parameters of these are tuned such that the R squared for each individual return series was around 5\%, and the annualized volatility of each return series approximately 22\%, as is often observed empirically.
+Let $v_{t+1}$ be a $3\times 1$ vector of errors, and $w_{t+1} \sim N(0, 1)$ and $\varepsilon_{i,t+1} \sim N(0, 1)$ scalar error terms. The parameters of these are tuned such that the annualized volatility of each return series was approximately 22\%, as is often observed empirically.
 
 The matrix $C_t$ is an $N\times P_c$ vector of latent factors, where the first three columns correspond to $\beta_{i,t}$, across the $1\leq i\leq N$ dimensions, while the remaining $P_c-3$ factors do not enter the return equation. The $P_x\times1$ vector $x_t$ is a $3 \times 1$ multivariate time series, and $\varepsilon_{t+1}$ is a $N\times 1$ vector of idiosyncratic errors. 
 
@@ -570,7 +532,7 @@ with the rank transformation normalizing all predictors to be within $[-1, 1]$.
 
 \subsubsection{Simulating Macroeconomic Series}
 
-For simulation of $x_{t}$, a $3 \times 1$ multivariate time series, we consider a Vector Autoregression (VAR) model, a generalization of the univariate autoregressive model to multiple time series:
+For simulation of $x_{t}$, a $3 \times 1$ multivariate time series, we consider a Vector Autoregression (VAR) model \footnote{Other more complex and interactive matrix specifications of $A$ were briefly explored, but these did not appear to have a significant impact on results. More complex designs were observed to only affect the variable importance metrics, but only to a small degree.}, a generalization of the univariate autoregressive model to multiple time series:
 
 \begin{flalign*}
 x_{t} = Ax_{t-1}+u_t; 
@@ -583,8 +545,6 @@ x_{t} = Ax_{t-1}+u_t;
 \quad u_t \sim N\left( \mu = (0, 0, 0)' , \Sigma = I_3
 	\right) 
 \end{flalign*}
-
-Other more complex and interactive matrix specifications of $A$ were briefly explored, but these did not appear to have a significant impact on results. More complex designs were observed to only affect the variable importance metrics, but only to a small degree.
 
 \subsubsection{Simulating Return Series}
 
@@ -723,9 +683,7 @@ We detail our cleaning procedure of this dataset. To reduce the size of the data
 
 We allow all stocks which have a quarterly return to enter the dataset, even if they disappear from the dataset for certain periods, as opposed to only keeping stocks which appear continuously throughout the entire period. This was primarily done to reduce survivorship bias in the dataset, which can be very prevalent in financial data, and also allows for stocks which were unlisted and relisted again to feature in the dataset. This has the obvious drawback of introducing some bias in the dataset, as attrition in the dataset is likely to be non-random and correlated with the stocks' returns. 
 
-\rhs{proper example of sic codes being not very useful}
-
-The sic2 variable, corresponding to the stocks' Standard Industrial Classification (SIC) codes was also dropped. The SIC code system suffers from inconsistent logic in classifying companies, and as a system built for pre-1970s traditional industries has been slow in recognizing new and emerging industries. Indeed, WRDS explicitly cautions the use of SIC codes beyond the use of rough grouping of industries, as SIC codes are not strictly enforced by government agencies for accuracy, in addition most large companies belonging to multiple SIC codes over time. Because of this latter point in particular, there can be inconsistencies on the correct SIC code for the same company depending on the data source. Dropping the sic2 variable also reduced the dimensionality of the dataset by 74 columns, significant increasing computational feasibility.
+The sic2 variable, corresponding to the stocks' Standard Industrial Classification (SIC) codes was also dropped. The SIC code system suffers from inconsistent logic in classifying companies, and as a system built for pre-1970s traditional industries has been slow in recognizing new and emerging industries. Indeed, WRDS explicitly cautions the use of SIC codes beyond the use of rough grouping of industries, warning that SIC codes are not strictly enforced by government agencies for accuracy, in addition to most large companies belonging to multiple SIC codes over time. Because of this latter point in particular, there can be inconsistencies on the correct SIC code for the same company depending on the data source. Dropping the sic2 variable also reduced the dimensionality of the dataset by 74 columns, significant increasing computational feasibility.
 
 There existed a significant amount of missing data in the dataset. The dataset's columns were first examined, and any characteristics that had over 20\% of their data were removed. However, as the amount of missing data increases dramatically going further back in time, a balance between using more periods at the cost of removing more characteristics versus using less periods but keeping more characteristics was needed. 1993 Q3 was determined to be a reasonable time frame to begin the dataset, as was a noticeable increase in data availability after this time.  Missing characteristics were then imputed using their cross sectional medians for each year. 
 
@@ -739,10 +697,8 @@ The two sets of factors were then combined to form a baseline set of covariates,
 z_{i,t} = (1, x_t)' \otimes c_{i, t}
 \end{equation}
 
-where $c_{i,t}$ is a $P_c$ matrix of characteristics for each stock $i$, and $(1, x_t)'$ is a $P_x \times 1$ vector of macroeconomic predictors. $z_{i,t}$ is therefore a $P_x P_c$ vector of features for predicting individual stock returns and includes interactions between stock level characteristics and macroeconomic variables. The total number of covariates in this baseline set is $61 \times (8 + 1) = 549$.
+where $c_{i,t}$ is a $P_c$ matrix of characteristics for each stock $i$, and $(1, x_t)'$ is a $P_x \times 1$ vector of macroeconomic predictors. $z_{i,t}$ is therefore a $P_x P_c$ vector of features for predicting individual stock returns and includes interactions between stock level characteristics and macroeconomic variables. The total number of covariates in this baseline set is $61 \times (8 + 1) = 549$\footnote{As the individual and macroeconomic factors can have similar names, individual and macroeconomic factors were prefixed with ind\_ and macro\_ respectively.}.
  
-As the individual and macroeconomic factors can have similar names, individual and macroeconomic factors were prefixed with ind\_ and macro\_ respectively.
-
 % Splitting Scheme
 % Similar splitting scheme to simulation study used
 % Training:Validation size ratio of 1.5, growing and moving forwards by 1 year
@@ -751,10 +707,6 @@ As the individual and macroeconomic factors can have similar names, individual a
 The dataset was not normalized for all methods, as only penalized regression and neural networks are sensitive to normalization. For these two methods, the dataset was normalized such that each predictor column had 0 mean and 1 variance.
 
 The final dataset spanned from 1993 Q3 to 2016 Q4 with 
-
-\subsection{Empirical Data Model Fitting and Methodology Differences}
-
-We detail our model fitting procedure used specifically for the empirical dataset.
 
 We mimic the procedure used in the simulation study. This means that the dataset was split such that the training and validation sets were split such that the training set was approximately 1.5 times the length of the validation set, in order to predict a test set that is one year in length.
 
@@ -795,9 +747,6 @@ We mimic the procedure used in the simulation study. This means that the dataset
 
 \subsection{Empirical Data Results}
 
-%% Empirical Results Data Table
-\input{../Results/empirical_results.tex}
-
 \begin{figure}
 	\includegraphics{empirical_sample_all_vi_ind.pdf}
 	\caption{Empirical Data Individual Factor Variable Importance Averaged Across All Samples}
@@ -807,6 +756,7 @@ We mimic the procedure used in the simulation study. This means that the dataset
 \begin{figure}
 	\includegraphics{empirical_sample_all_vi_macro_facet.pdf}
 	\caption{Empirical Data Macroeconomic Factor variable Importance Averaged Across All Samples, faceted by training sample}
+	\label{empirical_macro_facet}
 \end{figure}
 \end{landscape}
 
@@ -820,7 +770,9 @@ The linear models had the worst performance of all the models considered. Intere
 
 The neural networks similarly had non-robust results. There is weak evidence to suggest that more complex neural networks with more layers give better performance. The neural networks were also the only models to assign high variable importance to the individual market value factor, a result that is somewhat consistent across all neural networks considered. 
 
-Interestingly, all models considered typically preferred extremely sparse parameterizations. That is, most if not all of the individual factors had little to no importance across all models. When looking at macroeconomic variables, all models tend to produce inconsistent importance measures when compared. Penalized linear models tend to identify the average book to market ratio
+All models considered typically preferred extremely sparse parameterizations. That is, most if not all of the individual factors had little to no importance across all models. 
+
+When looking at the macroeconomic factors (see Figure \ref{empirical_macro_facet}), there is less consistency on the variable importance between models. Penalized linear models tend to identify the average book to market ratio and the default spread as the most important macroeconomic factors, a result weakly consistent with those of the random forests. The linear models consistently identified the controversial dividend-price ratio as important, a result that was somewhat consistent with the neural networks. Some of the neural networks also occasionally identified the earnings price ratio as important.
 
 \section{Limitations}
 
