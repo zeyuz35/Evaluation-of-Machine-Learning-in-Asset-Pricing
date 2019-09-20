@@ -473,9 +473,9 @@ Due the noisiness (randomness) introduced by SGD, the path towards the local min
 \subsection{Model Evaluation}
 \label{model_evaluation}
 
-\subsubsection{R Squared}
+\subsubsection{Loss Metrics}
 
-Overall predictive performance for individual excess stock returns were assessed using the out of sample $R^2$:
+Overall predictive performance for individual excess stock returns were assessed using the Mean Absolute Error (MAE), Root Mean Squared Error (RMSE):
 
 \begin{equation}
 R^2_{OOS} = 1 - \frac{\sum_{(i, t)\in\mathcal{T}_3}(r_{i, t+1} - \widehat{r}_{i, t+1})^2}
