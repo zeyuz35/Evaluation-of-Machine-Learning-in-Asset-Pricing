@@ -112,12 +112,6 @@ Chen, L., Zhang, L., 2010. A better three-factor model that explains more
 Chordia, T., Subrahmanyam, A., Anshuman, V.~R., 2001. Trading activity and
   expected stock returns. Journal of Financial Economics 59, 3--32.
 
-\bibitem[{Choromanska et~al.(2014)Choromanska, Henaff, Mathieu, Arous, and
-  LeCun}]{choromanska_loss_2014}
-Choromanska, A., Henaff, M., Mathieu, M., Arous, G.~B., LeCun, Y., 2014. The
-  {Loss} {Surfaces} of {Multilayer} {Networks}. arXiv:1412.0233 [cs] ArXiv:
-  1412.0233.
-
 \bibitem[{Cochrane(2005)}]{cochrane_asset_2005}
 Cochrane, J.~H., 2005. Asset pricing. Princeton Univ. Press, Princeton, NJ,
   rev. ed ed., oCLC: 265653065.
@@ -293,6 +287,12 @@ Jiang, G., Lee, C.~M., Zhang, Y., 2005. Information uncertainty and expected
 \bibitem[{Kama(2009)}]{kama_market_2009}
 Kama, I., 2009. On the market reaction to revenue and earnings surprises.
   Journal of Business Finance \& Accounting 36, 31--50.
+
+\bibitem[{Keskar et~al.(2016)Keskar, Mudigere, Nocedal, Smelyanskiy, and
+  Tang}]{keskar_large-batch_2016}
+Keskar, N.~S., Mudigere, D., Nocedal, J., Smelyanskiy, M., Tang, P. T.~P.,
+  2016. On {Large}-{Batch} {Training} for {Deep} {Learning}: {Generalization}
+  {Gap} and {Sharp} {Minima}. arXiv:1609.04836 [cs, math] ArXiv: 1609.04836.
 
 \bibitem[{Kingma and Ba(2014)}]{kingma_adam:_2014}
 Kingma, D.~P., Ba, J., 2014. Adam: {A} method for stochastic optimization.

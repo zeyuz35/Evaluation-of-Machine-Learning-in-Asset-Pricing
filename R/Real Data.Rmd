@@ -1542,8 +1542,6 @@ NNet_5_mse_stats <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pr
 NNet_5_mae_stats <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_5_mae_stats_1.5.rds")
 ```
 
-
-
 ```{r}
 ## Rbinding Loss Stats
 
@@ -1579,10 +1577,13 @@ empirical_results_df <- foreach(sample = (1:3), .combine = "rbind") %do% {
 
 write.csv(empirical_results_df, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_results.csv")
 print(xtable(empirical_results_df, caption = "Empirical Data Results"), 
-             file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_results.tex")
+             file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_results.tex",
+      tabular.environment = "longtable")
 
 #####################################################################
 ## Plot These Results
+
+a4_aspect_ratio <- 1.8
 
 # Test Statistics
 
@@ -1594,7 +1595,8 @@ empirical_results_df %>%
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired")
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_test_mae.pdf")
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_test_mae.pdf",
+       width = 7 * a4_aspect_ratio, height = 7, units = "cm")
 
 # Test MSE
 empirical_results_df %>%
@@ -1604,7 +1606,8 @@ empirical_results_df %>%
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired")
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_test_mse.pdf")
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_test_mse.pdf",
+       width = 7 * a4_aspect_ratio, height = 7, units = "cm")
 
 # Test Rsquare
 empirical_results_df %>%
@@ -1614,7 +1617,8 @@ empirical_results_df %>%
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired")
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_test_rsquare.pdf")
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_test_rsquare.pdf",
+       width = 7 * a4_aspect_ratio, height = 7, units = "cm")
 ####
 # Training Statistics
 
@@ -1626,7 +1630,8 @@ empirical_results_df %>%
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired")
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_train_mae.pdf")
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_train_mae.pdf",
+       width = 7 * a4_aspect_ratio, height = 7, units = "cm")
 
 # Train MSE
 empirical_results_df %>%
@@ -1636,7 +1641,8 @@ empirical_results_df %>%
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired")
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_train_mse.pdf")
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_train_mse.pdf",
+       width = 7 * a4_aspect_ratio, height = 7, units = "cm")
 
 # Train Rsquare
 empirical_results_df %>%
@@ -1646,7 +1652,8 @@ empirical_results_df %>%
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired")
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_train_rsquare.pdf")
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_train_rsquare.pdf",
+       width = 7 * a4_aspect_ratio, height = 7, units = "cm")
 
 ```
 
@@ -1704,7 +1711,7 @@ write.csv(empirical_tidy_vi_all, file = "~/GitHub/Evaluation-of-Machine-Learning
 
 ## By factor type
 
-empirical_tidy_vi_macro <- foreach(sample = 1:3, .combine = "rbind") %do% {
+empirical_tidy_vi_ind <- foreach(sample = 1:3, .combine = "rbind") %do% {
     rbind(
     cbind(model = "LM_MSE", sample = sample, 
           LM_stats_mse[[sample]]$variable_importance %>%
@@ -1780,7 +1787,7 @@ empirical_tidy_vi_macro <- foreach(sample = 1:3, .combine = "rbind") %do% {
   )
 }
 
-write.csv(empirical_tidy_vi_macro, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_tidy_vi_macro.csv")
+write.csv(empirical_tidy_vi_ind, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_tidy_vi_ind.csv")
 
 empirical_tidy_vi_macro <- foreach(sample = 1:3, .combine = "rbind") %do% {
     rbind(
@@ -1923,7 +1930,6 @@ ggsave(filename= "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Resul
 
 ```
 
-
 ```{r vi_macro_plots}
 a4_aspect_ratio <- 1.5
 
@@ -2061,6 +2067,29 @@ empirical_tidy_vi_ind %>%
 ggsave(filename= "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_sample_all_vi_ind_facet.pdf", 
        width = 15 * a4_aspect_ratio, height = 15, units = "cm")
 ```
+
+```{r dm_tests}
+## DM Tests
+
+## Function to get all the forecast residuals for a model, across all times
+
+get_forecast_resids <- function(results_list) {
+  foreach(i = (1:3), .combine = "c") %do% {
+    results_list[[i]]$forecast_resids
+  }
+}
+
+LM_mse_resids <- get_forecast_resids(LM_stats_mae)
+LM_mae_resids <- get_forecast_resids(LM_stats_mae)
+
+ELN_mse_resids <- get_forecast_resids(ELN_stats_mse)
+ELN_mae_resids <- get_forecast_resids(ELN_stats_mae)
+
+
+
+dm.test(LM_mse_resids, ELN_mse_resids, h = 1)$p.value
+```
+
 
 
 
