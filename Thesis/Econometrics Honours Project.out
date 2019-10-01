@@ -1,43 +1,39 @@
 \BOOKMARK [1][-]{section.1}{Introduction}{}% 1
 \BOOKMARK [2][-]{subsection.1.1}{Topic}{section.1}% 2
 \BOOKMARK [2][-]{subsection.1.2}{Background Literature and Motivations}{section.1}% 3
-\BOOKMARK [1][-]{section.2}{Methodology}{}% 4
-\BOOKMARK [2][-]{subsection.2.1}{Overall Model Design}{section.2}% 5
-\BOOKMARK [2][-]{subsection.2.2}{Sample Splitting}{section.2}% 6
-\BOOKMARK [2][-]{subsection.2.3}{Loss Function}{section.2}% 7
-\BOOKMARK [2][-]{subsection.2.4}{Linear Models}{section.2}% 8
-\BOOKMARK [2][-]{subsection.2.5}{Penalized Linear Models}{section.2}% 9
-\BOOKMARK [2][-]{subsection.2.6}{Classification and Regression Trees}{section.2}% 10
-\BOOKMARK [2][-]{subsection.2.7}{Random Forests}{section.2}% 11
-\BOOKMARK [2][-]{subsection.2.8}{Neural Networks}{section.2}% 12
-\BOOKMARK [3][-]{subsubsection.2.8.1}{Introduction}{subsection.2.8}% 13
-\BOOKMARK [3][-]{subsubsection.2.8.2}{Computation}{subsection.2.8}% 14
-\BOOKMARK [3][-]{subsubsection.2.8.3}{Model Architecture and Specification}{subsection.2.8}% 15
-\BOOKMARK [2][-]{subsection.2.9}{Model Evaluation}{section.2}% 16
-\BOOKMARK [3][-]{subsubsection.2.9.1}{Loss Metrics}{subsection.2.9}% 17
-\BOOKMARK [3][-]{subsubsection.2.9.2}{Variable Importance}{subsection.2.9}% 18
-\BOOKMARK [1][-]{section.3}{Simulation Study}{}% 19
-\BOOKMARK [2][-]{subsection.3.1}{Simulation Design}{section.3}% 20
-\BOOKMARK [3][-]{subsubsection.3.1.1}{Overall Design}{subsection.3.1}% 21
-\BOOKMARK [3][-]{subsubsection.3.1.2}{Simulating Characteristics}{subsection.3.1}% 22
-\BOOKMARK [3][-]{subsubsection.3.1.3}{Simulating Macroeconomic Series}{subsection.3.1}% 23
-\BOOKMARK [3][-]{subsubsection.3.1.4}{Simulating Return Series}{subsection.3.1}% 24
-\BOOKMARK [3][-]{subsubsection.3.1.5}{Sample Splitting}{subsection.3.1}% 25
-\BOOKMARK [2][-]{subsection.3.2}{Simulation Study Results}{section.3}% 26
-\BOOKMARK [1][-]{section.4}{Empirical Study}{}% 27
-\BOOKMARK [2][-]{subsection.4.1}{Data}{section.4}% 28
-\BOOKMARK [2][-]{subsection.4.2}{Empirical Data Results}{section.4}% 29
-\BOOKMARK [3][-]{subsubsection.4.2.1}{Prediction Accuracy}{subsection.4.2}% 30
-\BOOKMARK [1][-]{section.5}{Conclusion}{}% 31
-\BOOKMARK [1][-]{section.6}{Appendix}{}% 32
-\BOOKMARK [2][-]{subsection.6.1}{Data}{section.6}% 33
-\BOOKMARK [2][-]{subsection.6.2}{Additional Results}{section.6}% 34
-\BOOKMARK [3][-]{subsubsection.6.2.1}{Simulation Study}{subsection.6.2}% 35
-\BOOKMARK [3][-]{subsubsection.6.2.2}{Empirical Study}{subsection.6.2}% 36
-\BOOKMARK [2][-]{subsection.6.3}{Computational Details}{section.6}% 37
-\BOOKMARK [3][-]{subsubsection.6.3.1}{Linear Models}{subsection.6.3}% 38
-\BOOKMARK [3][-]{subsubsection.6.3.2}{Penalized Linear}{subsection.6.3}% 39
-\BOOKMARK [3][-]{subsubsection.6.3.3}{Classification and Regression Trees}{subsection.6.3}% 40
-\BOOKMARK [3][-]{subsubsection.6.3.4}{Random Forest}{subsection.6.3}% 41
-\BOOKMARK [3][-]{subsubsection.6.3.5}{Neural Networks}{subsection.6.3}% 42
-\BOOKMARK [3][-]{subsubsection.6.3.6}{Tuning of Simulated Datasets}{subsection.6.3}% 43
+\BOOKMARK [1][-]{section.2}{Model Specification and Methodology}{}% 4
+\BOOKMARK [2][-]{subsection.2.1}{Model Specification}{section.2}% 5
+\BOOKMARK [2][-]{subsection.2.2}{Methodology}{section.2}% 6
+\BOOKMARK [3][-]{subsubsection.2.2.1}{Sample Splitting}{subsection.2.2}% 7
+\BOOKMARK [3][-]{subsubsection.2.2.2}{Loss Function}{subsection.2.2}% 8
+\BOOKMARK [2][-]{subsection.2.3}{Linear Models}{section.2}% 9
+\BOOKMARK [3][-]{subsubsection.2.3.1}{Penalized Linear Models}{subsection.2.3}% 10
+\BOOKMARK [3][-]{subsubsection.2.3.2}{Classification and Regression Trees}{subsection.2.3}% 11
+\BOOKMARK [3][-]{subsubsection.2.3.3}{Random Forests}{subsection.2.3}% 12
+\BOOKMARK [3][-]{subsubsection.2.3.4}{Neural Networks}{subsection.2.3}% 13
+\BOOKMARK [3][-]{subsubsection.2.3.5}{Model Evaluation}{subsection.2.3}% 14
+\BOOKMARK [1][-]{section.3}{Simulation Study}{}% 15
+\BOOKMARK [2][-]{subsection.3.1}{Simulation Design}{section.3}% 16
+\BOOKMARK [3][-]{subsubsection.3.1.1}{Overall Design}{subsection.3.1}% 17
+\BOOKMARK [3][-]{subsubsection.3.1.2}{Simulating Characteristics}{subsection.3.1}% 18
+\BOOKMARK [3][-]{subsubsection.3.1.3}{Simulating Macroeconomic Series}{subsection.3.1}% 19
+\BOOKMARK [3][-]{subsubsection.3.1.4}{Simulating Return Series}{subsection.3.1}% 20
+\BOOKMARK [3][-]{subsubsection.3.1.5}{Sample Splitting}{subsection.3.1}% 21
+\BOOKMARK [2][-]{subsection.3.2}{Simulation Study Results}{section.3}% 22
+\BOOKMARK [1][-]{section.4}{Empirical Study}{}% 23
+\BOOKMARK [2][-]{subsection.4.1}{Data}{section.4}% 24
+\BOOKMARK [2][-]{subsection.4.2}{Empirical Data Results}{section.4}% 25
+\BOOKMARK [3][-]{subsubsection.4.2.1}{Prediction Accuracy}{subsection.4.2}% 26
+\BOOKMARK [1][-]{section.5}{Conclusion}{}% 27
+\BOOKMARK [1][-]{section.6}{Appendix}{}% 28
+\BOOKMARK [2][-]{subsection.6.1}{Data}{section.6}% 29
+\BOOKMARK [2][-]{subsection.6.2}{Additional Results}{section.6}% 30
+\BOOKMARK [3][-]{subsubsection.6.2.1}{Simulation Study}{subsection.6.2}% 31
+\BOOKMARK [3][-]{subsubsection.6.2.2}{Empirical Study}{subsection.6.2}% 32
+\BOOKMARK [2][-]{subsection.6.3}{Computational Details}{section.6}% 33
+\BOOKMARK [3][-]{subsubsection.6.3.1}{Linear Models}{subsection.6.3}% 34
+\BOOKMARK [3][-]{subsubsection.6.3.2}{Penalized Linear}{subsection.6.3}% 35
+\BOOKMARK [3][-]{subsubsection.6.3.3}{Classification and Regression Trees}{subsection.6.3}% 36
+\BOOKMARK [3][-]{subsubsection.6.3.4}{Random Forest}{subsection.6.3}% 37
+\BOOKMARK [3][-]{subsubsection.6.3.5}{Neural Networks}{subsection.6.3}% 38
+\BOOKMARK [3][-]{subsubsection.6.3.6}{Tuning of Simulated Datasets}{subsection.6.3}% 39

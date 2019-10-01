@@ -170,11 +170,11 @@ This paper is the first in focusing on how machine learning algorithms perform i
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Methodology}
+\section{Model Specification and Methodology}
 
-\subsection{Overall Model Design}
+\subsection{Model Specification}
 
-Each model will be presented and explained so that a reader without any machine learning background can understand the basic idea behind each model. All asset excess monthly returns denoted as $r_{i, t+1}$ are modelled as an additive prediction error model conditional on the true and unobservable information set available to market participants up to and including time $t$, $\mathcal{F}_t)$:
+All asset excess monthly returns denoted as $r_{i, t+1}$ are modelled as an additive prediction error model conditional on the true and unobservable information set available to market participants up to and including time $t$, $\mathcal{F}_t)$:
 
 \begin{equation}
 	r_{i, t+1} = E(r_{i, t+1} | \mathcal{F}_t) + \epsilon_{i, t+1}
@@ -197,7 +197,11 @@ z_{i,t} = x_t \otimes c_{i,t}
 
 where \( c_{i,t} \) is a \( P_c \times 1 \) matrix of characteristics for each stock \(i\), and \(x_t\) is a $P_x \times 1$ vector of macroeconomic predictors (and are this common to all stocks, including a constant). Thus $z_{i,t}$ is a $P \times 1$ vector of features for predicting individual stock returns ($P = P_cP_x$) and includes interactions between individual characteristics and macroeconomic characteristics. 
 
-\subsection{Sample Splitting}
+\subsection{Methodology}
+
+Each model will be presented and explained so that a reader without any machine learning background can understand the basic idea behind each model. 
+
+\subsubsection{Sample Splitting}
 \label{sample_split}
 
 Imperative to any machine learning technique is the establishment of how the dataset is to be split into training, validation and test sets. The training set is used to initially build the model and provide initial estimates of parameters, whereas the validation set is used to tune model parameters to optimise out of sample performance, thus preventing overfitting. The validation set acts as a simulation of out of sample testing, whereas the test set is used only for evaluation, and is thus truly out of sample.
@@ -212,7 +216,7 @@ The third is a "recursive" method, which is the same as the rolling window metho
 
 Both the rolling window and recursive schemes are very computationally intensive. Therefore, a hybrid of the rolling and recursive schemes was considered: the training set is increased by one year with each refit, the validation set remains one year in length but moves forward by one year, and forecasts are made using that model for the subsequent year. The ``traditional" cross validation method of randomly sampling to determine a train and validation set was not done to maintain the temporal ordering of the data.
 
-\subsection{Loss Function}
+\subsubsection{Loss Function}
 
 The choice of the loss function used in models is imperative to machine learning. The loss functions considered are Mean Absolute Error (MAE) and Mean Squared Error \footnote{Also referred to as $l_1$ and $l_2$ loss respectively within the machine learning literature}.
 
@@ -244,7 +248,7 @@ The OLS estimator is known to be consistent when the regressors are exogeneous, 
 
 Linear models can capture non-linearities only if the predictor set \(z^*_{i, t}\) contains specified non-linear transformations or interaction terms. Despite being expected to perform poorly, linear models were implemented as a ``control."
 
-\subsection{Penalized Linear Models}
+\subsubsection{Penalized Linear Models}
 
 Penalized linear models attempt to improve upon linear models through regularization, and are particularly well suited to addressing problems of multicollinearity, which can commonly occur in models with a large number of regressors. They achieve this by lowering the variance of their estimates (thus increasing efficiency) in exchange for introducing a tolerable amount of bias. This can be viewed as the model mechanically decreasing its in sample performance, in hopes that the model will overfit less, particularly to noise in the dataset, thus correctly preserving its fit to true underlying regressors.
 
@@ -274,7 +278,7 @@ For \(0 < \rho < 1\), the elastic net aims to produce parsimonious models throug
 
 The hyperparameters $\lambda$ and $\rho$ are both tuned using the validation sample (see \ref{computation}). 
 
-\subsection{Classification and Regression Trees}
+\subsubsection{Classification and Regression Trees}
 
 Classification and regression trees are fully non-parametric models that can capture complex multi-way interactions. A tree "grows" in a series of iterations. With each iteration, a split ("branch") is made along one predictor such that it is the best split available at that stage with respect to minimizing the loss function. These steps are continued until each observation is its own node, or more commonly until the stopping criterion is met. The eventual model slices the predictor space into rectangular partitions, and predicts the unknown function $g^*(z_{i,t})$ with the average value of the outcome variable in each partition.
 
@@ -296,12 +300,10 @@ where $|C|$ denotes the number of observations in set C (partition). Given $C$, 
 
 Trees, grown to a deep enough level, are highly unbiased and flexible, as each partition can potentially predict a single, or low number of observations. The trade-off is their high variance and instability. Thus, an ensemble method called "Random Forest" was proposed by \cite{breiman_random_2001} to regularize trees by combining many different trees into a single prediction.
 
-\subsection{Random Forests}
+\subsubsection{Random Forests}
 Random Forests are an extension of regression trees that attempt to address some of their problems, proposed by \cite{breiman_random_2001}. A random forest algorithm creates $B$ different bootstrap samples from the training dataset, fits an overfit (and hence low bias) regression tree to each dataset using only a random subset $m$ size from all available predictors (also known as dropout), and then averages their forecasts as the final output. The dropout procedure in particular ensures that trees will be unable to use the same predictors when considering splits, lowering the correlation between each tree and thus further reducing the variance across the ensemble model. Thus, the ensemble consisting of only overfit (and hence low bias) which have low uncorrelation is a low bias, yet stable model. Specific details of the random forest algorithm are detailed in the appendix.
 
-\subsection{Neural Networks}
-
-\subsubsection{Introduction}
+\subsubsection{Neural Networks}
 
 Neural networks have theoretical underpinnings as ``universal approximators" for any function, (\cite{hornik_multilayer_1989}). They are arguably the most complex type of model available, able to capture several non-linear interactions through their many layers, hence its other name ``deep learning."  On the flipside, their high flexibility often means that they are among the most parameterized and least interpretable models, earning them the reputation as a black box model.
 
@@ -319,8 +321,6 @@ where $\alpha()$ represents the activation function for that layer with the fina
 g(z;\theta) = x^{(L-1)'}\theta^{L-1}
 \end{equation}
 
-\subsubsection{Computation}
-
 The neural network's weight and bias parameters for each layer are estimated by minimizing the loss function with respect to the parameters, i.e. by calculating the partial derivative with respect to a specific weight or bias element. 
 
 Due to the complexity and hence non-existent analytical form for this solution, this is typically found via backpropagation, an algorithm which exploits the chain rule of the partial derivative and iteratively finds a local optimum using a first order gradient based algorithm, also known as "gradient descent." The gradient descent algorithm minimizes some function (such as the loss function in the context of machine learning) by iteratively moving in the direction of steepest descent, defined as the negative gradient. Formally, for a loss function $L(x)$ that is defined and has a gradient defined in the neighbourhood of the parameter set $a$, the updating algorithm is:
@@ -337,7 +337,7 @@ We also employ $l_1$ penalty to impose some sparse restrictions on the weight te
 
 ``Batch normalization" is a technique for addressing a phenomenon known as internal covariate shift, which occurs when the distributions of each layers' inputs change as the parameters of the previous layer change \citep{ioffe_batch_2015}. This occurs due to how neural networks repeatedly apply the activation function many times over different hidden layers. For activation functions such as tanh, this results in weight parameters getting pushed and thus "saturated" towards -1 and 1, leading to difficult and slow training. Batch normalization addresses this by normalizing (de-meaning and variance standardizing) the outputs of each layer, hence restoring the representative power of each neuron.
 
-\subsubsection{Model Architecture and Specification}
+\paragraph{Model Architecture and Specification}
 
 Neural networks with up to 5 hidden layers were considered, each named NNX where X represents the number of hidden layers. The number of neurons is each layer was chosen according to the geometric pyramid rule \citep{masters_practical_1993}: NN1 has 32 neurons, NN2 has 32 and 16 neurons in the first and second hidden layers respectively, NN3 has 32, 16, and 8 neurons, NN4 has 32, 16, 8, and 4 neurons, and NN5 has 32, 16, 8, 4, 2 neurons respectively. All units are fully connected; that is, each neurons receives input from all neurons the layer before it (see Figure \ref{Neural_Network}). This mimics the methodology in \cite{gu_empirical_2018}.
 
@@ -407,10 +407,10 @@ was considered, but observed to suffer tremendously from the "dying-ReLU problem
 
 \newpage
 
-\subsection{Model Evaluation}
+\subsubsection{Model Evaluation}
 \label{model_evaluation}
 
-\subsubsection{Loss Metrics}
+\paragraph{Loss Metrics}
 
 Overall predictive performance for individual excess stock returns were assessed using the Mean Absolute Error (MAE), Root Mean Squared Error (RMSE). An out of sample $R^2$ metric was also reported, as is popular in the literature, which we define as:
 
@@ -421,7 +421,7 @@ R^2_{OOS} = 1 - \frac{\sum_{(i, t)\in\mathcal{T}_3}(r_{i, t+1} - \widehat{r}_{i,
 
 where $\mathcal{T}_3$ indicates that the fits are only assessed on the test subsample, which is never used for training or tuning. However, as $R^2$ measures were originally formulated for assessing in sample fit for linear models, the interpretation of this metric is less meaningful in the contexts of forecasting out of sample and non linear models.
 
-\subsubsection{Variable Importance}
+\paragraph{Variable Importance}
 
 The importance of each predictor $j$ is denoted as $VI_j$, and is defined as the reduction in predictive R-Squared from setting all values of predictor $j$ to 0, while holding the remaining model estimates fixed. These were then normalized to sum to 1 within each model as a way to assess the relative importance of each predictor for each model. As $VI_j$ can sometimes be negative, or in some cases be 0 across most of the factors, $VI_j$ positively shifted by the magnitude of the smallest $VI_j$ plus a minor offset, then dividing all $VI_j$ by the total:
 
@@ -432,7 +432,7 @@ VI_{j, norm} = \frac{VI_j + \operatorname{min}(VI_j) + 1e^{-100}}
 
 This mechanism was chosen because the other popular normalization mechanism "softmax" was observed to be unable to preserve the distances between each original $VI_j$ well enough, squishing together all variable importance measures and making discernment between each variable difficult.
 
-%\subsubsection{Diebold-Mariano Test}
+%\paragraph{Diebold-Mariano Test}
 %
 %The Diebold-Mariano test (\cite{diebold_comparing_2002}, and \cite{harvey_testing_1997}) is a procedure which compares the forecast accuracy of two forecast methods. It is different to the overall R squared metric because it tests whether the forecasts from two different models are different to a statistically significant degree. 
 %
