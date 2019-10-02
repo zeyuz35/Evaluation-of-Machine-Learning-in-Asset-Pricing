@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.7140 64-bit) (preloaded format=pdflatex 2019.5.8)  1 OCT 2019 22:22
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.7140 64-bit) (preloaded format=pdflatex 2019.5.8)  1 OCT 2019 23:15
 entering extended mode
 **"./Econometrics Honours Project.tex"
 ("Econometrics Honours Project.tex"
@@ -1885,13 +1885,13 @@ Overfull \hbox (3.61911pt too wide) in paragraph at lines 579--580
 [15]
 Package hyperref Info: bookmark level for unknown todo defaults to 0 on input l
 ine 620.
-<../Results/simulation_test_mae.pdf, id=483, 526.96875pt x 325.215pt>
+<../Results/simulation_test_mae.pdf, id=486, 526.96875pt x 325.215pt>
 File: ../Results/simulation_test_mae.pdf Graphic file (type pdf)
 <use ../Results/simulation_test_mae.pdf>
 Package pdftex.def Info: ../Results/simulation_test_mae.pdf  used on input line
  631.
 (pdftex.def)             Requested size: 526.96745pt x 325.2142pt.
-<../Results/simulation_test_mse.pdf, id=484, 526.96875pt x 325.215pt>
+<../Results/simulation_test_mse.pdf, id=487, 526.96875pt x 325.215pt>
 File: ../Results/simulation_test_mse.pdf Graphic file (type pdf)
 <use ../Results/simulation_test_mse.pdf>
 Package pdftex.def Info: ../Results/simulation_test_mse.pdf  used on input line
@@ -1910,7 +1910,7 @@ Overfull \hbox (73.99956pt too wide) in paragraph at lines 631--633
 
 LaTeX Warning: Float too large for page by 0.86598pt on input line 634.
 
-<../Results/simulation_ave_vi_plot.pdf, id=485, 505.89pt x 505.89pt>
+<../Results/simulation_ave_vi_plot.pdf, id=488, 505.89pt x 505.89pt>
 File: ../Results/simulation_ave_vi_plot.pdf Graphic file (type pdf)
 <use ../Results/simulation_ave_vi_plot.pdf>
 Package pdftex.def Info: ../Results/simulation_ave_vi_plot.pdf  used on input l
@@ -2013,13 +2013,13 @@ Overfull \hbox (12.35397pt too wide) in paragraph at lines 690--718
  []
 
 [19]
-<../Results/empirical_test_mse.pdf, id=599, 358.33875pt x 198.7425pt>
+<../Results/empirical_test_mse.pdf, id=602, 358.33875pt x 198.7425pt>
 File: ../Results/empirical_test_mse.pdf Graphic file (type pdf)
 <use ../Results/empirical_test_mse.pdf>
 Package pdftex.def Info: ../Results/empirical_test_mse.pdf  used on input line 
 743.
 (pdftex.def)             Requested size: 358.33788pt x 198.742pt.
-<../Results/empirical_test_mae.pdf, id=600, 358.33875pt x 198.7425pt>
+<../Results/empirical_test_mae.pdf, id=603, 358.33875pt x 198.7425pt>
 File: ../Results/empirical_test_mae.pdf Graphic file (type pdf)
 <use ../Results/empirical_test_mae.pdf>
 Package pdftex.def Info: ../Results/empirical_test_mae.pdf  used on input line 
@@ -2027,26 +2027,26 @@ Package pdftex.def Info: ../Results/empirical_test_mae.pdf  used on input line
 (pdftex.def)             Requested size: 358.33788pt x 198.742pt.
  [20] [21 <../Results/empirical_test_mse.pdf> <../Results/empirical_test_mae.pd
 f>]
-<../Results/empirical_sample_all_vi_ind.pdf, id=623, 426.59375pt x 639.38875pt>
+<../Results/empirical_sample_all_vi_ind.pdf, id=626, 426.59375pt x 639.38875pt>
 
 File: ../Results/empirical_sample_all_vi_ind.pdf Graphic file (type pdf)
 <use ../Results/empirical_sample_all_vi_ind.pdf>
 Package pdftex.def Info: ../Results/empirical_sample_all_vi_ind.pdf  used on in
 put line 759.
 (pdftex.def)             Requested size: 426.5927pt x 639.38718pt.
-<../Results/empirical_sample_1_vi_ind.pdf, id=624, 426.59375pt x 639.38875pt>
+<../Results/empirical_sample_1_vi_ind.pdf, id=627, 426.59375pt x 639.38875pt>
 File: ../Results/empirical_sample_1_vi_ind.pdf Graphic file (type pdf)
 <use ../Results/empirical_sample_1_vi_ind.pdf>
 Package pdftex.def Info: ../Results/empirical_sample_1_vi_ind.pdf  used on inpu
 t line 766.
 (pdftex.def)             Requested size: 426.5927pt x 639.38718pt.
-<../Results/empirical_sample_2_vi_ind.pdf, id=625, 426.59375pt x 639.38875pt>
+<../Results/empirical_sample_2_vi_ind.pdf, id=628, 426.59375pt x 639.38875pt>
 File: ../Results/empirical_sample_2_vi_ind.pdf Graphic file (type pdf)
 <use ../Results/empirical_sample_2_vi_ind.pdf>
 Package pdftex.def Info: ../Results/empirical_sample_2_vi_ind.pdf  used on inpu
 t line 773.
 (pdftex.def)             Requested size: 426.5927pt x 639.38718pt.
-<../Results/empirical_sample_3_vi_ind.pdf, id=626, 426.59375pt x 639.38875pt>
+<../Results/empirical_sample_3_vi_ind.pdf, id=629, 426.59375pt x 639.38875pt>
 File: ../Results/empirical_sample_3_vi_ind.pdf Graphic file (type pdf)
 <use ../Results/empirical_sample_3_vi_ind.pdf>
 Package pdftex.def Info: ../Results/empirical_sample_3_vi_ind.pdf  used on inpu
@@ -2055,7 +2055,7 @@ t line 780.
  [22 <../Results/empirical_sample_all_vi_ind.pdf>] [23 <../Results/empirical_sa
 mple_1_vi_ind.pdf>] [24 <../Results/empirical_sample_2_vi_ind.pdf>]
 [25 <../Results/empirical_sample_3_vi_ind.pdf>]
-<../Results/empirical_sample_all_vi_macro_facet.pdf, id=764, 639.38875pt x 426.
+<../Results/empirical_sample_all_vi_macro_facet.pdf, id=767, 639.38875pt x 426.
 59375pt>
 File: ../Results/empirical_sample_all_vi_macro_facet.pdf Graphic file (type pdf
 )
@@ -2067,7 +2067,7 @@ ed on input line 787.
 
 
 ] [28]pdfTeX warning (ext4): destination with the same identifier (name{Hfootno
-te.4}) has been already used, duplicate ignored
+te.5}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
 l.814 ... was not used due to missing data issues}
@@ -2094,7 +2094,7 @@ Overfull \hbox (73.99956pt too wide) in paragraph at lines 1054--1055
 [][] 
  []
 
-<../Results/simulation_test_rsquare.pdf, id=1135, 526.96875pt x 325.215pt>
+<../Results/simulation_test_rsquare.pdf, id=1138, 526.96875pt x 325.215pt>
 File: ../Results/simulation_test_rsquare.pdf Graphic file (type pdf)
 <use ../Results/simulation_test_rsquare.pdf>
 Package pdftex.def Info: ../Results/simulation_test_rsquare.pdf  used on input 
@@ -2105,7 +2105,7 @@ Overfull \hbox (73.99956pt too wide) in paragraph at lines 1059--1060
 [][] 
  []
 
-<../Results/simulation_train_mae.pdf, id=1136, 526.96875pt x 325.215pt>
+<../Results/simulation_train_mae.pdf, id=1139, 526.96875pt x 325.215pt>
 File: ../Results/simulation_train_mae.pdf Graphic file (type pdf)
 <use ../Results/simulation_train_mae.pdf>
 Package pdftex.def Info: ../Results/simulation_train_mae.pdf  used on input lin
@@ -2116,7 +2116,7 @@ Overfull \hbox (73.99956pt too wide) in paragraph at lines 1064--1065
 [][] 
  []
 
-<../Results/simulation_train_mse.pdf, id=1137, 526.96875pt x 325.215pt>
+<../Results/simulation_train_mse.pdf, id=1140, 526.96875pt x 325.215pt>
 File: ../Results/simulation_train_mse.pdf Graphic file (type pdf)
 <use ../Results/simulation_train_mse.pdf>
 Package pdftex.def Info: ../Results/simulation_train_mse.pdf  used on input lin
@@ -2127,7 +2127,7 @@ Overfull \hbox (73.99956pt too wide) in paragraph at lines 1069--1070
 [][] 
  []
 
-<../Results/simulation_train_rsquare.pdf, id=1138, 526.96875pt x 325.215pt>
+<../Results/simulation_train_rsquare.pdf, id=1141, 526.96875pt x 325.215pt>
 File: ../Results/simulation_train_rsquare.pdf Graphic file (type pdf)
 <use ../Results/simulation_train_rsquare.pdf>
 Package pdftex.def Info: ../Results/simulation_train_rsquare.pdf  used on input
@@ -2180,22 +2180,14 @@ Package atveryend Info: Empty hook `AfterLastShipout' on input line 1278.
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1278.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1278.
 
-
-
-Package rerunfilecheck Warning: File `"Econometrics Honours Project".out' has c
-hanged.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `"Econometrics Honours Project".out'
-:
-(rerunfilecheck)             Before: EA596A93F10AC89A31F47C53D062DE8A;2811
-(rerunfilecheck)             After:  9F0559A18E1BE1D315817C829F070247;2810.
+Package rerunfilecheck Info: File `"Econometrics Honours Project".out' has not 
+changed.
+(rerunfilecheck)             Checksum: 9F0559A18E1BE1D315817C829F070247;2810.
  ) 
 Here is how much of TeX's memory you used:
- 52313 strings out of 492895
- 1237013 string characters out of 3133463
- 1515424 words of memory out of 3000000
+ 52314 strings out of 492895
+ 1237024 string characters out of 3133463
+ 1514397 words of memory out of 3000000
  55269 multiletter control sequences out of 15000+200000
  541206 words of font info for 58 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -2219,9 +2211,9 @@ sy5.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy7.pfb><
 C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/Progr
 am Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti12.pfb><C:/Program Files
 /MiKTeX 2.9/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on "Econometrics Honours Project.pdf" (49 pages, 636809 bytes).
+Output written on "Econometrics Honours Project.pdf" (49 pages, 637896 bytes).
 PDF statistics:
- 1403 PDF objects out of 1440 (max. 8388607)
- 262 named destinations out of 1000 (max. 500000)
+ 1406 PDF objects out of 1440 (max. 8388607)
+ 263 named destinations out of 1000 (max. 500000)
  491 words of extra memory for PDF output out of 10000 (max. 10000000)
 
