@@ -112,15 +112,24 @@
 
 \maketitle
 
-\tableofcontents
+\rhs{to do}
+
+\begin{abstract}
+We evaluate the application of machine learning algorithms in empirical asset pricing, specifically with regards to out of sample prediction as measured by mean squared error and mean absolute error, and factor selection evaluated using an out of sample variable importance metric. We perform a comparative analysis of some common methods in the machine learning literature: linear models, penalized linear models, random forests and neural networks. We focus on exploring how well machine learning methods can deal with characteristics common in financial data, such as low signal-to-noise ratio, cross sectional correlation, persistence, non-linear data generating processes, and stochastic volatility through a simulation study incorporating these phenomena. We identify that the best performing models in terms of prediction are penalized linear models and random forests, and the best model for factor selection are penalized linear models. We find that this result is mirrored even in empirical settings through an empirical study.
+\end{abstract}
 
 \newpage
+
+\tableofcontents
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Introduction}
 
-\subsection{Topic}
+\rhs{the most important part of the paper, and the only part which most people will read}
+\rhs{should therefore be somewhat self contained}
+
+\subsection{Primary Contributions}
 
 This thesis aims to evaluate the application of machine learning algorithms in empirical asset pricing. While there has been significant recent interest in applying machine learning to the problem of predicting asset returns, there is little literature that focuses on how well these algorithms are at capturing true underlying variables in determining stock returns. 12 different simulated datasets ranging from linear to highly non-linear data generating processes incorporating observed phenomena of cross sectional correlation, persistence, and stochastic volatility, in addition to real world data will be used to assess the performance of linear models, elastic net models, random forests and neural networks. Model performance will be assessed according to their out of sample Mean Absolute Error, Root Mean Square Error, and Predictive $R^2$, in addition to whether or not they were able to identify the correct variables in the data generating process according to a variable importance metric.
 
@@ -167,6 +176,20 @@ Furthermore, \cite{feng_deep_2018} in particular use cross validation as part of
 For the aspect of factor selection specifically, \cite{gu_empirical_2018} concludes that all of the machine methods agree on the same subset of important factors. However, while their factor importance metrics for regression-tree based methods and neural networks (the most complex methods considered) are mostly consistent, they have differences in terms of the relative importance of each factor, in addition to completely different conclusions for the dividend yield factor.
 
 This paper is the first to focus on how machine learning algorithms perform in environments with problems exhibited by financial returns data through extending the simulation designs of \cite{gu_empirical_2018}. In addition, these algorithms will once again be evaluated on real world data, but with only more recent and representative data included in order to test their short term robustness in predicting stock returns. These two aspects of the study together are able to offer a better glimpse as to how ``black box" machine learning algorithms deal with the challenges present in asset pricing.
+
+\subsection{Main Findings}
+
+\rhs{remember to sprinkle some of the conclusion here!}
+
+Minimizing median quantile loss yields better predictive performance.
+
+Penalized linear models and to a lesser extent random forests have the best prediction performance.
+
+Penalized linear models appear highly suitable for identifying true causal regressors.
+
+More complex models such as random forests and neural networks did not outperform penalized linear models. 
+
+Neural networks failed to outperform other machine learning models by a significant degree and are unstable. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -615,15 +638,13 @@ The random forest models were typically able to correctly identify the true data
 
 The linear models unsurprisingly performed the worst, with both prediction performance and correct variable importance deteriorating noticeably as the degree of cross sectional correlation increased. 
 
-
-
-\rhs{neural networks still running on simulations at the moment unfortunately}
-
 The neural networks were observed to have poor performance when compared to other machine learning models.
 
 It was also noted that across all models, the prediction performance worsened as the training sample size increased on the simulations with stochastic volatility. This is likely due to a larger training sample being more probable to include large outliers due to the stochastic volatility process, which can adversely affect prediction performance.
 
 Overall, it appears that the penalized linear models offered the best performance, both in terms of actual prediction accuracy and identifying true regressors, even when the predictor set contained high degrees of cross sectional correlation and non-linearities. They still, however, do not exhibit perfect performance and can struggle with identifying true regressors, particularly in non-linear settings.
+
+\rhs{What have you learnt about the use of this as it applies to real data? Is this similar to Gu et al and others? Draw conclusions with what has been done!}
 
 \begin{table}
 	\caption{Simulation Results}
@@ -643,6 +664,12 @@ Overall, it appears that the penalized linear models offered the best performanc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Empirical Study}
+
+\rhs{INSERT A MOTIVATION FOR THIS EMPIRICAL STUDY}
+
+\subsection{Motivation}
+
+
 
 \subsection{Data}
 
@@ -724,11 +751,18 @@ We mimic the procedure used in the simulation study. This means that the dataset
 
 \subsection{Empirical Data Results}
 
-\subsubsection{Prediction Accuracy}
+\rhs{state the fact that the simulation results repeated are significant. emphasize more}
 
-In general, results from the simulation study were reproduced in the empirical study. We similarly see that the penalized linear models generally performing the best, with the random forest models offering slightly worse performance, occasionally outperforming penalized linear models. Models fitted with respect to median quantile loss were similarly observed to typically offer improvements across all machine learning models across all loss metrics.
+In general, results from the simulation study were reproduced in the empirical study. This in of itself is a significant result, as it suggests that the simulation study captured the characteristics of empirical financial data to a reasonable degree. We similarly see that the penalized linear models generally performing the best, with the random forest models offering slightly worse performance, occasionally outperforming penalized linear models. Models fitted with respect to median quantile loss were similarly observed to typically offer improvements across all machine learning models across all loss metrics.
 
-In the empirical data setting, the underlying data generating process of returns is unknown so the ability of the different models at picking out the correct covariates cannot be evaluated. However, we can see that the penalized linear models and random forests (the models with the highest out of sample prediction performance) decide on a similar subset of factors which are determined to be important. In particular, we find that the 1 month momentum and 6 month momentum factors to be the most important factors by far, and this is consistent across all training samples. The conservative sparsity of the penalized linear models seen in the simulated setting is not repeated here; almost all factors are assigned to have small importance. The random forests again seem to struggle with discerning the importance of correlated factors apart: many of the important factors identified are highly correlated with momentum, such as change in momentum, dollar trading volume and return volatility.
+\rhs{contrast with other people's findings}
+\rhs{contrast with simulation results and specify what this means}
+
+\rhs{prediction performance}
+
+In the empirical data setting, the underlying data generating process of returns is unknown so the ability of the different models at picking out the correct covariates cannot be evaluated. However, we can see that the penalized linear models and random forests (the models with the highest out of sample prediction performance) decide on a similar subset of factors which are determined to be important. In particular, we find that the 1 month momentum and 6 month momentum factors to be the most important factors by far, and this is consistent across all training samples. The extreme sparsity of the penalized linear models seen in the simulated setting is not repeated here; almost all factors are assigned to have small importance, suggesting that many of the factors are important, just to a low degree. The random forests again seem to struggle with discerning the importance of correlated factors apart: many of the important factors identified are highly correlated with momentum, such as change in momentum, dollar trading volume and return volatility.
+
+\rhs{variable importance}
 
 The linear models had the worst performance of all the models considered. Interestingly, we find that the linear models assign the controversial dividend price ratio macroeconomic factor as highly important. Their variable importance for individual factors across different training samples is highly non-robust, with the important variables almost completely changing year to year.
 
@@ -798,7 +832,7 @@ Importantly, we find that the feed-forward neural network architectures consider
 
 Lastly, we find that the top performing models - the penalized linear models and random forests, tend to agree and correctly identify the correct causal regressors in simulated contexts, as well as agree on the same subset of factors which are important in empirical contexts. We find that the of all the most considered, the penalized linear models are the most consistent at identifying true causal regressors through the simulation study. We find that in the empirical setting, among the individual the individual 1 and 6 month momentum factors are the most powerful predictors of stock returns, according to the penalized linear models and random forests. 
 
-Across all models except for linear models, we find that minimizing quantile loss yields better prediction performance.
+Across all models except for linear models, we find that minimizing quantile loss yields better prediction performance, a result which is consistent in both the simulation and empirical study.
 
 The overall findings of this paper differ from the sparse literature on similar topics. However, the performance of the penalized linear models with respect to both out of sample prediction performance and variable importance analysis is promising, and our findings show that machine learning provides some tools which may aid in the problems of stock return prediction and risk factor selection in the financial world. 
 
@@ -809,6 +843,10 @@ The overall findings of this paper differ from the sparse literature on similar 
 \subsection{Data}
 
 %% Individual Factor Table
+
+Table \ref{ind_factors} contains the details of the individual factor dataset, used by \cite{gu_empirical_2018} and available from Gu's website. The table includes the factor name, an explanation of the factor, a citation to the original sources, the database source and updating frequency. Note that not all factors in this set were used, due to missing data issues the ones omitted are marked with a footnote.
+
+Table \ref{macro_factors} contains the details of the macroeconomic factors used in the empirical study, sourced and constructed according to \cite{welch_comprehensive_2008} and available from their website.
 
 \begin{landscape}
 	\footnotetext{The factor was included in the original dataset provided by \cite{gu_empirical_2018}, but was not used due to missing data issues}
@@ -1023,6 +1061,7 @@ The overall findings of this paper differ from the sparse literature on similar 
 %% Macroeconomic Factor Table
 
 \begin{table}
+	\label{macro_factors}
 	\caption{Macroeconomic Factors}
 	\begin{center}
 	\begin{tabular}{lccc} \hline
