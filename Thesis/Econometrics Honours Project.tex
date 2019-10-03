@@ -4,7 +4,7 @@
 
 \PassOptionsToPackage{usenames, dvipsnames}{xcolor}
 
-\documentclass[a4paper, table]{article}
+\documentclass[11pt, a4paper, table]{article}
 \usepackage[english]{babel}
 \usepackage[margin=1in]{geometry}
 \usepackage[ruled, vlined]{algorithm2e}
@@ -146,15 +146,11 @@ Furthermore, \cite{feng_taming_2019} note that the number of potential factors d
 
 It does not help that many factors are cross sectionally correlated, meaning that factors which are discovered to be significant may simply be so because they are correlated with a true, underlying factor and do not provide independent information themselves, a concern which \cite{cochrane_presidential_2011} calls the multidimensional challenge. \cite{freyberger_dissecting_2017} notes that this is especially challenging for traditional regression models, which make strong functional form assumptions and are sensitive to outliers. 
 
-More recently, machine learning methods have been used within the literature and appear to be well suited to the task of predicting asset returns. The definition of machine learning can be vague and is often context specific; \cite{hastie_elements_2009} in \textit{An Introduction to Statistical Learning} describes statistical (machine) learning as a vast set of tools for understanding data, and \textit{supervised} learning specifically as the process of building a statistical model for the prediction or estimation of an output based on input(s). In the context of asset pricing, we use the term to refer to a diverse collection of:
+\rhs{definition of machine learning and subsequent explanation of why it's good is too long}
 
-\begin{enumerate}
-	\item high-dimensional models for statistical prediction, 
-	\item the ``regularization" methods for model selection and mitigation of over-fitting input data, 
-	\item and the efficient systematic methods for searching potential model specifications.
-\end{enumerate}
+More recently, machine learning methods have been used within the literature and appear to be well suited for use in empirical financial data. The reasons for this are threefold: machine learning require less strict assumptions on the functional form of returns and thereby increases robustness to outliers, explicit "regularization" methods to avoid over-fitting in-sample data, and methods which are 
 
-The high dimensional and hence flexible nature of machine learning brings more hope to approximating unknown and likely complex data generating processes that underlie excess returns. The flexibility however, comes at a cost of potentially over-fitting in sample data (referred to as training data in the machine learning literature), generalizing poorly and producing poor forecasts. The regularization aspect of machine learning explicitly guards against over-fitting problems and emphasizes out of sample performance. The most explicit example of regularization is the splitting of the dataset into an explicit "training" set used for model fitting, and a ``test" set withheld and used solely for evaluating out of sample performance. Finally, machine learning offers tools which are designed to produce an optimal model specification from all possible models with manageable computational cost, all in a systematically consistent way. 
+\rhs{this section is nice, but too detailed for the introduction. Shove into methodology}
 
 The financial literature already has some applications of machine learning. For example, \cite{kozak_shrinking_2017}, \cite{rapach_forecasting_2013} and \cite{freyberger_dissecting_2017} all apply shrinkage and selection methods from machine learning to assist with the problem of factor selection.
 
@@ -199,7 +195,17 @@ where \( c_{i,t} \) is a \( P_c \times 1 \) matrix of characteristics for each s
 
 \subsection{Methodology}
 
-Each model will be presented and explained so that a reader without any machine learning background can understand the basic idea behind each model. 
+The definition of machine learning can be vague and is often context specific; \cite{hastie_elements_2009} in \textit{An Introduction to Statistical Learning} describes statistical (machine) learning as a vast set of tools for understanding data, and \textit{supervised} learning specifically as the process of building a statistical model for the prediction or estimation of an output based on input(s). In the context of asset pricing, we use the term to refer to a diverse collection of:
+
+\begin{enumerate}
+	\item high-dimensional models for statistical prediction, 
+	\item the ``regularization" methods for model selection and mitigation of over-fitting input data, 
+	\item and the efficient systematic methods for searching potential model specifications.
+\end{enumerate}
+
+The high dimensional and hence flexible nature of machine learning brings more hope to approximating unknown and likely complex data generating processes that underlie excess returns. The flexibility however, comes at a cost of potentially over-fitting in sample data (referred to as training data in the machine learning literature), generalizing poorly and producing poor forecasts. The regularization aspect of machine learning explicitly guards against over-fitting problems and emphasizes out of sample performance. The most explicit example of regularization is the splitting of the dataset into an explicit "training" set used for model fitting, and a ``test" set withheld and used solely for evaluating out of sample performance. Finally, machine learning offers tools which are designed to produce an optimal model specification from all possible models with manageable computational cost, all in a systematically consistent way. 
+
+All machine learning methodologies can be broadly broken down into three components: sample splitting, the choice of loss function, and finally the specification and fitting of models.
 
 \subsubsection{Sample Splitting}
 \label{sample_split}
@@ -217,7 +223,7 @@ The third is a "recursive" method, which is the same as the rolling window metho
 Both the rolling window and recursive schemes are very computationally intensive. Therefore, a hybrid of the rolling and recursive schemes was considered: the training set is increased by one year with each refit, the validation set remains one year in length but moves forward by one year, and forecasts are made using that model for the subsequent year. The ``traditional" cross validation method of randomly sampling to determine a train and validation set was not done to maintain the temporal ordering of the data.
 
 \subsubsection{Loss Function}
-
+\label{loss_function}
 The choice of the loss function used in models is imperative to machine learning. The loss functions considered are Mean Absolute Error (MAE) and Mean Squared Error \footnote{Also referred to as $l_1$ and $l_2$ loss respectively within the machine learning literature}.
 
 The mean absolute error (MAE) is simply the average magnitude of errors. Because of this, it places equal weighting to all magnitudes of errors and is more robust to outliers. 
@@ -234,7 +240,11 @@ The mean squared error (MSE) and root mean squared error (RMSE) are quadratic sc
 	\text{MSE} &= \frac{1}{n} \sum_{j = i}^{n} \left( y_j - \hat{y_j}\right) ^2
 \end{align}
 
-\subsection{Linear Models}
+\subsection{Models}
+
+We focus our methodology on four common machine learning models: linear models, penalized linear models, random forests, and neural networks. Each model will be presented and explained so that a reader without any machine learning background can understand the basic idea behind each model. 
+
+\subsubsection{Linear Models}
 
 The least complex model considered is the simple linear regression model. The simple linear model assumes that the underlying conditional expectation \( g^*(z_{i, t}) \) can be modelled as a linear function of the predictors and the parameter vector \( \theta \):
 
@@ -407,7 +417,7 @@ was considered, but observed to suffer tremendously from the "dying-ReLU problem
 
 \newpage
 
-\subsubsection{Model Evaluation}
+\subsection{Model Evaluation}
 \label{model_evaluation}
 
 \paragraph{Loss Metrics}
@@ -724,15 +734,21 @@ We mimic the procedure used in the simulation study. This means that the dataset
 
 \subsection{Empirical Data Results}
 
-\subsubsection{Prediction Accuracy}
+% Overall Results
 
 In general, results from the simulation study were reproduced in the empirical study. We similarly see that the penalized linear models generally performing the best, with the random forest models offering slightly worse performance, occasionally outperforming penalized linear models. Models fitted with respect to median quantile loss were similarly observed to typically offer improvements across all machine learning models across all loss metrics.
+
+% Prediction Accuracy
 
 In the empirical data setting, the underlying data generating process of returns is unknown so the ability of the different models at picking out the correct covariates cannot be evaluated. However, we can see that the penalized linear models and random forests (the models with the highest out of sample prediction performance) decide on a similar subset of factors which are determined to be important. In particular, we find that the 1 month momentum and 6 month momentum factors to be the most important factors by far, and this is consistent across all training samples. The conservative sparsity of the penalized linear models seen in the simulated setting is not repeated here; almost all factors are assigned to have small importance. The random forests again seem to struggle with discerning the importance of correlated factors apart: many of the important factors identified are highly correlated with momentum, such as change in momentum, dollar trading volume and return volatility.
 
 The linear models had the worst performance of all the models considered. Interestingly, we find that the linear models assign the controversial dividend price ratio macroeconomic factor as highly important. Their variable importance for individual factors across different training samples is highly non-robust, with the important variables almost completely changing year to year.
 
 The neural networks similarly had non-robust results. There is weak evidence to suggest that more complex neural networks with more layers give better performance. The neural networks were also the only models to assign high variable importance to the individual market value factor, a result that is somewhat consistent across all neural networks considered. 
+
+% Factor Selection
+
+% Other Conclusions
 
 All models considered typically preferred sparse parameterizations. That is, most if not all of the individual factors had little to no importance across all models. 
 
@@ -1075,6 +1091,18 @@ The overall findings of this paper differ from the sparse literature on similar 
 	\caption{Simulation Train R Squared}
 \end{figure}
 
+%% Hyperparameters
+
+\begin{figure}
+	\includegraphics{eln_alpha_plot.pdf}
+	\caption{Optimal Alpha Values Across Training Samples for Elastic Net}
+\end{figure}
+
+\begin{figure}
+	\includegraphics{eln_lambda_plot.pdf}
+	\caption{Optimal Lambda Values Across Training Samples for Elastic Net}
+\end{figure}
+
 \newpage
 
 \subsubsection{Empirical Study}
@@ -1102,9 +1130,9 @@ The overall findings of this paper differ from the sparse literature on similar 
 
 \subsubsection{Linear Models}
 
-OLS used for fitting wrt MSE.
+Ordinary Least Squares (OLS) used for fitting wrt MS.
 
-quantreg package used for fitting wrt MAE. (minimizing 0.5 quantile loss is equivalent to minimizing mae).
+The \textbf{quantreg} package which implements quantile linear regression used for fitting linear models with respect to mean absolute error (noting that minimizing 0.5 quantile loss is equivalent to minimizing mae).
 
 \subsubsection{Penalized Linear}
 

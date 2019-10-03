@@ -6,24 +6,24 @@
 \BOOKMARK [2][-]{subsection.2.2}{Methodology}{section.2}% 6
 \BOOKMARK [3][-]{subsubsection.2.2.1}{Sample Splitting}{subsection.2.2}% 7
 \BOOKMARK [3][-]{subsubsection.2.2.2}{Loss Function}{subsection.2.2}% 8
-\BOOKMARK [2][-]{subsection.2.3}{Linear Models}{section.2}% 9
-\BOOKMARK [3][-]{subsubsection.2.3.1}{Penalized Linear Models}{subsection.2.3}% 10
-\BOOKMARK [3][-]{subsubsection.2.3.2}{Classification and Regression Trees}{subsection.2.3}% 11
-\BOOKMARK [3][-]{subsubsection.2.3.3}{Random Forests}{subsection.2.3}% 12
-\BOOKMARK [3][-]{subsubsection.2.3.4}{Neural Networks}{subsection.2.3}% 13
-\BOOKMARK [3][-]{subsubsection.2.3.5}{Model Evaluation}{subsection.2.3}% 14
-\BOOKMARK [1][-]{section.3}{Simulation Study}{}% 15
-\BOOKMARK [2][-]{subsection.3.1}{Simulation Design}{section.3}% 16
-\BOOKMARK [3][-]{subsubsection.3.1.1}{Overall Design}{subsection.3.1}% 17
-\BOOKMARK [3][-]{subsubsection.3.1.2}{Simulating Characteristics}{subsection.3.1}% 18
-\BOOKMARK [3][-]{subsubsection.3.1.3}{Simulating Macroeconomic Series}{subsection.3.1}% 19
-\BOOKMARK [3][-]{subsubsection.3.1.4}{Simulating Return Series}{subsection.3.1}% 20
-\BOOKMARK [3][-]{subsubsection.3.1.5}{Sample Splitting}{subsection.3.1}% 21
-\BOOKMARK [2][-]{subsection.3.2}{Simulation Study Results}{section.3}% 22
-\BOOKMARK [1][-]{section.4}{Empirical Study}{}% 23
-\BOOKMARK [2][-]{subsection.4.1}{Data}{section.4}% 24
-\BOOKMARK [2][-]{subsection.4.2}{Empirical Data Results}{section.4}% 25
-\BOOKMARK [3][-]{subsubsection.4.2.1}{Prediction Accuracy}{subsection.4.2}% 26
+\BOOKMARK [2][-]{subsection.2.3}{Models}{section.2}% 9
+\BOOKMARK [3][-]{subsubsection.2.3.1}{Linear Models}{subsection.2.3}% 10
+\BOOKMARK [3][-]{subsubsection.2.3.2}{Penalized Linear Models}{subsection.2.3}% 11
+\BOOKMARK [3][-]{subsubsection.2.3.3}{Classification and Regression Trees}{subsection.2.3}% 12
+\BOOKMARK [3][-]{subsubsection.2.3.4}{Random Forests}{subsection.2.3}% 13
+\BOOKMARK [3][-]{subsubsection.2.3.5}{Neural Networks}{subsection.2.3}% 14
+\BOOKMARK [2][-]{subsection.2.4}{Model Evaluation}{section.2}% 15
+\BOOKMARK [1][-]{section.3}{Simulation Study}{}% 16
+\BOOKMARK [2][-]{subsection.3.1}{Simulation Design}{section.3}% 17
+\BOOKMARK [3][-]{subsubsection.3.1.1}{Overall Design}{subsection.3.1}% 18
+\BOOKMARK [3][-]{subsubsection.3.1.2}{Simulating Characteristics}{subsection.3.1}% 19
+\BOOKMARK [3][-]{subsubsection.3.1.3}{Simulating Macroeconomic Series}{subsection.3.1}% 20
+\BOOKMARK [3][-]{subsubsection.3.1.4}{Simulating Return Series}{subsection.3.1}% 21
+\BOOKMARK [3][-]{subsubsection.3.1.5}{Sample Splitting}{subsection.3.1}% 22
+\BOOKMARK [2][-]{subsection.3.2}{Simulation Study Results}{section.3}% 23
+\BOOKMARK [1][-]{section.4}{Empirical Study}{}% 24
+\BOOKMARK [2][-]{subsection.4.1}{Data}{section.4}% 25
+\BOOKMARK [2][-]{subsection.4.2}{Empirical Data Results}{section.4}% 26
 \BOOKMARK [1][-]{section.5}{Conclusion}{}% 27
 \BOOKMARK [1][-]{section.6}{Appendix}{}% 28
 \BOOKMARK [2][-]{subsection.6.1}{Data}{section.6}% 29

@@ -1,4 +1,4 @@
-\begin{thebibliography}{97}
+\begin{thebibliography}{95}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
 
 \bibitem[{Abarbanell and Bushee(1998)}]{abarbanell_abnormal_1998}
@@ -134,10 +134,6 @@ Datar, V.~T., Naik, N.~Y., Radcliffe, R., 1998. Liquidity and stock returns:
 Desai, H., Rajgopal, S., Venkatachalam, M., 2004. Value-glamour and accruals
   mispricing: {One} anomaly or two? The Accounting Review 79, 355--385.
 
-\bibitem[{Diebold and Mariano(2002)}]{diebold_comparing_2002}
-Diebold, F.~X., Mariano, R.~S., 2002. Comparing predictive accuracy. Journal of
-  Business \& economic statistics 20, 134--144.
-
 \bibitem[{Eberhart et~al.(2004)Eberhart, Maxwell, and
   Siddique}]{eberhart_examination_2004}
 Eberhart, A.~C., Maxwell, W.~F., Siddique, A.~R., 2004. An examination of
@@ -214,12 +210,6 @@ Harvey, C.~R., Liu, Y., 2019. A {Census} of the {Factor} {Zoo}. Social Science
 \bibitem[{Harvey et~al.(2016)Harvey, Liu, and Zhu}]{harvey__2016}
 Harvey, C.~R., Liu, Y., Zhu, H., 2016. … and the {Cross}-{Section} of
   {Expected} {Returns}. The Review of Financial Studies 29, 5--68.
-
-\bibitem[{Harvey et~al.(1997)Harvey, Leybourne, and
-  Newbold}]{harvey_testing_1997}
-Harvey, D., Leybourne, S., Newbold, P., 1997. Testing the equality of
-  prediction mean squared errors. International Journal of Forecasting 13,
-  281--291.
 
 \bibitem[{Hastie et~al.(2009)Hastie, Tibshirani, and
   Friedman}]{hastie_elements_2009}
