@@ -133,7 +133,6 @@ To evaluate the application of machine learning to predicting financial asset re
 \frametitle{Background}
 \begin{itemize}
 \item Factors: a collection of regressors to be used in pricing returns that can be used to proxy for unknown underlying risk factors due to their correlation with cross sectional returns, \citep{harvey__2016}
-
 	\begin{itemize}
 		\item Violates strict view that risk factors should be variables that have unpredictable variation through time, and be able to explain cross sectional returns independently
 	\end{itemize}
@@ -184,24 +183,6 @@ To evaluate the application of machine learning to predicting financial asset re
 \end{itemize}
 
 
-\end{itemize}
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{What is Machine Learning?}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{frame}
-\frametitle{What is Machine Learning?}
-``...a vast set of tools for understanding data."
-
-- \textit{An Introduction to Statistical Learning}, \citep{hastie_elements_2009}
-
-We will define it as a diverse collection of:
-\begin{itemize}
-	\item high dimensional models for statistical prediction,
-	\item ``regularization" methods for model selection and mitigation of overfitting in sample data
-	\item efficient systematic methods for searching potential model specifications
 \end{itemize}
 \end{frame}
 
@@ -282,6 +263,20 @@ $g^*(z_{i,t})$ represents the model approximation using the $P$ dimensional pred
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Methodology}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+	\frametitle{What is Machine Learning?}
+	``...a vast set of tools for understanding data."
+	
+	- \textit{An Introduction to Statistical Learning}, \citep{hastie_elements_2009}
+	
+	We will define it as a diverse collection of:
+	\begin{itemize}
+		\item high dimensional models for statistical prediction,
+		\item ``regularization" methods for model selection and mitigation of overfitting in sample data
+		\item efficient systematic methods for searching potential model specifications
+	\end{itemize}
+\end{frame}
 
 \begin{frame}
 \frametitle{Overview}
@@ -509,7 +504,7 @@ Random Forests were proposed by \cite{breiman_random_2001} to address this
 \end{frame}
 
 \begin{frame}
-\frametitle{Neural Network Specifications}
+\frametitle{Neural Network Specification}
 
 \begin{itemize}
 \item Neural networks with up to 5 hidden layers were considered. 
@@ -588,14 +583,81 @@ ReLU activation function was chosen for all hidden layers for computational spee
 \end{figure}
 \end{frame}
 
+\begin{frame}
+	\frametitle{Loss Metrics}
+	
+	Overall predictive performance for individual excess stock returns were assessed using the following loss metrics:
+	
+	Mean Squared Error
+	
+	Mean Absolute Error
+	
+	Out of sample predictive R
+	
+\begin{frame}
+\frametitle{Out of Sample R squared}
+		
+An out of sample R squared metric was also reported, as is popular in the financial literature. There is no consensus as to how this metric is to be calculated, and we use the following formulation:
+\begin{equation}
+R^2_{OOS} = 
+	1 - 
+	\frac{\sum_{(i, t)\in\mathcal{T}_3}(r_{i, t+1} - \widehat{r}_{i, t+1})}
+	{\sum_{(i, t)\in\mathcal{T}_3} \left( r_{i, t+1} - \bar{r}_{i, t+1} \right) ^2}
+\end{equation}
+		
+where $\mathcal{T}_3$ indicates that the fits are only assessed on the test subsample
+		
+Interpretation of this is be cautioned, as R squared was originally designed for use in assessing in sample fit for linear models.
+\end{frame}
+	
+\begin{frame}
+\frametitle{Variable Importance}	
+\begin{itemize}
+	\item The importance of each predictor $j$ is denoted as $VI_j$
+	\item Defined as the reduction in predictive R-Squared from setting all values of predictor $j$ to 0, while holding the remaining model estimates fixed
+	\item Note some minor transformations applied to this metric for numerical reasons
+			
+	\begin{equation}
+	VI_{j, norm} = \frac{VI_j + \operatorname{min}(VI_j) + o}
+	{\Sigma VI_j + \operatorname{min}(VI_j) + o} \quad ; \quad o = 10^{-100}
+		\end{equation}
+	\end{itemize}
+\end{frame}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Simulation}
+\section{Simulation Study}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\subsection{Simulation Design}
 \begin{frame}
-\frametitle{Overall Simulation Design}
-Simulate a latent factor model with stochastic volatility for excess return, $r_{t+1}$, for $t=1,\dots,T$:
+\frametitle{Simulation Study}
+Simulation study conducted see how well machine learning performs in a controlled environment which we understand, as opposed to empirical data which we do not understand
+Characteristics of financial data to be captured
+\begin{itemize}
+	\item Stochastic volatility in errors
+	\item Low signal to noise ratio
+	\item Persistence across time in regressors
+	\item Cross sectionally correlated (collinear) regressors
+	\item High number of regressors
+\end{itemize}
+\end{frame}
+
+\subsection{Simulation Design}
+%% Gu et al design
+
+\begin{frame}
+\frametitle{\cite{gu_empirical_2018}'s Simulation Design}
+We replicate \cite{gu_empirical_2018}'s simulation design as a starting point
+%% Insert their specification here
+Several Problems:
+\begin{itemize}
+	\item White noises, constant volatility specification
+	\item No cross sectional correlation
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Proposed Simulation Design}
+Latent factor model with stochastic volatility for excess return, $r_{t+1}$, for $t=1,\dots,T$:
 
 \begin{flalign}
 r_{i, t+1} &= 
@@ -670,49 +732,31 @@ with the rank transformation normalizing all predictors to be within $[-1, 1]$
 \end{frame}
 
 \begin{frame}
-\frametitle{Simulating Macroeconomic Time Series}
-For simulation of $x_{t}$, a $3 \times 1$ multivariate time series, we consider a VAR model:
-\begin{equation*}
-x_{t}=Ax_{t-1}+u_t, 
-\quad u_t \sim N\left( \mu = (0, 0, 0)' , \Sigma = \mathbb{I}_{3}
-\end{equation*}
-
-\[
-A_1 =
-\begin{bmatrix}
-.95 & 0 & 0 \\
-0 & .95 & 0 \\
-0 & 0 & .95
-\end{bmatrix} ;
-A_2 =
-\begin{bmatrix}
-1 & 0 & .25 \\
-0 & .95 & 0 \\
-.25 & 0 &.95
-\end{bmatrix} ;
-A_3 =
-\begin{bmatrix}
-.99 & .20 & .10 \\
-.20 & .90 & -.30 \\
-.10 & -.30 & -.99
-\end{bmatrix}
-\]
-\end{frame}
-
-\begin{frame}
 \frametitle{Simulating Return Series}
 We will consider four different functions $g(\cdot)$:
 \begin{flalign*}
 (1)\; & g_1 \left(z_{i, t}\right)=\left(c_{i 1, t}, c_{i 2, t}, c_{i 3, t} \times x_{3,t}'\right) \theta_{0} \\
 (2)\; & g_2 \left(z_{i, t}\right)=\left(c_{i 1, t}^{2}, c_{i 1, t} \times c_{i 2, t}, \operatorname{sgn}\left(c_{i 3, t} \times  x_{3,t}'\right)\right) \theta_{0} \\
-(3)\; & g_3 \left(z_{i, t}\right) = \left(1[c_{i3,t}>0],c_{i 2, t}^{3}, c_{i 1, t} \times c_{i 2, t}\times 1[c_{i3,t}>0], \text{logit}\left({c}_{i 3, t} \right)\right) \theta_{0} \\
-(4)\; & g_4 \left(z_{i, t}\right)=\left(\hat{c}_{i 1, t}, \hat{c}_{i 2, t}, \hat{c}_{i 3, t} \times x_{3,t}'\right) \theta_{0}
+(3)\; & g_3 \left(z_{i, t}\right) = \left(1[c_{i3,t}>0],c_{i 2, t}^{3}, c_{i 1, t} \times c_{i 2, t}\times 1[c_{i3,t}>0], \text{logit}\left({c}_{i 3, t} \right)\right) \theta_{0}
 \end{flalign*}
 
 Tune $\theta^0$ s.t. cross sectional $R^2$ is 25\%, and predictive $R^2$ is 5\%. 
 
 The simulation design results in $3 \times 4 = 12$ different simulation designs, with $N = 200$ stocks, $T = 180$ periods and $P_c = 100$ characteristics. Each design will be simulated 50 times to assess the robustness of machine learning algorithms.
 \end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% SIMULATION STUDY RESULTS
+
+\section{Simulation Study Results}
+
+\subsection{Prediction Performance}
+
+\begin{frame}
+\frametitle{Prediction Performance}
+\end{frame}
+
+\subsection{Variable Importance}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Real Data}
@@ -728,77 +772,7 @@ The simulation design results in $3 \times 4 = 12$ different simulation designs,
 
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Model Evaluation}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}
-\frametitle{Out of Sample R Squared}
-Overall predictive performance for individual excess stock returns were assessed using the out of sample $R^2$:
-
-\begin{equation}
-R^2_{OOS} = 
-	1 - 
-	\frac{\sum_{(i, t)\in\mathcal{T}_3}(r_{i, t+1} - \widehat{r}_{i, t+1})}
-	{\sum_{(i, t)\in\mathcal{T}_3} \left( r_{i, t+1} - \bar{r}_{i, t+1} \right) ^2}
-\end{equation}
-
-where $\mathcal{T}_3$ indicates that the fits are only assessed on the test subsample
-\end{frame}
-
-\begin{frame}
-\frametitle{Diebold Mariano Tests for Predictive Accuracy}
-\begin{itemize}
-	\item Compares the forecast accuracy of two forecast methods, (\cite{diebold_comparing_2002} and \cite{harvey_testing_1997})
-	
-	\item Tests whether or not the difference series ($d_t = e_{1t} - e_{2t}$) between two forecast methods' errors is different from zero
-	
-	\item $e_{1t}$ and $e_{2t}$ represent the average forecast errors for each model
-\end{itemize}
-\end{frame}
-
-%\begin{frame}
-%\frametitle{Diebold Mariano Tests for Predictive Accuracy}
-%Under the null hypothesis:
-%
-%\begin{align}
-%S_1^* &= \left[ 
-%\frac{n + 1 - 2h + n^{-1}h(h-1)}
-%{n} 
-%\right]^{1/2}S_1 ; \quad S_1^* \sim N(0,1)\\
-%S_1 &= \left[ 
-%\hat{V}(\bar{d})
-%\right] ^{-1/2}\bar{d} \\
-%\hat{\gamma}_k &= n^{-1} \sum_{t = k + 1}^{n}(d_t - \bar{d})(d_{t-k} - \bar{d}) \\
-%V(\bar{d}) &\approx n^{-1}\left[ 
-%\gamma_0 + 2 \sum_{k = 1}^{h - 1}\gamma_k
-%\right] 
-%\end{align}
-%
-%where $d_t$ = $e_{1t} - e_{2t}$.
-%\end{frame}
-
-\begin{frame}
-\frametitle{Variable Importance}
-
-\begin{itemize}
-\item The importance of each predictor $j$ is denoted as $VI_j$
-
-\item Defined as the reduction in predictive R-Squared from setting all values of predictor $j$ to 0, while holding the remaining model estimates fixed
-
-\item Will allow us to see what factors the models have determined to be important
-\end{itemize}
-
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Results}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{frame}
-\frametitle{Results}
-Work is currently being done on trying to tune the R-Squared values of the simulated datasets
-\end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{References}

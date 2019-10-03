@@ -163,15 +163,19 @@ g3_A1_sv_1 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/
 ```{r}
 batch_process_range <- c(1:10)
 
-# Random Forest is too intensive, just run the simpler models for now
+# Linear and ELN Models
 
-g1_A1_nosv_0_results <- fit_all_models(g1_A1_nosv_0, batch_process_range, LM = 1, ELN = 1, RF = 1, NNet = 0)
-g2_A1_nosv_0_results <- fit_all_models(g2_A1_nosv_0, batch_process_range, LM = 1, ELN = 1, RF = 1, NNet = 0)
-g3_A1_nosv_0_results <- fit_all_models(g3_A1_nosv_0, batch_process_range, LM = 1, ELN = 1, RF = 1, NNet = 0)
+g1_A1_nosv_0_results <- fit_all_models(g1_A1_nosv_0, batch_process_range, LM = 1, ELN = 1, RF = 0, NNet = 0)
+g2_A1_nosv_0_results <- fit_all_models(g2_A1_nosv_0, batch_process_range, LM = 1, ELN = 1, RF = 0, NNet = 0)
+g3_A1_nosv_0_results <- fit_all_models(g3_A1_nosv_0, batch_process_range, LM = 1, ELN = 1, RF = 0, NNet = 0)
 
 saveRDS(g1_A1_nosv_0_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_nosv_0_results.rds")
 saveRDS(g2_A1_nosv_0_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_nosv_0_results.rds")
 saveRDS(g3_A1_nosv_0_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_nosv_0_results.rds")
+
+####
+## RF Models
+############################################################################################################
 
 g1_A1_nosv_0_RF_results <- fit_all_models(g1_A1_nosv_0, batch_process_range, LM = 0, ELN = 0, RF = 1, NNet = 0)
 saveRDS(g1_A1_nosv_0_RF_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_nosv_0_RF_results.rds")
@@ -343,6 +347,26 @@ g1_A1_sv_1_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-
 g2_A1_sv_1_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_1_results.RDS")
 g3_A1_sv_1_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_1_results.RDS")
 
+####################################################################################################################
+## Random Forests
+
+g1_A1_nosv_0_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_nosv_0_RF_results.RDS")
+g2_A1_nosv_0_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_nosv_0_RF_results.RDS")
+g3_A1_nosv_0_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_nosv_0_RF_results.RDS")
+
+g1_A1_sv_0.01_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.01_RF_results.RDS")
+g2_A1_sv_0.01_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.01_RF_results.RDS")
+g3_A1_sv_0.01_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.01_RF_results.RDS")
+
+g1_A1_sv_0.1_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.1_RF_results.RDS")
+g2_A1_sv_0.1_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.1_RF_results.RDS")
+g3_A1_sv_0.1_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.1_RF_results.RDS")
+
+g1_A1_sv_1_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_1_RF_results.RDS")
+g2_A1_sv_1_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_1_RF_results.RDS")
+g3_A1_sv_1_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_1_RF_results.RDS")
+
+####################################################################################################################
 ## Neural Network versions
 
 g1_A1_nosv_0_NN_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_nosv_0_NN_results15.RDS")
@@ -377,24 +401,72 @@ g1_A1_sv_1_NN_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-
 g2_A1_sv_1_NN_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_1_NN_results610.RDS")
 g3_A1_sv_1_NN_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_1_NN_results610.RDS")
 
+```
+
+```{r}
 ## Combining the results together
 
-combine_results_list <- function(normal_list, nn_list) {
-  for (i in 1:10) {
-    normal_list[[i]]$NN1_MSE <- nn_list[[i]]$NN1_MSE
-    normal_list[[i]]$NN1_MAE <- nn_list[[i]]$NN1_MAE
+## Combine the RF results together first
+
+combine_RF_results_list <- function(normal_list, RF_list) {
+  for(i in 1:10) {
+    normal_list[[i]]$RF_MSE <- RF_list[[i]]$RF_MSE
+    normal_list[[i]]$RF_MAE <- RF_list[[i]]$RF_MAE
+  }
+  normal_list
+}
+
+g1_A1_nosv_0_results <- combine_RF_results_list(g1_A1_nosv_0_results, g1_A1_nosv_0_RF_results)
+g2_A1_nosv_0_results <- combine_RF_results_list(g2_A1_nosv_0_results, g2_A1_nosv_0_RF_results)
+g3_A1_nosv_0_results <- combine_RF_results_list(g3_A1_nosv_0_results, g3_A1_nosv_0_RF_results)
+
+g1_A1_sv_0.01_results <- combine_RF_results_list(g1_A1_sv_0.01_results, g1_A1_sv_0.01_RF_results)
+g2_A1_sv_0.01_results <- combine_RF_results_list(g2_A1_sv_0.01_results, g2_A1_sv_0.01_RF_results)
+g3_A1_sv_0.01_results <- combine_RF_results_list(g3_A1_sv_0.01_results, g3_A1_sv_0.01_RF_results)
+
+g1_A1_sv_0.1_results <- combine_RF_results_list(g1_A1_sv_0.1_results, g1_A1_sv_0.1_RF_results)
+g2_A1_sv_0.1_results <- combine_RF_results_list(g2_A1_sv_0.1_results, g2_A1_sv_0.1_RF_results)
+g3_A1_sv_0.1_results <- combine_RF_results_list(g3_A1_sv_0.1_results, g3_A1_sv_0.1_RF_results)
+
+g1_A1_sv_1_results <- combine_RF_results_list(g1_A1_sv_1_results, g1_A1_sv_1_RF_results)
+g2_A1_sv_1_results <- combine_RF_results_list(g2_A1_sv_1_results, g2_A1_sv_1_RF_results)
+g3_A1_sv_1_results <- combine_RF_results_list(g3_A1_sv_1_results, g3_A1_sv_1_RF_results)
+
+## Combine the NN results together
+
+combine_NN_results_list <- function(normal_list, nn15_list, nn610_list) {
+  for(i in 1:5) {
+    normal_list[[i]]$NN1_MSE <- nn15_list[[i]]$NN1_MSE
+    normal_list[[i]]$NN1_MAE <- nn15_list[[i]]$NN1_MAE
     
-    normal_list[[i]]$NN2_MSE <- nn_list[[i]]$NN2_MSE
-    normal_list[[i]]$NN2_MAE <- nn_list[[i]]$NN2_MAE
+    normal_list[[i]]$NN2_MSE <- nn15_list[[i]]$NN2_MSE
+    normal_list[[i]]$NN2_MAE <- nn15_list[[i]]$NN2_MAE
     
-    normal_list[[i]]$NN3_MSE <- nn_list[[i]]$NN3_MSE
-    normal_list[[i]]$NN3_MAE <- nn_list[[i]]$NN3_MAE
+    normal_list[[i]]$NN3_MSE <- nn15_list[[i]]$NN3_MSE
+    normal_list[[i]]$NN3_MAE <- nn15_list[[i]]$NN3_MAE
     
-    normal_list[[i]]$NN4_MSE <- nn_list[[i]]$NN4_MSE
-    normal_list[[i]]$NN4_MAE <- nn_list[[i]]$NN4_MAE
+    normal_list[[i]]$NN4_MSE <- nn15_list[[i]]$NN4_MSE
+    normal_list[[i]]$NN4_MAE <- nn15_list[[i]]$NN4_MAE
     
-    normal_list[[i]]$NN5_MSE <- nn_list[[i]]$NN5_MSE
-    normal_list[[i]]$NN5_MAE <- nn_list[[i]]$NN5_MAE
+    normal_list[[i]]$NN5_MSE <- nn15_list[[i]]$NN5_MSE
+    normal_list[[i]]$NN5_MAE <- nn15_list[[i]]$NN5_MAE
+  }
+  
+  for(i in 6:10) {
+    normal_list[[i]]$NN1_MSE <- nn15_list[[i]]$NN1_MSE
+    normal_list[[i]]$NN1_MAE <- nn15_list[[i]]$NN1_MAE
+    
+    normal_list[[i]]$NN2_MSE <- nn15_list[[i]]$NN2_MSE
+    normal_list[[i]]$NN2_MAE <- nn15_list[[i]]$NN2_MAE
+    
+    normal_list[[i]]$NN3_MSE <- nn15_list[[i]]$NN3_MSE
+    normal_list[[i]]$NN3_MAE <- nn15_list[[i]]$NN3_MAE
+    
+    normal_list[[i]]$NN4_MSE <- nn15_list[[i]]$NN4_MSE
+    normal_list[[i]]$NN4_MAE <- nn15_list[[i]]$NN4_MAE
+    
+    normal_list[[i]]$NN5_MSE <- nn15_list[[i]]$NN5_MSE
+    normal_list[[i]]$NN5_MAE <- nn15_list[[i]]$NN5_MAE
   }
   normal_list
 }
@@ -655,7 +727,7 @@ ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Resu
 ```{r}
 # Variable Importance Plots
 
-g1_vi_plot <- all_vi_df_averaged %>%
+all_vi_df_averaged %>%
   filter(dgp_spec == "g1") %>%
   mutate(variable = fct_reorder(variable, importance)) %>%
   group_by(dgp_spec, model, sample, cross_corr, SV) %>%
@@ -669,7 +741,7 @@ g1_vi_plot <- all_vi_df_averaged %>%
   facet_grid(rows = vars(cross_corr), cols = vars(sample))
 ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_g1_vi_plot.pdf")
 
-g2_vi_plot <- all_vi_df_averaged %>%
+all_vi_df_averaged %>%
   filter(dgp_spec == "g2") %>%
   mutate(variable = fct_reorder(variable, importance)) %>%
   group_by(dgp_spec, model, sample, cross_corr, SV) %>%
@@ -683,7 +755,7 @@ g2_vi_plot <- all_vi_df_averaged %>%
   facet_grid(rows = vars(cross_corr), cols = vars(sample))
 ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_g2_vi_plot.pdf")
 
-g3_vi_plot <- all_vi_df_averaged %>%
+all_vi_df_averaged %>%
   filter(dgp_spec == "g3") %>%
   mutate(variable = fct_reorder(variable, importance)) %>%
   group_by(dgp_spec, model, sample, cross_corr, SV) %>%
@@ -767,6 +839,7 @@ eln_hyperparameters_df %>%
   geom_line(aes(x = sample, y = alpha, group = group_id, colour = group_id)) +
   theme_bw() +
   theme(legend.position = "none")
+ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/eln_alpha_plot.pdf")
 
 ## Lambda Value Plot
 eln_hyperparameters_df %>%
@@ -776,7 +849,7 @@ eln_hyperparameters_df %>%
   geom_line(aes(x = sample, y = lambda, group = group_id, colour = group_id)) +
   theme_bw() +
   theme(legend.position = "none")
-
+ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/eln_lambda_plot.pdf")
 ```
 
 ```{r}
