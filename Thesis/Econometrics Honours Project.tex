@@ -114,6 +114,8 @@
 
 \tableofcontents
 
+\newpage
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Introduction}
@@ -124,9 +126,9 @@ This thesis aims to evaluate the application of machine learning algorithms in e
 
 \subsection{Background Literature and Motivations}
 
-This paper is motivated by evaluating the performance of machine learning algorithms in empirical asset pricing, focusing on how well they deal with the many unique problems in financial returns data. Here, we define ``performance" to refer to two forms of metrics conventional in the literature: $R^2$ (and more specifically, out of sample $R^2$), and forecast errors (see \ref{model_evaluation} for more details).
+This paper explores the performance of some common machine learning algorithms in empirical asset pricing, focusing on how well they deal with the many unique problems in financial returns data. Here, we define ``performance" to refer to two forms of metrics conventional in the literature: $R^2$ (and more specifically, out of sample $R^2$), and forecast errors (see \ref{model_evaluation} for more details).
 
-We first begin by defining ``factors" with the more contemporary definition as suggested by \cite{harvey__2016}: a collection of regressors to be used in pricing returns that can be used to proxy for unknown underlying risk factors due to their correlation with cross sectional returns. Most notably, their definition rejects the more strict view that risk factors should be variables that have unpredictable variation through time, and that they should be able explain cross sectional return patterns. \cite{harvey__2016} further groups factors into the two broad categories of ``common" and individual firm ``characteristics." ``Common" factors under this definition can be viewed as proxies for sources of risk constant across all firms, such as macroeconomic variables. Examples of this include the Fama-French factors, which are portfolios of assets sorted by certain characteristics to proxy for them. \cite{harvey__2016} notes that individual firm characteristics are unlikely to satisfy the more strict definition because they are often pre-known and display limited time series variation.
+We first begin by defining ``factors" with the more contemporary definition as suggested by \cite{harvey__2016}: a collection of regressors to be used in pricing excess returns that can be used to proxy for unknown underlying risk factors due to their correlation with cross sectional returns. \footnote{Most notably, their definition rejects the more strict view that risk factors should be variables that have unpredictable variation through time, and that they should be able explain cross sectional return patterns.} \cite{harvey__2016} further group factors into the two broad categories of ``common" and individual firm ``characteristics." ``Common" factors under this definition can be viewed as proxies for sources of risk constant across all firms, such as macroeconomic variables. Examples of this include the Fama-French factors, which are portfolios of assets sorted by certain characteristics to proxy for them. \cite{harvey__2016} notes that individual firm characteristics are unlikely to satisfy the more strict definition because they are often pre-known and display limited time series variation.
 
 Because of this less strict definition, factors introduced and used in the literature often exhibit properties which makes them unsuitable for inclusion in models, such as high persistence, high levels of non-stationarity and cross sectional correlation. 
 
@@ -138,13 +140,13 @@ Despite the controversy, the prevailing tone within the literature was that vari
 
 Despite this, the literature has continued to produce more factors: quantitative trading firms were using 81 factor models as the norm by 2014 \citep{hsu_finding_2014}, and \cite{harvey_census_2019} currently document well over 600 different factors suggested in the literature. 
 
-The dramatic increase in the number of factors alone poses challenges to traditional statistical techniques. \cite{harvey__2016} detail the false discovery problem when the number of potential factors is extremely high. The significance of a factor in a traditional regression setting is determined by a single hypothesis test, which by construction carries a level of significance $\alpha$ controlling the type I error rate: the probability of rejecting a "null" hypothesis that a factor is not important, and hence incorrectly concluding that it is significant. When the number of potential factors is large, it is very likely that a factor will be concluded as significant by pure chance. For example, a factor model consisting of 600 factors would find around 30 factors significant by chance at the 5\% significance level. \cite{harvey__2016} produce a multiple testing framework to mitigate this, and conclude that many of the historically discovered would have been deemed significant by chance.
+The dramatic increase in the number of factors alone poses challenges to traditional statistical techniques. \cite{harvey__2016} detail the false discovery problem when the number of potential factors is extremely high. The significance of a factor in a traditional regression setting is determined by a single hypothesis test, which by construction carries a level of significance $\alpha$ controlling the type I error rate: the probability of rejecting a "null" hypothesis that a factor is not important, and concluding that it is significant when the true factor is indeed insignificant. When the number of potential factors is large, it is much more likely that a factor will be concluded as significant by pure chance. For example, a factor model consisting of 600 factors would find around 30 factors significant by chance at the 5\% significance level. \cite{harvey__2016} produce a multiple testing framework to mitigate this, and conclude that many of the historically discovered would have been deemed significant by chance.
 
 Furthermore, \cite{feng_taming_2019} note that the number of potential factors discovered in the literature has increased to the same scale as, if not greater, than the number of stocks considered in a typical portfolio, or the time horizon, producing highly inefficient covariances in a standard cross sectional regression. Moreover, when the number of factors exceeds the sample size, traditional cross sectional regressions become infeasible and do not produce solutions altogether. 
 
 It does not help that many factors are cross sectionally correlated, meaning that factors which are discovered to be significant may simply be so because they are correlated with a true, underlying factor and do not provide independent information themselves, a concern which \cite{cochrane_presidential_2011} calls the multidimensional challenge. \cite{freyberger_dissecting_2017} notes that this is especially challenging for traditional regression models, which make strong functional form assumptions and are sensitive to outliers. 
 
-More recently, machine learning has emerged within the literature and appear to be well suited to the task of predicting asset returns. The definition of machine learning can be vague and is often context specific; \cite{hastie_elements_2009} in \textit{An Introduction to Statistical Learning} describes statistical (machine) learning as a vast set of tools for understanding data, and \textit{supervised} learning specifically as the process of building a statistical model for the prediction or estimation of an output based on input(s). In the context of asset pricing, we use the term to refer to a diverse collection of:
+More recently, machine learning methods have been used within the literature and appear to be well suited to the task of predicting asset returns. The definition of machine learning can be vague and is often context specific; \cite{hastie_elements_2009} in \textit{An Introduction to Statistical Learning} describes statistical (machine) learning as a vast set of tools for understanding data, and \textit{supervised} learning specifically as the process of building a statistical model for the prediction or estimation of an output based on input(s). In the context of asset pricing, we use the term to refer to a diverse collection of:
 
 \begin{enumerate}
 	\item high-dimensional models for statistical prediction, 
@@ -152,31 +154,27 @@ More recently, machine learning has emerged within the literature and appear to 
 	\item and the efficient systematic methods for searching potential model specifications.
 \end{enumerate}
 
-The high dimensional and hence flexible nature of machine learning brings more hope to approximating unknown and likely complex data generating processes that underlie excess returns. The flexibility however, comes at a cost of potentially over-fitting in sample data (referred to as training data in the machine learning literature), generalizing poorly and producing poor forecasts. The regularization aspect of machine learning explicitly guards against over-fitting problems and emphasizes out of sample performance. The most explicit example of regularization is the splitting of the dataset into an explicit "training" set used for model fitting, and a "test" set withheld and used solely for evaluating out of sample performance. Finally, machine learning offers tools which are designed to produce an optimal model specification from all possible models with manageable computational cost, all in a systematically consistent way. 
-
-\rhs{better linkage needed here}
+The high dimensional and hence flexible nature of machine learning brings more hope to approximating unknown and likely complex data generating processes that underlie excess returns. The flexibility however, comes at a cost of potentially over-fitting in sample data (referred to as training data in the machine learning literature), generalizing poorly and producing poor forecasts. The regularization aspect of machine learning explicitly guards against over-fitting problems and emphasizes out of sample performance. The most explicit example of regularization is the splitting of the dataset into an explicit "training" set used for model fitting, and a ``test" set withheld and used solely for evaluating out of sample performance. Finally, machine learning offers tools which are designed to produce an optimal model specification from all possible models with manageable computational cost, all in a systematically consistent way. 
 
 The financial literature already has some applications of machine learning. For example, \cite{kozak_shrinking_2017}, \cite{rapach_forecasting_2013} and \cite{freyberger_dissecting_2017} all apply shrinkage and selection methods from machine learning to assist with the problem of factor selection.
 
 Most importantly, portfolios constructed using machine learning have been demonstrated to outperform traditional models in predicting stock returns (\cite{gu_empirical_2018}, \cite{hsu_finding_2014} and \cite{feng_deep_2018}) in terms of out of sample predictive $R^2$ and Sharpe Ratios. \cite{gu_empirical_2018} attribute this to machine learning's ability to evaluate and consider non-linear complexities among factors that cannot be feasibly achieved using traditional techniques. 
 
-\rhs{emphasize why the limited simulation design is a problem}
-
-However, there is little work done on how machine learning actually recognises and deals with the challenges of returns prediction documented in the literature. Prior work has been done by \cite{gu_empirical_2018}, however; only basic simulation designs which were not representative of real financial data were considered. This is problematic, the theoretical performance of machine learning in finite samples is not well understood. 
+However, there is little work done on how machine learning actually recognises and deals with the challenges of returns prediction documented in the literature. Prior work has been done by \cite{gu_empirical_2018}, however; only basic simulation designs which were not representative of real financial data were considered. In particular, the performance of machine learning in empirical financial contexts with specific regards to characteristics such as stochastic and time varying volatility, long term dependence and cross sectionally correlated regressors has not been adequately explored. 
 
 Furthermore, \cite{feng_deep_2018} in particular use cross validation as part of their model building procedure, destroying the temporal aspect of returns data, in addition to only using a handful of factors. \cite{gu_empirical_2018} produce models using a training sample which ends in the 1970s to ultimately produce forecasts for the most recent 30 years. Given the non-robustness of financial data affecting even traditional regressions which are considered to be more inflexible, more research should be done into the robustness of more flexible machine learning methods with regards to sample selection and periods of returns predictability.
 
 For the aspect of factor selection specifically, \cite{gu_empirical_2018} concludes that all of the machine methods agree on the same subset of important factors. However, while their factor importance metrics for regression-tree based methods and neural networks (the most complex methods considered) are mostly consistent, they have differences in terms of the relative importance of each factor, in addition to completely different conclusions for the dividend yield factor.
 
-This paper is the first in focusing on how machine learning algorithms perform in environments with problems exhibited by financial returns data through extending the simulation designs of \cite{gu_empirical_2018}. In addition, these algorithms will once again be evaluated on real world data, but with only more recent and representative data included in order to test their short term robustness in predicting stock returns. These two aspects of the study together are able to offer a better glimpse as to how ``black box" machine learning algorithms deal with the challenges present in asset pricing, if at all.
+This paper is the first to focus on how machine learning algorithms perform in environments with problems exhibited by financial returns data through extending the simulation designs of \cite{gu_empirical_2018}. In addition, these algorithms will once again be evaluated on real world data, but with only more recent and representative data included in order to test their short term robustness in predicting stock returns. These two aspects of the study together are able to offer a better glimpse as to how ``black box" machine learning algorithms deal with the challenges present in asset pricing.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Methodology}
+\section{Model Specification and Methodology}
 
-\subsection{Overall Model Design}
+\subsection{Model Specification}
 
-Each model will be presented and explained so that a reader without any machine learning background can understand the basic idea behind each model. All asset excess monthly returns denoted as $r_{i, t+1}$ are modelled as an additive prediction error model conditional on the true and unobservable information set available to market participants up to and including time $t$, $\mathcal{F}_t)$:
+All asset excess monthly returns denoted as $r_{i, t+1}$ are modelled as an additive prediction error model conditional on the true and unobservable information set available to market participants up to and including time $t$, $\mathcal{F}_t)$:
 
 \begin{equation}
 	r_{i, t+1} = E(r_{i, t+1} | \mathcal{F}_t) + \epsilon_{i, t+1}
@@ -199,10 +197,12 @@ z_{i,t} = x_t \otimes c_{i,t}
 
 where \( c_{i,t} \) is a \( P_c \times 1 \) matrix of characteristics for each stock \(i\), and \(x_t\) is a $P_x \times 1$ vector of macroeconomic predictors (and are this common to all stocks, including a constant). Thus $z_{i,t}$ is a $P \times 1$ vector of features for predicting individual stock returns ($P = P_cP_x$) and includes interactions between individual characteristics and macroeconomic characteristics. 
 
-\subsection{Sample Splitting}
-\label{sample_split}
+\subsection{Methodology}
 
-\rhs{unclear, re-do slightly}
+Each model will be presented and explained so that a reader without any machine learning background can understand the basic idea behind each model. 
+
+\subsubsection{Sample Splitting}
+\label{sample_split}
 
 Imperative to any machine learning technique is the establishment of how the dataset is to be split into training, validation and test sets. The training set is used to initially build the model and provide initial estimates of parameters, whereas the validation set is used to tune model parameters to optimise out of sample performance, thus preventing overfitting. The validation set acts as a simulation of out of sample testing, whereas the test set is used only for evaluation, and is thus truly out of sample.
 
@@ -216,11 +216,9 @@ The third is a "recursive" method, which is the same as the rolling window metho
 
 Both the rolling window and recursive schemes are very computationally intensive. Therefore, a hybrid of the rolling and recursive schemes was considered: the training set is increased by one year with each refit, the validation set remains one year in length but moves forward by one year, and forecasts are made using that model for the subsequent year. The ``traditional" cross validation method of randomly sampling to determine a train and validation set was not done to maintain the temporal ordering of the data.
 
-\subsection{Loss Function}
+\subsubsection{Loss Function}
 
-The choice of the loss function used in models is imperative to machine learning. The loss functions considered are Mean Absolute Error (MAE), Mean Squared Error and Root Mean Squared Error (MSE, and RMSE).
-
-\subsubsection{Mean Absolute Error}
+The choice of the loss function used in models is imperative to machine learning. The loss functions considered are Mean Absolute Error (MAE) and Mean Squared Error \footnote{Also referred to as $l_1$ and $l_2$ loss respectively within the machine learning literature}.
 
 The mean absolute error (MAE) is simply the average magnitude of errors. Because of this, it places equal weighting to all magnitudes of errors and is more robust to outliers. 
 
@@ -230,16 +228,13 @@ The mean absolute error (MAE) is simply the average magnitude of errors. Because
 
 It should be noted that minimizing the MAE criterion is equivalent to minimizing 0.5 quantile loss.
 
-\subsubsection{Mean Squared Error and Root Mean Squared Error}
-
 The mean squared error (MSE) and root mean squared error (RMSE) are quadratic scoring methods. This means that they place higher weight on large errors. Models that minimize this metric are therefore more sensitive to outliers. 
 
 \begin{align}
-	\text{MSE} &= \frac{1}{n} \sum_{j = i}^{n} \left( y_j - \hat{y_j}\right) ^2 \\
-	\text{RMSE} &= \sqrt{ \frac{1}{n} \sum_{j = i}^{n} \left( y_j - \hat{y_j}\right) ^2}
+	\text{MSE} &= \frac{1}{n} \sum_{j = i}^{n} \left( y_j - \hat{y_j}\right) ^2
 \end{align}
 
-\subsection{Linear Model}
+\subsection{Linear Models}
 
 The least complex model considered is the simple linear regression model. The simple linear model assumes that the underlying conditional expectation \( g^*(z_{i, t}) \) can be modelled as a linear function of the predictors and the parameter vector \( \theta \):
 
@@ -253,9 +248,9 @@ The OLS estimator is known to be consistent when the regressors are exogeneous, 
 
 Linear models can capture non-linearities only if the predictor set \(z^*_{i, t}\) contains specified non-linear transformations or interaction terms. Despite being expected to perform poorly, linear models were implemented as a ``control."
 
-\subsection{Penalized Linear Model}
+\subsubsection{Penalized Linear Models}
 
-Penalized linear models attempt to improve upon linear models through regularization, and are particularly well suited to addressing problems of multicollinearity, which can commonly occur in models with a large number of regressors. They achieve this by lowering the variance of their estimates (thus increasing efficiency) in exchange for introducing a tolerable amount of bias. This can be viewed as the model mechanically decreasing its in sample, in hopes that the model will overfit less, particularly to noise in the dataset, and correctly preserving its fit to true underlying regressors.
+Penalized linear models attempt to improve upon linear models through regularization, and are particularly well suited to addressing problems of multicollinearity, which can commonly occur in models with a large number of regressors. They achieve this by lowering the variance of their estimates (thus increasing efficiency) in exchange for introducing a tolerable amount of bias. This can be viewed as the model mechanically decreasing its in sample performance, in hopes that the model will overfit less, particularly to noise in the dataset, thus correctly preserving its fit to true underlying regressors.
 
 Penalized linear models have the same underlying statistical model as simple linear models, but differ in their addition of a new penalty term in the loss function:
 
@@ -283,7 +278,7 @@ For \(0 < \rho < 1\), the elastic net aims to produce parsimonious models throug
 
 The hyperparameters $\lambda$ and $\rho$ are both tuned using the validation sample (see \ref{computation}). 
 
-\subsection{Classification and Regression Trees}
+\subsubsection{Classification and Regression Trees}
 
 Classification and regression trees are fully non-parametric models that can capture complex multi-way interactions. A tree "grows" in a series of iterations. With each iteration, a split ("branch") is made along one predictor such that it is the best split available at that stage with respect to minimizing the loss function. These steps are continued until each observation is its own node, or more commonly until the stopping criterion is met. The eventual model slices the predictor space into rectangular partitions, and predicts the unknown function $g^*(z_{i,t})$ with the average value of the outcome variable in each partition.
 
@@ -295,7 +290,7 @@ The prediction of a tree, $\mathcal{T}$, with \(K\) "leaves" (terminal nodes), a
 
 where $C_k(L)$ is one of the $K$ partitions in the model.
 
-For this study, only recursive binary trees (the most common and easy to implement) are considered. Though trees were originally proposed and fit with respect to minimizing mean squared error, they can be grown with respect to a variety of loss functions, including mean absolute error, mean squared error:
+For this study, only recursive binary trees (the most common and easy to implement) are considered. Though trees were originally proposed and fit with respect to minimizing mean squared error, they can be grown with respect to a variety of loss functions, including mean absolute error, mean squared error, where the loss within each C partition is denoted by $H(\theta, C)$:
 
 \begin{equation}
 	H(\theta, C) = \frac{1}{|C|} \sum_{z_{i,t} \in C} L(r_{i,t+1} - \theta)
@@ -303,16 +298,12 @@ For this study, only recursive binary trees (the most common and easy to impleme
 
 where $|C|$ denotes the number of observations in set C (partition). Given $C$, it is clear that the optimal choice for minimising the loss function when it is mean squared error is simply $\theta = \frac{1}{|C|} \sum_{z_{io,t}\in C}^{ }r_{i,t+1}$ i.e. the average of the partition, and the median of the partition when the loss function is mean absolute error.
 
-Trees, grown to a deep enough level, are highly unbiased and flexible. The trade-off is their high variance and instability. Thus, an ensemble method called "Random Forest" was proposed by \cite{breiman_random_2001} to regularize trees by combining many different trees into a single prediction.
+Trees, grown to a deep enough level, are highly unbiased and flexible, as each partition can potentially predict a single, or low number of observations. The trade-off is their high variance and instability. Thus, an ensemble method called "Random Forest" was proposed by \cite{breiman_random_2001} to regularize trees by combining many different trees into a single prediction.
 
-\subsection{Random Forests}
-Random Forests are an extension of regression trees that attempt to address some of their problems, proposed by \cite{breiman_random_2001}. A random forest algorithm creates $B$ different bootstrap samples from the training dataset, fits an overfit (and hence low bias) regression tree to each dataset using only a random subset $m$ size from all available predictors (also known as dropout), and then averages their forecasts as the final output. The overfit trees means that the underlying trees has low bias, and the dropout procedure means that they have low correlation. Thus, averaging these low bias, uncorrelated trees results in a low bias, yet stable model. Specific details of the random forest algorithm are detailed in the appendix.
+\subsubsection{Random Forests}
+Random Forests are an extension of regression trees that attempt to address some of their problems, proposed by \cite{breiman_random_2001}. A random forest algorithm creates $B$ different bootstrap samples from the training dataset, fits an overfit (and hence low bias) regression tree to each dataset using only a random subset $m$ size from all available predictors (also known as dropout), and then averages their forecasts as the final output. The dropout procedure in particular ensures that trees will be unable to use the same predictors when considering splits, lowering the correlation between each tree and thus further reducing the variance across the ensemble model. Thus, the ensemble consisting of only overfit (and hence low bias) which have low uncorrelation is a low bias, yet stable model. Specific details of the random forest algorithm are detailed in the appendix.
 
-\newpage
-
-\subsection{Neural Networks}
-
-\subsubsection{Introduction}
+\subsubsection{Neural Networks}
 
 Neural networks have theoretical underpinnings as ``universal approximators" for any function, (\cite{hornik_multilayer_1989}). They are arguably the most complex type of model available, able to capture several non-linear interactions through their many layers, hence its other name ``deep learning."  On the flipside, their high flexibility often means that they are among the most parameterized and least interpretable models, earning them the reputation as a black box model.
 
@@ -330,43 +321,39 @@ where $\alpha()$ represents the activation function for that layer with the fina
 g(z;\theta) = x^{(L-1)'}\theta^{L-1}
 \end{equation}
 
-\rhs{move this paragraph elsewhere}
+The neural network's weight and bias parameters for each layer are estimated by minimizing the loss function with respect to the parameters, i.e. by calculating the partial derivative with respect to a specific weight or bias element. 
 
-\subsubsection{Activation Function}
-
-Several choices of activation functions exist in the literature. One of the most popular being the ReLU activation function (see \cite{lecun_deep_2015} and \cite{ramachandran_searching_2017}, among others):
+Due to the complexity and hence non-existent analytical form for this solution, this is typically found via backpropagation, an algorithm which exploits the chain rule of the partial derivative and iteratively finds a local optimum using a first order gradient based algorithm, also known as "gradient descent." The gradient descent algorithm minimizes some function (such as the loss function in the context of machine learning) by iteratively moving in the direction of steepest descent, defined as the negative gradient. Formally, for a loss function $L(x)$ that is defined and has a gradient defined in the neighbourhood of the parameter set $a$, the updating algorithm is:
 
 \begin{equation}
-\operatorname{ReLU}(x) = max(0, x)
+	a_{n+1} = a_n - \gamma \Delta F(a_n)
 \end{equation}
 
-owing to its high computational speed, ability to introduce sparseness into neural networks, and fewer vanishing gradient problems, as repeatedly applying ReLU tends to saturate less compared to other activation functions such as sigmoid and tanh. However, during the study it was observed that ReLU suffered tremendously from the "dying-ReLU problem," where ReLU neurons receive weight updates that fail to activate (output a 0), hence making it unable to receive further weight updates and learn. This resulted in networks which outputted the same value for the majority of, if not all inputs. Variants of the ReLU activation function aimed at addressing this issue such as the leaky ReLU, which allows a small, non-zeor gradient for negative weights were explored, but still suffered from poor convergence. The more "traditional" hyperbolic tangent function:
+where $\gamma$ controls the size of each update. This $\gamma$ parameter is known as the learning rate in neural network training, and controlling this is critical for good performance. As the loss functions of neural networks can be very complex with many local minima, the learning rate should be high enough such that the parameter updates are large enough to skip or jump over them. Too large of a learning rate however, and the neural may fail to converge to a solution at all. Due to computational limitations, we tune the learning rate manually, and employ the ADAM algorithm to apply allow different learning rates for each parameter.
+
+Stochastic gradient descent is a variation of traditional gradient descent which assists with computational feasibility and producing solutions which generalize better, and hence better performance. Instead of optimizing the weight parameters with respect to the entire training sample, a small random subset is instead used, the size of which is called the batch size. This has the effect of potentially increasing computational feasibility due to smaller memory requirements. Less understood, but empirically evident is that smaller batch sizes tend to produce better solutions, (\cite{keskar_large-batch_2016}). It is therefore a critical hyperparameter to tune.
+
+We also employ $l_1$ penalty to impose some sparse restrictions on the weight terms, aiding with the production of better generalization. This simply adds the absolute value of each weight parameter, multiplied by a scaling factor which is a hyperparameter to be tuned to the overall loss function. 
+
+``Batch normalization" is a technique for addressing a phenomenon known as internal covariate shift, which occurs when the distributions of each layers' inputs change as the parameters of the previous layer change \citep{ioffe_batch_2015}. This occurs due to how neural networks repeatedly apply the activation function many times over different hidden layers. For activation functions such as tanh, this results in weight parameters getting pushed and thus "saturated" towards -1 and 1, leading to difficult and slow training. Batch normalization addresses this by normalizing (de-meaning and variance standardizing) the outputs of each layer, hence restoring the representative power of each neuron.
+
+\paragraph{Model Architecture and Specification}
+
+Neural networks with up to 5 hidden layers were considered, each named NNX where X represents the number of hidden layers. The number of neurons is each layer was chosen according to the geometric pyramid rule \citep{masters_practical_1993}: NN1 has 32 neurons, NN2 has 32 and 16 neurons in the first and second hidden layers respectively, NN3 has 32, 16, and 8 neurons, NN4 has 32, 16, 8, and 4 neurons, and NN5 has 32, 16, 8, 4, 2 neurons respectively. All units are fully connected; that is, each neurons receives input from all neurons the layer before it (see Figure \ref{Neural_Network}). This mimics the methodology in \cite{gu_empirical_2018}.
+
+Several choices of activation functions exist in the literature. We use the hyperbolic tangent function:
 
 \begin{equation}
 \operatorname{tanh}(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}
 \end{equation}
 
-was observed to have good performance, and was hence used.
+for all hidden layers due to its observed performance, and ability to retain weight terms and hence always receive weight updates during training. This point is particularly important, because the popular ReLU activation function (see see \cite{lecun_deep_2015} and \cite{ramachandran_searching_2017}, among others):
 
-\subsubsection{Computation}
+\begin{equation}
+\operatorname{ReLU}(x) = max(0, x)
+\end{equation}
 
-\rhs{this, like all neural networks, is a mess. Re write}
-
-The neural network's weight and bias parameters for each layer are estimated by minimizing the loss function with respect to the parameters, i.e. by calculating the partial derivative with respect to a specific weight or bias element. 
-
-The solution to this is typically found via backpropagation, an iterative alogrithm similar to Gauss-Newton steps and produces a local minimum. These steps can be visualized as a descent towards the local minimum of the loss function; it is thus also known as "gradient descent." Note that the lack of a global minimum is actually desirable, as global minimums tend to be overfit solutions to the problem, \citep{choromanska_loss_2014}. 
-
-A common solution is to use ``stochastic gradient descent" (SGD) where instead of optimising the loss function with respect to the entire training sample, only a small, random subset of the data (batch) is used at each optimisation step. 
-
-\rhs{Define learning rate more properly}
-
-Due the noisiness (randomness) introduced by SGD, the path towards the local minimum is more of a quick ``zig zag" and has the potential to ``overshoot" the local minimum and not converge to a solution. This is typically controlled via a hyperparameter known as the learning rate, which controls the step size of each gradient descent iteration. Note that it is also common to apply a learning rate hyperparameter in non SGD environments as a way to control the magnitude of each step towards the solution to assist with convergence. The learning rate is to be tuned so that the solution path descends quickly enough to be computationally feasible, but slow enough so that it does not overshoot the local minimum and not converge. In this paper, the learning rate shrinkage algorithm which adaptively shrinks the learning rate of each individual weight separately as convergence occurs known as ADAM was employed (see \cite{kingma_adam:_2014}). It should be noted that ADAM still requires a baseline learning rate which acts as a upper bound on the learning rate to be supplied, and this was tuned manually.
-
-``Batch normalization" is a technique for addressing a phenomenon known as internal covariate shift, which occurs when the distributions of each layers' inputs change as the parameters of the previous layer change \citep{ioffe_batch_2015}. This occurs due to how neural networks repeatedly apply the activation function many times over different hidden layers. For activation functions such as tanh, this results in weight parameters getting pushed and thus "saturated" towards -1 and 1, leading to difficult and slow training. Batch normalization addresses this by normalizing (de-meaning and variance standardizing) the outputs of each layer, hence restoring the representative power of each neuron.
-
-\subsubsection{Model Architecture}
-
-Neural networks with up to 5 hidden layers were considered, each named NNX where X represents the number of hidden layers. The number of neurons is each layer was chosen according to the geometric pyramid rule \citep{masters_practical_1993}: NN1 has 32 neurons, NN2 has 32 and 16 neurons in the first and second hidden layers respectively, NN3 has 32, 16, and 8 neurons, NN4 has 32, 16, 8, and 4 neurons, and NN5 has 32, 16, 8, 4, 2 neurons respectively. All units are fully connected; that is, each neurons receives input from all neurons the layer before it (see Figure \ref{Neural_Network}). This mimics the methodology in \cite{gu_empirical_2018}.
+was considered, but observed to suffer tremendously from the "dying-ReLU problem". This is where ReLU neurons receive weight updates that fail to activate (output a 0), hence making it unable to receive further weight updates and learn. This resulted in networks which outputted the same value for the majority of, if not all inputs. Variants of the ReLU activation function aimed at addressing this issue such as the leaky ReLU, which allows a small, non-zero gradient for negative weights were explored, but still suffered from poor convergence.
 
 \begin{figure}
 	\begin{center}
@@ -418,10 +405,12 @@ Neural networks with up to 5 hidden layers were considered, each named NNX where
 \label{Neural_Network}
 \end{figure}
 
-\subsection{Model Evaluation}
+\newpage
+
+\subsubsection{Model Evaluation}
 \label{model_evaluation}
 
-\subsubsection{Loss Metrics}
+\paragraph{Loss Metrics}
 
 Overall predictive performance for individual excess stock returns were assessed using the Mean Absolute Error (MAE), Root Mean Squared Error (RMSE). An out of sample $R^2$ metric was also reported, as is popular in the literature, which we define as:
 
@@ -430,44 +419,44 @@ R^2_{OOS} = 1 - \frac{\sum_{(i, t)\in\mathcal{T}_3}(r_{i, t+1} - \widehat{r}_{i,
 {\sum_{(i, t)\in\mathcal{T}_3} \left( r_{i, t+1} - \bar{r}_{i, t+1} \right) ^2}
 \end{equation}
 
-where $\mathcal{T}_3$ indicates that the fits are only assessed on the test subsample, which is never used for training or tuning. However, as $R^2$ measures were originally formulated for assessing in sample fit for linear models, the interpretation of this metric is less meaningful in the contexts of forecasting out of sample and non linear models.
+where $\mathcal{T}_3$ indicates that the fits are only assessed on the test subsample, which is never used for training or tuning. However, as $R^2$ measures were originally formulated for assessing in sample fit for linear models, the interpretation of this metric is less meaningful in the contexts of forecasting out of sample and non-linear models.
 
-\subsubsection{Variable Importance}
+\paragraph{Variable Importance}
 
-The importance of each predictor $j$ is denoted as $VI_j$, and is defined as the reduction in predictive R-Squared from setting all values of predictor $j$ to 0, while holding the remaining model estimates fixed. These were then normalized to sum to 1 within each model as a way to assess the relative importance of each predictor for each model. As $VI_j$ can sometimes be negative, or in some cases be 0 across most of the factors, $VI_j$ positively shifted by the magnitude of the smallest $VI_j$ plus a minor offset, then dividing all $VI_j$ by the total:
+The importance of each predictor $j$ is denoted as $VI_j$, and is defined as the reduction in predictive R-Squared from setting all values of predictor $j$ to 0, while holding the remaining model estimates fixed, mirroring the procedure of \cite{gu_empirical_2018}. These were then normalized to sum to 1 within each model as a way to assess the relative importance of each predictor for each model. As $VI_j$ can sometimes be negative, or in some cases be 0 across most of the factors, $VI_j$ positively shifted by the magnitude of the smallest $VI_j$ plus a minor offset $o$, then dividing all $VI_j$ by the total to avoid numerical issues:
 
 \begin{equation}
-VI_{j, norm} = \frac{VI_j + \operatorname{min}(VI_j) + 1e^{-100}}
-{\Sigma VI_j + \operatorname{min}(VI_j) + 1e^{-100}}
+VI_{j, norm} = \frac{VI_j + \operatorname{min}(VI_j) + o}
+{\Sigma VI_j + \operatorname{min}(VI_j) + o} \quad ; \quad o = 10^{-100}
 \end{equation}
 
-This mechanism was chosen because the other popular normalization mechanism "softmax" was observed to be unable to preserve the distances between each original $VI_j$ well enough, squishing together all variable importance measures and making discernment between each variable difficult.
+This mechanism was chosen because the other popular normalization mechanism "softmax" was observed to be unable to preserve the distances between each original $VI_j$ well enough, squishing together all variable importance measures and making discernment between each $VI_j$ difficult.
 
-\subsubsection{Diebold-Mariano Test}
-
-The Diebold-Mariano test (\cite{diebold_comparing_2002}, and \cite{harvey_testing_1997}) is a procedure which compares the forecast accuracy of two forecast methods. It is different to the overall R squared metric because it tests whether the forecasts from two different models are different to a statistically significant degree. 
-
-Under the null hypothesis of the Diebold-Mariano test:
-
-\begin{align}
-S_1^* &= \left[ 
-\frac{n + 1 - 2h + n^{-1}h(h-1)}
-{n} 
-\right]^{1/2}S_1 ; \quad S_1^* \sim N(0,1) \\
-S_1 &= \left[ 
-\hat{V}(\bar{d})
-\right] ^{-1/2}\bar{d} \\
-\hat{\gamma}_k &= n^{-1} \sum_{t = k + 1}^{n}(d_t - \bar{d})(d_{t-k} - \bar{d}) \\
-V(\bar{d}) &\approx n^{-1}\left[ 
-\gamma_0 + 2 \sum_{k = 1}^{h - 1}\gamma_k
-\right] 
-\end{align}
-
-where $d_t$ represents the difference series between the forecast errors of the two models $e_1t - e_2t$, $\hat{\gamma}_k$ represents the sample $k$th autocovariance for $d_t$, and $S_1$ represents the original unmodified Diebold Mariano test statistic.
-
-As all models in this paper will be producing forecasts for an entire cross section of stocks, $e_1t$ and $e_2t$ will instead represent the cross sectional average forecast errors for each model.
-
-It must be noted that the DM test statistic assumes that the loss differential series $d_t$ is covariance stationary and short memory. The precise behaviour of the DM test statistic with regards to more complex non-linear models such as Random Forests and Neural Networks is not fully understood, which may impact on the validity of the null hypothesis distribution. As such 
+%\paragraph{Diebold-Mariano Test}
+%
+%The Diebold-Mariano test (\cite{diebold_comparing_2002}, and \cite{harvey_testing_1997}) is a procedure which compares the forecast accuracy of two forecast methods. It is different to the overall R squared metric because it tests whether the forecasts from two different models are different to a statistically significant degree. 
+%
+%Under the null hypothesis of the Diebold-Mariano test:
+%
+%\begin{align}
+%S_1^* &= \left[ 
+%\frac{n + 1 - 2h + n^{-1}h(h-1)}
+%{n} 
+%\right]^{1/2}S_1 ; \quad S_1^* \sim N(0,1) \\
+%S_1 &= \left[ 
+%\hat{V}(\bar{d})
+%\right] ^{-1/2}\bar{d} \\
+%\hat{\gamma}_k &= n^{-1} \sum_{t = k + 1}^{n}(d_t - \bar{d})(d_{t-k} - \bar{d}) \\
+%V(\bar{d}) &\approx n^{-1}\left[ 
+%\gamma_0 + 2 \sum_{k = 1}^{h - 1}\gamma_k
+%\right] 
+%\end{align}
+%
+%where $d_t$ represents the difference series between the forecast errors of the two models $e_1t - e_2t$, $\hat{\gamma}_k$ represents the sample $k$th autocovariance for $d_t$, and $S_1$ represents the original unmodified Diebold Mariano test statistic.
+%
+%As all models in this paper will be producing forecasts for an entire cross section of stocks, $e_1t$ and $e_2t$ will instead represent the cross sectional average forecast errors for each model.
+%
+%It must be noted that the DM test statistic assumes that the loss differential series $d_t$ is covariance stationary and short memory. The precise behaviour of the DM test statistic with regards to more complex non-linear models such as Random Forests and Neural Networks is not fully understood, which may impact on the validity of the null hypothesis distribution. As such, caution should be exercised when interpreting this test.
 
 \section{Simulation Study}
 
@@ -512,7 +501,7 @@ Then, define the matrix $B$:
 	\lambda_{ik}\sim N(0, \lambda_{sd}), \; k=1, \dots, 4
 \end{equation}
 
-Note that $B$ is a positive-semidefinite matrix, and thus can serve as a variance covariance matrix with $\lambda_{sd}$ controlling the density of the matrix, and hence degree of cross sectional correlation. 
+Note that $B$ is a positive-semidefinite matrix, and thus can serve as a variance covariance matrix with $\lambda_{sd}$ controlling the density of the matrix, and hence degree of cross sectional correlation. $\lambda_{sd}$ values of 0.01, 0.1 and 1 were used to explore increasing degrees of cross sectional correlation.
 
 To build in cross-sectional correlation, from the $N\times P_{c}$ matrix $\bar{C}_t$, we simulate characteristics according to
  
@@ -566,19 +555,6 @@ $\theta^0$ was tuned such that the predictive $R^2$ was approximately 5\%.
 
 The simulation design results in $3 \times 3 = 12$ different simulated datasets, each with $N = 200$ stocks, $T = 180$ periods and $P_c = 100$ characteristics. Each design was simulated 10 times to assess the robustness of machine learning algorithms. The number of simulations was kept low for computational feasibility.
 
-Our final simulation specifications are as follows:
-
-\begin{table}
-	\begin{center}
-	\begin{tabular}{|l|c|c|c|}
-	\hline
-	$g(z_{i, t})$ & $\lambda_{sd}$ & error term & $\theta_0$ \\ \hline
-	$g_1$ & 0 & 
-	$\beta_{i,t+1}v_{t+1} + e_{i, t+1}; \quad e_{i, t+1} \sim t_5(0, 0.05^2)$ & $(0.02, 0.02, 0.02)'$ \\
-	\end{tabular}
-	\end{center}
-\end{table}
-
 \subsubsection{Sample Splitting}
 
 If viewed as monthly periods, $T = 180$ corresponds to 15 years. A data splitting scheme similar to to the scheme to be used in the empirical data study was used: a training:validation length ratio of approximately 1.5 to begin, and a test set that is 1 year in length. We employ the hybrid growing window approach as described earlier in section \ref{sample_split} (see Figure \ref{sample_split_diag} for a graphical representation).
@@ -631,15 +607,23 @@ In our simulation study, we find that the penalized linear models consistently p
 
 We also find that models fitted with respect to minimizing mean absolute error (quantile loss) generally perform better, even in terms of the mean squared error metrics. This is not a surprising result, especially considering the stochastic error design which introduces significant shocks to the returns process, leading to large outliers which the mean squared error metric is more sensitive to. 
 
-In terms of finding the correct underlying causal regressors, we find that the penalized linear models perform the best at identifying the true data generating regressors, and that this appears to be mostly robust regardless of the amount of cross sectional correlation. The penalized linear models are not perfect, particularly in the $g_2$ specification, where the true covariates enter in the returns process via a \textit{sgn} function, which is more difficult to estimate that other non-linear specifications, such as an indicator function. On these more difficult specifications, the penalized linear models are generally very conservative, sometimes only identifying a single covariate as important. The penalized linear models also occasionally identified the incorrect covariates completely, though the relative importance assigned to them was small.
+In terms of finding the correct underlying causal regressors, we find that the penalized linear models perform the best at identifying the true data generating regressors, and that this appears to be mostly robust regardless of the amount of cross sectional correlation. The penalized linear models are not perfect, particularly in the $g_2$ specification. On these more difficult specifications, the penalized linear models are generally very conservative, sometimes only identifying a single covariate as important. The penalized linear models also occasionally identified the incorrect covariates completely, though the relative importance assigned to them was small.
 
 Of particular note the instability of the penalized linear models' hyperparameters across different training samples. Though the optimal value for $\alpha$ is generally 1 (corresponding to LASSO and thus a sparse representation), it was not uncommon to see $\alpha$ values swinging between values close to 0 (corresponding to ridge regression, and thus a dense representation) to 1 as the training sample moved forwards in time. As the penalized linear models consistently performed the best and still remained able to correctly identify the true covariates this is not a large issue, but it should be noted that this can lead to interpretation issues.
 
-The random forest models were typically able to correctly identify the true data generating covariates, but struggled with discerning them adequately from other covariates. This is to be expected, likely due to how the random forest algorithms work. The random forest algorithm is an ensemble of tree models, with each tree model only having access to a subset of all available predictors. If this subset does not include the true data generating predictor, that particular tree will likely select the predictors which have the highest correlation with the true data generating predictor instead. Thus, the resulting ensemble model is likely to believe that cross sectionally correlated predictors are important.
+The random forest models were typically able to correctly identify the true data generating covariates, but struggled with discerning them adequately from other covariates. This is to be expected, likely due to how the random forest algorithms work. The random forest algorithm is an ensemble of tree models, with each tree model only having access to a subset of all available predictors. If this subset does not include the true data generating predictor, then that particular tree will likely select the predictors which have the highest correlation with the true data generating predictor instead. Thus, the resulting ensemble model is likely to believe that cross sectionally correlated predictors are important, relative to the true causal regressor.
 
-Overall, it appears that the penalized linear models offered the best performance, both in terms of actual prediction accuracy and identifying true regressors, even when the predictor set contained high degrees of cross sectional correlation and non-linearities. 
+The linear models unsurprisingly performed the worst, with both prediction performance and correct variable importance deteriorating noticeably as the degree of cross sectional correlation increased. 
 
-The neural networks
+
+
+\rhs{neural networks still running on simulations at the moment unfortunately}
+
+The neural networks were observed to have poor performance when compared to other machine learning models.
+
+It was also noted that across all models, the prediction performance worsened as the training sample size increased on the simulations with stochastic volatility. This is likely due to a larger training sample being more probable to include large outliers due to the stochastic volatility process, which can adversely affect prediction performance.
+
+Overall, it appears that the penalized linear models offered the best performance, both in terms of actual prediction accuracy and identifying true regressors, even when the predictor set contained high degrees of cross sectional correlation and non-linearities. They still, however, do not exhibit perfect performance and can struggle with identifying true regressors, particularly in non-linear settings.
 
 \begin{table}
 	\caption{Simulation Results}
@@ -653,15 +637,8 @@ The neural networks
 	\caption{Simulation Variable Importance Plots}
 	\begin{center}
 		\includegraphics{simulation_ave_vi_plot.pdf}
-		\includegraphics{simulation_g1_vi_plot.pdf}
-		\includegraphics{simulation_g2_vi_plot.pdf}
-		\includegraphics{simulation_g3_vi_plot.pdf}
 	\end{center}
 \end{figure}
-
-\begin{table}
-	\caption{Diebold Mariano Tests for Simulation Study}
-\end{table}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -687,8 +664,6 @@ The sic2 variable, corresponding to the stocks' Standard Industrial Classificati
 
 There existed a significant amount of missing data in the dataset. The dataset's columns were first examined, and any characteristics that had over 20\% of their data were removed. However, as the amount of missing data increases dramatically going further back in time, a balance between using more periods at the cost of removing more characteristics versus using less periods but keeping more characteristics was needed. 1993 Q3 was determined to be a reasonable time frame to begin the dataset, as was a noticeable increase in data availability after this time.  Missing characteristics were then imputed using their cross sectional medians for each year. 
 
-This final dataset of individual factors consists of X rows and N columns, with the average number of stocks in each time period being ~.
-
 We then follow \cite{gu_empirical_2018} and construct eight macroeconomic factors following the variable definitions in \cite{welch_comprehensive_2008}: dividend-price ratio (dp), earnings-price ratio (ep), book-to-market ratio (bm), net equity expansion (ntis), Treasury-bill rate (tbl), term spread (tms), default spread (dfy) and stock variance (svar). These factors were lagged by one period so as to be used to predict one period ahead quarterly returns. The treasury bill rate was also used from this source to proxy for the risk free rate in order to construct excess quarterly returns. 
 
 The two sets of factors were then combined to form a baseline set of covariates, which we define throughout all methods and analysis as:
@@ -706,7 +681,7 @@ where $c_{i,t}$ is a $P_c$ matrix of characteristics for each stock $i$, and $(1
 
 The dataset was not normalized for all methods, as only penalized regression and neural networks are sensitive to normalization. For these two methods, the dataset was normalized such that each predictor column had 0 mean and 1 variance.
 
-The final dataset spanned from 1993 Q3 to 2016 Q4 with 202066.
+The final dataset spanned from 1993 Q3 to 2016 Q4 with 202066 individual observations.
 
 We mimic the procedure used in the simulation study. This means that the dataset was split such that the training and validation sets were split such that the training set was approximately 1.5 times the length of the validation set, in order to predict a test set that is one year in length.
 
@@ -745,11 +720,66 @@ We mimic the procedure used in the simulation study. This means that the dataset
 	\label{emp_sample_split_diag}
 \end{figure}
 
+\newpage
+
 \subsection{Empirical Data Results}
 
+\subsubsection{Prediction Accuracy}
+
+In general, results from the simulation study were reproduced in the empirical study. We similarly see that the penalized linear models generally performing the best, with the random forest models offering slightly worse performance, occasionally outperforming penalized linear models. Models fitted with respect to median quantile loss were similarly observed to typically offer improvements across all machine learning models across all loss metrics.
+
+In the empirical data setting, the underlying data generating process of returns is unknown so the ability of the different models at picking out the correct covariates cannot be evaluated. However, we can see that the penalized linear models and random forests (the models with the highest out of sample prediction performance) decide on a similar subset of factors which are determined to be important. In particular, we find that the 1 month momentum and 6 month momentum factors to be the most important factors by far, and this is consistent across all training samples. The conservative sparsity of the penalized linear models seen in the simulated setting is not repeated here; almost all factors are assigned to have small importance. The random forests again seem to struggle with discerning the importance of correlated factors apart: many of the important factors identified are highly correlated with momentum, such as change in momentum, dollar trading volume and return volatility.
+
+The linear models had the worst performance of all the models considered. Interestingly, we find that the linear models assign the controversial dividend price ratio macroeconomic factor as highly important. Their variable importance for individual factors across different training samples is highly non-robust, with the important variables almost completely changing year to year.
+
+The neural networks similarly had non-robust results. There is weak evidence to suggest that more complex neural networks with more layers give better performance. The neural networks were also the only models to assign high variable importance to the individual market value factor, a result that is somewhat consistent across all neural networks considered. 
+
+All models considered typically preferred sparse parameterizations. That is, most if not all of the individual factors had little to no importance across all models. 
+
+When looking at the macroeconomic factors (see Figure \ref{empirical_macro_facet}), there is less consistency on the variable importance between models. Penalized linear models tend to identify the average book to market ratio and the default spread as the most important macroeconomic factors, a result weakly consistent with those of the random forests. The linear models consistently identified the controversial dividend-price ratio as important, a result that was somewhat consistent with the neural networks. Some of the neural networks also occasionally identified the earnings price ratio as important.
+
 \begin{figure}
+	\begin{center}
+		\includegraphics{empirical_test_mse}
+	\end{center}
+	\caption{Empirical Test MSE Averaged Across All Samples}
+\end{figure}
+
+\begin{figure}
+	\begin{center}
+		\includegraphics{empirical_test_mae}
+	\end{center}
+	\caption{Empirical Test MAE Averaged Across All Samples}
+\end{figure}
+
+\newpage
+
+\begin{figure}
+	\begin{center}
 	\includegraphics{empirical_sample_all_vi_ind.pdf}
+	\end{center}
 	\caption{Empirical Data Individual Factor Variable Importance Averaged Across All Samples}
+\end{figure}
+
+\begin{figure}
+	\begin{center}
+	\includegraphics{empirical_sample_1_vi_ind.pdf}
+	\end{center}
+	\caption{Empirical Data Individual Factor Variable Importance for Sample 1}
+\end{figure}
+
+\begin{figure}
+	\begin{center}
+	\includegraphics{empirical_sample_2_vi_ind.pdf}
+	\end{center}
+	\caption{Empirical Data Individual Factor Variable Importance for Sample 2}
+\end{figure}
+
+\begin{figure}
+	\begin{center}
+	\includegraphics{empirical_sample_3_vi_ind.pdf}
+	\end{center}
+	\caption{Empirical Data Individual Factor Variable Importance for Sample 3}
 \end{figure}
 
 \begin{landscape}
@@ -760,43 +790,19 @@ We mimic the procedure used in the simulation study. This means that the dataset
 \end{figure}
 \end{landscape}
 
-In general, results from the simulation study were reproduced in the empirical study. 
-
-We similarly see that the penalized linear models generally performing the best, with the random forest models offering slightly worse performance, occasionally outperforming penalized linear models. Models fitted with respect to median quantile loss were similarly observed to offer improvements across all machine learning models across all loss metrics, with the exception of linear models, which had worse performance when minimizing quantile loss.
-
-In the empirical data setting, the underlying data generating process of returns is unknown so the ability of the different models at picking out the correct covariates cannot be evaluated. However, we can see that the penalized linear models and random forests (the models with the highest out of sample prediction performance) decide on a similar subset of factors which are determined to be important. In particular, we find that the 1 month momentum and 6 month momentum factors to be the most important factors by far. 
-
-The linear models had the worst performance of all the models considered. Interestingly, we find that the linear models assign the controversial dividend price ratio macroeconomic factor as highly important. 
-
-The neural networks similarly had non-robust results. There is weak evidence to suggest that more complex neural networks with more layers give better performance. The neural networks were also the only models to assign high variable importance to the individual market value factor, a result that is somewhat consistent across all neural networks considered. 
-
-All models considered typically preferred extremely sparse parameterizations. That is, most if not all of the individual factors had little to no importance across all models. 
-
-When looking at the macroeconomic factors (see Figure \ref{empirical_macro_facet}), there is less consistency on the variable importance between models. Penalized linear models tend to identify the average book to market ratio and the default spread as the most important macroeconomic factors, a result weakly consistent with those of the random forests. The linear models consistently identified the controversial dividend-price ratio as important, a result that was somewhat consistent with the neural networks. Some of the neural networks also occasionally identified the earnings price ratio as important.
-
-\section{Limitations}
-
-Dataset limitations
-The dataset 
-As observed from both the simulation and empirical results, the neural networks' performance increases as the amount of training data does. 
-
-Data splitting limitations
-The data splitting scheme was decided in a pseudo-independent fashion: the training:validation length ratio of 1.5 was chosen to mimic the procedure of \cite{gu_empirical_2018}, in addition providing more stability for the neural network models. Crucially, this meant that no regards were given to large events affecting stock returns, including but not limited to the dot-com bubble, the 2008 Global Financial Crisis, and the 2015-2016 stock market sell-off. 
-
-Model specification limitations
-For each class of models considered, not all possible or reasonable specifications were explored. The linear and penalized linear models were not supplied with all possible higher order transformations, such as all possible pairwise interaction terms between all regressors as is the norm. This was mainly due to computational issues, as a model frame containing all possible pairwise interactions has exponentially higher memory requirements, in addition to computational feasibility. 
-
 \section{Conclusion}
-
-Using the 
 
 Our findings demonstrate that within the contexts considered, the field of machine learning offers tools to improve stock prediction and identification of true underlying regressors. Penalized linear models and to a lesser extent, random forests are the best performing methods.
 
-Importantly, we find that the feed-forward neural network architectures considered fail in the context of stock return prediction. This is a result consistent across a variety of simulated datasets, as well as empirical data. We also find weak evidence that deeper neural networks with more hidden layers perform better, though this result, like the performance of neural networks in general, is non-robust.
+Importantly, we find that the feed-forward neural network architectures considered fail in the context of stock return prediction, at both prediction performance and variable importance analysis. This is a result consistent across a variety of simulated datasets, as well as empirical data. We also find weak evidence that deeper neural networks with more hidden layers perform better, though this result, like the performance of neural networks in general, is non-robust.
 
 Lastly, we find that the top performing models - the penalized linear models and random forests, tend to agree and correctly identify the correct causal regressors in simulated contexts, as well as agree on the same subset of factors which are important in empirical contexts. We find that the of all the most considered, the penalized linear models are the most consistent at identifying true causal regressors through the simulation study. We find that in the empirical setting, among the individual the individual 1 and 6 month momentum factors are the most powerful predictors of stock returns, according to the penalized linear models and random forests. 
 
+Across all models except for linear models, we find that minimizing quantile loss yields better prediction performance.
+
 The overall findings of this paper differ from the sparse literature on similar topics. However, the performance of the penalized linear models with respect to both out of sample prediction performance and variable importance analysis is promising, and our findings show that machine learning provides some tools which may aid in the problems of stock return prediction and risk factor selection in the financial world. 
+
+\newpage
 
 \section{Appendix}
 
@@ -1068,6 +1074,8 @@ The overall findings of this paper differ from the sparse literature on similar 
 	\includegraphics{simulation_train_rsquare.pdf}
 	\caption{Simulation Train R Squared}
 \end{figure}
+
+\newpage
 
 \subsubsection{Empirical Study}
 

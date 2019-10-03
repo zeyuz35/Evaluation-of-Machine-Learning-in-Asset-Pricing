@@ -1,0 +1,823 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Preamble
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\PassOptionsToPackage{usenames, dvipsnames, table}{xcolor}
+
+\documentclass[]{beamer}
+\usetheme{Boadilla}
+
+%Make beamer number figures, because it doesn't by default
+\setbeamertemplate{caption}[numbered]
+
+\usepackage[english]{babel}
+\usepackage[ruled, vlined]{algorithm2e}
+
+\usepackage{amsfonts}
+\usepackage{setspace, graphicx, epstopdf, amsmath}
+%Do not use enumitem because this interferes with beamer drawing bullet points
+\usepackage{marginnote, datetime, url, subfigure}
+
+%Bibliography Stuff
+%Use natbib even though it's old because it's compliant with journal styles
+%Actual bibliography style etc are specified where you actually want it
+\usepackage{natbib}
+
+
+%Fluff
+\linespread{1.3}
+
+%Neural Network Packages
+\usepackage{neuralnetwork}
+\usepackage{xpatch}
+\makeatletter
+% \linklayers have \nn@lastnode instead of \lastnode,
+% patch it to replace the former with the latter, and similar for thisnode
+\xpatchcmd{\linklayers}{\nn@lastnode}{\lastnode}{}{}
+\xpatchcmd{\linklayers}{\nn@thisnode}{\thisnode}{}{}
+\makeatother
+
+%Regression Tree
+\usepackage{tikz,forest}
+\usetikzlibrary{arrows.meta}
+
+\forestset{
+	.style={
+		for tree={
+			base=bottom,
+			child anchor=north,
+			align=center,
+			s sep+=1cm,
+			straight edge/.style={
+				edge path={\noexpand\path[\forestoption{edge},thick,-{Latex}] 
+					(!u.parent anchor) -- (.child anchor);}
+			},
+			if n children={0}
+			{tier=word, draw, thick, rectangle}
+			{draw, diamond, thick, aspect=2},
+			if n=1{%
+				edge path={\noexpand\path[\forestoption{edge},thick,-{Latex}] 
+					(!u.parent anchor) -| (.child anchor) node[pos=.2, above] {Y};}
+			}{
+				edge path={\noexpand\path[\forestoption{edge},thick,-{Latex}] 
+					(!u.parent anchor) -| (.child anchor) node[pos=.2, above] {N};}
+			}
+		}
+	}
+}
+
+%%TODONOTE commands
+\usepackage[colorinlistoftodos]{todonotes}
+\newcommand{\smalltodo}[2][] {\todo[caption={#2}, size=\scriptsize,%
+	fancyline,#1]{\begin{spacing}{.5}#2\end{spacing}}}
+\newcommand{\rhs}[2][]{\smalltodo[color=green!30,#1]{{\bf RS:} #2}}
+%%
+
+%Graphs
+\usepackage{tikz}
+\usepackage{pgfplots}
+
+%Coloured Tables
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%Title and other fluff, just before document start
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%Hyperref apparently is a big package and causes a lot of issues, so it's recommended to load this last
+
+\usepackage{hyperref}
+
+%Gets rid of the neon green boxes around boxes
+
+\usepackage[]{xcolor}
+
+\hypersetup{
+	colorlinks,
+	linkcolor = {red!50!black},
+	citecolor = {blue!50!black},
+	urlcolor = {blue!80!black}
+}
+
+\title{Evaluation of Machine Learning in Finance}
+
+\author{
+	Ze Yu Zhong \\
+	Supervisor: David Frazier
+}
+
+\institute{Monash University}
+
+\date{}
+
+\begin{document}
+	
+\begin{frame}[plain]
+    \maketitle
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Background}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%Intereave literature review throughout this section
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Main Motivation}
+To evaluate the application of machine learning to predicting financial asset returns, with specific regard to how they deal with the unique challenges present in financial data via simulation.
+\end{frame}
+
+\begin{frame}
+\frametitle{Background}
+\begin{itemize}
+\item Factors: a collection of regressors to be used in pricing returns that can be used to proxy for unknown underlying risk factors due to their correlation with cross sectional returns, \citep{harvey__2016}
+
+	\begin{itemize}
+		\item Violates strict view that risk factors should be variables that have unpredictable variation through time, and be able to explain cross sectional returns independently
+	\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Background - Dividend Ratio Example}
+\begin{itemize}
+
+\item Included due to good in sample performance in the 1990s \citep{goyal_predicting_2003}
+
+\item \textit{Persistent} (\cite{goetzmann_testing_1993}, \cite{ang_stock_2006})
+
+	\begin{itemize}
+	\item Correlated with lagged dependent variables on the right hand side of the regression equation. 
+	
+	\item Violates assumptions of independent regressors of OLS: t stats are biased upwards due to autocorrelated errors
+	
+	\item GMM and NW errors corrections are also biased, \citep{goetzmann_testing_1993}
+	\end{itemize}
+
+\item Not robust and have poor out of sample performance since 2000s (\cite{goyal_predicting_2003}, \cite{lettau_consumption_2001}, \cite{schwert_anomalies_2003})
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Dividend Ratio Example}
+\begin{itemize}
+\item Factors such as dividend ratios, earnings price ratio, interest and inflation etc. were ``widely accepted" able to predict excess returns, \citep{lettau_consumption_2001}
+
+\item \cite{welch_comprehensive_2008} conclude that not a single variable had any statistical forecasting power, and the significance values of some factors change with the choice of sample periods.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Background}
+\begin{itemize}
+\item More factors produced by literature: currently over 600 documented \citep{harvey_census_2019}
+
+\begin{itemize}
+	\item False discovery problem, \citep{harvey__2016}
+	
+	\item Factors are cross sectionally correlated - inefficient covariances, factors may be subsumed within others, \citep{feng_taming_2019}
+	
+	\item Number of factors may be more than sample size, making regression impossible
+\end{itemize}
+
+
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{What is Machine Learning?}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{What is Machine Learning?}
+``...a vast set of tools for understanding data."
+
+- \textit{An Introduction to Statistical Learning}, \citep{hastie_elements_2009}
+
+We will define it as a diverse collection of:
+\begin{itemize}
+	\item high dimensional models for statistical prediction,
+	\item ``regularization" methods for model selection and mitigation of overfitting in sample data
+	\item efficient systematic methods for searching potential model specifications
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Why apply Machine Learning in Finance?}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%
+%%Interweave Literature review throughout this section
+%%%%%%%%%%%%%%%%%
+
+%\begin{frame}
+%\frametitle{Why apply Machine Learning in Finance?}
+%\begin{itemize}
+%	\item High dimensional - more flexible than traditional regression models, which make strong functional form assumptions and are sensitive to outliers, \citep{freyberger_dissecting_2017}
+%	\item Explicit methods for guarding against overfitting and generalizing poorly
+%	\item Methods to produce an optimal model from all possible at manageable computation cost
+%\end{itemize}
+%\end{frame}
+
+\begin{frame}
+\frametitle{Applications in the Literature}
+\begin{itemize}
+	\item \cite{kozak_shrinking_2017}, \cite{rapach_forecasting_2013}, \cite{freyberger_dissecting_2017}, and others apply shrinkage and selection methods to identify important factors
+	\item \cite{gu_empirical_2018}, \cite{feng_deep_2018}, construct machine learning portfolios that historically outperform traditional portfolios in terms of prediction error and predictive $R^2$
+	\item Attribute their success to machine learning's ability to find non-linear interactions
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Motivations}
+However, little work has been done on how machine learning actually recognises and deals with the challenges in financial data. 
+\begin{itemize}
+	\item \cite{feng_deep_2018} cross validates their training set, destroying temporal aspect of data, and only explore a handful of factors
+	\item \cite{gu_empirical_2018} only use data up until the 1970s to produce predictions in the last 30 years
+	\item \cite{gu_empirical_2018}'s models do not have consistent importance metrics - only their tree based methods recognise dividend yield as important
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Motivations}
+\begin{itemize}
+\item Can machine learning deal with the challenges in financial data?
+\begin{itemize}
+	\item Persistent Regressors?
+	\item Identify true factors from a high dimensional, cross sectionally correlated panel?
+	\item Is regularization enough to handle non-robustness?
+	\item Are their conclusions consistent?
+	\item Do they perform better than traditional methods?
+\end{itemize}
+
+\item Explore this via simulation and popular machine learning models
+\item Models will also be evaluated again, but with more recent, representative financial data to explore robustness. 
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Model Specification}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Model Overview}
+Returns are modelled as an additive error model
+\begin{equation}
+	r_{i, t+1} = E(r_{i, t+1} | \mathcal{F}_t) + \epsilon_{i, t+1}
+\end{equation}
+		
+where 
+\begin{equation}
+	E(r_{i, t+1} | \mathcal{F}_t) = g^*(z_{i,t})
+\end{equation}
+		
+Stocks are indexed as $i = 1, \dots, N$ and months by $t = 1, \dots, T$. 
+
+$g^*(z_{i,t})$ represents the model approximation using the $P$ dimensional predictor set $z_{i,t}$. 
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Methodology}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Overview}
+Machine Learning Methodology consists of 3 overall components:
+\begin{itemize}
+	\item Sample Splitting
+	\item Loss Functions
+	\item Models/Algorithms considered
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Sample Splitting
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Expanding/Growing Window Approach}
+An expanding/growing window approach was used to
+\begin{itemize}
+	\item Allow models to incorporate more data over time
+	\item Preserve temporal ordering of data (compared to cross-validation)
+	\item Allows the model to use the most recent data, in some sense
+\end{itemize}
+The training/validation split was chosen such that the size of the training set was 1.5 times the length of the validation set to begin with, consistent with \cite{gu_empirical_2018}.
+Split specification is ultimately subjective
+\end{frame}
+
+\begin{frame}
+\frametitle{Sample Splitting}
+\begin{figure}
+	\begin{center}
+		\begin{tabular}{|c|p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}|p{0.25cm}p{0.25cm}p{0.25cm}|}
+			\hline
+			Set No. &&&&&&&&&&&&&&& \\
+			\hline
+			%%%%%%%%
+			3 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
+			\cellcolor{pink} & 
+			\cellcolor{olive} & \cellcolor{olive} &	\cellcolor{olive} \\
+			%%%%%%%%
+			2 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
+			\cellcolor{pink} & 
+			\cellcolor{olive} & \cellcolor{olive} &	\cellcolor{olive} & \cellcolor{olive} \\
+			%%%%%%%%
+			1 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
+			\cellcolor{pink} & 
+			\cellcolor{olive} & \cellcolor{olive} &	\cellcolor{olive} & \cellcolor{olive} & \cellcolor{olive} \\
+			\hline
+			Year & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15\\
+			\hline
+		\end{tabular}
+		\medskip
+		\begin{tabular}{|c|p{0.25cm}|}
+			\hline
+			Training & \cellcolor{cyan} \\
+			\hline
+			Validation & \cellcolor{pink} \\
+			\hline
+			Test & \cellcolor{olive} \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\caption{Sample Splitting Procedure}
+\end{figure}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Loss Functions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Loss Functions}
+Mean Absolute Error (MAE)
+
+	\begin{equation}
+	\text{MAE} = \frac{1}{n} \sum_{j = i}^{n} |y_j - \hat{y_j}|
+	\end{equation}
+	
+Mean Squared Error (MSE)
+
+	\begin{align}
+	\text{MSE} &= \frac{1}{n} \sum_{j = i}^{n} \left( y_j - \hat{y_j}\right) ^2
+	\end{align}
+	
+% Huber Loss
+%		\begin{align}
+%		H(\epsilon_j = y_j - \hat{y_j};\xi) = 
+%		\begin{cases}
+%		\left( y_j - \hat{y_j}\right) ^2, 
+%		\quad &\text{if} \quad |y_j - \hat{y_j}| \leq \xi ; \\
+%		2 \xi  |y_j - \hat{y_j}| - \xi^2, 
+%		\quad &\text{if} \quad |y_j - \hat{y_j}| > \xi
+%		\end{cases}
+%		\end{align}
+
+\end{frame}
+
+%\begin{frame}
+%\frametitle{Loss Functions}
+%\begin{figure}
+%	\begin{center}
+%		\begin{tikzpicture}
+%		\begin{axis}[ xlabel={$\epsilon$}, ylabel={Loss}, axis lines=middle, samples=41, grid, thick, domain=-2:2]
+%		\addplot+[no marks] {abs(x)};
+%		\addlegendentry{MAE}
+%		\addplot+[no marks] {x^2};
+%		\addlegendentry{MSE}
+%		\addplot+[no marks] {(2 * abs(x) - 1)*(abs(x) > 1) +
+%			(x^2)*(abs(x) <= 1 )};
+%		\addlegendentry{Huber Loss}
+%		\end{axis}
+%		\end{tikzpicture}
+%	\end{center}
+%	\caption{Illustration of MAE, MSE and Huber Loss when $\xi = 1$}
+%	\label{fig:loss_functions}
+%\end{figure}
+%\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Linear Models
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Linear Models}
+Linear Models assume that the underlying conditional expectation \( g^*(z_{i, t}) \) can be modelled as a linear function of the predictors and the parameter vector \( \theta \):
+	\begin{equation}
+	g(z_{i, t};\theta) = z_{i, t}' \theta
+	\end{equation}
+	
+Optimizing $\theta$ w.r.t. MSE yields the Pooled OLS estimator
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Penalized Linear
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Penalized Linear Models}
+Linear Models + Penalty term (Elastic Net by \cite{zou_regularization_2005} shown):
+	\begin{align}
+	\mathcal{L(\theta;.)} &= 
+		\underset{\text{Loss Function}}{\underbrace{\mathcal{L(\theta)}}} + 
+		\underset{\text{Penalty Term}}{\underbrace{\phi(\theta;.)}} \\
+	\phi(\theta;\lambda,\rho) &= 
+		\lambda(1-\rho) \sum_{j = 1}^{P}|\theta_j| +
+		\frac{1}{2} \lambda \rho \sum_{j = 1}^{P}\theta_j^2
+	\end{align}
+
+Elastic Net penalty produces efficient and parsimonious via shrinkage and selection
+	
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Regression Trees and Random Forests
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Regression Trees \& Random Forests}
+\begin{itemize}
+	\item Fully non-parametric models that can capture complex multi-way interactions. 
+	\item A tree "grows" in a series of iterations:
+	\begin{enumerate}
+		\item Make a split ("branch") along one predictor, such that it is the best split available at that stage with respect to minimizing the loss function
+		\item Repeat until each observation is its own node, or until the stopping criterion is met
+	\end{enumerate}
+	\item Slices the predictor space into rectangular partitions, and predicts the unknown function $g^*(z_{i,t})$ with the ``average" value of the outcome variable in each partition to minimize the loss function
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Random Forests}
+Trees have very low bias and high variance
+
+They are very prone to overfitting and non-robust
+
+Random Forests were proposed by \cite{breiman_random_2001} to address this
+\begin{itemize}
+	\item Create $B$ bootstrap samples
+	\item Grow a highly overfit tree to each, but only using $m$ random subset of all predictors for each
+	\item Average the output from all trees as an ensemble model
+\end{itemize}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Neural Networks
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Neural Networks}
+\begin{align}
+	x_k^{(l)} &= \alpha(x^{(l-1)'}\theta_k^{l-1}) \\
+	x_1^{(1)} &= \alpha \left( (x_0^{(0)}, x_1^{(0)}, x_2^{(0)}, x_3^{(0)})'\theta_1^{0} \right) 
+\end{align}
+
+\begin{figure}
+	\begin{neuralnetwork}
+		%Options
+		[nodespacing=9.5mm, layerspacing=18mm,
+		maintitleheight=1em, layertitleheight=2em,
+		height=7, toprow=false, nodesize=24pt, style={},
+		title={}, titlestyle={}]
+		\newcommand{\nodetextclear}[2]{}
+		%use \ifnum to get different labels, such as x_n on the last neuron
+		\newcommand{\nodetextx}[2]{\ifnum ####2=8 $x_n^{(0)}$ \else $x_####2^{(0)}$ \fi}
+		\newcommand{\nodetexty}[2]{$y_####2$}
+		%Hidden layer textcommands
+		%32 neurons
+		\newcommand{\nodetextxa}[2]{\ifnum ####2=7 $x_{32}^{(1)}$ \else $x_####2^{(1)}$ \fi}
+		%16 neurons
+		\newcommand{\nodetextxb}[2]{\ifnum ####2=6 $x_{16}^{(2)}$ \else $x_####2^{(2)}$ \fi}
+		%8 neurons
+		\newcommand{\nodetextxc}[2]{\ifnum ####2=5 $x_{8}^{(3)}$ \else $x_####2^{(3)}$ \fi}
+		\newcommand{\nodetextxd}[2]{$x_####2^{(4)}$}
+		\newcommand{\nodetextxe}[2]{$x_####2^{(5)}$}
+		%Input Layer
+		\inputlayer[count=3, bias=true, title=, text=\nodetextx]
+		%Hidden Layer 1
+		\hiddenlayer[count=1, bias=true, title=, text=\nodetextxa] 
+		\linklayers[]
+		%Final Layer
+		\outputlayer[count=1, title=, text=\nodetexty] \linklayers
+	\end{neuralnetwork}
+\caption{Sample Neural Network}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{Neural Network Specifications}
+
+\begin{itemize}
+\item Neural networks with up to 5 hidden layers were considered. 
+
+\item The number of neurons is each layer determined by geometric pyramid rule \citep{masters_practical_1993}
+
+\item All units are fully connected
+\end{itemize}
+
+ReLU activation function was chosen for all hidden layers for computational speed, and hence popularity in literature:
+
+\begin{equation}
+\operatorname{ReLU}(x) = max(0, x)
+\end{equation}
+\end{frame}
+
+%\begin{frame}
+%\frametitle{Computation}
+%\begin{itemize}
+%	\item Stochastic Gradient Descent using ADAM
+%	\item Batch Normalization
+%	\item Randomize initial starting weights and biases, then average these into an ensemble model
+%	\item See references for specific details
+%\end{itemize}
+%\end{frame}
+
+\begin{frame}
+%Beamer hack snad uses # in a loop
+%Therefore, we need to replace all # with ####
+\begin{figure}
+	\begin{neuralnetwork}
+		%Options
+		[nodespacing=9.5mm, layerspacing=18mm,
+		maintitleheight=1em, layertitleheight=2em,
+		height=7, toprow=false, nodesize=20pt, style={},
+		title={}, titlestyle={}]
+		\newcommand{\nodetextclear}[2]{}
+		%use \ifnum to get different labels, such as x_n on the last neuron
+		\newcommand{\nodetextx}[2]{\ifnum ####2=8 $x_n^{(0)}$ \else $x_####2^{(0)}$ \fi}
+		\newcommand{\nodetexty}[2]{$y_####2$}
+		%Hidden layer textcommands
+		%32 neurons
+		\newcommand{\nodetextxa}[2]{\ifnum ####2=7 $x_{32}^{(1)}$ \else $x_####2^{(1)}$ \fi}
+		%16 neurons
+		\newcommand{\nodetextxb}[2]{\ifnum ####2=6 $x_{16}^{(2)}$ \else $x_####2^{(2)}$ \fi}
+		%8 neurons
+		\newcommand{\nodetextxc}[2]{\ifnum ####2=5 $x_{8}^{(3)}$ \else $x_####2^{(3)}$ \fi}
+		\newcommand{\nodetextxd}[2]{$x_####2^{(4)}$}
+		\newcommand{\nodetextxe}[2]{$x_####2^{(5)}$}
+		%Input Layer
+		\inputlayer[count=8, bias=false, exclude = {7}, title=, text=\nodetextx]
+		%Hidden Layer 1
+		\hiddenlayer[count=7, bias=false, exclude = {6}, title=, text=\nodetextxa] 
+		\linklayers[not from = {7}, not to = {6}]
+		%Hidden Layer 2
+		\hiddenlayer[count=6, bias=false, exclude = {5}, title=, text=\nodetextxb] 
+		\linklayers[not from = {6}, not to = {5}]
+		%Hidden Layer 3
+		\hiddenlayer[count=5, bias=false, exclude = {4}, title=, text=\nodetextxc] 
+		\linklayers[not from = {5}, not to = {4}]
+		%Hidden Layer 4
+		\hiddenlayer[count=4, bias=false, title=, text=\nodetextxd] 
+		\linklayers[not from = {4}]
+		%Hidden Layer 5
+		\hiddenlayer[count=2, bias=false, title=, text=\nodetextxe] \linklayers
+		%Final Layer
+		\outputlayer[count=1, title=, text=\nodetexty] \linklayers
+		% draw dots
+		\path (L0-6) -- node{$\vdots$} (L0-8);
+		\path (L1-5) -- node{$\vdots$} (L1-7);
+		\path (L2-4) -- node{$\vdots$} (L2-6);
+		\path (L3-3) -- node{$\vdots$} (L3-5);
+	\end{neuralnetwork}
+	\caption{Neural Network 5 (most complex considered)}
+	\label{Neural_Network}
+\end{figure}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Simulation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Simulation Design}
+\begin{frame}
+\frametitle{Overall Simulation Design}
+Simulate a latent factor model with stochastic volatility for excess return, $r_{t+1}$, for $t=1,\dots,T$:
+
+\begin{flalign}
+r_{i, t+1} &= 
+g\left(z_{i, t}\right) + \beta_{i,t+1}v_{t+1} + e_{i, t+1}; \\
+z_{i, t} &= \left(1, x_{t}\right)^{\prime} \otimes c_{i, t}; 
+\quad \beta_{i, t}=\left(c_{i 1, t}, c_{i 2, t}, c_{i 3, t}\right); \\ 
+e_{i, t+1} &= 
+\exp\left( \frac{\sigma_{i, t+1}^2}{2} \right) \varepsilon_{i, t+1}; \\
+\sigma^2_{i,t+1} &= 
+\omega + \gamma_i\sigma^2_{t,i}+w_{i,t+1}
+\end{flalign}
+
+$v_{t+1}$ is a $3\times 1$ vector of errors, $w_{i,t+1},\varepsilon_{i,t+1}$ are scalar error terms. Variances tuned such that the R squared for each individual return series was 50\% and annualized volatility 30\%.
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Simulating Characteristics}
+
+Matrix $C_t$ is an $N\times P_c$ vector of latent factors. 
+
+$x_t$ is a $3 \times 1$ multivariate time series
+
+$\varepsilon_{t+1}$ is a $N\times 1$ vector of idiosyncratic errors. 
+
+Simulation mechanism for $C_t$ that gives correlation across the factors \& time
+
+Draw normal random numbers for each $1\leq i\leq N$ and $1\leq j\leq P_{c}$, according to 
+
+\begin{equation}
+\overline{c}_{i j, t} = \rho_{j} \overline{c}_{i j, t-1}+\epsilon_{i j, t} ;
+\quad \rho_{j} \sim \mathcal{U} \left( \frac{1}{2},1 \right) 
+\end{equation}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Simulating Characteristics}
+Then, define the matrix 
+
+\begin{equation}
+B:=\Lambda\Lambda' + \frac{1}{10}\mathbb{I}_{n}, \quad
+\Lambda_i = (\lambda_{i1},\dots,\lambda_{i4}), \quad
+\lambda_{ik}\sim N(0,1), \; k=1,\dots,4
+\end{equation}
+
+Transform this into a correlation matrix $W$ via
+
+\begin{equation}
+W = \left( \operatorname{diag}(B) \right) ^{\frac{-1}{2}}
+(B)
+\left( \operatorname{diag}(B) \right) ^{\frac{-1}{2}}
+\end{equation}
+
+Use $W$ to build in cross sectional correlation for $N\times P_{c}$ matrix $\bar{C}_t$:
+
+\begin{equation}
+\widehat{C}_{t}=W\overline{C}_{t}
+\end{equation}
+\end{frame}
+
+\begin{frame}
+\frametitle{Simulating Characteristics}
+
+Finally, the "observed" characteristics for each $1\leq i\leq N$ and for $j=1, \dots, P_{c}$ are constructed according to:
+
+\begin{equation}
+c_{i j, t} = \frac{2}{n+1} \operatorname{rank}\left(\hat{c}_{i j, t}\right) - 1.
+\end{equation}
+
+with the rank transformation normalizing all predictors to be within $[-1, 1]$ 
+\end{frame}
+
+\begin{frame}
+\frametitle{Simulating Macroeconomic Time Series}
+For simulation of $x_{t}$, a $3 \times 1$ multivariate time series, we consider a VAR model:
+\begin{equation*}
+x_{t}=Ax_{t-1}+u_t, 
+\quad u_t \sim N\left( \mu = (0, 0, 0)' , \Sigma = \mathbb{I}_{3}
+\end{equation*}
+
+\[
+A_1 =
+\begin{bmatrix}
+.95 & 0 & 0 \\
+0 & .95 & 0 \\
+0 & 0 & .95
+\end{bmatrix} ;
+A_2 =
+\begin{bmatrix}
+1 & 0 & .25 \\
+0 & .95 & 0 \\
+.25 & 0 &.95
+\end{bmatrix} ;
+A_3 =
+\begin{bmatrix}
+.99 & .20 & .10 \\
+.20 & .90 & -.30 \\
+.10 & -.30 & -.99
+\end{bmatrix}
+\]
+\end{frame}
+
+\begin{frame}
+\frametitle{Simulating Return Series}
+We will consider four different functions $g(\cdot)$:
+\begin{flalign*}
+(1)\; & g_1 \left(z_{i, t}\right)=\left(c_{i 1, t}, c_{i 2, t}, c_{i 3, t} \times x_{3,t}'\right) \theta_{0} \\
+(2)\; & g_2 \left(z_{i, t}\right)=\left(c_{i 1, t}^{2}, c_{i 1, t} \times c_{i 2, t}, \operatorname{sgn}\left(c_{i 3, t} \times  x_{3,t}'\right)\right) \theta_{0} \\
+(3)\; & g_3 \left(z_{i, t}\right) = \left(1[c_{i3,t}>0],c_{i 2, t}^{3}, c_{i 1, t} \times c_{i 2, t}\times 1[c_{i3,t}>0], \text{logit}\left({c}_{i 3, t} \right)\right) \theta_{0} \\
+(4)\; & g_4 \left(z_{i, t}\right)=\left(\hat{c}_{i 1, t}, \hat{c}_{i 2, t}, \hat{c}_{i 3, t} \times x_{3,t}'\right) \theta_{0}
+\end{flalign*}
+
+Tune $\theta^0$ s.t. cross sectional $R^2$ is 25\%, and predictive $R^2$ is 5\%. 
+
+The simulation design results in $3 \times 4 = 12$ different simulation designs, with $N = 200$ stocks, $T = 180$ periods and $P_c = 100$ characteristics. Each design will be simulated 50 times to assess the robustness of machine learning algorithms.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Real Data}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Data Source}
+\begin{itemize}
+\item CRSP/Compustat database for stock returns with stock level characteristics such as accounting ratios and macroeconomic factors will be queried.
+
+\item Only more recent data will be used, such as the period before and after 2008 GFC
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Model Evaluation}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Out of Sample R Squared}
+Overall predictive performance for individual excess stock returns were assessed using the out of sample $R^2$:
+
+\begin{equation}
+R^2_{OOS} = 
+	1 - 
+	\frac{\sum_{(i, t)\in\mathcal{T}_3}(r_{i, t+1} - \widehat{r}_{i, t+1})}
+	{\sum_{(i, t)\in\mathcal{T}_3} \left( r_{i, t+1} - \bar{r}_{i, t+1} \right) ^2}
+\end{equation}
+
+where $\mathcal{T}_3$ indicates that the fits are only assessed on the test subsample
+\end{frame}
+
+\begin{frame}
+\frametitle{Diebold Mariano Tests for Predictive Accuracy}
+\begin{itemize}
+	\item Compares the forecast accuracy of two forecast methods, (\cite{diebold_comparing_2002} and \cite{harvey_testing_1997})
+	
+	\item Tests whether or not the difference series ($d_t = e_{1t} - e_{2t}$) between two forecast methods' errors is different from zero
+	
+	\item $e_{1t}$ and $e_{2t}$ represent the average forecast errors for each model
+\end{itemize}
+\end{frame}
+
+%\begin{frame}
+%\frametitle{Diebold Mariano Tests for Predictive Accuracy}
+%Under the null hypothesis:
+%
+%\begin{align}
+%S_1^* &= \left[ 
+%\frac{n + 1 - 2h + n^{-1}h(h-1)}
+%{n} 
+%\right]^{1/2}S_1 ; \quad S_1^* \sim N(0,1)\\
+%S_1 &= \left[ 
+%\hat{V}(\bar{d})
+%\right] ^{-1/2}\bar{d} \\
+%\hat{\gamma}_k &= n^{-1} \sum_{t = k + 1}^{n}(d_t - \bar{d})(d_{t-k} - \bar{d}) \\
+%V(\bar{d}) &\approx n^{-1}\left[ 
+%\gamma_0 + 2 \sum_{k = 1}^{h - 1}\gamma_k
+%\right] 
+%\end{align}
+%
+%where $d_t$ = $e_{1t} - e_{2t}$.
+%\end{frame}
+
+\begin{frame}
+\frametitle{Variable Importance}
+
+\begin{itemize}
+\item The importance of each predictor $j$ is denoted as $VI_j$
+
+\item Defined as the reduction in predictive R-Squared from setting all values of predictor $j$ to 0, while holding the remaining model estimates fixed
+
+\item Will allow us to see what factors the models have determined to be important
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Results}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Results}
+Work is currently being done on trying to tune the R-Squared values of the simulated datasets
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{References}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%This is just here to get the citations working throughout the presentation, skip over this when presenting
+\begin{frame}
+\frametitle{References}
+\bibliographystyle{jfe}
+\bibliography{Bibliography}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Questions and Answers}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\begin{center}
+\huge Questions and Answers
+\end{center}
+\end{frame}
+
+\end{document}
