@@ -92,6 +92,8 @@
 
 \usepackage[]{xcolor}
 
+\graphicspath{{../Results/}}
+
 \hypersetup{
 	colorlinks,
 	linkcolor = {red!50!black},
@@ -614,7 +616,6 @@ Interpretation of this is be cautioned, as R squared was originally designed for
 \begin{frame}
 \frametitle{Variable Importance}	
 \begin{itemize}
-	\item The importance of each predictor $j$ is denoted as $VI_j$
 	\item Defined as the reduction in predictive R-Squared from setting all values of predictor $j$ to 0, while holding the remaining model estimates fixed
 	\item Note some minor transformations applied to this metric for numerical reasons
 			
@@ -760,16 +761,187 @@ The simulation design results in $3 \times 4 = 12$ different simulation designs,
 \subsection{Variable Importance}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Real Data}
+\section{Empirical Study}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Data}
 
 \begin{frame}
 \frametitle{Data Source}
+\cite{gu_empirical_2018}'s dataset of individual factors available from their website:
 \begin{itemize}
-\item CRSP/Compustat database for stock returns with stock level characteristics such as accounting ratios and macroeconomic factors will be queried.
-
-\item Only more recent data will be used, such as the period before and after 2008 GFC
+	\item March 1957 - December 2016
+	\item 61 annual factors
+	\item 13 quarterly factors
+	\item 20 monthly factors
+	\item Industry dummy with 74 levels
 \end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Data Cleaning Procedure}
+Reducing dataset size:
+\begin{itemize}
+	\item Only include NASDAQ stocks
+	\item Filter out penny stocks (microcaps)
+	\item Keep only instruments with share code of 10, 11 (filtering out REITs, etc)
+	\item Convert to a monthly format
+	\item Industry dummy was dropped due to inaccuracy and high dimensionality
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Data Cleaning Procedure}
+Missing Data
+\begin{itemize}
+	\item Significant increase in data quality and availability after 1993 Q3
+	\item Factors with more than 20\% missing data were removed
+	\item Remaining missing factors were imputed with cross sectional medians
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Macroeconomic Factors}
+Construct 8 macroeconomic factors, (\cite{welch_comprehensive_2008}):
+
+\begin{table}
+	\caption{Macroeconomic Factors}
+	\begin{center}
+		\begin{tabular}{lccc} \hline
+			No. & Acronym & Macroeconomic Factor \\ \hline
+			1 & macro\_dp & Dividend Price Ratio \\
+			2 & macro\_ep & Earnings Price Ratio \\
+			3 & macro\_bm & Book to Market Ratio \\
+			4 & macro\_ntis & Net Equity Expansion \\
+			5 & macro\_tbl & Treasury Bill Rate \\
+			6 & macro\_tms & Term Spread \\
+			7 & macro\_dfy & Default Spread \\
+			8 & macro\_svar & Stock Variance \\ \hline
+		\end{tabular}
+	\end{center}
+\end{table}
+\end{frame}
+
+\begin{frame}
+\frametitle{Cleaned Dataset}
+Baseline set of covariates defined as:
+\begin{equation}
+	z_{i,t} - (1, x_t)' \otimes c_{i,t}
+\end{equation}
+where $c_{i,t}$ is a $P_c$ matrix of characteristics for each stock $i$, and $(1, x_t)'$ is a $P_x \times 1$ vector of macroeconomic predictors.
+
+Number of covariates in this baseline set is $61 \times (8 + 1) = 549$. 
+\end{frame}
+
+%% CURRENTLY NOT WORKING, FIX ASAP
+
+\begin{frame}
+\frametitle{Sample Splitting}
+\begin{figure}
+	\begin{center}
+		\begin{tabular}{|c|p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}|}
+			\hline
+			Set No. &&&&&&&&&&&&&&&& \\
+			\hline
+			%%%%%%%%
+			3 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
+			\cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{olive} \\
+			%%%%%%%%
+			2 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
+			\cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & 	
+			\cellcolor{olive} & NA \\
+			%%%%%%%%
+			1 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
+			\cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{olive} & NA & NA \\
+			\hline
+			Time & 1993Q3 & 1993Q4 & 1994 & 1995 & 1996 & ... & 2006 & 2007 & 2008 & ... & 2011 & 2012 & 2013 & 2014 & 2015 & 2016 \\
+			\hline
+		\end{tabular}
+		\medskip
+		\begin{tabular}{|c|p{0.60cm}|}
+			\hline
+			Training & \cellcolor{cyan} \\
+			\hline
+			Validation & \cellcolor{pink} \\
+			\hline
+			Test & \cellcolor{olive} \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\caption{Empirical Data Sample Splitting Procedure}
+	\label{emp_sample_split_diag}
+\end{figure}
+\end{frame}
+
+\subsection{Empirical Data Results}
+
+\begin{frame}
+\frametitle{Overview}
+
+In general, results from the simulation study were repeated.
+
+Important, as this suggests that the simulation study was accurate to some degree, and there is some support for the same conclusions to be made.
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Prediction Accuracy - MSE}
+\begin{figure}
+\includegraphics{empirical_test_mse.pdf}
+\caption{Empirical Data Test MSE Averaged Across all Samples}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{Prediction Accuracy - MAE}
+\begin{figure}
+	\includegraphics{empirical_test_mae.pdf}
+	\caption{Empirical Data Test MAE Averaged Across all Samples}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+\frametitle{Prediction Accuracy - Neural Networks}
+Similarly, some weak evidence that neurla networks with more hidden layers perform better
+
+Neural Networks are still unstable
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Variable Importance}
+
+\includegraphics{empirical_sample_all_vi_ind.pdf}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Variable Importance}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conclusion}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+\frametitle{Conclusion}
+Machine learning offers tools to improve stock return prediction and identification of true underlying regressors. 
+
+Penalized linear models, and to a lesser extent, random forests are the best performing models.
+
+Feed-forward neural network architectures considered fail in the context of stock return prediction and variable importance analysis. The result is consistent across simulated data and empirical data. Importantly, this is in direct contradiction to previous literature, which concluded that neural networks vastly outperform. 
+
+Top performing models - penalized linear and random forests, tend to agree and correctly identify causal regressors in simulated contexts, and same subset in empirical contexts. Neural networks only agree in simulated contexts. 
+
+Penalized linear models are most consistent at correctly identify causal regressors, though this result is not always reliable, particularly when non-linearities are introduced.
+
+Minimizing quantile loss yields better prediction performance.
+
+Overall findings differ from sparse literature on similar topics. Performance of penalized linear models in both prediction and variable importance analysis is promising. 
+
+Machine learning offers some tools which may aid in the problems of prediction and risk factor selection in the financial world.
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

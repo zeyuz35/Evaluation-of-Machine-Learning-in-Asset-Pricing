@@ -818,6 +818,43 @@ all_loss_df_averaged %>%
   scale_fill_brewer(palette = "Paired") +
   facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
 ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_rsquare.pdf")
+
+###############################################################################################################
+###############################################################################################################
+## More proper graphs that are much more readable
+## Achieve this by only showing the best neural network
+
+all_loss_df_averaged %>%
+  ungroup() %>%
+  mutate(sample = as.factor(sample)) %>%
+  ## Filter out certain models
+  filter(model == "LM_MSE"
+         | model == "ELN_MAE"
+         | model == "RF_MAE"
+         | model == "NN5_MAE") %>%
+  ggplot() +
+  geom_bar(aes(x = model, y = test_MSE, fill = sample), stat = "identity", position = position_dodge()) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  scale_fill_brewer(palette = "Paired") +
+  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_mse_small.pdf")
+
+all_loss_df_averaged %>%
+  ungroup() %>%
+  mutate(sample = as.factor(sample)) %>%
+  ## Filter out certain models
+  filter(model == "LM_MSE"
+         | model == "ELN_MAE"
+         | model == "RF_MAE"
+         | model == "NN5_MAE") %>%
+  ggplot() +
+  geom_bar(aes(x = model, y = test_MAE, fill = sample), stat = "identity", position = position_dodge()) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  scale_fill_brewer(palette = "Paired") +
+  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_mae_small.pdf")
 ```
 
 

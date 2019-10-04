@@ -2,13 +2,16 @@
 \select@language {english}
 \beamer@sectionintoc {1}{Introduction}{3}{0}{1}
 \beamer@sectionintoc {2}{Why apply Machine Learning in Finance?}{10}{0}{2}
-\beamer@sectionintoc {3}{Model Specification}{14}{0}{3}
-\beamer@sectionintoc {4}{Methodology}{15}{0}{4}
-\beamer@sectionintoc {5}{Simulation Study}{30}{0}{5}
-\beamer@subsectionintoc {5}{1}{Simulation Design}{31}{0}{5}
-\beamer@sectionintoc {6}{Simulation Study Results}{37}{0}{6}
-\beamer@subsectionintoc {6}{1}{Prediction Performance}{37}{0}{6}
-\beamer@subsectionintoc {6}{2}{Variable Importance}{38}{0}{6}
-\beamer@sectionintoc {7}{Real Data}{38}{0}{7}
-\beamer@sectionintoc {8}{References}{39}{0}{8}
-\beamer@sectionintoc {10}{Questions and Answers}{40}{0}{9}
+\beamer@sectionintoc {3}{Model Specification}{15}{0}{3}
+\beamer@sectionintoc {4}{Methodology}{16}{0}{4}
+\beamer@sectionintoc {5}{Simulation Study}{34}{0}{5}
+\beamer@subsectionintoc {5}{1}{Simulation Design}{35}{0}{5}
+\beamer@sectionintoc {6}{Simulation Study Results}{41}{0}{6}
+\beamer@subsectionintoc {6}{1}{Prediction Performance}{41}{0}{6}
+\beamer@subsectionintoc {6}{2}{Variable Importance}{42}{0}{6}
+\beamer@sectionintoc {7}{Empirical Study}{42}{0}{7}
+\beamer@subsectionintoc {7}{1}{Data}{42}{0}{7}
+\beamer@subsectionintoc {7}{2}{Empirical Data Results}{48}{0}{7}
+\beamer@sectionintoc {8}{Conclusion}{54}{0}{8}
+\beamer@sectionintoc {9}{References}{55}{0}{9}
+\beamer@sectionintoc {11}{Questions and Answers}{56}{0}{10}
