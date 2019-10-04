@@ -537,6 +537,27 @@ saveRDS(g3_A1_sv_1_results_all, file =
 ```
 
 ```{r}
+## Chunk to load final results list (just load this to avoid bothering with combining different results list)
+
+g1_A1_nosv_0_results_all <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_nosv_0_results_all.RDS")
+g2_A1_nosv_0_results_all <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_nosv_0_results_all.RDS")
+g3_A1_nosv_0_results_all <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_nosv_0_results_all.RDS")
+
+g1_A1_sv_0.01_results_all <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.01_results_all.RDS")
+g2_A1_sv_0.01_results_all <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.01_results_all.RDS")
+g3_A1_sv_0.01_results_all <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.01_results_all.RDS")
+
+g1_A1_sv_0.1_results_all <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.1_results_all.RDS")
+g2_A1_sv_0.1_results_all <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.1_results_all.RDS")
+g3_A1_sv_0.1_results_all <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.1_results_all.RDS")
+
+g1_A1_sv_1_results_all <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_1_results_all.RDS")
+g2_A1_sv_1_results_all <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_1_results_all.RDS")
+g3_A1_sv_1_results_all <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_1_results_all.RDS")
+```
+
+
+```{r}
 ## For a given simulation results list, collect all the loss dataframes into a big, tidy DF for a SINGLE realization
 
 gen_tidy_loss_df <- function(simulation_results_list, realization_no, dgp_spec, SV, cross_corr) {
@@ -553,24 +574,24 @@ gen_tidy_loss_df <- function(simulation_results_list, realization_no, dgp_spec, 
       ################################################################################################
       
       cbind(model = "RF_MSE", sample = sample, simulation_results_list[[realization_no]]$RF_MSE[[sample]]$loss_stats),
-      cbind(model = "RF_MAE", sample = sample, simulation_results_list[[realization_no]]$RF_MAE[[sample]]$loss_stats)
+      cbind(model = "RF_MAE", sample = sample, simulation_results_list[[realization_no]]$RF_MAE[[sample]]$loss_stats),
       
       ################################################################################################
       
-      # cbind(model = "NN1_MSE", sample = sample, simulation_results_list[[realization_no]]$NN1_MSE[[sample]]$loss_stats),
-      # cbind(model = "NN1_MAE", sample = sample, simulation_results_list[[realization_no]]$NN1_MAE[[sample]]$loss_stats),
-      # 
-      # cbind(model = "NN2_MSE", sample = sample, simulation_results_list[[realization_no]]$NN2_MSE[[sample]]$loss_stats),
-      # cbind(model = "NN2_MAE", sample = sample, simulation_results_list[[realization_no]]$NN2_MAE[[sample]]$loss_stats),
-      # 
-      # cbind(model = "NN3_MSE", sample = sample, simulation_results_list[[realization_no]]$NN3_MSE[[sample]]$loss_stats),
-      # cbind(model = "NN3_MAE", sample = sample, simulation_results_list[[realization_no]]$NN3_MAE[[sample]]$loss_stats),
-      # 
-      # cbind(model = "NN4_MSE", sample = sample, simulation_results_list[[realization_no]]$NN4_MSE[[sample]]$loss_stats),
-      # cbind(model = "NN4_MAE", sample = sample, simulation_results_list[[realization_no]]$NN4_MAE[[sample]]$loss_stats),
-      # 
-      # cbind(model = "NN5_MSE", sample = sample, simulation_results_list[[realization_no]]$NN5_MSE[[sample]]$loss_stats),
-      # cbind(model = "NN5_MAE", sample = sample, simulation_results_list[[realization_no]]$NN5_MAE[[sample]]$loss_stats)
+      cbind(model = "NN1_MSE", sample = sample, simulation_results_list[[realization_no]]$NN1_MSE[[sample]]$loss_stats),
+      cbind(model = "NN1_MAE", sample = sample, simulation_results_list[[realization_no]]$NN1_MAE[[sample]]$loss_stats),
+
+      cbind(model = "NN2_MSE", sample = sample, simulation_results_list[[realization_no]]$NN2_MSE[[sample]]$loss_stats),
+      cbind(model = "NN2_MAE", sample = sample, simulation_results_list[[realization_no]]$NN2_MAE[[sample]]$loss_stats),
+
+      cbind(model = "NN3_MSE", sample = sample, simulation_results_list[[realization_no]]$NN3_MSE[[sample]]$loss_stats),
+      cbind(model = "NN3_MAE", sample = sample, simulation_results_list[[realization_no]]$NN3_MAE[[sample]]$loss_stats),
+
+      cbind(model = "NN4_MSE", sample = sample, simulation_results_list[[realization_no]]$NN4_MSE[[sample]]$loss_stats),
+      cbind(model = "NN4_MAE", sample = sample, simulation_results_list[[realization_no]]$NN4_MAE[[sample]]$loss_stats),
+
+      cbind(model = "NN5_MSE", sample = sample, simulation_results_list[[realization_no]]$NN5_MSE[[sample]]$loss_stats),
+      cbind(model = "NN5_MAE", sample = sample, simulation_results_list[[realization_no]]$NN5_MAE[[sample]]$loss_stats)
     )
   }
   cbind(realization_no = realization_no, dgp_spec = dgp_spec, SV = SV, cross_corr = cross_corr, df)
@@ -585,21 +606,21 @@ all_realize_loss_df <- function(simulation_results_list, dgp_spec, SV, cross_cor
 }
 
 all_loss_df <- rbind(
-  all_realize_loss_df(g1_A1_nosv_0_results, dgp_spec = "g1", SV = 0, cross_corr = 0),
-  all_realize_loss_df(g2_A1_nosv_0_results, dgp_spec = "g2", SV = 0, cross_corr = 0),
-  all_realize_loss_df(g3_A1_nosv_0_results, dgp_spec = "g3", SV = 0, cross_corr = 0),
+  all_realize_loss_df(g1_A1_nosv_0_results_all, dgp_spec = "g1", SV = 0, cross_corr = 0),
+  all_realize_loss_df(g2_A1_nosv_0_results_all, dgp_spec = "g2", SV = 0, cross_corr = 0),
+  all_realize_loss_df(g3_A1_nosv_0_results_all, dgp_spec = "g3", SV = 0, cross_corr = 0),
   
-  all_realize_loss_df(g1_A1_sv_0.01_results, dgp_spec = "g1", SV = 1, cross_corr = 0.01),
-  all_realize_loss_df(g2_A1_sv_0.01_results, dgp_spec = "g2", SV = 1, cross_corr = 0.01),
-  all_realize_loss_df(g3_A1_sv_0.01_results, dgp_spec = "g3", SV = 1, cross_corr = 0.01),
+  all_realize_loss_df(g1_A1_sv_0.01_results_all, dgp_spec = "g1", SV = 1, cross_corr = 0.01),
+  all_realize_loss_df(g2_A1_sv_0.01_results_all, dgp_spec = "g2", SV = 1, cross_corr = 0.01),
+  all_realize_loss_df(g3_A1_sv_0.01_results_all, dgp_spec = "g3", SV = 1, cross_corr = 0.01),
   
-  all_realize_loss_df(g1_A1_sv_0.1_results, dgp_spec = "g1", SV = 1, cross_corr = 0.1),
-  all_realize_loss_df(g2_A1_sv_0.1_results, dgp_spec = "g2", SV = 1, cross_corr = 0.1),
-  all_realize_loss_df(g3_A1_sv_0.1_results, dgp_spec = "g3", SV = 1, cross_corr = 0.1),
+  all_realize_loss_df(g1_A1_sv_0.1_results_all, dgp_spec = "g1", SV = 1, cross_corr = 0.1),
+  all_realize_loss_df(g2_A1_sv_0.1_results_all, dgp_spec = "g2", SV = 1, cross_corr = 0.1),
+  all_realize_loss_df(g3_A1_sv_0.1_results_all, dgp_spec = "g3", SV = 1, cross_corr = 0.1),
   
-  all_realize_loss_df(g1_A1_sv_1_results, dgp_spec = "g1", SV = 1, cross_corr = 1),
-  all_realize_loss_df(g2_A1_sv_1_results, dgp_spec = "g2", SV = 1, cross_corr = 1),
-  all_realize_loss_df(g3_A1_sv_1_results, dgp_spec = "g3", SV = 1, cross_corr = 1)
+  all_realize_loss_df(g1_A1_sv_1_results_all, dgp_spec = "g1", SV = 1, cross_corr = 1),
+  all_realize_loss_df(g2_A1_sv_1_results_all, dgp_spec = "g2", SV = 1, cross_corr = 1),
+  all_realize_loss_df(g3_A1_sv_1_results_all, dgp_spec = "g3", SV = 1, cross_corr = 1)
 )
 
 all_loss_df_averaged <- all_loss_df %>%
@@ -650,34 +671,34 @@ gen_tidy_vi <- function(simulation_results_list, realization_no, dgp_spec, SV, c
       cbind(model = "RF_MSE", sample = sample, 
             normalize_variable_importance(simulation_results_list[[realization_no]]$RF_MSE[[sample]]$variable_importance)),
       cbind(model = "RF_MAE", sample = sample, 
-            normalize_variable_importance(simulation_results_list[[realization_no]]$RF_MAE[[sample]]$variable_importance))
+            normalize_variable_importance(simulation_results_list[[realization_no]]$RF_MAE[[sample]]$variable_importance)),
       
       ################################################################################################
       
-      # cbind(model = "NN1_MSE", sample = sample, 
-      #       normalize_variable_importance(simulation_results_list[[realization_no]]$NN1_MSE[[sample]]$variable_importance)),
-      # cbind(model = "NN1_MAE", sample = sample, 
-      #       normalize_variable_importance(simulation_results_list[[realization_no]]$NN1_MAE[[sample]]$variable_importance)),
-      # 
-      # cbind(model = "NN2_MSE", sample = sample, 
-      #       normalize_variable_importance(simulation_results_list[[realization_no]]$NN2_MSE[[sample]]$variable_importance)),
-      # cbind(model = "NN2_MAE", sample = sample, 
-      #       normalize_variable_importance(simulation_results_list[[realization_no]]$NN2_MAE[[sample]]$variable_importance)),
-      # 
-      # cbind(model = "NN3_MSE", sample = sample, 
-      #       normalize_variable_importance(simulation_results_list[[realization_no]]$NN3_MSE[[sample]]$variable_importance)),
-      # cbind(model = "NN3_MAE", sample = sample, 
-      #       normalize_variable_importance(simulation_results_list[[realization_no]]$NN3_MAE[[sample]]$variable_importance)),
-      # 
-      # cbind(model = "NN4_MSE", sample = sample, 
-      #       normalize_variable_importance(simulation_results_list[[realization_no]]$NN4_MSE[[sample]]$variable_importance)),
-      # cbind(model = "NN4_MAE", sample = sample, 
-      #       normalize_variable_importance(simulation_results_list[[realization_no]]$NN4_MAE[[sample]]$variable_importance)),
-      # 
-      # cbind(model = "NN5_MSE", sample = sample, 
-      #       normalize_variable_importance(simulation_results_list[[realization_no]]$NN5_MSE[[sample]]$variable_importance)),
-      # cbind(model = "NN5_MAE", sample = sample, 
-      #       normalize_variable_importance(simulation_results_list[[realization_no]]$NN5_MAE[[sample]]$variable_importance))
+      cbind(model = "NN1_MSE", sample = sample,
+            normalize_variable_importance(simulation_results_list[[realization_no]]$NN1_MSE[[sample]]$variable_importance)),
+      cbind(model = "NN1_MAE", sample = sample,
+            normalize_variable_importance(simulation_results_list[[realization_no]]$NN1_MAE[[sample]]$variable_importance)),
+
+      cbind(model = "NN2_MSE", sample = sample,
+            normalize_variable_importance(simulation_results_list[[realization_no]]$NN2_MSE[[sample]]$variable_importance)),
+      cbind(model = "NN2_MAE", sample = sample,
+            normalize_variable_importance(simulation_results_list[[realization_no]]$NN2_MAE[[sample]]$variable_importance)),
+
+      cbind(model = "NN3_MSE", sample = sample,
+            normalize_variable_importance(simulation_results_list[[realization_no]]$NN3_MSE[[sample]]$variable_importance)),
+      cbind(model = "NN3_MAE", sample = sample,
+            normalize_variable_importance(simulation_results_list[[realization_no]]$NN3_MAE[[sample]]$variable_importance)),
+
+      cbind(model = "NN4_MSE", sample = sample,
+            normalize_variable_importance(simulation_results_list[[realization_no]]$NN4_MSE[[sample]]$variable_importance)),
+      cbind(model = "NN4_MAE", sample = sample,
+            normalize_variable_importance(simulation_results_list[[realization_no]]$NN4_MAE[[sample]]$variable_importance)),
+
+      cbind(model = "NN5_MSE", sample = sample,
+            normalize_variable_importance(simulation_results_list[[realization_no]]$NN5_MSE[[sample]]$variable_importance)),
+      cbind(model = "NN5_MAE", sample = sample,
+            normalize_variable_importance(simulation_results_list[[realization_no]]$NN5_MAE[[sample]]$variable_importance))
     )
   }
   cbind(realization_no = realization_no, dgp_spec = dgp_spec, SV = SV, cross_corr = cross_corr, df)
@@ -692,21 +713,21 @@ all_realize_vi <- function(simulation_results_list, dgp_spec, SV, cross_corr) {
 }
 
 all_vi_df <- rbind(
-  all_realize_vi(g1_A1_nosv_0_results, dgp_spec = "g1", SV = 0, cross_corr = 0),
-  all_realize_vi(g2_A1_nosv_0_results, dgp_spec = "g2", SV = 0, cross_corr = 0),
-  all_realize_vi(g3_A1_nosv_0_results, dgp_spec = "g3", SV = 0, cross_corr = 0),
+  all_realize_vi(g1_A1_nosv_0_results_all, dgp_spec = "g1", SV = 0, cross_corr = 0),
+  all_realize_vi(g2_A1_nosv_0_results_all, dgp_spec = "g2", SV = 0, cross_corr = 0),
+  all_realize_vi(g3_A1_nosv_0_results_all, dgp_spec = "g3", SV = 0, cross_corr = 0),
   
-  all_realize_vi(g1_A1_sv_0.01_results, dgp_spec = "g1", SV = 1, cross_corr = 0.01),
-  all_realize_vi(g2_A1_sv_0.01_results, dgp_spec = "g2", SV = 1, cross_corr = 0.01),
-  all_realize_vi(g3_A1_sv_0.01_results, dgp_spec = "g3", SV = 1, cross_corr = 0.01),
+  all_realize_vi(g1_A1_sv_0.01_results_all, dgp_spec = "g1", SV = 1, cross_corr = 0.01),
+  all_realize_vi(g2_A1_sv_0.01_results_all, dgp_spec = "g2", SV = 1, cross_corr = 0.01),
+  all_realize_vi(g3_A1_sv_0.01_results_all, dgp_spec = "g3", SV = 1, cross_corr = 0.01),
   
-  all_realize_vi(g1_A1_sv_0.1_results, dgp_spec = "g1", SV = 1, cross_corr = 0.1),
-  all_realize_vi(g2_A1_sv_0.1_results, dgp_spec = "g2", SV = 1, cross_corr = 0.1),
-  all_realize_vi(g3_A1_sv_0.1_results, dgp_spec = "g3", SV = 1, cross_corr = 0.1),
+  all_realize_vi(g1_A1_sv_0.1_results_all, dgp_spec = "g1", SV = 1, cross_corr = 0.1),
+  all_realize_vi(g2_A1_sv_0.1_results_all, dgp_spec = "g2", SV = 1, cross_corr = 0.1),
+  all_realize_vi(g3_A1_sv_0.1_results_all, dgp_spec = "g3", SV = 1, cross_corr = 0.1),
   
-  all_realize_vi(g1_A1_sv_1_results, dgp_spec = "g1", SV = 1, cross_corr = 1),
-  all_realize_vi(g2_A1_sv_1_results, dgp_spec = "g2", SV = 1, cross_corr = 1),
-  all_realize_vi(g3_A1_sv_1_results, dgp_spec = "g3", SV = 1, cross_corr = 1)
+  all_realize_vi(g1_A1_sv_1_results_all, dgp_spec = "g1", SV = 1, cross_corr = 1),
+  all_realize_vi(g2_A1_sv_1_results_all, dgp_spec = "g2", SV = 1, cross_corr = 1),
+  all_realize_vi(g3_A1_sv_1_results_all, dgp_spec = "g3", SV = 1, cross_corr = 1)
 )
 
 all_vi_df_averaged <- all_vi_df %>%
@@ -715,8 +736,9 @@ all_vi_df_averaged <- all_vi_df %>%
 ```
 
 ```{r}
-## Error Statistic Plots
+## Prediction Performance Plots
 
+################################################################
 # Training Statistics
 all_loss_df_averaged %>%
   ungroup() %>%
@@ -751,6 +773,7 @@ all_loss_df_averaged %>%
   facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
 ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_train_rsquare.pdf")
 
+#######################################################################
 # Test Statistics
 all_loss_df_averaged %>%
   ungroup() %>%
@@ -778,6 +801,17 @@ all_loss_df_averaged %>%
   ungroup() %>%
   mutate(sample = as.factor(sample)) %>%
   ggplot() +
+  geom_bar(aes(x = model, y = test_RMSE, fill = sample), stat = "identity", position = position_dodge()) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  scale_fill_brewer(palette = "Paired") +
+  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_rmse.pdf")
+
+all_loss_df_averaged %>%
+  ungroup() %>%
+  mutate(sample = as.factor(sample)) %>%
+  ggplot() +
   geom_bar(aes(x = model, y = test_RSquare, fill = sample), stat = "identity", position = position_dodge()) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
@@ -794,7 +828,7 @@ all_vi_df_averaged %>%
   filter(dgp_spec == "g1") %>%
   mutate(variable = fct_reorder(variable, importance)) %>%
   group_by(dgp_spec, model, sample, cross_corr, SV) %>%
-  top_n(3, importance) %>%
+  top_n(2, importance) %>%
   ggplot() + 
   geom_tile(aes(x = model, y = variable, alpha = importance)) +
   theme_bw() +
@@ -822,7 +856,7 @@ all_vi_df_averaged %>%
   filter(dgp_spec == "g3") %>%
   mutate(variable = fct_reorder(variable, importance)) %>%
   group_by(dgp_spec, model, sample, cross_corr, SV) %>%
-  top_n(3, importance) %>%
+  top_n(2, importance) %>%
   ggplot() + 
   geom_tile(aes(x = model, y = variable, alpha = importance)) +
   theme_bw() +
@@ -840,7 +874,7 @@ all_vi_df_averaged %>%
   ungroup() %>%
   mutate(variable = fct_reorder(variable, importance)) %>%
   group_by(model) %>%
-  top_n(25, importance) %>%
+  top_n(15, importance) %>%
   ggplot() + 
   geom_tile(aes(x = model, y = variable, alpha = importance)) +
   theme_bw() +

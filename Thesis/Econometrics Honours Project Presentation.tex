@@ -101,10 +101,8 @@
 
 \title{Evaluation of Machine Learning in Finance}
 
-\author{
-	Ze Yu Zhong \\
-	Supervisor: David Frazier
-}
+\author{Ze Yu Zhong 
+	\\ Supervisor: David Frazier}
 
 \institute{Monash University}
 
@@ -114,6 +112,11 @@
 	
 \begin{frame}[plain]
     \maketitle
+\end{frame}
+
+\begin{frame}
+\frametitle{Overview}
+\tableofcontents
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -130,14 +133,40 @@ To evaluate the application of machine learning to predicting financial asset re
 \end{frame}
 
 \begin{frame}
-\frametitle{Background}
+\frametitle{Motivation}
+Empirical finance is typically concerned with two main goals:
 \begin{itemize}
-\item Factors: a collection of regressors to be used in pricing returns that can be used to proxy for unknown underlying risk factors due to their correlation with cross sectional returns, \citep{harvey__2016}
-	\begin{itemize}
-		\item Violates strict view that risk factors should be variables that have unpredictable variation through time, and be able to explain cross sectional returns independently
-	\end{itemize}
+	\item Prediction accuracy - want to predict future returns!
+	\item Statistical causal inference - want to understand \textit{what} drives returns
 \end{itemize}
+\end{frame}
 
+\begin{frame}
+\frametitle{Motivation}
+Recognise that these goals are very difficult, especially for traditional regression!
+
+The underlying data generating process for financial data is unknown - returns are estimated by \textit{risk factors}, defined by \cite{harvey__2016} as a collection of regressors that can proxy for underlying risk factors
+
+Factors are often unsuitable for regression:
+\begin{itemize}
+	\item Persistent
+	\item Cross-sectionally correlated (multicollinearity)
+	\item Non-stationary
+	\item Pre-known, and therefore little time series variation
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Motivation}
+Consequences when included in traditional regression well documented:
+\begin{itemize}
+	\item Biased t-stats
+	\item High variance for coefficient estimates
+	\item Unstable coefficient estimates
+\end{itemize}
+These can adversely affect statistical inference. 
+
+The estimated coefficients, due to being imprecise, will also result in poor out of sample prediction, which are a function of coefficients. This is particularly so if the multicollinearity between regressors changes over time, which is likely in financial data
 \end{frame}
 
 \begin{frame}
@@ -173,7 +202,6 @@ To evaluate the application of machine learning to predicting financial asset re
 \frametitle{Background}
 \begin{itemize}
 \item More factors produced by literature: currently over 600 documented \citep{harvey_census_2019}
-
 \begin{itemize}
 	\item False discovery problem, \citep{harvey__2016}
 	
@@ -181,8 +209,6 @@ To evaluate the application of machine learning to predicting financial asset re
 	
 	\item Number of factors may be more than sample size, making regression impossible
 \end{itemize}
-
-
 \end{itemize}
 \end{frame}
 
@@ -190,23 +216,30 @@ To evaluate the application of machine learning to predicting financial asset re
 \section{Why apply Machine Learning in Finance?}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%%%%%%%%%%%%%%%%%
-%%Interweave Literature review throughout this section
-%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%
+%Interweave Literature review throughout this section
+%%%%%%%%%%%%%%%%
 
-%\begin{frame}
-%\frametitle{Why apply Machine Learning in Finance?}
-%\begin{itemize}
-%	\item High dimensional - more flexible than traditional regression models, which make strong functional form assumptions and are sensitive to outliers, \citep{freyberger_dissecting_2017}
-%	\item Explicit methods for guarding against overfitting and generalizing poorly
-%	\item Methods to produce an optimal model from all possible at manageable computation cost
-%\end{itemize}
-%\end{frame}
+\begin{frame}
+\frametitle{Why apply Machine Learning in Finance?}
+
+Machine learning methods have been used within the literature and appear to be well suited:
+\begin{itemize}
+	\item High dimensional - more flexible than traditional regression models, which make strong functional form assumptions and are sensitive to outliers, \citep{freyberger_dissecting_2017}
+	\item Explicit ``regularization" methods for guarding against overfitting
+	\item Methods to produce an optimal model from all possible at manageable computation cost
+\end{itemize}
+More able to manage the explosion in the number of factors suggested by the literature!
+\end{frame}
 
 \begin{frame}
 \frametitle{Applications in the Literature}
+Causal Analysis:
 \begin{itemize}
 	\item \cite{kozak_shrinking_2017}, \cite{rapach_forecasting_2013}, \cite{freyberger_dissecting_2017}, and others apply shrinkage and selection methods to identify important factors
+\end{itemize}
+Prediction Performance:
+\begin{itemize}
 	\item \cite{gu_empirical_2018}, \cite{feng_deep_2018}, construct machine learning portfolios that historically outperform traditional portfolios in terms of prediction error and predictive $R^2$
 	\item Attribute their success to machine learning's ability to find non-linear interactions
 \end{itemize}
@@ -224,8 +257,7 @@ However, little work has been done on how machine learning actually recognises a
 
 \begin{frame}
 \frametitle{Motivations}
-\begin{itemize}
-\item Can machine learning deal with the challenges in financial data?
+Can machine learning deal with the challenges in financial data?
 \begin{itemize}
 	\item Persistent Regressors?
 	\item Identify true factors from a high dimensional, cross sectionally correlated panel?
@@ -233,9 +265,20 @@ However, little work has been done on how machine learning actually recognises a
 	\item Are their conclusions consistent?
 	\item Do they perform better than traditional methods?
 \end{itemize}
+\end{frame}
 
-\item Explore this via simulation and popular machine learning models
-\item Models will also be evaluated again, but with more recent, representative financial data to explore robustness. 
+\begin{frame}
+\frametitle{Motivations}
+We explored this via two studies, focusing on the prediction performance and factor selection performance of some common machine learning models:
+
+Simulation study
+\begin{itemize}
+	\item 
+\end{itemize}
+
+Empirical study
+\begin{itemize}
+	\item 
 \end{itemize}
 \end{frame}
 
@@ -360,44 +403,23 @@ Mean Squared Error (MSE)
 	\begin{align}
 	\text{MSE} &= \frac{1}{n} \sum_{j = i}^{n} \left( y_j - \hat{y_j}\right) ^2
 	\end{align}
-	
-% Huber Loss
-%		\begin{align}
-%		H(\epsilon_j = y_j - \hat{y_j};\xi) = 
-%		\begin{cases}
-%		\left( y_j - \hat{y_j}\right) ^2, 
-%		\quad &\text{if} \quad |y_j - \hat{y_j}| \leq \xi ; \\
-%		2 \xi  |y_j - \hat{y_j}| - \xi^2, 
-%		\quad &\text{if} \quad |y_j - \hat{y_j}| > \xi
-%		\end{cases}
-%		\end{align}
 
 \end{frame}
-
-%\begin{frame}
-%\frametitle{Loss Functions}
-%\begin{figure}
-%	\begin{center}
-%		\begin{tikzpicture}
-%		\begin{axis}[ xlabel={$\epsilon$}, ylabel={Loss}, axis lines=middle, samples=41, grid, thick, domain=-2:2]
-%		\addplot+[no marks] {abs(x)};
-%		\addlegendentry{MAE}
-%		\addplot+[no marks] {x^2};
-%		\addlegendentry{MSE}
-%		\addplot+[no marks] {(2 * abs(x) - 1)*(abs(x) > 1) +
-%			(x^2)*(abs(x) <= 1 )};
-%		\addlegendentry{Huber Loss}
-%		\end{axis}
-%		\end{tikzpicture}
-%	\end{center}
-%	\caption{Illustration of MAE, MSE and Huber Loss when $\xi = 1$}
-%	\label{fig:loss_functions}
-%\end{figure}
-%\end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Linear Models
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Models}
+We focus on 4 common machine learning models:
+\begin{itemize}
+	\item Linear Models
+	\item Penalized Linear Models
+	\item Random Forests
+	\item Neural Networks
+\end{itemize}
+\end{frame}
 
 \begin{frame}
 \frametitle{Linear Models}
@@ -425,7 +447,7 @@ Linear Models + Penalty term (Elastic Net by \cite{zou_regularization_2005} show
 		\frac{1}{2} \lambda \rho \sum_{j = 1}^{P}\theta_j^2
 	\end{align}
 
-Elastic Net penalty produces efficient and parsimonious via shrinkage and selection
+Elastic Net penalty aims to produce efficient and parsimonious via shrinkage and selection
 	
 \end{frame}
 
@@ -465,42 +487,10 @@ Random Forests were proposed by \cite{breiman_random_2001} to address this
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
-\frametitle{Neural Networks}
-\begin{align}
-	x_k^{(l)} &= \alpha(x^{(l-1)'}\theta_k^{l-1}) \\
-	x_1^{(1)} &= \alpha \left( (x_0^{(0)}, x_1^{(0)}, x_2^{(0)}, x_3^{(0)})'\theta_1^{0} \right) 
-\end{align}
+\frametitle{Neural Networks - Overview}
+Most complex model considered
 
-\begin{figure}
-	\begin{neuralnetwork}
-		%Options
-		[nodespacing=9.5mm, layerspacing=18mm,
-		maintitleheight=1em, layertitleheight=2em,
-		height=7, toprow=false, nodesize=24pt, style={},
-		title={}, titlestyle={}]
-		\newcommand{\nodetextclear}[2]{}
-		%use \ifnum to get different labels, such as x_n on the last neuron
-		\newcommand{\nodetextx}[2]{\ifnum ####2=8 $x_n^{(0)}$ \else $x_####2^{(0)}$ \fi}
-		\newcommand{\nodetexty}[2]{$y_####2$}
-		%Hidden layer textcommands
-		%32 neurons
-		\newcommand{\nodetextxa}[2]{\ifnum ####2=7 $x_{32}^{(1)}$ \else $x_####2^{(1)}$ \fi}
-		%16 neurons
-		\newcommand{\nodetextxb}[2]{\ifnum ####2=6 $x_{16}^{(2)}$ \else $x_####2^{(2)}$ \fi}
-		%8 neurons
-		\newcommand{\nodetextxc}[2]{\ifnum ####2=5 $x_{8}^{(3)}$ \else $x_####2^{(3)}$ \fi}
-		\newcommand{\nodetextxd}[2]{$x_####2^{(4)}$}
-		\newcommand{\nodetextxe}[2]{$x_####2^{(5)}$}
-		%Input Layer
-		\inputlayer[count=3, bias=true, title=, text=\nodetextx]
-		%Hidden Layer 1
-		\hiddenlayer[count=1, bias=true, title=, text=\nodetextxa] 
-		\linklayers[]
-		%Final Layer
-		\outputlayer[count=1, title=, text=\nodetexty] \linklayers
-	\end{neuralnetwork}
-\caption{Sample Neural Network}
-\end{figure}
+Able to capture non-linearities automatically and systematically
 \end{frame}
 
 \begin{frame}
@@ -521,15 +511,24 @@ ReLU activation function was chosen for all hidden layers for computational spee
 \end{equation}
 \end{frame}
 
-%\begin{frame}
-%\frametitle{Computation}
-%\begin{itemize}
-%	\item Stochastic Gradient Descent using ADAM
-%	\item Batch Normalization
-%	\item Randomize initial starting weights and biases, then average these into an ensemble model
-%	\item See references for specific details
-%\end{itemize}
-%\end{frame}
+\begin{frame}
+\frametitle{Neural Network Tuning}
+Neural Networks have the largest number of hyperparameters to tune - computationally infeasible to conduct comprehensive grid search. Conservative gridsearch was conducted, but it was observed that in general, default values provided the best performance.
+
+Learning Rate
+Batch Size
+\end{frame}
+
+\begin{frame}
+\frametitle{Neural Network - Activation Function}
+\cite{gu_empirical_2018} specified using the ReLU activation function for all layers
+
+We found that this specification does not work due to the ``dying ReLU" problem"
+
+Alternatives such as Leaky ReLU also did not give very good performance
+
+A specification of the tanh activation function was observed to give the best results
+\end{frame}
 
 \begin{frame}
 %Beamer hack snad uses # in a loop
@@ -593,6 +592,8 @@ ReLU activation function was chosen for all hidden layers for computational spee
 	Mean Absolute Error
 	
 	Out of sample predictive R
+	
+\end{frame}
 	
 \begin{frame}
 \frametitle{Out of Sample R squared}
@@ -769,10 +770,7 @@ The simulation design results in $3 \times 4 = 12$ different simulation designs,
 
 \item Only more recent data will be used, such as the period before and after 2008 GFC
 \end{itemize}
-
 \end{frame}
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{References}

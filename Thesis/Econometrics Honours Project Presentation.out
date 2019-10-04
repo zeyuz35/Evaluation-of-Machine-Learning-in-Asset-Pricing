@@ -1,12 +1,12 @@
-\BOOKMARK [2][]{Outline0.1}{Background}{}% 1
-\BOOKMARK [2][]{Outline0.2}{What is Machine Learning?}{}% 2
-\BOOKMARK [2][]{Outline0.3}{Why apply Machine Learning in Finance?}{}% 3
-\BOOKMARK [2][]{Outline0.4}{Model Specification}{}% 4
-\BOOKMARK [2][]{Outline0.5}{Methodology}{}% 5
-\BOOKMARK [2][]{Outline0.6}{Simulation}{}% 6
-\BOOKMARK [3][]{Outline0.6.1.23}{Simulation Design}{Outline0.6}% 7
-\BOOKMARK [2][]{Outline0.7}{Real Data}{}% 8
-\BOOKMARK [2][]{Outline0.8}{Model Evaluation}{}% 9
-\BOOKMARK [2][]{Outline0.9}{Results}{}% 10
-\BOOKMARK [2][]{Outline0.10}{References}{}% 11
-\BOOKMARK [2][]{Outline0.12}{Questions and Answers}{}% 12
+\BOOKMARK [2][]{Outline0.1}{Introduction}{}% 1
+\BOOKMARK [2][]{Outline0.2}{Why apply Machine Learning in Finance?}{}% 2
+\BOOKMARK [2][]{Outline0.3}{Model Specification}{}% 3
+\BOOKMARK [2][]{Outline0.4}{Methodology}{}% 4
+\BOOKMARK [2][]{Outline0.5}{Simulation Study}{}% 5
+\BOOKMARK [3][]{Outline0.5.1.31}{Simulation Design}{Outline0.5}% 6
+\BOOKMARK [2][]{Outline0.6}{Simulation Study Results}{}% 7
+\BOOKMARK [3][]{Outline0.6.1.37}{Prediction Performance}{Outline0.6}% 8
+\BOOKMARK [3][]{Outline0.6.2.38}{Variable Importance}{Outline0.6}% 9
+\BOOKMARK [2][]{Outline0.7}{Real Data}{}% 10
+\BOOKMARK [2][]{Outline0.8}{References}{}% 11
+\BOOKMARK [2][]{Outline0.10}{Questions and Answers}{}% 12

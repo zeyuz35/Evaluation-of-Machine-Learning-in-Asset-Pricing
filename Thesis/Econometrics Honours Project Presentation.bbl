@@ -1,4 +1,4 @@
-\begin{thebibliography}{20}
+\begin{thebibliography}{18}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
 
 \bibitem[{Ang and Bekaert(2006)}]{ang_stock_2006}
@@ -7,10 +7,6 @@ Ang, A., Bekaert, G., 2006. Stock return predictability: {Is} it there? The
 
 \bibitem[{Breiman(2001)}]{breiman_random_2001}
 Breiman, L., 2001. Random forests. Machine learning 45, 5--32.
-
-\bibitem[{Diebold and Mariano(2002)}]{diebold_comparing_2002}
-Diebold, F.~X., Mariano, R.~S., 2002. Comparing predictive accuracy. Journal of
-  Business \& economic statistics 20, 134--144.
 
 \bibitem[{Feng et~al.(2019)Feng, Giglio, and Xiu}]{feng_taming_2019}
 Feng, G., Giglio, S., Xiu, D., 2019. Taming the {Factor} {Zoo}: {A} {Test} of
@@ -45,12 +41,6 @@ Harvey, C.~R., Liu, Y., 2019. A {Census} of the {Factor} {Zoo}. Social Science
 \bibitem[{Harvey et~al.(2016)Harvey, Liu, and Zhu}]{harvey__2016}
 Harvey, C.~R., Liu, Y., Zhu, H., 2016. … and the {Cross}-{Section} of
   {Expected} {Returns}. The Review of Financial Studies 29, 5--68.
-
-\bibitem[{Harvey et~al.(1997)Harvey, Leybourne, and
-  Newbold}]{harvey_testing_1997}
-Harvey, D., Leybourne, S., Newbold, P., 1997. Testing the equality of
-  prediction mean squared errors. International Journal of Forecasting 13,
-  281--291.
 
 \bibitem[{Hastie et~al.(2009)Hastie, Tibshirani, and
   Friedman}]{hastie_elements_2009}
