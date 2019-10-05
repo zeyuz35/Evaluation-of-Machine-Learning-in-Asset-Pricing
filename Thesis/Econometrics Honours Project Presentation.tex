@@ -4,7 +4,7 @@
 
 \PassOptionsToPackage{usenames, dvipsnames, table}{xcolor}
 
-\documentclass[]{beamer}
+\documentclass[aspectratio=169]{beamer}
 \usetheme{Boadilla}
 
 %Make beamer number figures, because it doesn't by default
@@ -76,6 +76,8 @@
 %Graphs
 \usepackage{tikz}
 \usepackage{pgfplots}
+
+\usepackage[export]{adjustbox}
 
 %Coloured Tables
 
@@ -310,20 +312,6 @@ $g^*(z_{i,t})$ represents the model approximation using the $P$ dimensional pred
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
-	\frametitle{What is Machine Learning?}
-	``...a vast set of tools for understanding data."
-	
-	- \textit{An Introduction to Statistical Learning}, \citep{hastie_elements_2009}
-	
-	We will define it as a diverse collection of:
-	\begin{itemize}
-		\item high dimensional models for statistical prediction,
-		\item ``regularization" methods for model selection and mitigation of overfitting in sample data
-		\item efficient systematic methods for searching potential model specifications
-	\end{itemize}
-\end{frame}
-
-\begin{frame}
 \frametitle{Overview}
 Machine Learning Methodology consists of 3 overall components:
 \begin{itemize}
@@ -338,7 +326,7 @@ Machine Learning Methodology consists of 3 overall components:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
-\frametitle{Expanding/Growing Window Approach}
+\frametitle{Sample Splitting - Expanding Window Scheme}
 An expanding/growing window approach was used to
 \begin{itemize}
 	\item Allow models to incorporate more data over time
@@ -353,28 +341,28 @@ Split specification is ultimately subjective
 \frametitle{Sample Splitting}
 \begin{figure}
 	\begin{center}
-		\begin{tabular}{|c|p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}p{0.25cm}|p{0.25cm}p{0.25cm}p{0.25cm}|}
+		\begin{tabular}{|c|p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}|}
 			\hline
 			Set No. &&&&&&&&&&&&&&& \\
 			\hline
 			%%%%%%%%
-			3 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
-			\cellcolor{pink} & 
-			\cellcolor{olive} & \cellcolor{olive} &	\cellcolor{olive} \\
+			3 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
+			\cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & 	
+			\cellcolor{olive} \\
 			%%%%%%%%
-			2 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
-			\cellcolor{pink} & 
-			\cellcolor{olive} & \cellcolor{olive} &	\cellcolor{olive} & \cellcolor{olive} \\
+			2 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
+			\cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & 	
+			\cellcolor{olive} & NA  \\
 			%%%%%%%%
-			1 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
-			\cellcolor{pink} & 
-			\cellcolor{olive} & \cellcolor{olive} &	\cellcolor{olive} & \cellcolor{olive} & \cellcolor{olive} \\
+			1 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
+			\cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & 	
+			\cellcolor{olive} & NA & NA \\
 			\hline
 			Year & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15\\
 			\hline
 		\end{tabular}
 		\medskip
-		\begin{tabular}{|c|p{0.25cm}|}
+		\begin{tabular}{|c|p{0.40cm}|}
 			\hline
 			Training & \cellcolor{cyan} \\
 			\hline
@@ -385,6 +373,7 @@ Split specification is ultimately subjective
 		\end{tabular}
 	\end{center}
 	\caption{Sample Splitting Procedure}
+	\label{sample_split_diag}
 \end{figure}
 \end{frame}
 
@@ -492,7 +481,9 @@ Random Forests were proposed by \cite{breiman_random_2001} to address this
 \frametitle{Neural Networks - Overview}
 Most complex model considered
 
-Able to capture non-linearities automatically and systematically
+Able to capture non-linearities systematically
+
+In theory able to approximate any function - Universal Approximation Theorem
 \end{frame}
 
 \begin{frame}
@@ -515,10 +506,24 @@ ReLU activation function was chosen for all hidden layers for computational spee
 
 \begin{frame}
 \frametitle{Neural Network Tuning}
-Neural Networks have the largest number of hyperparameters to tune - computationally infeasible to conduct comprehensive grid search. Conservative gridsearch was conducted, but it was observed that in general, default values provided the best performance.
+Neural Networks have the largest number of hyperparameters to tune - computationally infeasible to conduct comprehensive grid search. 
 
-Learning Rate
-Batch Size
+A conservative gridsearch was conducted, but it was observed that in general, default values provided the best performance.
+
+Observed that neural networks are high sensitive to hyperparameters - not easy to tune!
+\end{frame}
+
+\begin{frame}
+\frametitle{Hyperparameter Tuning}
+Hyperparameters gridsearched:
+\begin{itemize}
+	\item Optimizer
+	\item Learning Rate
+	\item Batch Size
+	\item l1 penalty
+	\item Activation function
+	\item Momentum
+\end{itemize}
 \end{frame}
 
 \begin{frame}
@@ -533,7 +538,7 @@ A specification of the tanh activation function was observed to give the best re
 \end{frame}
 
 \begin{frame}
-%Beamer hack snad uses # in a loop
+%Beamer hacks and uses # in a loop
 %Therefore, we need to replace all # with ####
 \begin{figure}
 	\begin{neuralnetwork}
@@ -754,9 +759,29 @@ The simulation design results in $3 \times 4 = 12$ different simulation designs,
 
 \subsection{Prediction Performance}
 
+%% Quantile Loss is better
+
 \begin{frame}
-\frametitle{Prediction Performance}
+\begin{center}
+	\begin{figure}
+		\includegraphics[max size={\textwidth}{\textheight}]{simulation_test_mae_pre_all.pdf}
+		\caption{Test MAE across all simulation designs}
+	\end{figure}	
+\end{center}
 \end{frame}
+
+\begin{frame}
+\begin{center}
+	\begin{figure}
+	\includegraphics[max size={\textwidth}{\textheight}]{simulation_test_mse_pre_all.pdf}
+	\caption{Test MAE across all simulation designs}
+	\end{figure}	
+\end{center}
+\end{frame}
+
+%% More data is worse for SV designs
+
+%% Best Models are penalized Linear and random forests, random forests are only better on g2 specification (most non-linear)
 
 \subsection{Variable Importance}
 
@@ -802,10 +827,8 @@ Missing Data
 
 \begin{frame}
 \frametitle{Macroeconomic Factors}
-Construct 8 macroeconomic factors, (\cite{welch_comprehensive_2008}):
-
 \begin{table}
-	\caption{Macroeconomic Factors}
+	\caption{Macroeconomic Factors, (\cite{welch_comprehensive_2008})}
 	\begin{center}
 		\begin{tabular}{lccc} \hline
 			No. & Acronym & Macroeconomic Factor \\ \hline
@@ -839,9 +862,9 @@ Number of covariates in this baseline set is $61 \times (8 + 1) = 549$.
 \frametitle{Sample Splitting}
 \begin{figure}
 	\begin{center}
-		\begin{tabular}{|c|p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}|}
+		\begin{tabular}{|c|p{0.60cm}p{0.60cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}|}
 			\hline
-			Set No. &&&&&&&&&&&&&&&& \\
+			Set &&&&&&&&&&&&&&&& \\
 			\hline
 			%%%%%%%%
 			3 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
@@ -854,7 +877,7 @@ Number of covariates in this baseline set is $61 \times (8 + 1) = 549$.
 			1 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
 			\cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{olive} & NA & NA \\
 			\hline
-			Time & 1993Q3 & 1993Q4 & 1994 & 1995 & 1996 & ... & 2006 & 2007 & 2008 & ... & 2011 & 2012 & 2013 & 2014 & 2015 & 2016 \\
+			Time & 93Q3 & 93Q4 & 94 & 95 & 96 & ... & 06 & 07 & 08 & ... & 11 & 12 & 13 & 14 & 15 & 16 \\
 			\hline
 		\end{tabular}
 		\medskip
@@ -880,7 +903,12 @@ Number of covariates in this baseline set is $61 \times (8 + 1) = 549$.
 
 In general, results from the simulation study were repeated.
 
-Important, as this suggests that the simulation study was accurate to some degree, and there is some support for the same conclusions to be made.
+\begin{itemize}
+	\item Suggest that simulation study was accurate to some degree
+	\item Support for same conclusions to be made
+\end{itemize}
+
+Again see that results are different from \cite{gu_empirical_2018}. Neural networks do not vastly outperform other models!
 
 \end{frame}
 
@@ -912,14 +940,25 @@ Neural Networks are still unstable
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
-\frametitle{Variable Importance}
-
+\frametitle{Variable Importance - Individual Factors}
 \includegraphics{empirical_sample_all_vi_ind.pdf}
+\end{frame}
 
+\begin{frame}
+\frametitle{Variable Importance - Macroeconomic Factors}
+\includegraphics{empirical_sample_all_vi_macro.pdf}
 \end{frame}
 
 \begin{frame}
 \frametitle{Variable Importance}
+Important factors in penalized linear models and random forests:
+\begin{itemize}
+\item 1 and 6 month momentum factors
+\end{itemize}
+Important factors in neural networks:
+\begin{itemize}
+\item Market Value (though inconsistent)
+\end{itemize}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

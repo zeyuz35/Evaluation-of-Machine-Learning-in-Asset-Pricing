@@ -34,7 +34,7 @@ plan(multisession)
 set.seed(27935248)
 ```
 
-```{r}
+```{r fit_all_models_function}
 # Load Datasets
 
 # Set how many realizations of datasets you wish to process
@@ -158,7 +158,6 @@ g1_A1_sv_1 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/
 g2_A1_sv_1 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Simulated_dataset/g2_A1_sv_1.RDS")
 g3_A1_sv_1 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Simulated_dataset/g3_A1_sv_1.RDS")
 ```
-
 
 ```{r}
 batch_process_range <- c(1:10)
@@ -328,7 +327,7 @@ g3_A1_sv_1_NN_results610 <- fit_all_models(g3_A1_sv_1, batch_process_range, LM =
 saveRDS(g3_A1_sv_1_NN_results610, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_1_NN_results610.rds")
 ```
 
-```{r}
+```{r load_partial_results}
 ## Chunk to load all results lists
 
 g1_A1_nosv_0_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_nosv_0_results.RDS")
@@ -403,7 +402,7 @@ g3_A1_sv_1_NN_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-
 
 ```
 
-```{r}
+```{r combine_results}
 ## Combining the results together
 
 ## Combine the RF results together first
@@ -536,7 +535,7 @@ saveRDS(g3_A1_sv_1_results_all, file =
           "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_1_results_all.rds")
 ```
 
-```{r}
+```{r load_final_results}
 ## Chunk to load final results list (just load this to avoid bothering with combining different results list)
 
 g1_A1_nosv_0_results_all <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_nosv_0_results_all.RDS")
@@ -556,8 +555,7 @@ g2_A1_sv_1_results_all <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-As
 g3_A1_sv_1_results_all <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_1_results_all.RDS")
 ```
 
-
-```{r}
+```{r performance_functions}
 ## For a given simulation results list, collect all the loss dataframes into a big, tidy DF for a SINGLE realization
 
 gen_tidy_loss_df <- function(simulation_results_list, realization_no, dgp_spec, SV, cross_corr) {
@@ -735,7 +733,7 @@ all_vi_df_averaged <- all_vi_df %>%
   summarise(importance = mean(importance))
 ```
 
-```{r}
+```{r prediction_performance_plots}
 ## Prediction Performance Plots
 
 ################################################################
@@ -775,27 +773,87 @@ ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Resu
 
 #######################################################################
 # Test Statistics
+
+## Plots showing that quantile loss is better
 all_loss_df_averaged %>%
   ungroup() %>%
   mutate(sample = as.factor(sample)) %>%
+  filter(model == "LM_MAE" | model == "LM_MSE" 
+         | model == "ELN_MAE" | model == "ELN_MSE"
+         | model == "RF_MAE" | model == "RF_MSE"
+         | model == "NN5_MAE" | model == "NN5_MSE") %>%
   ggplot() +
   geom_bar(aes(x = model, y = test_MAE, fill = sample), stat = "identity", position = position_dodge()) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired") +
   facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_mae.pdf")
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_mae_pre_all.pdf")
 
 all_loss_df_averaged %>%
   ungroup() %>%
   mutate(sample = as.factor(sample)) %>%
+  filter(model == "LM_MAE" | model == "LM_MSE" 
+         | model == "ELN_MAE" | model == "ELN_MSE"
+         | model == "RF_MAE" | model == "RF_MSE"
+         | model == "NN5_MAE" | model == "NN5_MSE") %>%
   ggplot() +
   geom_bar(aes(x = model, y = test_MSE, fill = sample), stat = "identity", position = position_dodge()) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired") +
   facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_mse.pdf")
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_mse_pre_all.pdf")
+
+###########################
+## Plots for presentation
+
+all_loss_df_averaged %>%
+  ungroup() %>%
+  mutate(sample = as.factor(sample)) %>%
+  filter(model == "LM_MSE" 
+         | model == "ELN_MAE"
+         | model == "RF_MAE"
+         | model == "NN5_MAE") %>%
+  ggplot() +
+  geom_bar(aes(x = model, y = test_MAE, fill = sample), stat = "identity", position = position_dodge()) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  scale_fill_brewer(palette = "Paired") +
+  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_mae_pre.pdf")
+
+all_loss_df_averaged %>%
+  ungroup() %>%
+  mutate(sample = as.factor(sample)) %>%
+  filter(model == "LM_MSE" 
+         | model == "ELN_MAE"
+         | model == "RF_MAE"
+         | model == "NN5_MAE") %>%
+  ggplot() +
+  geom_bar(aes(x = model, y = test_MSE, fill = sample), stat = "identity", position = position_dodge()) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  scale_fill_brewer(palette = "Paired") +
+  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_mse_pre.pdf")
+
+all_loss_df_averaged %>%
+  ungroup() %>%
+  mutate(sample = as.factor(sample)) %>%
+  filter(model == "LM_MSE" 
+         | model == "ELN_MAE"
+         | model == "RF_MAE"
+         | model == "NN5_MAE") %>%
+  ggplot() +
+  geom_bar(aes(x = model, y = test_RSquare, fill = sample), stat = "identity", position = position_dodge()) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  scale_fill_brewer(palette = "Paired") +
+  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_rsquare_pre.pdf")
+
+###################################################################################################################
 
 all_loss_df_averaged %>%
   ungroup() %>%
@@ -811,6 +869,10 @@ ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Resu
 all_loss_df_averaged %>%
   ungroup() %>%
   mutate(sample = as.factor(sample)) %>%
+  filter(model == "LM_MSE" 
+         | model == "ELN_MAE"
+         | model == "RF_MAE"
+         | model == "NN5_MAE") %>%
   ggplot() +
   geom_bar(aes(x = model, y = test_RSquare, fill = sample), stat = "identity", position = position_dodge()) +
   theme_bw() +
@@ -857,8 +919,7 @@ all_loss_df_averaged %>%
 ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_mae_small.pdf")
 ```
 
-
-```{r}
+```{r variable_importance_plots}
 # Variable Importance Plots
 
 all_vi_df_averaged %>%
@@ -923,7 +984,7 @@ ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulat
 
 ```
 
-```{r}
+```{r hyperparam_functions}
 ## Plotting hyperparameters of ELN across different training samples
 
 # Function to extract ELN hyperparameter df from simulation results list
@@ -986,7 +1047,7 @@ eln_hyperparameters_df %>%
 ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/eln_lambda_plot.pdf")
 ```
 
-```{r}
+```{r hyperparam_plots}
 ## Plotting hyperparameters of randomforest across training samples
 
 get_rf_hyper_df <- function(simulation_results_list, realization_no, dgp_spec, SV, cross_corr) {
