@@ -736,6 +736,8 @@ all_vi_df_averaged <- all_vi_df %>%
 ```{r prediction_performance_plots}
 ## Prediction Performance Plots
 
+a4_aspect_ratio <- 1.5
+
 ################################################################
 # Training Statistics
 all_loss_df_averaged %>%
@@ -788,7 +790,8 @@ all_loss_df_averaged %>%
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired") +
   facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_mae_pre_all.pdf")
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_mae_pre_all.pdf",
+       width = 15 * a4_aspect_ratio, height = 15, units = "cm")
 
 all_loss_df_averaged %>%
   ungroup() %>%
@@ -803,7 +806,8 @@ all_loss_df_averaged %>%
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired") +
   facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_mse_pre_all.pdf")
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_mse_pre_all.pdf",
+       width = 15 * a4_aspect_ratio, height = 15, units = "cm")
 
 ###########################
 ## Plots for presentation
@@ -922,18 +926,26 @@ ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Resu
 ```{r variable_importance_plots}
 # Variable Importance Plots
 
+## Plots for PRESENTATION
+
 all_vi_df_averaged %>%
   filter(dgp_spec == "g1") %>%
+  filter(model == "LM_MSE" 
+         | model == "ELN_MAE"
+         | model == "RF_MAE"
+         | model == "NN5_MAE") %>%
+  group_by(dgp_spec, model, variable, cross_corr, SV) %>%
+  summarise(importance = mean(importance)) %>%
+  ungroup() %>%
   mutate(variable = fct_reorder(variable, importance)) %>%
-  group_by(dgp_spec, model, sample, cross_corr, SV) %>%
-  top_n(2, importance) %>%
+  top_n(10, importance) %>%
   ggplot() + 
-  geom_tile(aes(x = model, y = variable, alpha = importance)) +
+  geom_tile(aes(x = variable, y = model, alpha = importance)) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   theme(legend.position = "none") +
   # Facet
-  facet_grid(rows = vars(cross_corr), cols = vars(sample))
+  facet_grid(rows = vars(cross_corr))
 ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_g1_vi_plot.pdf")
 
 all_vi_df_averaged %>%
@@ -967,20 +979,25 @@ ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulat
 ## Average variable importance over all samples
 
 all_vi_df_averaged %>%
+  filter(model == "LM_MSE" 
+         | model == "ELN_MAE"
+         | model == "RF_MAE"
+         | model == "NN5_MAE") %>%
   group_by(dgp_spec, model, cross_corr, variable, SV) %>%
   summarise(importance = mean(importance)) %>%
   ungroup() %>%
   mutate(variable = fct_reorder(variable, importance)) %>%
   group_by(model) %>%
-  top_n(15, importance) %>%
+  top_n(42, importance) %>%
   ggplot() + 
-  geom_tile(aes(x = model, y = variable, alpha = importance)) +
+  geom_tile(aes(x = variable, y = model, alpha = importance)) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   theme(legend.position = "none") +
   # Facet
   facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
-ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_ave_vi_plot.pdf")
+ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_ave_vi_plot_pre.pdf",
+       width = 15 * a4_aspect_ratio, height = 15, units = "cm")
 
 ```
 
