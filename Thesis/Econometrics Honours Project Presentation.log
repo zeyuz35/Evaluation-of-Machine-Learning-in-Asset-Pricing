@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.7140 64-bit) (preloaded format=pdflatex 2019.5.8)  6 OCT 2019 16:07
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.7140 64-bit) (preloaded format=pdflatex 2019.5.8)  6 OCT 2019 23:37
 entering extended mode
 **"./Econometrics Honours Project Presentation.tex"
 ("Econometrics Honours Project Presentation.tex"
@@ -1795,6 +1795,21 @@ Overfull \hbox (11.82709pt too wide) has occurred while \output is active
 [16
 
 ]
+Overfull \hbox (3.67538pt too wide) in paragraph at lines 375--375
+[]|\OT1/cmss/m/n/10.95 NA| 
+ []
+
+
+Overfull \hbox (3.67538pt too wide) in paragraph at lines 375--375
+[]|\OT1/cmss/m/n/10.95 NA| 
+ []
+
+
+Overfull \hbox (3.67538pt too wide) in paragraph at lines 375--375
+[]|\OT1/cmss/m/n/10.95 NA| 
+ []
+
+
 Overfull \hbox (11.82709pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
@@ -1802,21 +1817,6 @@ Overfull \hbox (11.82709pt too wide) has occurred while \output is active
 [17
 
 ]
-Overfull \hbox (3.67538pt too wide) in paragraph at lines 385--385
-[]|\OT1/cmss/m/n/10.95 NA| 
- []
-
-
-Overfull \hbox (3.67538pt too wide) in paragraph at lines 385--385
-[]|\OT1/cmss/m/n/10.95 NA| 
- []
-
-
-Overfull \hbox (3.67538pt too wide) in paragraph at lines 385--385
-[]|\OT1/cmss/m/n/10.95 NA| 
- []
-
-
 Overfull \hbox (11.82709pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
@@ -1857,41 +1857,6 @@ Overfull \hbox (11.82709pt too wide) has occurred while \output is active
  []
 
 [23
-
-]
-Overfull \hbox (11.82709pt too wide) has occurred while \output is active
- [][]  \OT1/cmss/m/n/6 ([])  
- []
-
-[24
-
-]
-Overfull \hbox (11.82709pt too wide) has occurred while \output is active
- [][]  \OT1/cmss/m/n/6 ([])  
- []
-
-[25
-
-]
-Overfull \hbox (11.82709pt too wide) has occurred while \output is active
- [][]  \OT1/cmss/m/n/6 ([])  
- []
-
-[26
-
-]
-Overfull \hbox (11.82709pt too wide) has occurred while \output is active
- [][]  \OT1/cmss/m/n/6 ([])  
- []
-
-[27
-
-]
-Overfull \hbox (11.82709pt too wide) has occurred while \output is active
- [][]  \OT1/cmss/m/n/6 ([])  
- []
-
-[28
 
 ]
 Missing character: There is no ; in font nullfont!
@@ -2332,10 +2297,45 @@ Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 
-Overfull \vbox (11.39886pt too high) detected at line 577
+Overfull \vbox (11.39886pt too high) detected at line 528
  []
 
 
+Overfull \hbox (11.82709pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[24
+
+]
+Overfull \hbox (11.82709pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[25
+
+]
+Overfull \hbox (11.82709pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[26
+
+]
+Overfull \hbox (11.82709pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[27
+
+]
+Overfull \hbox (11.82709pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
+ []
+
+[28
+
+]
 Overfull \hbox (11.82709pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
@@ -2357,13 +2357,24 @@ Overfull \hbox (11.82709pt too wide) has occurred while \output is active
 [31
 
 ]
+<../Results/g1_A1_nosv_panel.pdf, id=985, 639.38875pt x 426.59375pt>
+File: ../Results/g1_A1_nosv_panel.pdf Graphic file (type pdf)
+<use ../Results/g1_A1_nosv_panel.pdf>
+Package pdftex.def Info: ../Results/g1_A1_nosv_panel.pdf  used on input line 64
+0.
+(pdftex.def)             Requested size: 639.38718pt x 426.5927pt.
+
+Overfull \vbox (6.67609pt too high) detected at line 640
+ []
+
+
 Overfull \hbox (11.82709pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
 [32
 
-]
+ <../Results/g1_A1_nosv_panel.pdf>]
 Overfull \hbox (11.82709pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
@@ -2378,24 +2389,13 @@ Overfull \hbox (11.82709pt too wide) has occurred while \output is active
 [34
 
 ]
-<../Results/g1_A1_nosv_panel.pdf, id=1060, 639.38875pt x 426.59375pt>
-File: ../Results/g1_A1_nosv_panel.pdf Graphic file (type pdf)
-<use ../Results/g1_A1_nosv_panel.pdf>
-Package pdftex.def Info: ../Results/g1_A1_nosv_panel.pdf  used on input line 66
-7.
-(pdftex.def)             Requested size: 639.38718pt x 426.5927pt.
-
-Overfull \vbox (6.67609pt too high) detected at line 667
- []
-
-
 Overfull \hbox (11.82709pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
 [35
 
- <../Results/g1_A1_nosv_panel.pdf>]
+]
 Overfull \hbox (11.82709pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
@@ -2431,13 +2431,24 @@ Overfull \hbox (11.82709pt too wide) has occurred while \output is active
 [40
 
 ]
+<../Results/g1_A1_sv_panel.pdf, id=1227, 639.38875pt x 426.59375pt>
+File: ../Results/g1_A1_sv_panel.pdf Graphic file (type pdf)
+<use ../Results/g1_A1_sv_panel.pdf>
+Package pdftex.def Info: ../Results/g1_A1_sv_panel.pdf  used on input line 774.
+
+(pdftex.def)             Requested size: 639.38718pt x 426.5927pt.
+
+Overfull \vbox (23.2326pt too high) detected at line 774
+ []
+
+
 Overfull \hbox (11.82709pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
 [41
 
-]
+ <../Results/g1_A1_sv_panel.pdf>]
 Overfull \hbox (11.82709pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
@@ -2445,14 +2456,15 @@ Overfull \hbox (11.82709pt too wide) has occurred while \output is active
 [42
 
 ]
-<../Results/g1_A1_sv_panel.pdf, id=1276, 639.38875pt x 426.59375pt>
-File: ../Results/g1_A1_sv_panel.pdf Graphic file (type pdf)
-<use ../Results/g1_A1_sv_panel.pdf>
-Package pdftex.def Info: ../Results/g1_A1_sv_panel.pdf  used on input line 783.
-
+<../Results/simulation_test_mae_pre_all.pdf, id=1286, 639.38875pt x 426.59375pt
+>
+File: ../Results/simulation_test_mae_pre_all.pdf Graphic file (type pdf)
+<use ../Results/simulation_test_mae_pre_all.pdf>
+Package pdftex.def Info: ../Results/simulation_test_mae_pre_all.pdf  used on in
+put line 806.
 (pdftex.def)             Requested size: 639.38718pt x 426.5927pt.
 
-Overfull \vbox (23.2326pt too high) detected at line 783
+Overfull \vbox (6.12053pt too high) detected at line 806
  []
 
 
@@ -2462,23 +2474,34 @@ Overfull \hbox (11.82709pt too wide) has occurred while \output is active
 
 [43
 
- <../Results/g1_A1_sv_panel.pdf>]
+ <../Results/simulation_test_mae_pre_all.pdf>]
+<../Results/simulation_test_mse_pre_all.pdf, id=1322, 639.38875pt x 426.59375pt
+>
+File: ../Results/simulation_test_mse_pre_all.pdf Graphic file (type pdf)
+<use ../Results/simulation_test_mse_pre_all.pdf>
+Package pdftex.def Info: ../Results/simulation_test_mse_pre_all.pdf  used on in
+put line 815.
+(pdftex.def)             Requested size: 639.38718pt x 426.5927pt.
+
+Overfull \vbox (6.12053pt too high) detected at line 815
+ []
+
+
 Overfull \hbox (11.82709pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
 [44
 
-]
-<../Results/simulation_test_mae_pre_all.pdf, id=1336, 639.38875pt x 426.59375pt
->
-File: ../Results/simulation_test_mae_pre_all.pdf Graphic file (type pdf)
-<use ../Results/simulation_test_mae_pre_all.pdf>
-Package pdftex.def Info: ../Results/simulation_test_mae_pre_all.pdf  used on in
-put line 814.
+ <../Results/simulation_test_mse_pre_all.pdf>]
+<../Results/simulation_test_mae_small.pdf, id=1355, 639.38875pt x 426.59375pt>
+File: ../Results/simulation_test_mae_small.pdf Graphic file (type pdf)
+<use ../Results/simulation_test_mae_small.pdf>
+Package pdftex.def Info: ../Results/simulation_test_mae_small.pdf  used on inpu
+t line 828.
 (pdftex.def)             Requested size: 639.38718pt x 426.5927pt.
 
-Overfull \vbox (6.12053pt too high) detected at line 814
+Overfull \vbox (6.12053pt too high) detected at line 828
  []
 
 
@@ -2488,16 +2511,15 @@ Overfull \hbox (11.82709pt too wide) has occurred while \output is active
 
 [45
 
- <../Results/simulation_test_mae_pre_all.pdf>]
-<../Results/simulation_test_mse_pre_all.pdf, id=1370, 639.38875pt x 426.59375pt
->
-File: ../Results/simulation_test_mse_pre_all.pdf Graphic file (type pdf)
-<use ../Results/simulation_test_mse_pre_all.pdf>
-Package pdftex.def Info: ../Results/simulation_test_mse_pre_all.pdf  used on in
-put line 823.
+ <../Results/simulation_test_mae_small.pdf>]
+<../Results/simulation_test_mse_small.pdf, id=1388, 639.38875pt x 426.59375pt>
+File: ../Results/simulation_test_mse_small.pdf Graphic file (type pdf)
+<use ../Results/simulation_test_mse_small.pdf>
+Package pdftex.def Info: ../Results/simulation_test_mse_small.pdf  used on inpu
+t line 837.
 (pdftex.def)             Requested size: 639.38718pt x 426.5927pt.
 
-Overfull \vbox (6.12053pt too high) detected at line 823
+Overfull \vbox (6.12053pt too high) detected at line 837
  []
 
 
@@ -2507,15 +2529,16 @@ Overfull \hbox (11.82709pt too wide) has occurred while \output is active
 
 [46
 
- <../Results/simulation_test_mse_pre_all.pdf>]
-<../Results/simulation_test_mae_small.pdf, id=1402, 639.38875pt x 426.59375pt>
-File: ../Results/simulation_test_mae_small.pdf Graphic file (type pdf)
-<use ../Results/simulation_test_mae_small.pdf>
-Package pdftex.def Info: ../Results/simulation_test_mae_small.pdf  used on inpu
-t line 836.
+ <../Results/simulation_test_mse_small.pdf>]
+<../Results/simulation_test_rsquare_small.pdf, id=1421, 639.38875pt x 426.59375
+pt>
+File: ../Results/simulation_test_rsquare_small.pdf Graphic file (type pdf)
+<use ../Results/simulation_test_rsquare_small.pdf>
+Package pdftex.def Info: ../Results/simulation_test_rsquare_small.pdf  used on 
+input line 846.
 (pdftex.def)             Requested size: 639.38718pt x 426.5927pt.
 
-Overfull \vbox (6.12053pt too high) detected at line 836
+Overfull \vbox (6.12053pt too high) detected at line 846
  []
 
 
@@ -2525,15 +2548,16 @@ Overfull \hbox (11.82709pt too wide) has occurred while \output is active
 
 [47
 
- <../Results/simulation_test_mae_small.pdf>]
-<../Results/simulation_test_mse_small.pdf, id=1434, 639.38875pt x 426.59375pt>
-File: ../Results/simulation_test_mse_small.pdf Graphic file (type pdf)
-<use ../Results/simulation_test_mse_small.pdf>
-Package pdftex.def Info: ../Results/simulation_test_mse_small.pdf  used on inpu
-t line 845.
-(pdftex.def)             Requested size: 639.38718pt x 426.5927pt.
+ <../Results/simulation_test_rsquare_small.pdf>]
+<../Results/simulation_test_rsquare_small_nn.pdf, id=1453, 526.96875pt x 325.21
+5pt>
+File: ../Results/simulation_test_rsquare_small_nn.pdf Graphic file (type pdf)
+<use ../Results/simulation_test_rsquare_small_nn.pdf>
+Package pdftex.def Info: ../Results/simulation_test_rsquare_small_nn.pdf  used 
+on input line 861.
+(pdftex.def)             Requested size: 526.96745pt x 325.2142pt.
 
-Overfull \vbox (6.12053pt too high) detected at line 845
+Overfull \vbox (6.11755pt too high) detected at line 861
  []
 
 
@@ -2543,16 +2567,16 @@ Overfull \hbox (11.82709pt too wide) has occurred while \output is active
 
 [48
 
- <../Results/simulation_test_mse_small.pdf>]
-<../Results/simulation_test_rsquare_small.pdf, id=1466, 639.38875pt x 426.59375
-pt>
-File: ../Results/simulation_test_rsquare_small.pdf Graphic file (type pdf)
-<use ../Results/simulation_test_rsquare_small.pdf>
-Package pdftex.def Info: ../Results/simulation_test_rsquare_small.pdf  used on 
-input line 854.
+ <../Results/simulation_test_rsquare_small_nn.pdf>]
+<../Results/simulation_ave_vi_plot_pre.pdf, id=1484, 639.38875pt x 426.59375pt>
+
+File: ../Results/simulation_ave_vi_plot_pre.pdf Graphic file (type pdf)
+<use ../Results/simulation_ave_vi_plot_pre.pdf>
+Package pdftex.def Info: ../Results/simulation_ave_vi_plot_pre.pdf  used on inp
+ut line 872.
 (pdftex.def)             Requested size: 639.38718pt x 426.5927pt.
 
-Overfull \vbox (6.12053pt too high) detected at line 854
+Overfull \vbox (6.12053pt too high) detected at line 872
  []
 
 
@@ -2562,16 +2586,16 @@ Overfull \hbox (11.82709pt too wide) has occurred while \output is active
 
 [49
 
- <../Results/simulation_test_rsquare_small.pdf>]
-<../Results/simulation_test_rsquare_small_nn.pdf, id=1498, 526.96875pt x 325.21
-5pt>
-File: ../Results/simulation_test_rsquare_small_nn.pdf Graphic file (type pdf)
-<use ../Results/simulation_test_rsquare_small_nn.pdf>
-Package pdftex.def Info: ../Results/simulation_test_rsquare_small_nn.pdf  used 
-on input line 869.
-(pdftex.def)             Requested size: 526.96745pt x 325.2142pt.
+ <../Results/simulation_ave_vi_plot_pre.pdf>]
+<../Results/simulation_ave_vi_plot_pre_nn.pdf, id=1565, 639.38875pt x 426.59375
+pt>
+File: ../Results/simulation_ave_vi_plot_pre_nn.pdf Graphic file (type pdf)
+<use ../Results/simulation_ave_vi_plot_pre_nn.pdf>
+Package pdftex.def Info: ../Results/simulation_ave_vi_plot_pre_nn.pdf  used on 
+input line 883.
+(pdftex.def)             Requested size: 639.38718pt x 426.5927pt.
 
-Overfull \vbox (6.11755pt too high) detected at line 869
+Overfull \vbox (6.12053pt too high) detected at line 883
  []
 
 
@@ -2581,45 +2605,21 @@ Overfull \hbox (11.82709pt too wide) has occurred while \output is active
 
 [50
 
- <../Results/simulation_test_rsquare_small_nn.pdf>]
-<../Results/simulation_ave_vi_plot_pre.pdf, id=1529, 639.38875pt x 426.59375pt>
-
-File: ../Results/simulation_ave_vi_plot_pre.pdf Graphic file (type pdf)
-<use ../Results/simulation_ave_vi_plot_pre.pdf>
-Package pdftex.def Info: ../Results/simulation_ave_vi_plot_pre.pdf  used on inp
-ut line 880.
-(pdftex.def)             Requested size: 639.38718pt x 426.5927pt.
-
-Overfull \vbox (6.12053pt too high) detected at line 880
- []
-
-
+ <../Results/simulation_ave_vi_plot_pre_nn.pdf>]
 Overfull \hbox (11.82709pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
 [51
 
- <../Results/simulation_ave_vi_plot_pre.pdf>]
-<../Results/simulation_ave_vi_plot_pre_nn.pdf, id=1608, 639.38875pt x 426.59375
-pt>
-File: ../Results/simulation_ave_vi_plot_pre_nn.pdf Graphic file (type pdf)
-<use ../Results/simulation_ave_vi_plot_pre_nn.pdf>
-Package pdftex.def Info: ../Results/simulation_ave_vi_plot_pre_nn.pdf  used on 
-input line 891.
-(pdftex.def)             Requested size: 639.38718pt x 426.5927pt.
-
-Overfull \vbox (6.12053pt too high) detected at line 891
- []
-
-
+]
 Overfull \hbox (11.82709pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
 [52
 
- <../Results/simulation_ave_vi_plot_pre_nn.pdf>]
+]
 Overfull \hbox (11.82709pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
@@ -2648,6 +2648,31 @@ Overfull \hbox (11.82709pt too wide) has occurred while \output is active
 [56
 
 ]
+Overfull \hbox (3.67538pt too wide) in paragraph at lines 1001--1001
+[]|\OT1/cmss/m/n/10.95 NA| 
+ []
+
+
+Overfull \hbox (3.67538pt too wide) in paragraph at lines 1001--1001
+[]|\OT1/cmss/m/n/10.95 NA| 
+ []
+
+
+Overfull \hbox (3.67538pt too wide) in paragraph at lines 1001--1001
+[]|\OT1/cmss/m/n/10.95 NA| 
+ []
+
+
+Overfull \hbox (7.41362pt too wide) in paragraph at lines 1001--1001
+[]|\OT1/cmss/m/n/10.95 93Q3| 
+ []
+
+
+Overfull \hbox (7.41362pt too wide) in paragraph at lines 1001--1001
+[]|\OT1/cmss/m/n/10.95 93Q4| 
+ []
+
+
 Overfull \hbox (11.82709pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
@@ -2662,30 +2687,12 @@ Overfull \hbox (11.82709pt too wide) has occurred while \output is active
 [58
 
 ]
-Overfull \hbox (3.67538pt too wide) in paragraph at lines 1009--1009
-[]|\OT1/cmss/m/n/10.95 NA| 
- []
-
-
-Overfull \hbox (3.67538pt too wide) in paragraph at lines 1009--1009
-[]|\OT1/cmss/m/n/10.95 NA| 
- []
-
-
-Overfull \hbox (3.67538pt too wide) in paragraph at lines 1009--1009
-[]|\OT1/cmss/m/n/10.95 NA| 
- []
-
-
-Overfull \hbox (7.41362pt too wide) in paragraph at lines 1009--1009
-[]|\OT1/cmss/m/n/10.95 93Q3| 
- []
-
-
-Overfull \hbox (7.41362pt too wide) in paragraph at lines 1009--1009
-[]|\OT1/cmss/m/n/10.95 93Q4| 
- []
-
+<../Results/empirical_test_mse_pre_all.pdf, id=1913, 298.11375pt x 198.7425pt>
+File: ../Results/empirical_test_mse_pre_all.pdf Graphic file (type pdf)
+<use ../Results/empirical_test_mse_pre_all.pdf>
+Package pdftex.def Info: ../Results/empirical_test_mse_pre_all.pdf  used on inp
+ut line 1036.
+(pdftex.def)             Requested size: 298.11302pt x 198.742pt.
 
 Overfull \hbox (11.82709pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
@@ -2693,19 +2700,27 @@ Overfull \hbox (11.82709pt too wide) has occurred while \output is active
 
 [59
 
-]
+ <../Results/empirical_test_mse_pre_all.pdf>]
+<../Results/empirical_test_mae_pre_all.pdf, id=1947, 298.11375pt x 198.7425pt>
+File: ../Results/empirical_test_mae_pre_all.pdf Graphic file (type pdf)
+<use ../Results/empirical_test_mae_pre_all.pdf>
+Package pdftex.def Info: ../Results/empirical_test_mae_pre_all.pdf  used on inp
+ut line 1043.
+(pdftex.def)             Requested size: 298.11302pt x 198.742pt.
+
 Overfull \hbox (11.82709pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
 [60
 
-]
-<../Results/empirical_test_mse_pre_all.pdf, id=1955, 298.11375pt x 198.7425pt>
-File: ../Results/empirical_test_mse_pre_all.pdf Graphic file (type pdf)
-<use ../Results/empirical_test_mse_pre_all.pdf>
-Package pdftex.def Info: ../Results/empirical_test_mse_pre_all.pdf  used on inp
-ut line 1045.
+ <../Results/empirical_test_mae_pre_all.pdf>]
+<../Results/empirical_test_rsquare_pre_all.pdf, id=1980, 298.11375pt x 198.7425
+pt>
+File: ../Results/empirical_test_rsquare_pre_all.pdf Graphic file (type pdf)
+<use ../Results/empirical_test_rsquare_pre_all.pdf>
+Package pdftex.def Info: ../Results/empirical_test_rsquare_pre_all.pdf  used on
+ input line 1050.
 (pdftex.def)             Requested size: 298.11302pt x 198.742pt.
 
 Overfull \hbox (11.82709pt too wide) has occurred while \output is active
@@ -2714,27 +2729,19 @@ Overfull \hbox (11.82709pt too wide) has occurred while \output is active
 
 [61
 
- <../Results/empirical_test_mse_pre_all.pdf>]
-<../Results/empirical_test_mae_pre_all.pdf, id=1989, 298.11375pt x 198.7425pt>
-File: ../Results/empirical_test_mae_pre_all.pdf Graphic file (type pdf)
-<use ../Results/empirical_test_mae_pre_all.pdf>
-Package pdftex.def Info: ../Results/empirical_test_mae_pre_all.pdf  used on inp
-ut line 1052.
-(pdftex.def)             Requested size: 298.11302pt x 198.742pt.
-
+ <../Results/empirical_test_rsquare_pre_all.pdf>]
 Overfull \hbox (11.82709pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
 [62
 
- <../Results/empirical_test_mae_pre_all.pdf>]
-<../Results/empirical_test_rsquare_pre_all.pdf, id=2021, 298.11375pt x 198.7425
-pt>
-File: ../Results/empirical_test_rsquare_pre_all.pdf Graphic file (type pdf)
-<use ../Results/empirical_test_rsquare_pre_all.pdf>
-Package pdftex.def Info: ../Results/empirical_test_rsquare_pre_all.pdf  used on
- input line 1059.
+]
+<../Results/empirical_test_mae_pre_nn.pdf, id=2040, 298.11375pt x 198.7425pt>
+File: ../Results/empirical_test_mae_pre_nn.pdf Graphic file (type pdf)
+<use ../Results/empirical_test_mae_pre_nn.pdf>
+Package pdftex.def Info: ../Results/empirical_test_mae_pre_nn.pdf  used on inpu
+t line 1071.
 (pdftex.def)             Requested size: 298.11302pt x 198.742pt.
 
 Overfull \hbox (11.82709pt too wide) has occurred while \output is active
@@ -2743,19 +2750,27 @@ Overfull \hbox (11.82709pt too wide) has occurred while \output is active
 
 [63
 
- <../Results/empirical_test_rsquare_pre_all.pdf>]
+ <../Results/empirical_test_mae_pre_nn.pdf>]
+<../Results/empirical_test_mse_pre_nn.pdf, id=2072, 298.11375pt x 198.7425pt>
+File: ../Results/empirical_test_mse_pre_nn.pdf Graphic file (type pdf)
+<use ../Results/empirical_test_mse_pre_nn.pdf>
+Package pdftex.def Info: ../Results/empirical_test_mse_pre_nn.pdf  used on inpu
+t line 1078.
+(pdftex.def)             Requested size: 298.11302pt x 198.742pt.
+
 Overfull \hbox (11.82709pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
 [64
 
-]
-<../Results/empirical_test_mae_pre_nn.pdf, id=2079, 298.11375pt x 198.7425pt>
-File: ../Results/empirical_test_mae_pre_nn.pdf Graphic file (type pdf)
-<use ../Results/empirical_test_mae_pre_nn.pdf>
-Package pdftex.def Info: ../Results/empirical_test_mae_pre_nn.pdf  used on inpu
-t line 1080.
+ <../Results/empirical_test_mse_pre_nn.pdf>]
+<../Results/empirical_test_rsquare_pre_nn.pdf, id=2104, 298.11375pt x 198.7425p
+t>
+File: ../Results/empirical_test_rsquare_pre_nn.pdf Graphic file (type pdf)
+<use ../Results/empirical_test_rsquare_pre_nn.pdf>
+Package pdftex.def Info: ../Results/empirical_test_rsquare_pre_nn.pdf  used on 
+input line 1085.
 (pdftex.def)             Requested size: 298.11302pt x 198.742pt.
 
 Overfull \hbox (11.82709pt too wide) has occurred while \output is active
@@ -2764,28 +2779,25 @@ Overfull \hbox (11.82709pt too wide) has occurred while \output is active
 
 [65
 
- <../Results/empirical_test_mae_pre_nn.pdf>]
-<../Results/empirical_test_mse_pre_nn.pdf, id=2111, 298.11375pt x 198.7425pt>
-File: ../Results/empirical_test_mse_pre_nn.pdf Graphic file (type pdf)
-<use ../Results/empirical_test_mse_pre_nn.pdf>
-Package pdftex.def Info: ../Results/empirical_test_mse_pre_nn.pdf  used on inpu
-t line 1087.
-(pdftex.def)             Requested size: 298.11302pt x 198.742pt.
-
+ <../Results/empirical_test_rsquare_pre_nn.pdf>]
 Overfull \hbox (11.82709pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
 [66
 
- <../Results/empirical_test_mse_pre_nn.pdf>]
-<../Results/empirical_test_rsquare_pre_nn.pdf, id=2143, 298.11375pt x 198.7425p
-t>
-File: ../Results/empirical_test_rsquare_pre_nn.pdf Graphic file (type pdf)
-<use ../Results/empirical_test_rsquare_pre_nn.pdf>
-Package pdftex.def Info: ../Results/empirical_test_rsquare_pre_nn.pdf  used on 
-input line 1094.
-(pdftex.def)             Requested size: 298.11302pt x 198.742pt.
+]
+<../Results/empirical_sample_all_vi_ind.pdf, id=2163, 639.38875pt x 426.59375pt
+>
+File: ../Results/empirical_sample_all_vi_ind.pdf Graphic file (type pdf)
+<use ../Results/empirical_sample_all_vi_ind.pdf>
+Package pdftex.def Info: ../Results/empirical_sample_all_vi_ind.pdf  used on in
+put line 1113.
+(pdftex.def)             Requested size: 639.38718pt x 426.5927pt.
+
+Overfull \vbox (6.12053pt too high) detected at line 1113
+ []
+
 
 Overfull \hbox (11.82709pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
@@ -2793,39 +2805,33 @@ Overfull \hbox (11.82709pt too wide) has occurred while \output is active
 
 [67
 
- <../Results/empirical_test_rsquare_pre_nn.pdf>]
+ <../Results/empirical_sample_all_vi_ind.pdf>]
+<../Results/empirical_sample_all_vi_macro.pdf, id=2225, 639.38875pt x 426.59375
+pt>
+File: ../Results/empirical_sample_all_vi_macro.pdf Graphic file (type pdf)
+<use ../Results/empirical_sample_all_vi_macro.pdf>
+Package pdftex.def Info: ../Results/empirical_sample_all_vi_macro.pdf  used on 
+input line 1124.
+(pdftex.def)             Requested size: 639.38718pt x 426.5927pt.
+
+Overfull \vbox (6.12053pt too high) detected at line 1124
+ []
+
+
 Overfull \hbox (11.82709pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
 [68
 
-]
-<../Results/empirical_sample_all_vi_ind.pdf, id=2203, 639.38875pt x 426.59375pt
->
-File: ../Results/empirical_sample_all_vi_ind.pdf Graphic file (type pdf)
-<use ../Results/empirical_sample_all_vi_ind.pdf>
-Package pdftex.def Info: ../Results/empirical_sample_all_vi_ind.pdf  used on in
-put line 1122.
-(pdftex.def)             Requested size: 639.38718pt x 426.5927pt.
-
-Overfull \vbox (6.12053pt too high) detected at line 1122
- []
-
-
-Overfull \hbox (11.82709pt too wide) has occurred while \output is active
- [][]  \OT1/cmss/m/n/6 ([])  
- []
-
-[69
-
- <../Results/empirical_sample_all_vi_ind.pdf>]
-<../Results/empirical_sample_all_vi_macro.pdf, id=2263, 639.38875pt x 426.59375
-pt>
-File: ../Results/empirical_sample_all_vi_macro.pdf Graphic file (type pdf)
-<use ../Results/empirical_sample_all_vi_macro.pdf>
-Package pdftex.def Info: ../Results/empirical_sample_all_vi_macro.pdf  used on 
-input line 1133.
+ <../Results/empirical_sample_all_vi_macro.pdf>]
+<../Results/empirical_sample_all_vi_macro_facet.pdf, id=2310, 639.38875pt x 426
+.59375pt>
+File: ../Results/empirical_sample_all_vi_macro_facet.pdf Graphic file (type pdf
+)
+<use ../Results/empirical_sample_all_vi_macro_facet.pdf>
+Package pdftex.def Info: ../Results/empirical_sample_all_vi_macro_facet.pdf  us
+ed on input line 1133.
 (pdftex.def)             Requested size: 639.38718pt x 426.5927pt.
 
 Overfull \vbox (6.12053pt too high) detected at line 1133
@@ -2836,29 +2842,23 @@ Overfull \hbox (11.82709pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
-[70
+[69
 
- <../Results/empirical_sample_all_vi_macro.pdf>]
-<../Results/empirical_sample_all_vi_macro_facet.pdf, id=2348, 639.38875pt x 426
-.59375pt>
-File: ../Results/empirical_sample_all_vi_macro_facet.pdf Graphic file (type pdf
-)
-<use ../Results/empirical_sample_all_vi_macro_facet.pdf>
-Package pdftex.def Info: ../Results/empirical_sample_all_vi_macro_facet.pdf  us
-ed on input line 1142.
-(pdftex.def)             Requested size: 639.38718pt x 426.5927pt.
-
-Overfull \vbox (6.12053pt too high) detected at line 1142
+ <../Results/empirical_sample_all_vi_macro_facet.pdf>]
+Overfull \hbox (11.82709pt too wide) has occurred while \output is active
+ [][]  \OT1/cmss/m/n/6 ([])  
  []
 
+[70
 
+]
 Overfull \hbox (11.82709pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
 [71
 
- <../Results/empirical_sample_all_vi_macro_facet.pdf>]
+]
 Overfull \hbox (11.82709pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
@@ -2872,30 +2872,23 @@ Overfull \hbox (11.82709pt too wide) has occurred while \output is active
 
 [73
 
-]
+] ("Econometrics Honours Project Presentation.bbl")
+Overfull \vbox (425.59596pt too high) detected at line 1192
+ []
+
+
 Overfull \hbox (11.82709pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
 [74
 
-] ("Econometrics Honours Project Presentation.bbl")
-Overfull \vbox (425.59596pt too high) detected at line 1194
- []
-
-
-Overfull \hbox (11.82709pt too wide) has occurred while \output is active
- [][]  \OT1/cmss/m/n/6 ([])  
- []
-
-[75
-
 ]
 Overfull \hbox (11.82709pt too wide) has occurred while \output is active
  [][]  \OT1/cmss/m/n/6 ([])  
  []
 
-[76
+[75
 
 ]
 \tf@nav=\write7
@@ -2907,22 +2900,22 @@ Overfull \hbox (11.82709pt too wide) has occurred while \output is active
 \tf@snm=\write9
 \openout9 = `"Econometrics Honours Project Presentation.snm"'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1206.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1206.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1204.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1204.
  ("Econometrics Honours Project Presentation.aux")
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1206.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1206.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1204.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1204.
 
 Package rerunfilecheck Info: File `"Econometrics Honours Project Presentation".
 out' has not changed.
-(rerunfilecheck)             Checksum: FDBCA8474E61C44741A7217B6210A469;930.
+(rerunfilecheck)             Checksum: A05306212ADBDD3A47DCDABB0AE47119;930.
  ) 
 Here is how much of TeX's memory you used:
- 55890 strings out of 492895
- 1322197 string characters out of 3133463
- 1627798 words of memory out of 3000000
+ 55889 strings out of 492895
+ 1322220 string characters out of 3133463
+ 1627933 words of memory out of 3000000
  58760 multiletter control sequences out of 15000+200000
- 541689 words of font info for 57 fonts, out of 3000000 for 9000
+ 541857 words of font info for 58 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
  64i,19n,98p,1649b,1309s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Pr
@@ -2936,12 +2929,13 @@ nts/type1/public/amsfonts/cm/cmss12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type
 ssi10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmssi8.pf
 b><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Pr
 ogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Fil
-es/MiKTeX 2.9/fonts/type1/public/amsfonts/symbols/msam7.pfb><C:/Program Files/M
-iKTeX 2.9/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on "Econometrics Honours Project Presentation.pdf" (76 pages, 11
-10017 bytes).
+es/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt10.pfb><C:/Program Files/MiKTe
+X 2.9/fonts/type1/public/amsfonts/symbols/msam7.pfb><C:/Program Files/MiKTeX 2.
+9/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
+Output written on "Econometrics Honours Project Presentation.pdf" (75 pages, 11
+21695 bytes).
 PDF statistics:
- 2680 PDF objects out of 2984 (max. 8388607)
- 193 named destinations out of 1000 (max. 500000)
+ 2670 PDF objects out of 2984 (max. 8388607)
+ 191 named destinations out of 1000 (max. 500000)
  368 words of extra memory for PDF output out of 10000 (max. 10000000)
 

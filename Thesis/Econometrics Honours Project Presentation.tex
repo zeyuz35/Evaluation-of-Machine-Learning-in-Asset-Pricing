@@ -191,7 +191,7 @@ The estimated coefficients, due to being imprecise, will also result in poor out
 \begin{frame}
 \frametitle{Dividend Ratio Example}
 \begin{itemize}
-\item Factors such as dividend ratios, earnings price ratio, interest and inflation etc. were ``widely accepted" able to predict excess returns, \citep{lettau_consumption_2001}
+\item Factors such as dividend ratios, earnings price ratio, interest and inflation etc. were ``widely accepted" to be able to predict excess returns, \citep{lettau_consumption_2001}
 
 \item \cite{welch_comprehensive_2008} conclude that not a single variable had any statistical forecasting power, and the significance values of some factors change with the choice of sample periods.
 \end{itemize}
@@ -222,13 +222,12 @@ The estimated coefficients, due to being imprecise, will also result in poor out
 \begin{frame}
 \frametitle{Why apply Machine Learning in Finance?}
 
-Machine learning methods have been used within the literature and appear to be well suited:
+Machine learning methods have been used within the literature and appear to be well suited \textbf{as means of managing this factor explosion}:
 \begin{itemize}
-	\item High dimensional - more flexible than traditional regression models, which make strong functional form assumptions and are sensitive to outliers, \citep{freyberger_dissecting_2017}
+	\item Mlexible than traditional regression models, which make strong functional form assumptions and are sensitive to outliers, \citep{freyberger_dissecting_2017}
 	\item Explicit ``regularization" methods for guarding against overfitting
-	\item Methods to produce an optimal model from all possible at manageable computation cost
+	\item Better equipped to deal with high dimensionality
 \end{itemize}
-More able to manage the explosion in the number of factors suggested by the literature!
 \end{frame}
 
 \begin{frame}
@@ -250,17 +249,17 @@ However, little work has been done on how machine learning actually recognises a
 
 Machine learning is mainly suited for specific contexts:
 \begin{itemize}
-	\item Little interpretability in regressors
-	\item Often assume i.i.d.
+	\item Often assume i.i.d., (\cite{murphy_quantifying_2010})
 	\item Often require large amounts of data
-	\item Struggle with state dependence
+	\item Struggle with state dependence, (\cite{bengio_learning_1994})
+	\item Little interpretability in regressors - not too concerned with causal analysis
 \end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Methodology Issues}
 \begin{itemize}
-	\item \cite{feng_deep_2018} cross validates their training set, destroying temporal aspect of data, and only explore a handful of factors
+	\item \cite{feng_deep_2018} \textbf{cross validates} their training set
 	\item \cite{gu_empirical_2018} only use data up until the 1970s to produce predictions in the last 30 years
 	\item \cite{gu_empirical_2018}'s models do not have consistent importance metrics - only their tree based methods recognise dividend yield as important
 \end{itemize}
@@ -268,7 +267,7 @@ Machine learning is mainly suited for specific contexts:
 
 \begin{frame}
 \frametitle{Motivations}
-Can machine learning assist with returns prediction and causal inference?
+Can machine learning assist with returns \textbf{prediction} and \textbf{causal} inference?
 \begin{itemize}
 	\item Persistent Regressors?
 	\item Identify true factors from a high dimensional, cross sectionally correlated panel?
@@ -327,22 +326,13 @@ Machine Learning Methodology consists of 3 overall components:
 	\item Loss Function(s)
 	\item Models/Algorithms considered
 \end{itemize}
+
+Overall methodology folloiws that of \cite{gu_empirical_2018}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Sample Splitting
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{frame}
-\frametitle{Sample Splitting - Expanding Window Scheme}
-An expanding/growing window approach was used to
-\begin{itemize}
-	\item Allow models to incorporate more data over time
-	\item Preserve temporal ordering of data (compared to cross-validation)
-	\item Allows the model to use the most recent data, in some sense
-\end{itemize}
-The training/validation split was chosen s.t. the size of the training set was 1.5 times the length of the validation set to begin with, consistent with \cite{gu_empirical_2018}.
-\end{frame}
 
 \begin{frame}
 \frametitle{Sample Splitting - Expanding Window Scheme}
@@ -389,7 +379,7 @@ The training/validation split was chosen s.t. the size of the training set was 1
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
-\frametitle{Loss Functions}
+\frametitle{Loss/Objective Functions}
 Mean Absolute Error (MAE)
 
 	\begin{equation}
@@ -458,12 +448,11 @@ Linear Models + Penalty term (Elastic Net by \cite{zou_regularization_2005} show
 \begin{frame}
 \frametitle{Random Forests}
 Ensemble model of regression trees with low correlation, each with high depth
-
-Able to capture multiway non-linearities
-
-Tend to be quite robust
-
-Depth of trees and number of predictors sampled for each tree tuned
+\begin{itemize}
+\item Able to capture multiway non-linearities
+\item Tend to be quite robust
+\end{itemize}
+Depth of trees (nodesize) and number of predictors sampled for each tree (mtry) tuned
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -471,24 +460,71 @@ Depth of trees and number of predictors sampled for each tree tuned
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
-\frametitle{Neural Networks - Overview}
-Most complex model considered
+\frametitle{Neural Networks}
+Most complex model considered:
+\begin{itemize}
+\item Able to capture non-linearities systematically
+\item Universal Approximation Theorem - able to approximate any function 
+\end{itemize}
 
-Able to capture non-linearities systematically
-
-In theory able to approximate any function - Universal Approximation Theorem
+Focus on feed-forward neural networks:
+\begin{itemize}
+\item Up to 5 hidden layers were considered
+\item The number of neurons is each layer determined by geometric pyramid rule \citep{masters_practical_1993}
+\item All units are fully connected
+\end{itemize}
 \end{frame}
 
 \begin{frame}
-\frametitle{Neural Network Specification}
-
-\begin{itemize}
-\item Neural networks with up to 5 hidden layers were considered. 
-
-\item The number of neurons is each layer determined by geometric pyramid rule \citep{masters_practical_1993}
-
-\item All units are fully connected
-\end{itemize}
+	%Beamer hacks and uses # in a loop
+	%Therefore, we need to replace all # with ####
+	\begin{figure}
+		\begin{neuralnetwork}
+			%Options
+			[nodespacing=9.5mm, layerspacing=18mm,
+			maintitleheight=1em, layertitleheight=2em,
+			height=7, toprow=false, nodesize=20pt, style={},
+			title={}, titlestyle={}]
+			\newcommand{\nodetextclear}[2]{}
+			%use \ifnum to get different labels, such as x_n on the last neuron
+			\newcommand{\nodetextx}[2]{\ifnum ####2=8 $x_n^{(0)}$ \else $x_####2^{(0)}$ \fi}
+			\newcommand{\nodetexty}[2]{$y_####2$}
+			%Hidden layer textcommands
+			%32 neurons
+			\newcommand{\nodetextxa}[2]{\ifnum ####2=7 $x_{32}^{(1)}$ \else $x_####2^{(1)}$ \fi}
+			%16 neurons
+			\newcommand{\nodetextxb}[2]{\ifnum ####2=6 $x_{16}^{(2)}$ \else $x_####2^{(2)}$ \fi}
+			%8 neurons
+			\newcommand{\nodetextxc}[2]{\ifnum ####2=5 $x_{8}^{(3)}$ \else $x_####2^{(3)}$ \fi}
+			\newcommand{\nodetextxd}[2]{$x_####2^{(4)}$}
+			\newcommand{\nodetextxe}[2]{$x_####2^{(5)}$}
+			%Input Layer
+			\inputlayer[count=8, bias=false, exclude = {7}, title=, text=\nodetextx]
+			%Hidden Layer 1
+			\hiddenlayer[count=7, bias=false, exclude = {6}, title=, text=\nodetextxa] 
+			\linklayers[not from = {7}, not to = {6}]
+			%Hidden Layer 2
+			\hiddenlayer[count=6, bias=false, exclude = {5}, title=, text=\nodetextxb] 
+			\linklayers[not from = {6}, not to = {5}]
+			%Hidden Layer 3
+			\hiddenlayer[count=5, bias=false, exclude = {4}, title=, text=\nodetextxc] 
+			\linklayers[not from = {5}, not to = {4}]
+			%Hidden Layer 4
+			\hiddenlayer[count=4, bias=false, title=, text=\nodetextxd] 
+			\linklayers[not from = {4}]
+			%Hidden Layer 5
+			\hiddenlayer[count=2, bias=false, title=, text=\nodetextxe] \linklayers
+			%Final Layer
+			\outputlayer[count=1, title=, text=\nodetexty] \linklayers
+			% draw dots
+			\path (L0-6) -- node{$\vdots$} (L0-8);
+			\path (L1-5) -- node{$\vdots$} (L1-7);
+			\path (L2-4) -- node{$\vdots$} (L2-6);
+			\path (L3-3) -- node{$\vdots$} (L3-5);
+		\end{neuralnetwork}
+		\caption{Neural Network 5 (most complex considered)}
+		\label{Neural_Network}
+	\end{figure}
 \end{frame}
 
 \begin{frame}
@@ -497,7 +533,7 @@ Neural Networks have the largest number of hyperparameters to tune - computation
 
 A conservative gridsearch was conducted, but it was observed that in general, default values provided the best performance.
 
-Observed that neural networks are high sensitive to hyperparameters - not easy to tune!
+Observed that neural networks are high sensitive to hyperparameters - \textbf{not easy to tune}
 \end{frame}
 
 \begin{frame}
@@ -511,69 +547,6 @@ Hyperparameters gridsearched:
 	\item Activation function
 	\item Momentum
 \end{itemize}
-\end{frame}
-
-\begin{frame}
-\frametitle{Neural Network - Activation Function}
-\cite{gu_empirical_2018} specified using the ReLU activation function for all layers
-
-We found that this specification \textbf{does not work} due to the ``dying ReLU" problem"
-
-Alternatives such as Leaky ReLU also did not give very good performance.
-
-A specification of the tanh activation function was observed to give the best results
-\end{frame}
-
-\begin{frame}
-%Beamer hacks and uses # in a loop
-%Therefore, we need to replace all # with ####
-\begin{figure}
-	\begin{neuralnetwork}
-		%Options
-		[nodespacing=9.5mm, layerspacing=18mm,
-		maintitleheight=1em, layertitleheight=2em,
-		height=7, toprow=false, nodesize=20pt, style={},
-		title={}, titlestyle={}]
-		\newcommand{\nodetextclear}[2]{}
-		%use \ifnum to get different labels, such as x_n on the last neuron
-		\newcommand{\nodetextx}[2]{\ifnum ####2=8 $x_n^{(0)}$ \else $x_####2^{(0)}$ \fi}
-		\newcommand{\nodetexty}[2]{$y_####2$}
-		%Hidden layer textcommands
-		%32 neurons
-		\newcommand{\nodetextxa}[2]{\ifnum ####2=7 $x_{32}^{(1)}$ \else $x_####2^{(1)}$ \fi}
-		%16 neurons
-		\newcommand{\nodetextxb}[2]{\ifnum ####2=6 $x_{16}^{(2)}$ \else $x_####2^{(2)}$ \fi}
-		%8 neurons
-		\newcommand{\nodetextxc}[2]{\ifnum ####2=5 $x_{8}^{(3)}$ \else $x_####2^{(3)}$ \fi}
-		\newcommand{\nodetextxd}[2]{$x_####2^{(4)}$}
-		\newcommand{\nodetextxe}[2]{$x_####2^{(5)}$}
-		%Input Layer
-		\inputlayer[count=8, bias=false, exclude = {7}, title=, text=\nodetextx]
-		%Hidden Layer 1
-		\hiddenlayer[count=7, bias=false, exclude = {6}, title=, text=\nodetextxa] 
-		\linklayers[not from = {7}, not to = {6}]
-		%Hidden Layer 2
-		\hiddenlayer[count=6, bias=false, exclude = {5}, title=, text=\nodetextxb] 
-		\linklayers[not from = {6}, not to = {5}]
-		%Hidden Layer 3
-		\hiddenlayer[count=5, bias=false, exclude = {4}, title=, text=\nodetextxc] 
-		\linklayers[not from = {5}, not to = {4}]
-		%Hidden Layer 4
-		\hiddenlayer[count=4, bias=false, title=, text=\nodetextxd] 
-		\linklayers[not from = {4}]
-		%Hidden Layer 5
-		\hiddenlayer[count=2, bias=false, title=, text=\nodetextxe] \linklayers
-		%Final Layer
-		\outputlayer[count=1, title=, text=\nodetexty] \linklayers
-		% draw dots
-		\path (L0-6) -- node{$\vdots$} (L0-8);
-		\path (L1-5) -- node{$\vdots$} (L1-7);
-		\path (L2-4) -- node{$\vdots$} (L2-6);
-		\path (L3-3) -- node{$\vdots$} (L3-5);
-	\end{neuralnetwork}
-	\caption{Neural Network 5 (most complex considered)}
-	\label{Neural_Network}
-\end{figure}
 \end{frame}
 
 %% Loss Metrics
@@ -682,19 +655,23 @@ We propose a design which incorporates:
 \frametitle{Proposed Simulation Design}
 Latent factor model with stochastic volatility for excess return, $r_{t+1}$, for $t=1,\dots,T$:
 
-\begin{flalign}
-r_{i, t+1} &= 
-g\left(z_{i, t}\right) + \beta_{i,t+1}v_{t+1} + e_{i, t+1}; \\
-z_{i, t} &= \left(1, x_{t}\right)^{\prime} \otimes c_{i, t}; 
-\quad \beta_{i, t}=\left(c_{i 1, t}, c_{i 2, t}, c_{i 3, t}\right); \\ 
+\begin{equation}
+r_{i, t+1} = 
+g\left(z_{i, t}\right) + \beta_{i,t+1}v_{t+1} + e_{i, t+1}
+\end{equation}
+\begin{align}
+z_{i, t} &=\left(1, x_{t}\right)^{\prime} \otimes c_{i, t}, 
+\quad \beta_{i, t}=\left(c_{i 1, t}, c_{i 2, t}, c_{i 3, t}\right) \\ 
 e_{i, t+1} &= 
-\exp\left( \frac{\sigma_{i, t+1}^2}{2} \right) \varepsilon_{i, t+1}; \\
-\sigma^2_{i,t+1} &= 
-\omega + \gamma_i\sigma^2_{t,i}+w_{i,t+1}
-\end{flalign}
+\sigma_{i, t+1} \varepsilon_{i, t+1}; \\
+\operatorname{log} (\sigma^2_{i,t+1}) &= 
+\omega + \gamma \operatorname{log} (\sigma^2_{t}) + \sigma_{u}u; 
+\quad u \sim N(0, 1)
+\end{align}
 
-$v_{t+1}$ is a $3\times 1$ vector of errors, $w_{i,t+1},\varepsilon_{i,t+1}$ are scalar error terms. Variances tuned such that the R squared for each individual return series was 50\% and annualized volatility 30\%.
+$v_{t+1}$ is a $3\times 1$ vector of errors, $w_{i,t+1},\varepsilon_{i,t+1}$ are scalar error terms.
 
+Parameters tuned s.t. annualized volatility is 20\%.
 \end{frame}
 
 \begin{frame}
@@ -702,11 +679,7 @@ $v_{t+1}$ is a $3\times 1$ vector of errors, $w_{i,t+1},\varepsilon_{i,t+1}$ are
 
 Matrix $C_t$ is an $N\times P_c$ vector of latent factors. 
 
-$x_t$ is a $3 \times 1$ multivariate time series
-
-$\varepsilon_{t+1}$ is a $N\times 1$ vector of idiosyncratic errors. 
-
-A simulation mechanism for $C_t$ that gives some correlation across the factors and across time was used. We build in correlation across time among factors by drawing normal random numbers for each $1\leq i\leq N$ and $1\leq j\leq P_{c}$, according to 
+Build in correlation across time among factors by drawing normal random numbers for each $1\leq i\leq N$ and $1\leq j\leq P_{c}$, according to 
 
 \begin{equation}
 \overline{c}_{i j, t} = \rho_{j} \overline{c}_{i j, t-1}+\epsilon_{i j, t} ;
@@ -723,7 +696,7 @@ B:=\Lambda\Lambda' + \frac{1}{10}\mathbb{I}_{n}, \quad
 \lambda_{ik}\sim N(0, \lambda_{sd}), \; k=1, \dots, 4
 \end{equation}
 
-$B$ is a p.s.d. matrix, serves as a vcov matrix with $\lambda_{sd}$ controlling the density of the matrix. $\lambda_{sd}$ values of 0.01, 0.1 and 1 were used to explore effects of \textbf{cross sectional correlation}.
+$B$ is a p.s.d. matrix, serves as a vcov matrix with $\lambda_{sd}$ controlling the \textbf{density} of the matrix. $\lambda_{sd}$ values of 0.01, 0.1 and 1 were used to explore effects of \textbf{cross sectional correlation}.
 
 Simulate characteristics according to
 
@@ -732,6 +705,24 @@ Simulate characteristics according to
 \end{equation}
 
 where $L$ represents the lower triangle matrix of $B$ using the Cholesky decomposition.
+\end{frame}
+
+\begin{frame}
+\frametitle{Simulating Characteristics}
+Simulate macroeconomic factors according to:
+
+\begin{flalign*}
+x_{t} = Ax_{t-1}+u_t; 
+\quad A = 
+\begin{pmatrix}
+.95 & 0 & 0 \\
+0 & .95 & 0 \\
+0 & 0 & .95
+\end{pmatrix} \;
+\quad u_t \sim N\left( \mu = (0, 0, 0)' , \Sigma = I_3
+\right) 
+\end{flalign*}
+
 \end{frame}
 
 \begin{frame}
@@ -797,6 +788,7 @@ Key Results:
 \item Elastic net is best for causal analysis, \textbf{even with multicollinearity}
 \item Random Forest is better in non-linear settings
 \item Neural Networks \textbf{did not outperform}
+\item Deeper neural networks seem to do better
 \end{itemize}
 \end{frame}
 
@@ -922,7 +914,7 @@ Reducing dataset size:
 	\item Only include NASDAQ stocks
 	\item Filter out penny stocks (microcaps)
 	\item Keep only instruments with share code of 10, 11 (filtering out REITs, etc)
-	\item Convert to a monthly format
+	\item Convert to a \textbf{quarterly} format
 	\item Industry dummy was dropped due to inaccuracy and high dimensionality
 \end{itemize}
 \end{frame}
@@ -961,7 +953,7 @@ Missing Data
 \frametitle{Cleaned Dataset}
 Baseline set of covariates defined as:
 \begin{equation}
-	z_{i,t} - (1, x_t)' \otimes c_{i,t}
+	z_{i,t} = (1, x_t)' \otimes c_{i,t}
 \end{equation}
 where $c_{i,t}$ is a $P_c$ matrix of characteristics for each stock $i$, and $(1, x_t)'$ is a $P_x \times 1$ vector of macroeconomic predictors.
 
@@ -1015,17 +1007,16 @@ Number of covariates in this baseline set is $61 \times (8 + 1) = 549$.
 
 Results \textbf{largely the same} as the simulation study.
 
+Key results:
 \begin{itemize}
 	\item Minimizing quantile loss is better
 	\item Elastic Net $>$ Random Forests $>$ Neural Networks $>$ Linear Models
 	\item Elastic Net and Random Forests tend to agree on same subset of predictors
 	\item Neural Networks \textbf{did not outperform}
-	\item Neural Networks are unstable
+	\item Neural Networks start to fail
 \end{itemize}
 
-Suggests that 
-
-\textbf{Contradicts} \cite{gu_empirical_2018}'s findings.
+Many of these results \textbf{contradict} \cite{gu_empirical_2018}'s findings.
 
 \end{frame}
 
@@ -1181,6 +1172,13 @@ Overall findings differ from sparse literature on similar topics.
 Results are consistent across simulated data and empirical data, suggesting a robust set of results.
 
 Overall, results are promising, especially for Elastic Net.
+\end{frame}
+
+\begin{frame}
+\frametitle{Source Code}
+Source code is fully available, along with instructions on how to build datasets:
+
+\url{https://github.com/Meron35/Evaluation-of-Machine-Learning-in-Asset-Pricing}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

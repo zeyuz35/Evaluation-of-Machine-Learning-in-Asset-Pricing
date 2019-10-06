@@ -776,6 +776,13 @@ ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Resu
 #######################################################################
 # Test Statistics
 
+breaks <- levels(all_loss_df_averaged$model)
+labels <- as.expression(breaks)
+labels[[2]] <- bquote(bold(.(labels[[2]])))
+labels[[4]] <- bquote(bold(.(labels[[4]])))
+labels[[6]] <- bquote(bold(.(labels[[6]])))
+labels[[16]] <- bquote(bold(.(labels[[16]])))
+
 ## Plots showing that quantile loss is better
 all_loss_df_averaged %>%
   ungroup() %>%
@@ -786,6 +793,7 @@ all_loss_df_averaged %>%
          | model == "NN5_MAE" | model == "NN5_MSE") %>%
   ggplot() +
   geom_bar(aes(x = model, y = test_MAE, fill = sample), stat = "identity", position = position_dodge()) +
+  scale_x_discrete(label = labels, breaks = breaks) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired") +
@@ -802,6 +810,7 @@ all_loss_df_averaged %>%
          | model == "NN5_MAE" | model == "NN5_MSE") %>%
   ggplot() +
   geom_bar(aes(x = model, y = test_MSE, fill = sample), stat = "identity", position = position_dodge()) +
+  scale_x_discrete(label = labels, breaks = breaks) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired") +
@@ -812,6 +821,11 @@ ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Resu
 ###########################
 ## Plots for presentation
 
+breaks <- levels(all_loss_df_averaged$model)
+labels <- as.expression(breaks)
+labels[[4]] <- bquote(bold(.(labels[[4]])))
+labels[[6]] <- bquote(bold(.(labels[[6]])))
+
 all_loss_df_averaged %>%
   ungroup() %>%
   mutate(sample = as.factor(sample)) %>%
@@ -821,6 +835,7 @@ all_loss_df_averaged %>%
          | model == "NN5_MAE") %>%
   ggplot() +
   geom_bar(aes(x = model, y = test_MAE, fill = sample), stat = "identity", position = position_dodge()) +
+  scale_x_discrete(label = labels, breaks = breaks) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired") +
@@ -836,6 +851,7 @@ all_loss_df_averaged %>%
          | model == "NN5_MAE") %>%
   ggplot() +
   geom_bar(aes(x = model, y = test_MSE, fill = sample), stat = "identity", position = position_dodge()) +
+  scale_x_discrete(label = labels, breaks = breaks) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired") +
@@ -851,6 +867,7 @@ all_loss_df_averaged %>%
          | model == "NN5_MAE") %>%
   ggplot() +
   geom_bar(aes(x = model, y = test_RSquare, fill = sample), stat = "identity", position = position_dodge()) +
+  scale_x_discrete(label = labels, breaks = breaks) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired") +
@@ -864,6 +881,7 @@ all_loss_df_averaged %>%
   mutate(sample = as.factor(sample)) %>%
   ggplot() +
   geom_bar(aes(x = model, y = test_RMSE, fill = sample), stat = "identity", position = position_dodge()) +
+  scale_x_discrete(label = labels, breaks = breaks) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired") +
@@ -879,6 +897,7 @@ all_loss_df_averaged %>%
          | model == "NN5_MAE") %>%
   ggplot() +
   geom_bar(aes(x = model, y = test_RSquare, fill = sample), stat = "identity", position = position_dodge()) +
+  scale_x_discrete(label = labels, breaks = breaks) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired") +
@@ -890,6 +909,11 @@ ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Resu
 ## More proper graphs that are much more readable
 ## Achieve this by only showing the best neural network
 
+breaks <- levels(all_loss_df_averaged$model)
+labels <- as.expression(breaks)
+labels[[4]] <- bquote(bold(.(labels[[4]])))
+labels[[6]] <- bquote(bold(.(labels[[6]])))
+
 all_loss_df_averaged %>%
   ungroup() %>%
   mutate(sample = as.factor(sample)) %>%
@@ -900,6 +924,7 @@ all_loss_df_averaged %>%
          | model == "NN5_MAE") %>%
   ggplot() +
   geom_bar(aes(x = model, y = test_MSE, fill = sample), stat = "identity", position = position_dodge()) +
+  scale_x_discrete(label = labels, breaks = breaks) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired") +
@@ -917,6 +942,7 @@ all_loss_df_averaged %>%
          | model == "NN5_MAE") %>%
   ggplot() +
   geom_bar(aes(x = model, y = test_MAE, fill = sample), stat = "identity", position = position_dodge()) +
+  scale_x_discrete(label = labels, breaks = breaks) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired") +
@@ -934,6 +960,7 @@ all_loss_df_averaged %>%
          | model == "NN5_MAE") %>%
   ggplot() +
   geom_bar(aes(x = model, y = test_RSquare, fill = sample), stat = "identity", position = position_dodge()) +
+  scale_x_discrete(label = labels, breaks = breaks) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired") +
@@ -998,6 +1025,17 @@ ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Resu
 
 ```{r variable_importance_plots}
 # Variable Importance Plots
+
+breaks <- levels(all_vi_df_averaged$variable)
+labels <- as.expression(breaks)
+labels[[1]] <- bquote(bold(.(labels[[1]])))
+labels[[2]] <- bquote(bold(.(labels[[2]])))
+labels[[3]] <- bquote(bold(.(labels[[3]])))
+labels[[303]] <- bquote(bold(.(labels[[303]])))
+
+ggplot(data = data) + 
+  geom_bar(aes(x = labs, y = counts), stat="identity") + 
+  scale_x_discrete(label = labels, breaks = breaks)
 
 ## Plots for PRESENTATION
 
@@ -1064,6 +1102,7 @@ all_vi_df_averaged %>%
   top_n(42, importance) %>%
   ggplot() + 
   geom_tile(aes(x = variable, y = model, alpha = importance)) +
+  scale_x_discrete(label = labels, breaks = breaks) + 
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   theme(legend.position = "none") +
@@ -1086,6 +1125,7 @@ all_vi_df_averaged %>%
   top_n(60, importance) %>%
   ggplot() + 
   geom_tile(aes(x = variable, y = model, alpha = importance)) +
+  scale_x_discrete(label = labels, breaks = breaks) + 
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   theme(legend.position = "none") +

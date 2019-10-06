@@ -5,8 +5,11 @@
 Ang, A., Bekaert, G., 2006. Stock return predictability: {Is} it there? The
   Review of Financial Studies 20, 651--707.
 
-\bibitem[{Breiman(2001)}]{breiman_random_2001}
-Breiman, L., 2001. Random forests. Machine learning 45, 5--32.
+\bibitem[{Bengio et~al.(1994)Bengio, Simard, and
+  Frasconi}]{bengio_learning_1994}
+Bengio, Y., Simard, P., Frasconi, P., 1994. Learning long-term dependencies
+  with gradient descent is difficult. IEEE transactions on neural networks 5,
+  157--166.
 
 \bibitem[{Feng et~al.(2019)Feng, Giglio, and Xiu}]{feng_taming_2019}
 Feng, G., Giglio, S., Xiu, D., 2019. Taming the {Factor} {Zoo}: {A} {Test} of
@@ -42,12 +45,6 @@ Harvey, C.~R., Liu, Y., 2019. A {Census} of the {Factor} {Zoo}. Social Science
 Harvey, C.~R., Liu, Y., Zhu, H., 2016. … and the {Cross}-{Section} of
   {Expected} {Returns}. The Review of Financial Studies 29, 5--68.
 
-\bibitem[{Hastie et~al.(2009)Hastie, Tibshirani, and
-  Friedman}]{hastie_elements_2009}
-Hastie, T., Tibshirani, R., Friedman, J.~H., 2009. The elements of statistical
-  learning: data mining, inference, and prediction. Springer series in
-  statistics, Springer, New York, NY, second ed.
-
 \bibitem[{Kozak et~al.(2017)Kozak, Nagel, and Santosh}]{kozak_shrinking_2017}
 Kozak, S., Nagel, S., Santosh, S., 2017. Shrinking the cross section. Tech.
   rep., National Bureau of Economic Research.
@@ -59,6 +56,12 @@ Lettau, M., Ludvigson, S., 2001. Consumption, {Aggregate} {Wealth}, and
 \bibitem[{Masters(1993)}]{masters_practical_1993}
 Masters, T., 1993. Practical {Neural} {Network} {Recipes} in {C}++. Morgan
   Kaufmann, google-Books-ID: 7Ez\_Pq0sp2EC.
+
+\bibitem[{Murphy et~al.(2010)Murphy, Evans, and
+  Storfer}]{murphy_quantifying_2010}
+Murphy, M.~A., Evans, J.~S., Storfer, A., 2010. Quantifying {Bufo} boreas
+  connectivity in {Yellowstone} {National} {Park} with landscape genetics.
+  Ecology 91, 252--261.
 
 \bibitem[{Rapach and Zhou(2013)}]{rapach_forecasting_2013}
 Rapach, D., Zhou, G., 2013. Forecasting {Stock} {Returns}. In: {\em Handbook of

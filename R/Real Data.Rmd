@@ -1579,7 +1579,9 @@ write.csv(empirical_results_df, file = "~/GitHub/Evaluation-of-Machine-Learning-
 print(xtable(empirical_results_df, caption = "Empirical Data Results"), 
              file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_results.tex",
       tabular.environment = "longtable")
+```
 
+```{r}
 #####################################################################
 ## Plot These Results
 
@@ -1587,11 +1589,17 @@ a4_aspect_ratio <- 1.5
 
 # Test Statistics
 
+breaks <- levels(empirical_results_df$model)
+labels <- as.expression(breaks)
+labels[[4]] <- bquote(bold(.(labels[[4]])))
+labels[[6]] <- bquote(bold(.(labels[[6]])))
+
 # Test MAE
 empirical_results_df %>%
   mutate(Sample = as.factor(Sample)) %>%
   ggplot() +
   geom_bar(aes(x = model, y = test_MAE, fill = Sample), stat = "identity", position = position_dodge()) +
+  scale_x_discrete(label = labels, breaks = breaks) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired")
@@ -1603,6 +1611,7 @@ empirical_results_df %>%
   mutate(Sample = as.factor(Sample)) %>%
   ggplot() +
   geom_bar(aes(x = model, y = test_MSE, fill = Sample), stat = "identity", position = position_dodge()) +
+  scale_x_discrete(label = labels, breaks = breaks) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired")
@@ -1614,6 +1623,7 @@ empirical_results_df %>%
   mutate(Sample = as.factor(Sample)) %>%
   ggplot() +
   geom_bar(aes(x = model, y = test_RSquare, fill = Sample), stat = "identity", position = position_dodge()) +
+  scale_x_discrete(label = labels, breaks = breaks) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired")
@@ -1659,6 +1669,13 @@ ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Resu
 
 ## Prove that quantile loss is better
 
+breaks <- levels(all_loss_df_averaged$model)
+labels <- as.expression(breaks)
+labels[[2]] <- bquote(bold(.(labels[[2]])))
+labels[[4]] <- bquote(bold(.(labels[[4]])))
+labels[[6]] <- bquote(bold(.(labels[[6]])))
+labels[[16]] <- bquote(bold(.(labels[[16]])))
+
 # Test MAE
 empirical_results_df %>%
   mutate(Sample = as.factor(Sample)) %>%
@@ -1668,6 +1685,7 @@ empirical_results_df %>%
          | model == "NN5_MAE" | model == "NN5_MSE") %>%
   ggplot() +
   geom_bar(aes(x = model, y = test_MAE, fill = Sample), stat = "identity", position = position_dodge()) +
+  scale_x_discrete(label = labels, breaks = breaks) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired")
@@ -1683,6 +1701,7 @@ empirical_results_df %>%
          | model == "NN5_MAE" | model == "NN5_MSE") %>%
   ggplot() +
   geom_bar(aes(x = model, y = test_RSquare, fill = Sample), stat = "identity", position = position_dodge()) +
+  scale_x_discrete(label = labels, breaks = breaks) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired")
@@ -1698,6 +1717,7 @@ empirical_results_df %>%
          | model == "NN5_MAE" | model == "NN5_MSE") %>%
   ggplot() +
   geom_bar(aes(x = model, y = test_MSE, fill = Sample), stat = "identity", position = position_dodge()) +
+  scale_x_discrete(label = labels, breaks = breaks) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired")
@@ -1705,6 +1725,11 @@ ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Resu
        width = 7 * a4_aspect_ratio, height = 7, units = "cm")
 
 ## Actual Plots
+
+breaks <- levels(empirical_results_df$model)
+labels <- as.expression(breaks)
+labels[[4]] <- bquote(bold(.(labels[[4]])))
+labels[[6]] <- bquote(bold(.(labels[[6]])))
 
 # Test MAE
 empirical_results_df %>%
@@ -1715,6 +1740,7 @@ empirical_results_df %>%
          | model == "NN5_MAE") %>%
   ggplot() +
   geom_bar(aes(x = model, y = test_MAE, fill = Sample), stat = "identity", position = position_dodge()) +
+  scale_x_discrete(label = labels, breaks = breaks) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired")
@@ -1730,6 +1756,7 @@ empirical_results_df %>%
          | model == "NN5_MAE") %>%
   ggplot() +
   geom_bar(aes(x = model, y = test_MSE, fill = Sample), stat = "identity", position = position_dodge()) +
+  scale_x_discrete(label = labels, breaks = breaks) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired")
@@ -1745,6 +1772,7 @@ empirical_results_df %>%
          | model == "NN5_MAE") %>%
   ggplot() +
   geom_bar(aes(x = model, y = test_RSquare, fill = Sample), stat = "identity", position = position_dodge()) +
+  scale_x_discrete(label = labels, breaks = breaks) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired")
@@ -2147,6 +2175,15 @@ ggsave(filename= "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Resul
 ```{r vi_ind_plots}
 a4_aspect_ratio <- 1.5
 
+breaks <- levels(empirical_tidy_vi_ind$variable)
+labels <- as.expression(breaks)
+mom1m <- which(breaks == "ind_mom1m")
+mom6m <- which(breaks == "ind_mom6m")
+mvel1 <- which(breaks == "ind_mvel1")
+labels[[mom1m]] <- bquote(bold(.(labels[[mom1m]])))
+labels[[mom6m]] <- bquote(bold(.(labels[[mom6m]])))
+labels[[mvel1]] <- bquote(bold(.(labels[[mvel1]])))
+
 empirical_tidy_vi_ind %>%
   filter(sample == 1) %>%
   mutate(variable = fct_reorder(variable, importance)) %>%
@@ -2195,6 +2232,7 @@ empirical_tidy_vi_ind %>%
   top_n(10, importance) %>%
   ggplot() +
   geom_tile(aes(x = variable, y = model, alpha = importance)) +
+  scale_x_discrete(label = labels, breaks = breaks) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   theme(legend.position = "none")
