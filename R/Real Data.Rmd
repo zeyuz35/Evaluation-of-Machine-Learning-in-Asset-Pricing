@@ -1583,7 +1583,7 @@ print(xtable(empirical_results_df, caption = "Empirical Data Results"),
 #####################################################################
 ## Plot These Results
 
-a4_aspect_ratio <- 1.8
+a4_aspect_ratio <- 1.5
 
 # Test Statistics
 
@@ -1655,6 +1655,151 @@ empirical_results_df %>%
 ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_train_rsquare.pdf",
        width = 7 * a4_aspect_ratio, height = 7, units = "cm")
 
+## Presentation Plots
+
+## Prove that quantile loss is better
+
+# Test MAE
+empirical_results_df %>%
+  mutate(Sample = as.factor(Sample)) %>%
+  filter(model == "LM_MAE" | model == "LM_MSE" 
+         | model == "ELN_MAE" | model == "ELN_MSE"
+         | model == "RF_MAE" | model == "RF_MSE"
+         | model == "NN5_MAE" | model == "NN5_MSE") %>%
+  ggplot() +
+  geom_bar(aes(x = model, y = test_MAE, fill = Sample), stat = "identity", position = position_dodge()) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  scale_fill_brewer(palette = "Paired")
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_test_mae_pre_all.pdf",
+       width = 7 * a4_aspect_ratio, height = 7, units = "cm")
+
+# Test Rsquare
+empirical_results_df %>%
+  mutate(Sample = as.factor(Sample)) %>%
+  filter(model == "LM_MAE" | model == "LM_MSE" 
+         | model == "ELN_MAE" | model == "ELN_MSE"
+         | model == "RF_MAE" | model == "RF_MSE"
+         | model == "NN5_MAE" | model == "NN5_MSE") %>%
+  ggplot() +
+  geom_bar(aes(x = model, y = test_RSquare, fill = Sample), stat = "identity", position = position_dodge()) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  scale_fill_brewer(palette = "Paired")
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_test_rsquare_pre_all.pdf",
+       width = 7 * a4_aspect_ratio, height = 7, units = "cm")
+
+# Test MSE
+empirical_results_df %>%
+  mutate(Sample = as.factor(Sample)) %>%
+  filter(model == "LM_MAE" | model == "LM_MSE" 
+         | model == "ELN_MAE" | model == "ELN_MSE"
+         | model == "RF_MAE" | model == "RF_MSE"
+         | model == "NN5_MAE" | model == "NN5_MSE") %>%
+  ggplot() +
+  geom_bar(aes(x = model, y = test_MSE, fill = Sample), stat = "identity", position = position_dodge()) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  scale_fill_brewer(palette = "Paired")
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_test_mse_pre_all.pdf",
+       width = 7 * a4_aspect_ratio, height = 7, units = "cm")
+
+## Actual Plots
+
+# Test MAE
+empirical_results_df %>%
+  mutate(Sample = as.factor(Sample)) %>%
+  filter(model == "LM_MSE" 
+         | model == "ELN_MAE"
+         | model == "RF_MAE"
+         | model == "NN5_MAE") %>%
+  ggplot() +
+  geom_bar(aes(x = model, y = test_MAE, fill = Sample), stat = "identity", position = position_dodge()) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  scale_fill_brewer(palette = "Paired")
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_test_mae_pre.pdf",
+       width = 7 * a4_aspect_ratio, height = 7, units = "cm")
+
+# Test MSE
+empirical_results_df %>%
+  mutate(Sample = as.factor(Sample)) %>%
+  filter(model == "LM_MSE" 
+         | model == "ELN_MAE"
+         | model == "RF_MAE"
+         | model == "NN5_MAE") %>%
+  ggplot() +
+  geom_bar(aes(x = model, y = test_MSE, fill = Sample), stat = "identity", position = position_dodge()) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  scale_fill_brewer(palette = "Paired")
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_test_mse_pre.pdf",
+       width = 7 * a4_aspect_ratio, height = 7, units = "cm")
+
+# Test Rsquare
+empirical_results_df %>%
+  mutate(Sample = as.factor(Sample)) %>%
+  filter(model == "LM_MSE" 
+         | model == "ELN_MAE"
+         | model == "RF_MAE"
+         | model == "NN5_MAE") %>%
+  ggplot() +
+  geom_bar(aes(x = model, y = test_RSquare, fill = Sample), stat = "identity", position = position_dodge()) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  scale_fill_brewer(palette = "Paired")
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_test_rsquare_pre.pdf",
+       width = 7 * a4_aspect_ratio, height = 7, units = "cm")
+
+## Focusing on neural networks only
+
+# Test MAE
+empirical_results_df %>%
+  mutate(Sample = as.factor(Sample)) %>%
+  filter(model == "NN1_MAE" | model == "NN1_MSE"
+         | model == "NN2_MAE" | model == "NN2_MSE"
+         | model == "NN3_MAE" | model == "NN3_MSE"
+         | model == "NN4_MAE" | model == "NN4_MSE"
+         | model == "NN5_MAE" | model == "NN5_MSE") %>%
+  ggplot() +
+  geom_bar(aes(x = model, y = test_MAE, fill = Sample), stat = "identity", position = position_dodge()) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  scale_fill_brewer(palette = "Paired")
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_test_mae_pre_nn.pdf",
+       width = 7 * a4_aspect_ratio, height = 7, units = "cm")
+
+# Test MSE
+empirical_results_df %>%
+  mutate(Sample = as.factor(Sample)) %>%
+  filter(model == "NN1_MAE" | model == "NN1_MSE"
+         | model == "NN2_MAE" | model == "NN2_MSE"
+         | model == "NN3_MAE" | model == "NN3_MSE"
+         | model == "NN4_MAE" | model == "NN4_MSE"
+         | model == "NN5_MAE" | model == "NN5_MSE") %>%
+  ggplot() +
+  geom_bar(aes(x = model, y = test_MSE, fill = Sample), stat = "identity", position = position_dodge()) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  scale_fill_brewer(palette = "Paired")
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_test_mse_pre_nn.pdf",
+       width = 7 * a4_aspect_ratio, height = 7, units = "cm")
+
+# Test Rsquare
+empirical_results_df %>%
+  mutate(Sample = as.factor(Sample)) %>%
+  filter(model == "NN1_MAE" | model == "NN1_MSE"
+         | model == "NN2_MAE" | model == "NN2_MSE"
+         | model == "NN3_MAE" | model == "NN3_MSE"
+         | model == "NN4_MAE" | model == "NN4_MSE"
+         | model == "NN5_MAE" | model == "NN5_MSE") %>%
+  ggplot() +
+  geom_bar(aes(x = model, y = test_RSquare, fill = Sample), stat = "identity", position = position_dodge()) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  scale_fill_brewer(palette = "Paired")
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_test_rsquare_pre_nn.pdf",
+       width = 7 * a4_aspect_ratio, height = 7, units = "cm")
 ```
 
 ```{r}
@@ -1980,17 +2125,17 @@ empirical_tidy_vi_macro %>%
   mutate(variable = fct_reorder(variable, importance)) %>%
   top_n(10, importance) %>%
   ggplot() +
-  geom_tile(aes(x = model, y = variable, alpha = importance)) +
+  geom_tile(aes(x = variable, y = model, alpha = importance)) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   theme(legend.position = "none")
 ggsave(filename= "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_sample_all_vi_macro.pdf", 
-       width = 15, height = 15 * a4_aspect_ratio, units = "cm")
+       width = 15  * a4_aspect_ratio, height = 15, units = "cm")
 
 empirical_tidy_vi_macro %>%
   mutate(variable = fct_reorder(variable, importance)) %>%
   ggplot() +
-  geom_tile(aes(x = model, y = variable, alpha = importance)) +
+  geom_tile(aes(x = variable, y = model, alpha = importance)) +
   facet_grid(cols = vars(sample)) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
@@ -2049,17 +2194,17 @@ empirical_tidy_vi_ind %>%
   mutate(variable = fct_reorder(variable, importance)) %>%
   top_n(10, importance) %>%
   ggplot() +
-  geom_tile(aes(x = model, y = variable, alpha = importance)) +
+  geom_tile(aes(x = variable, y = model, alpha = importance)) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   theme(legend.position = "none")
 ggsave(filename= "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_sample_all_vi_ind.pdf", 
-       width = 15, height = 15 * a4_aspect_ratio, units = "cm")
+       width = 15 * a4_aspect_ratio, height = 15, units = "cm")
 
 empirical_tidy_vi_ind %>%
   mutate(variable = fct_reorder(variable, importance)) %>%
   ggplot() +
-  geom_tile(aes(x = model, y = variable, alpha = importance)) +
+  geom_tile(aes(x = variable, y = model, alpha = importance)) +
   facet_grid(cols = vars(sample)) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +

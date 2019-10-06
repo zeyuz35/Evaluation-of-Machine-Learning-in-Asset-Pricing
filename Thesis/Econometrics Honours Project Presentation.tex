@@ -118,11 +118,6 @@
     \maketitle
 \end{frame}
 
-\begin{frame}
-\frametitle{Overview}
-\tableofcontents
-\end{frame}
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -240,7 +235,7 @@ More able to manage the explosion in the number of factors suggested by the lite
 \frametitle{Applications in the Literature}
 Causal Analysis:
 \begin{itemize}
-	\item \cite{kozak_shrinking_2017}, \cite{rapach_forecasting_2013}, \cite{freyberger_dissecting_2017}, and others apply shrinkage and selection methods to identify important factors
+	\item \cite{kozak_shrinking_2017}, \cite{rapach_forecasting_2013}, \cite{freyberger_dissecting_2017}, and others apply shrinkage and selection methods to assist with factor selection
 \end{itemize}
 Prediction Performance:
 \begin{itemize}
@@ -252,6 +247,18 @@ Prediction Performance:
 \begin{frame}
 \frametitle{Motivations}
 However, little work has been done on how machine learning actually recognises and deals with the challenges in financial data. 
+
+Machine learning is mainly suited for specific contexts:
+\begin{itemize}
+	\item Little interpretability in regressors
+	\item Often assume i.i.d.
+	\item Often require large amounts of data
+	\item Struggle with state dependence
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Methodology Issues}
 \begin{itemize}
 	\item \cite{feng_deep_2018} cross validates their training set, destroying temporal aspect of data, and only explore a handful of factors
 	\item \cite{gu_empirical_2018} only use data up until the 1970s to produce predictions in the last 30 years
@@ -261,7 +268,7 @@ However, little work has been done on how machine learning actually recognises a
 
 \begin{frame}
 \frametitle{Motivations}
-Can machine learning deal with the challenges in financial data?
+Can machine learning assist with returns prediction and causal inference?
 \begin{itemize}
 	\item Persistent Regressors?
 	\item Identify true factors from a high dimensional, cross sectionally correlated panel?
@@ -277,12 +284,13 @@ We explored this via two studies, focusing on the prediction performance and fac
 
 Simulation study
 \begin{itemize}
-	\item 
+	\item Explicitly explore how machine learning performs in controlled environments
 \end{itemize}
 
 Empirical study
 \begin{itemize}
-	\item 
+	\item Validate our results
+	\item Contrast them with literature
 \end{itemize}
 \end{frame}
 
@@ -333,12 +341,11 @@ An expanding/growing window approach was used to
 	\item Preserve temporal ordering of data (compared to cross-validation)
 	\item Allows the model to use the most recent data, in some sense
 \end{itemize}
-The training/validation split was chosen such that the size of the training set was 1.5 times the length of the validation set to begin with, consistent with \cite{gu_empirical_2018}.
-Split specification is ultimately subjective
+The training/validation split was chosen s.t. the size of the training set was 1.5 times the length of the validation set to begin with, consistent with \cite{gu_empirical_2018}.
 \end{frame}
 
 \begin{frame}
-\frametitle{Sample Splitting}
+\frametitle{Sample Splitting - Expanding Window Scheme}
 \begin{figure}
 	\begin{center}
 		\begin{tabular}{|c|p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}|}
@@ -410,6 +417,8 @@ We focus on 4 common machine learning models:
 	\item Random Forests
 	\item Neural Networks
 \end{itemize}
+
+In general, we mimic the methodology of \cite{gu_empirical_2018}.
 \end{frame}
 
 \begin{frame}
@@ -428,6 +437,9 @@ Optimizing $\theta$ w.r.t. MSE yields the Pooled OLS estimator
 
 \begin{frame}
 \frametitle{Penalized Linear Models}
+
+Elastic Net penalty aims to produce efficient and parsimonious via shrinkage and selection of factor coefficients
+
 Linear Models + Penalty term (Elastic Net by \cite{zou_regularization_2005} shown):
 	\begin{align}
 	\mathcal{L(\theta;.)} &= 
@@ -437,9 +449,6 @@ Linear Models + Penalty term (Elastic Net by \cite{zou_regularization_2005} show
 		\lambda(1-\rho) \sum_{j = 1}^{P}|\theta_j| +
 		\frac{1}{2} \lambda \rho \sum_{j = 1}^{P}\theta_j^2
 	\end{align}
-
-Elastic Net penalty aims to produce efficient and parsimonious via shrinkage and selection
-	
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -447,30 +456,14 @@ Elastic Net penalty aims to produce efficient and parsimonious via shrinkage and
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}
-\frametitle{Regression Trees \& Random Forests}
-\begin{itemize}
-	\item Fully non-parametric models that can capture complex multi-way interactions. 
-	\item A tree "grows" in a series of iterations:
-	\begin{enumerate}
-		\item Make a split ("branch") along one predictor, such that it is the best split available at that stage with respect to minimizing the loss function
-		\item Repeat until each observation is its own node, or until the stopping criterion is met
-	\end{enumerate}
-	\item Slices the predictor space into rectangular partitions, and predicts the unknown function $g^*(z_{i,t})$ with the ``average" value of the outcome variable in each partition to minimize the loss function
-\end{itemize}
-\end{frame}
-
-\begin{frame}
 \frametitle{Random Forests}
-Trees have very low bias and high variance
+Ensemble model of regression trees with low correlation, each with high depth
 
-They are very prone to overfitting and non-robust
+Able to capture multiway non-linearities
 
-Random Forests were proposed by \cite{breiman_random_2001} to address this
-\begin{itemize}
-	\item Create $B$ bootstrap samples
-	\item Grow a highly overfit tree to each, but only using $m$ random subset of all predictors for each
-	\item Average the output from all trees as an ensemble model
-\end{itemize}
+Tend to be quite robust
+
+Depth of trees and number of predictors sampled for each tree tuned
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -496,12 +489,6 @@ In theory able to approximate any function - Universal Approximation Theorem
 
 \item All units are fully connected
 \end{itemize}
-
-ReLU activation function was chosen for all hidden layers for computational speed, and hence popularity in literature:
-
-\begin{equation}
-\operatorname{ReLU}(x) = max(0, x)
-\end{equation}
 \end{frame}
 
 \begin{frame}
@@ -530,9 +517,9 @@ Hyperparameters gridsearched:
 \frametitle{Neural Network - Activation Function}
 \cite{gu_empirical_2018} specified using the ReLU activation function for all layers
 
-We found that this specification does not work due to the ``dying ReLU" problem"
+We found that this specification \textbf{does not work} due to the ``dying ReLU" problem"
 
-Alternatives such as Leaky ReLU also did not give very good performance
+Alternatives such as Leaky ReLU also did not give very good performance.
 
 A specification of the tanh activation function was observed to give the best results
 \end{frame}
@@ -589,23 +576,24 @@ A specification of the tanh activation function was observed to give the best re
 \end{figure}
 \end{frame}
 
+%% Loss Metrics
+
 \begin{frame}
-	\frametitle{Loss Metrics}
-	
-	Overall predictive performance for individual excess stock returns were assessed using the following loss metrics:
-	
-	Mean Squared Error
-	
-	Mean Absolute Error
-	
-	Out of sample predictive R
-	
+\frametitle{Loss Metrics}
+Overall predictive performance for individual excess stock returns were assessed using the following loss metrics:
+	\begin{itemize}
+	\item Mean Squared Error
+	\item Mean Absolute Error
+	\item Out of Sample Predictive R
+	\end{itemize}
 \end{frame}
 	
 \begin{frame}
 \frametitle{Out of Sample R squared}
 		
-An out of sample R squared metric was also reported, as is popular in the financial literature. There is no consensus as to how this metric is to be calculated, and we use the following formulation:
+An out of sample R squared metric was also reported, as is popular in the financial literature. 
+
+No consensus as to how this metric is to be calculated, and we use the following formulation:
 \begin{equation}
 R^2_{OOS} = 
 	1 - 
@@ -615,14 +603,14 @@ R^2_{OOS} =
 		
 where $\mathcal{T}_3$ indicates that the fits are only assessed on the test subsample
 		
-Interpretation of this is be cautioned, as R squared was originally designed for use in assessing in sample fit for linear models.
+Interpretation of the numerical value is cautioned, as R squared was originally designed for use in assessing in sample fit for linear models.
 \end{frame}
 	
 \begin{frame}
 \frametitle{Variable Importance}	
 \begin{itemize}
 	\item Defined as the reduction in predictive R-Squared from setting all values of predictor $j$ to 0, while holding the remaining model estimates fixed
-	\item Note some minor transformations applied to this metric for numerical reasons
+	\item Note some minor transformations applied for numerical reasons
 			
 	\begin{equation}
 	VI_{j, norm} = \frac{VI_j + \operatorname{min}(VI_j) + o}
@@ -649,16 +637,44 @@ Characteristics of financial data to be captured
 \end{frame}
 
 \subsection{Simulation Design}
+
 %% Gu et al design
+
+\subsubsection{Gu et al Design}
 
 \begin{frame}
 \frametitle{\cite{gu_empirical_2018}'s Simulation Design}
 We replicate \cite{gu_empirical_2018}'s simulation design as a starting point
+General structure:
+\begin{itemize}
+\item Generate individual and macroeconomic factors
+\item These enter into a data generating process, ranging from simple to complex
+\item Final returns process will be this "true" latent process, plus a large error term
+\end{itemize}
 %% Insert their specification here
 Several Problems:
 \begin{itemize}
-	\item White noises, constant volatility specification
+	\item White noise, constant volatility specification
 	\item No cross sectional correlation
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\begin{figure}
+\includegraphics[max size={\textwidth}{0.85\textheight}]{g1_A1_nosv_panel.pdf}
+\caption{\cite{gu_empirical_2018}'s Simulation Design}
+\end{figure}
+\end{frame}
+
+%% OUR DESIGN
+
+\begin{frame}
+\frametitle{Proposed Simulation Design}
+We propose a design which incorporates:
+\begin{itemize}
+\item Persistence in regressors
+\item Cross sectional correlation in regressors
+\item Stochastic volatility in errors
 \end{itemize}
 \end{frame}
 
@@ -690,40 +706,32 @@ $x_t$ is a $3 \times 1$ multivariate time series
 
 $\varepsilon_{t+1}$ is a $N\times 1$ vector of idiosyncratic errors. 
 
-Simulation mechanism for $C_t$ that gives correlation across the factors \& time
-
-Draw normal random numbers for each $1\leq i\leq N$ and $1\leq j\leq P_{c}$, according to 
+A simulation mechanism for $C_t$ that gives some correlation across the factors and across time was used. We build in correlation across time among factors by drawing normal random numbers for each $1\leq i\leq N$ and $1\leq j\leq P_{c}$, according to 
 
 \begin{equation}
 \overline{c}_{i j, t} = \rho_{j} \overline{c}_{i j, t-1}+\epsilon_{i j, t} ;
 \quad \rho_{j} \sim \mathcal{U} \left( \frac{1}{2},1 \right) 
 \end{equation}
-
 \end{frame}
 
 \begin{frame}
 \frametitle{Simulating Characteristics}
-Then, define the matrix 
-
+Then, define the matrix $B$:
 \begin{equation}
 B:=\Lambda\Lambda' + \frac{1}{10}\mathbb{I}_{n}, \quad
 \Lambda_i = (\lambda_{i1},\dots,\lambda_{i4}), \quad
-\lambda_{ik}\sim N(0,1), \; k=1,\dots,4
+\lambda_{ik}\sim N(0, \lambda_{sd}), \; k=1, \dots, 4
 \end{equation}
 
-Transform this into a correlation matrix $W$ via
+$B$ is a p.s.d. matrix, serves as a vcov matrix with $\lambda_{sd}$ controlling the density of the matrix. $\lambda_{sd}$ values of 0.01, 0.1 and 1 were used to explore effects of \textbf{cross sectional correlation}.
+
+Simulate characteristics according to
 
 \begin{equation}
-W = \left( \operatorname{diag}(B) \right) ^{\frac{-1}{2}}
-(B)
-\left( \operatorname{diag}(B) \right) ^{\frac{-1}{2}}
+\widehat{C}_{t}=L\overline{C}_{t} ; \quad B = LL' 
 \end{equation}
 
-Use $W$ to build in cross sectional correlation for $N\times P_{c}$ matrix $\bar{C}_t$:
-
-\begin{equation}
-\widehat{C}_{t}=W\overline{C}_{t}
-\end{equation}
+where $L$ represents the lower triangle matrix of $B$ using the Cholesky decomposition.
 \end{frame}
 
 \begin{frame}
@@ -740,22 +748,57 @@ with the rank transformation normalizing all predictors to be within $[-1, 1]$
 
 \begin{frame}
 \frametitle{Simulating Return Series}
-We will consider four different functions $g(\cdot)$:
+We will consider 3 different functions $g(\cdot)$:
 \begin{flalign*}
 (1)\; & g_1 \left(z_{i, t}\right)=\left(c_{i 1, t}, c_{i 2, t}, c_{i 3, t} \times x_{3,t}'\right) \theta_{0} \\
 (2)\; & g_2 \left(z_{i, t}\right)=\left(c_{i 1, t}^{2}, c_{i 1, t} \times c_{i 2, t}, \operatorname{sgn}\left(c_{i 3, t} \times  x_{3,t}'\right)\right) \theta_{0} \\
 (3)\; & g_3 \left(z_{i, t}\right) = \left(1[c_{i3,t}>0],c_{i 2, t}^{3}, c_{i 1, t} \times c_{i 2, t}\times 1[c_{i3,t}>0], \text{logit}\left({c}_{i 3, t} \right)\right) \theta_{0}
 \end{flalign*}
 
-Tune $\theta^0$ s.t. cross sectional $R^2$ is 25\%, and predictive $R^2$ is 5\%. 
+Tune $\theta^0$ s.t. predictive $R^2$ is 5\% to ensure \textbf{low signal to noise ratio}.
 
-The simulation design results in $3 \times 4 = 12$ different simulation designs, with $N = 200$ stocks, $T = 180$ periods and $P_c = 100$ characteristics. Each design will be simulated 50 times to assess the robustness of machine learning algorithms.
+Note that $g_2$ is the most non-linear and \textbf{difficult to approximate}, given the observed characteristics.
+\end{frame}
+
+\begin{frame}
+\frametitle{Simulating Return Panel}
+Each realization results in a panel of:
+\begin{itemize}
+	\item $N = 200$ stocks
+	\item $T = 180$ periods
+	\item $P_c = 100$ characteristics
+\end{itemize}
+A total of 10 realizations were simulated and had models fitted to them.
+\end{frame}
+
+\begin{frame}
+\frametitle{Simulating Returns Panel}
+\begin{figure}
+\includegraphics[max size={\textwidth}{0.70\textheight}]{g1_A1_sv_panel.pdf}
+\caption{Proposed Simulation Design, 1 Realization}
+\end{figure}
+\begin{figure}
+
+\end{figure}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % SIMULATION STUDY RESULTS
 
 \section{Simulation Study Results}
+
+\begin{frame}
+\frametitle{Simulation Results}
+Key Results:
+\begin{itemize}
+\item Minimizing quantile loss is better
+\item Elastic Net $>$ Random Forests $>$ Neural Networks $>$ Linear Models
+\item Cross sectional correlation \textbf{does not affect prediction performance} by much
+\item Elastic net is best for causal analysis, \textbf{even with multicollinearity}
+\item Random Forest is better in non-linear settings
+\item Neural Networks \textbf{did not outperform}
+\end{itemize}
+\end{frame}
 
 \subsection{Prediction Performance}
 
@@ -764,7 +807,7 @@ The simulation design results in $3 \times 4 = 12$ different simulation designs,
 \begin{frame}
 \begin{center}
 	\begin{figure}
-		\includegraphics[max size={\textwidth}{\textheight}]{simulation_test_mae_pre_all.pdf}
+		\includegraphics[max size={\textwidth}{0.85\textheight}]{simulation_test_mae_pre_all.pdf}
 		\caption{Test MAE across all simulation designs}
 	\end{figure}	
 \end{center}
@@ -773,13 +816,42 @@ The simulation design results in $3 \times 4 = 12$ different simulation designs,
 \begin{frame}
 \begin{center}
 	\begin{figure}
-	\includegraphics[max size={\textwidth}{\textheight}]{simulation_test_mse_pre_all.pdf}
-	\caption{Test MAE across all simulation designs}
+	\includegraphics[max size={\textwidth}{0.85\textheight}]{simulation_test_mse_pre_all.pdf}
+	\caption{Test MSE across all simulation designs}
 	\end{figure}	
 \end{center}
 \end{frame}
 
 %% More data is worse for SV designs
+
+%% Closer look
+
+\begin{frame}
+	\begin{center}
+		\begin{figure}
+			\includegraphics[max size={\textwidth}{0.85\textheight}]{simulation_test_mae_small.pdf}
+			\caption{Test MAE across all simulation designs}
+		\end{figure}	
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\begin{figure}
+			\includegraphics[max size={\textwidth}{0.85\textheight}]{simulation_test_mse_small.pdf}
+			\caption{Test MSE across all simulation designs}
+		\end{figure}	
+	\end{center}
+\end{frame}
+
+\begin{frame}
+	\begin{center}
+		\begin{figure}
+			\includegraphics[max size={\textwidth}{0.85\textheight}]{simulation_test_rsquare_small.pdf}
+			\caption{Test R Squared Across All Simulation Designs}
+		\end{figure}	
+	\end{center}
+\end{frame}
 
 %% Best Models are penalized Linear and random forests, random forests are only better on g2 specification (most non-linear)
 
@@ -788,7 +860,8 @@ The simulation design results in $3 \times 4 = 12$ different simulation designs,
 \begin{frame}
 \begin{center}
 	\begin{figure}
-	\includegraphics[max size={\textwidth}{\textheight}]{simulation_ave_vi_plot_pre.pdf}
+	\includegraphics[max size={\textwidth}{0.85\textheight}]{simulation_ave_vi_plot_pre.pdf}
+	\caption{Variable Importance Across All simulation Designs}
 	\end{figure}
 \end{center}
 \end{frame}
@@ -796,6 +869,13 @@ The simulation design results in $3 \times 4 = 12$ different simulation designs,
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Empirical Study}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\frametitle{Empirical Data}
+We now focus on the Empirical Data
+
+Will see the results from the simulation study are \textbf{largely the same}
+\end{frame}
 
 \subsection{Data}
 
@@ -909,63 +989,145 @@ Number of covariates in this baseline set is $61 \times (8 + 1) = 549$.
 \begin{frame}
 \frametitle{Overview}
 
-In general, results from the simulation study were repeated.
+Results \textbf{largely the same} as the simulation study.
 
 \begin{itemize}
-	\item Suggest that simulation study was accurate to some degree
-	\item Support for same conclusions to be made
+	\item Minimizing quantile loss is better
+	\item Elastic Net $>$ Random Forests $>$ Neural Networks $>$ Linear Models
+	\item Elastic Net and Random Forests tend to agree on same subset of predictors
+	\item Neural Networks \textbf{did not outperform}
+	\item Neural Networks are unstable
 \end{itemize}
 
-Again see that results are different from \cite{gu_empirical_2018}. Neural networks do not vastly outperform other models!
+Suggests that 
+
+\textbf{Contradicts} \cite{gu_empirical_2018}'s findings.
 
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\subsubsection{Prediction Accuracy}
+
+%% PREDICTION ACCURACY
+
+%% Prove that quantile loss is better first
+
 \begin{frame}
-\frametitle{Prediction Accuracy - MSE}
 \begin{figure}
-\includegraphics{empirical_test_mse.pdf}
-\caption{Empirical Data Test MSE Averaged Across all Samples}
+\includegraphics[max size={\textwidth}{0.85\textheight}]{empirical_test_mse_pre_all.pdf}
+\caption{Empirical Data Test MSE}
 \end{figure}
 \end{frame}
 
 \begin{frame}
-\frametitle{Prediction Accuracy - MAE}
 \begin{figure}
-	\includegraphics{empirical_test_mae.pdf}
-	\caption{Empirical Data Test MAE Averaged Across all Samples}
+	\includegraphics[max size={\textwidth}{0.85\textheight}]{empirical_test_mae_pre_all.pdf}
+	\caption{Empirical Data Test MAE}
 \end{figure}
 \end{frame}
 
 \begin{frame}
-\frametitle{Prediction Accuracy - Neural Networks}
-Similarly, some weak evidence that neurla networks with more hidden layers perform better
+	\begin{figure}
+		\includegraphics[max size={\textwidth}{0.85\textheight}]{empirical_test_rsquare_pre_all.pdf}
+		\caption{Empirical Data Test R Squared}
+	\end{figure}
+\end{frame}
 
-Neural Networks are still unstable
+\begin{frame}
+\frametitle{Prediction Performance Results}
+
+Elastic Net $>$ Random Forests $>$ Neural Networks $>$ Linear Models
+
+More data did not seem adversely affect prediction performance - data considered may have had less shocks than simulated datasets
+
+Neural Networks are much more unstable on empirical data, especially when using MSE as a loss function
+
+Weak evidence that deeper neural networks are better
+\end{frame}
+
+%% Focusing on Neural Networks
+
+\begin{frame}
+	\begin{figure}
+		\includegraphics[max size={\textwidth}{0.85\textheight}]{empirical_test_mae_pre_nn.pdf}
+		\caption{Empirical Data Test MAE for Neural Networks}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\begin{figure}
+		\includegraphics[max size={\textwidth}{0.85\textheight}]{empirical_test_mse_pre_nn.pdf}
+		\caption{Empirical Data Test MSE for Neural Networks}
+	\end{figure}
+\end{frame}
+
+\begin{frame}
+	\begin{figure}
+		\includegraphics[max size={\textwidth}{0.85\textheight}]{empirical_test_rsquare_pre_nn.pdf}
+		\caption{Empirical Data Test R Squared for Neural Networks}
+	\end{figure}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% VARIABLE IMPORTANCE
+
+\subsubsection{Variable Importance}
 
 \begin{frame}
-\frametitle{Variable Importance - Individual Factors}
-\includegraphics[max size={\textwidth}{\textheight}]{empirical_sample_all_vi_ind.pdf}
+\frametitle{Variable Importance Results}
+Difficult to compare with simulation results, as underlying DGP is unknown
+
+However, similar trends can be observed:
+\begin{itemize}
+	\item Elastic Net and Random Forests agree on same subset
+	\item Random Forest struggle to discern between factors
+	\item Neural Networks results are completely different
+\end{itemize}
+\end{frame}
+
+%% INDIVIDUAL VARIABLE IMPORTANCE
+
+\begin{frame}
+	\begin{figure}
+	\begin{center}
+		\includegraphics[max size={\textwidth}{0.85\textheight}]{empirical_sample_all_vi_ind.pdf}
+		\caption{Empirical Individual Factor Importance, averaged over all samples}
+	\end{center}
+\end{figure}
+\end{frame}
+
+%% MACROECONOMIC
+
+\begin{frame}
+	\begin{figure}
+	\begin{center}
+		\includegraphics[max size={\textwidth}{0.85\textheight}]{empirical_sample_all_vi_macro.pdf}
+		\caption{Empirical Macroeconomic Factor Importance, averaged over all samples}
+	\end{center}
+\end{figure}
 \end{frame}
 
 \begin{frame}
-\frametitle{Variable Importance - Macroeconomic Factors}
-\includegraphics[max size={\textwidth}{\textheight}]{empirical_sample_all_vi_macro.pdf}
+	\begin{figure}
+		\begin{center}
+			\includegraphics[max size={\textwidth}{0.85\textheight}]{empirical_sample_all_vi_macro_facet.pdf}
+			\caption{Empirical Macroeconomic Factor Importance, averaged over all samples}
+		\end{center}
+	\end{figure}
 \end{frame}
 
 \begin{frame}
 \frametitle{Variable Importance}
-Important factors in penalized linear models and random forests:
+Elastic Net and Random Forests:
 \begin{itemize}
 \item 1 and 6 month momentum factors
+\item Book-to-market Ratio and Default Spread
 \end{itemize}
-Important factors in neural networks:
+Factors in Neural Networks (\textbf{inconsistent}):
 \begin{itemize}
-\item Market Value (though inconsistent)
+\item Individual Market Value 
+\item Dividend-price Ratio and Earnings-price Ratio 
 \end{itemize}
 \end{frame}
 
@@ -974,21 +1136,27 @@ Important factors in neural networks:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
 \frametitle{Conclusion}
+
 Machine learning offers tools to improve stock return prediction and identification of true underlying regressors. 
 
-Penalized linear models, and to a lesser extent, random forests are the best performing models.
+Elastic Net and Random Forests are the best performing models.
 
-Feed-forward neural network architectures considered fail in the context of stock return prediction and variable importance analysis. The result is consistent across simulated data and empirical data. Importantly, this is in direct contradiction to previous literature, which concluded that neural networks vastly outperform. 
+Feed-forward neural networks considered did not outperform.
 
-Top performing models - penalized linear and random forests, tend to agree and correctly identify causal regressors in simulated contexts, and same subset in empirical contexts. Neural networks only agree in simulated contexts. 
+Elastic Net and Random Forests agree and correctly identify causal regressors. Neural networks only agree in simulated contexts. 
 
-Penalized linear models are most consistent at correctly identify causal regressors, though this result is not always reliable, particularly when non-linearities are introduced.
+Cross sectional correlation does not affect prediction performance of machine learning by much.
 
 Minimizing quantile loss yields better prediction performance.
+\end{frame}
 
-Overall findings differ from sparse literature on similar topics. Performance of penalized linear models in both prediction and variable importance analysis is promising. 
+\begin{frame}
+\frametitle{Contribution to Literature}
+Overall findings differ from sparse literature on similar topics.
 
-Machine learning offers some tools which may aid in the problems of prediction and risk factor selection in the financial world.
+Results are consistent across simulated data and empirical data, suggesting a robust set of results.
+
+Overall, results are promising, especially for Elastic Net.
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

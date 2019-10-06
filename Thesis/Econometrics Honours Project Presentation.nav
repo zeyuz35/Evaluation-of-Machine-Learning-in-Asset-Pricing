@@ -1,39 +1,39 @@
 \headcommand {\slideentry {0}{0}{1}{1/1}{}{0}}
 \headcommand {\beamer@framepages {1}{1}}
-\headcommand {\slideentry {0}{0}{2}{2/2}{}{0}}
+\headcommand {\beamer@sectionpages {1}{1}}
+\headcommand {\beamer@subsectionpages {1}{1}}
+\headcommand {\sectionentry {1}{Introduction}{2}{Introduction}{0}}
+\headcommand {\slideentry {1}{0}{1}{2/2}{}{0}}
 \headcommand {\beamer@framepages {2}{2}}
-\headcommand {\beamer@sectionpages {1}{2}}
-\headcommand {\beamer@subsectionpages {1}{2}}
-\headcommand {\sectionentry {1}{Introduction}{3}{Introduction}{0}}
-\headcommand {\slideentry {1}{0}{1}{3/3}{}{0}}
+\headcommand {\slideentry {1}{0}{2}{3/3}{}{0}}
 \headcommand {\beamer@framepages {3}{3}}
-\headcommand {\slideentry {1}{0}{2}{4/4}{}{0}}
+\headcommand {\slideentry {1}{0}{3}{4/4}{}{0}}
 \headcommand {\beamer@framepages {4}{4}}
-\headcommand {\slideentry {1}{0}{3}{5/5}{}{0}}
+\headcommand {\slideentry {1}{0}{4}{5/5}{}{0}}
 \headcommand {\beamer@framepages {5}{5}}
-\headcommand {\slideentry {1}{0}{4}{6/6}{}{0}}
+\headcommand {\slideentry {1}{0}{5}{6/6}{}{0}}
 \headcommand {\beamer@framepages {6}{6}}
-\headcommand {\slideentry {1}{0}{5}{7/7}{}{0}}
+\headcommand {\slideentry {1}{0}{6}{7/7}{}{0}}
 \headcommand {\beamer@framepages {7}{7}}
-\headcommand {\slideentry {1}{0}{6}{8/8}{}{0}}
+\headcommand {\slideentry {1}{0}{7}{8/8}{}{0}}
 \headcommand {\beamer@framepages {8}{8}}
-\headcommand {\slideentry {1}{0}{7}{9/9}{}{0}}
+\headcommand {\beamer@sectionpages {2}{8}}
+\headcommand {\beamer@subsectionpages {2}{8}}
+\headcommand {\sectionentry {2}{Why apply Machine Learning in Finance?}{9}{Why apply Machine Learning in Finance?}{0}}
+\headcommand {\slideentry {2}{0}{1}{9/9}{}{0}}
 \headcommand {\beamer@framepages {9}{9}}
-\headcommand {\beamer@sectionpages {3}{9}}
-\headcommand {\beamer@subsectionpages {3}{9}}
-\headcommand {\sectionentry {2}{Why apply Machine Learning in Finance?}{10}{Why apply Machine Learning in Finance?}{0}}
-\headcommand {\slideentry {2}{0}{1}{10/10}{}{0}}
+\headcommand {\slideentry {2}{0}{2}{10/10}{}{0}}
 \headcommand {\beamer@framepages {10}{10}}
-\headcommand {\slideentry {2}{0}{2}{11/11}{}{0}}
+\headcommand {\slideentry {2}{0}{3}{11/11}{}{0}}
 \headcommand {\beamer@framepages {11}{11}}
-\headcommand {\slideentry {2}{0}{3}{12/12}{}{0}}
+\headcommand {\slideentry {2}{0}{4}{12/12}{}{0}}
 \headcommand {\beamer@framepages {12}{12}}
-\headcommand {\slideentry {2}{0}{4}{13/13}{}{0}}
+\headcommand {\slideentry {2}{0}{5}{13/13}{}{0}}
 \headcommand {\beamer@framepages {13}{13}}
-\headcommand {\slideentry {2}{0}{5}{14/14}{}{0}}
+\headcommand {\slideentry {2}{0}{6}{14/14}{}{0}}
 \headcommand {\beamer@framepages {14}{14}}
-\headcommand {\beamer@sectionpages {10}{14}}
-\headcommand {\beamer@subsectionpages {10}{14}}
+\headcommand {\beamer@sectionpages {9}{14}}
+\headcommand {\beamer@subsectionpages {9}{14}}
 \headcommand {\sectionentry {3}{Model Specification}{15}{Model Specification}{0}}
 \headcommand {\slideentry {3}{0}{1}{15/15}{}{0}}
 \headcommand {\beamer@framepages {15}{15}}
@@ -74,93 +74,126 @@
 \headcommand {\beamer@framepages {31}{31}}
 \headcommand {\slideentry {4}{0}{17}{32/32}{}{0}}
 \headcommand {\beamer@framepages {32}{32}}
-\headcommand {\slideentry {4}{0}{18}{33/33}{}{0}}
+\headcommand {\beamer@sectionpages {16}{32}}
+\headcommand {\beamer@subsectionpages {16}{32}}
+\headcommand {\sectionentry {5}{Simulation Study}{33}{Simulation Study}{0}}
+\headcommand {\slideentry {5}{0}{1}{33/33}{}{0}}
 \headcommand {\beamer@framepages {33}{33}}
-\headcommand {\beamer@sectionpages {16}{33}}
-\headcommand {\beamer@subsectionpages {16}{33}}
-\headcommand {\sectionentry {5}{Simulation Study}{34}{Simulation Study}{0}}
-\headcommand {\slideentry {5}{0}{1}{34/34}{}{0}}
+\headcommand {\beamer@subsectionpages {33}{33}}
+\headcommand {\beamer@subsectionentry {0}{5}{1}{34}{Simulation Design}}
+\headcommand {\beamer@subsubsectionentry {0}{5}{1}{1}{34}{Gu et al Design}}
+\headcommand {\slideentry {5}{1}{1}{34/34}{Simulation Design}{0}}
 \headcommand {\beamer@framepages {34}{34}}
-\headcommand {\beamer@subsectionpages {34}{34}}
-\headcommand {\beamer@subsectionentry {0}{5}{1}{35}{Simulation Design}}
-\headcommand {\slideentry {5}{1}{1}{35/35}{Simulation Design}{0}}
+\headcommand {\slideentry {5}{1}{2}{35/35}{Simulation Design}{0}}
 \headcommand {\beamer@framepages {35}{35}}
-\headcommand {\slideentry {5}{1}{2}{36/36}{Simulation Design}{0}}
+\headcommand {\slideentry {5}{1}{3}{36/36}{Simulation Design}{0}}
 \headcommand {\beamer@framepages {36}{36}}
-\headcommand {\slideentry {5}{1}{3}{37/37}{Simulation Design}{0}}
+\headcommand {\slideentry {5}{1}{4}{37/37}{Simulation Design}{0}}
 \headcommand {\beamer@framepages {37}{37}}
-\headcommand {\slideentry {5}{1}{4}{38/38}{Simulation Design}{0}}
+\headcommand {\slideentry {5}{1}{5}{38/38}{Simulation Design}{0}}
 \headcommand {\beamer@framepages {38}{38}}
-\headcommand {\slideentry {5}{1}{5}{39/39}{Simulation Design}{0}}
+\headcommand {\slideentry {5}{1}{6}{39/39}{Simulation Design}{0}}
 \headcommand {\beamer@framepages {39}{39}}
-\headcommand {\slideentry {5}{1}{6}{40/40}{Simulation Design}{0}}
+\headcommand {\slideentry {5}{1}{7}{40/40}{Simulation Design}{0}}
 \headcommand {\beamer@framepages {40}{40}}
-\headcommand {\beamer@sectionpages {34}{40}}
-\headcommand {\beamer@subsectionpages {35}{40}}
-\headcommand {\sectionentry {6}{Simulation Study Results}{41}{Simulation Study Results}{0}}
-\headcommand {\beamer@subsectionpages {41}{40}}
-\headcommand {\beamer@subsectionentry {0}{6}{1}{41}{Prediction Performance}}
-\headcommand {\slideentry {6}{1}{1}{41/41}{Prediction Performance}{0}}
+\headcommand {\slideentry {5}{1}{8}{41/41}{Simulation Design}{0}}
 \headcommand {\beamer@framepages {41}{41}}
-\headcommand {\slideentry {6}{1}{2}{42/42}{Prediction Performance}{0}}
+\headcommand {\slideentry {5}{1}{9}{42/42}{Simulation Design}{0}}
 \headcommand {\beamer@framepages {42}{42}}
-\headcommand {\beamer@subsectionpages {41}{42}}
-\headcommand {\beamer@subsectionentry {0}{6}{2}{43}{Variable Importance}}
-\headcommand {\slideentry {6}{2}{1}{43/43}{Variable Importance}{0}}
+\headcommand {\slideentry {5}{1}{10}{43/43}{Simulation Design}{0}}
 \headcommand {\beamer@framepages {43}{43}}
-\headcommand {\beamer@sectionpages {41}{43}}
-\headcommand {\beamer@subsectionpages {43}{43}}
-\headcommand {\sectionentry {7}{Empirical Study}{44}{Empirical Study}{0}}
-\headcommand {\beamer@subsectionpages {44}{43}}
-\headcommand {\beamer@subsectionentry {0}{7}{1}{44}{Data}}
-\headcommand {\slideentry {7}{1}{1}{44/44}{Data}{0}}
+\headcommand {\beamer@sectionpages {33}{43}}
+\headcommand {\beamer@subsectionpages {34}{43}}
+\headcommand {\sectionentry {6}{Simulation Study Results}{44}{Simulation Study Results}{0}}
+\headcommand {\slideentry {6}{0}{1}{44/44}{}{0}}
 \headcommand {\beamer@framepages {44}{44}}
-\headcommand {\slideentry {7}{1}{2}{45/45}{Data}{0}}
+\headcommand {\beamer@subsectionpages {44}{44}}
+\headcommand {\beamer@subsectionentry {0}{6}{1}{45}{Prediction Performance}}
+\headcommand {\slideentry {6}{1}{1}{45/45}{Prediction Performance}{0}}
 \headcommand {\beamer@framepages {45}{45}}
-\headcommand {\slideentry {7}{1}{3}{46/46}{Data}{0}}
+\headcommand {\slideentry {6}{1}{2}{46/46}{Prediction Performance}{0}}
 \headcommand {\beamer@framepages {46}{46}}
-\headcommand {\slideentry {7}{1}{4}{47/47}{Data}{0}}
+\headcommand {\slideentry {6}{1}{3}{47/47}{Prediction Performance}{0}}
 \headcommand {\beamer@framepages {47}{47}}
-\headcommand {\slideentry {7}{1}{5}{48/48}{Data}{0}}
+\headcommand {\slideentry {6}{1}{4}{48/48}{Prediction Performance}{0}}
 \headcommand {\beamer@framepages {48}{48}}
-\headcommand {\slideentry {7}{1}{6}{49/49}{Data}{0}}
+\headcommand {\slideentry {6}{1}{5}{49/49}{Prediction Performance}{0}}
 \headcommand {\beamer@framepages {49}{49}}
-\headcommand {\beamer@subsectionpages {44}{49}}
-\headcommand {\beamer@subsectionentry {0}{7}{2}{50}{Empirical Data Results}}
-\headcommand {\slideentry {7}{2}{1}{50/50}{Empirical Data Results}{0}}
+\headcommand {\beamer@subsectionpages {45}{49}}
+\headcommand {\beamer@subsectionentry {0}{6}{2}{50}{Variable Importance}}
+\headcommand {\slideentry {6}{2}{1}{50/50}{Variable Importance}{0}}
 \headcommand {\beamer@framepages {50}{50}}
-\headcommand {\slideentry {7}{2}{2}{51/51}{Empirical Data Results}{0}}
+\headcommand {\beamer@sectionpages {44}{50}}
+\headcommand {\beamer@subsectionpages {50}{50}}
+\headcommand {\sectionentry {7}{Empirical Study}{51}{Empirical Study}{0}}
+\headcommand {\slideentry {7}{0}{1}{51/51}{}{0}}
 \headcommand {\beamer@framepages {51}{51}}
-\headcommand {\slideentry {7}{2}{3}{52/52}{Empirical Data Results}{0}}
+\headcommand {\beamer@subsectionpages {51}{51}}
+\headcommand {\beamer@subsectionentry {0}{7}{1}{52}{Data}}
+\headcommand {\slideentry {7}{1}{1}{52/52}{Data}{0}}
 \headcommand {\beamer@framepages {52}{52}}
-\headcommand {\slideentry {7}{2}{4}{53/53}{Empirical Data Results}{0}}
+\headcommand {\slideentry {7}{1}{2}{53/53}{Data}{0}}
 \headcommand {\beamer@framepages {53}{53}}
-\headcommand {\slideentry {7}{2}{5}{54/54}{Empirical Data Results}{0}}
+\headcommand {\slideentry {7}{1}{3}{54/54}{Data}{0}}
 \headcommand {\beamer@framepages {54}{54}}
-\headcommand {\slideentry {7}{2}{6}{55/55}{Empirical Data Results}{0}}
+\headcommand {\slideentry {7}{1}{4}{55/55}{Data}{0}}
 \headcommand {\beamer@framepages {55}{55}}
-\headcommand {\slideentry {7}{2}{7}{56/56}{Empirical Data Results}{0}}
+\headcommand {\slideentry {7}{1}{5}{56/56}{Data}{0}}
 \headcommand {\beamer@framepages {56}{56}}
-\headcommand {\beamer@sectionpages {44}{56}}
-\headcommand {\beamer@subsectionpages {50}{56}}
-\headcommand {\sectionentry {8}{Conclusion}{57}{Conclusion}{0}}
-\headcommand {\slideentry {8}{0}{1}{57/57}{}{0}}
+\headcommand {\slideentry {7}{1}{6}{57/57}{Data}{0}}
 \headcommand {\beamer@framepages {57}{57}}
-\headcommand {\beamer@sectionpages {57}{57}}
-\headcommand {\beamer@subsectionpages {57}{57}}
-\headcommand {\sectionentry {9}{References}{58}{References}{0}}
-\headcommand {\beamer@sectionpages {58}{57}}
-\headcommand {\beamer@subsectionpages {58}{57}}
-\headcommand {\sectionentry {10}{References}{58}{References}{0}}
-\headcommand {\slideentry {10}{0}{0}{58/58}{}{0}}
+\headcommand {\beamer@subsectionpages {52}{57}}
+\headcommand {\beamer@subsectionentry {0}{7}{2}{58}{Empirical Data Results}}
+\headcommand {\slideentry {7}{2}{1}{58/58}{Empirical Data Results}{0}}
 \headcommand {\beamer@framepages {58}{58}}
-\headcommand {\beamer@sectionpages {58}{58}}
-\headcommand {\beamer@subsectionpages {58}{58}}
-\headcommand {\sectionentry {11}{Questions and Answers}{59}{Questions and Answers}{0}}
-\headcommand {\slideentry {11}{0}{1}{59/59}{}{0}}
+\headcommand {\beamer@subsubsectionentry {0}{7}{2}{1}{59}{Prediction Accuracy}}
+\headcommand {\slideentry {7}{2}{2}{59/59}{Empirical Data Results}{0}}
 \headcommand {\beamer@framepages {59}{59}}
-\headcommand {\beamer@partpages {1}{59}}
-\headcommand {\beamer@subsectionpages {59}{59}}
-\headcommand {\beamer@sectionpages {59}{59}}
-\headcommand {\beamer@documentpages {59}}
-\headcommand {\gdef \inserttotalframenumber {59}}
+\headcommand {\slideentry {7}{2}{3}{60/60}{Empirical Data Results}{0}}
+\headcommand {\beamer@framepages {60}{60}}
+\headcommand {\slideentry {7}{2}{4}{61/61}{Empirical Data Results}{0}}
+\headcommand {\beamer@framepages {61}{61}}
+\headcommand {\slideentry {7}{2}{5}{62/62}{Empirical Data Results}{0}}
+\headcommand {\beamer@framepages {62}{62}}
+\headcommand {\slideentry {7}{2}{6}{63/63}{Empirical Data Results}{0}}
+\headcommand {\beamer@framepages {63}{63}}
+\headcommand {\slideentry {7}{2}{7}{64/64}{Empirical Data Results}{0}}
+\headcommand {\beamer@framepages {64}{64}}
+\headcommand {\slideentry {7}{2}{8}{65/65}{Empirical Data Results}{0}}
+\headcommand {\beamer@framepages {65}{65}}
+\headcommand {\beamer@subsubsectionentry {0}{7}{2}{2}{66}{Variable Importance}}
+\headcommand {\slideentry {7}{2}{9}{66/66}{Empirical Data Results}{0}}
+\headcommand {\beamer@framepages {66}{66}}
+\headcommand {\slideentry {7}{2}{10}{67/67}{Empirical Data Results}{0}}
+\headcommand {\beamer@framepages {67}{67}}
+\headcommand {\slideentry {7}{2}{11}{68/68}{Empirical Data Results}{0}}
+\headcommand {\beamer@framepages {68}{68}}
+\headcommand {\slideentry {7}{2}{12}{69/69}{Empirical Data Results}{0}}
+\headcommand {\beamer@framepages {69}{69}}
+\headcommand {\slideentry {7}{2}{13}{70/70}{Empirical Data Results}{0}}
+\headcommand {\beamer@framepages {70}{70}}
+\headcommand {\beamer@sectionpages {51}{70}}
+\headcommand {\beamer@subsectionpages {58}{70}}
+\headcommand {\sectionentry {8}{Conclusion}{71}{Conclusion}{0}}
+\headcommand {\slideentry {8}{0}{1}{71/71}{}{0}}
+\headcommand {\beamer@framepages {71}{71}}
+\headcommand {\slideentry {8}{0}{2}{72/72}{}{0}}
+\headcommand {\beamer@framepages {72}{72}}
+\headcommand {\beamer@sectionpages {71}{72}}
+\headcommand {\beamer@subsectionpages {71}{72}}
+\headcommand {\sectionentry {9}{References}{73}{References}{0}}
+\headcommand {\beamer@sectionpages {73}{72}}
+\headcommand {\beamer@subsectionpages {73}{72}}
+\headcommand {\sectionentry {10}{References}{73}{References}{0}}
+\headcommand {\slideentry {10}{0}{0}{73/73}{}{0}}
+\headcommand {\beamer@framepages {73}{73}}
+\headcommand {\beamer@sectionpages {73}{73}}
+\headcommand {\beamer@subsectionpages {73}{73}}
+\headcommand {\sectionentry {11}{Questions and Answers}{74}{Questions and Answers}{0}}
+\headcommand {\slideentry {11}{0}{1}{74/74}{}{0}}
+\headcommand {\beamer@framepages {74}{74}}
+\headcommand {\beamer@partpages {1}{74}}
+\headcommand {\beamer@subsectionpages {74}{74}}
+\headcommand {\beamer@sectionpages {74}{74}}
+\headcommand {\beamer@documentpages {74}}
+\headcommand {\gdef \inserttotalframenumber {74}}

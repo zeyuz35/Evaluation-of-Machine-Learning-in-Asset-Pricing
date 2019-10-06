@@ -1411,6 +1411,8 @@ A1 <- matrix(c(
 )
 ## No cross sectional correlation or stochastic errors
 
+a4_aspect_ratio <- 1.5
+
 #G1
 g1_A1_nosv_0 <- sim_panel_data(simN, 
                               char_rho_a = 0.5, char_rho_b = 1,
@@ -1422,6 +1424,17 @@ g1_A1_nosv_0 <- sim_panel_data(simN,
 summary(sim_tune_statistics(g1_A1_nosv_0))
 saveRDS(g1_A1_nosv_0, file = "g1_A1_nosv_0.rds")
 rm(g1_A1_sv_0.01)
+
+## Plot this to see how unreasonable this is
+
+g1_A1_nosv_0[[1]]$panel %>%
+  ggplot() +
+  geom_line(aes(x = time, y = rt, colour = stock)) +
+  theme_bw() +
+  theme(legend.position = "none")
+ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/g1_A1_nosv_panel.pdf",
+       width = 15 * a4_aspect_ratio, height = 15, units = "cm")
+  
 
 #G2
 
@@ -1576,10 +1589,13 @@ summary(sim_tune_statistics(g1_A1_sv_1))
 saveRDS(g1_A1_sv_1, file = "g1_A1_sv_1.rds")
 rm(g1_A1_sv_0.1)
 
-g1_A1_sv_1[[2]]$panel %>%
+g1_A1_sv_1[[1]]$panel %>%
   ggplot() +
   geom_line(aes(x = time, y = rt, colour = stock)) +
+  theme_bw() +
   theme(legend.position = "none")
+ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/g1_A1_sv_panel.pdf",
+       width = 15 * a4_aspect_ratio, height = 15, units = "cm")
 
 #G2
 
