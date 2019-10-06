@@ -128,21 +128,21 @@
 
 \begin{frame}
 \frametitle{Main Motivation}
-To evaluate the application of machine learning to predicting financial asset returns, with specific regard to how they deal with the unique challenges present in financial data via simulation.
+To evaluate the application of machine learning to the problems of \textbf{prediction} and \textbf{causal inference} in empirical finance.
 \end{frame}
 
 \begin{frame}
 \frametitle{Motivation}
 Empirical finance is typically concerned with two main goals:
 \begin{itemize}
-	\item Prediction accuracy - want to predict future returns!
-	\item Statistical causal inference - want to understand \textit{what} drives returns
+	\item \textbf{Prediction} accuracy
+	\item \textbf{Causal} inference
 \end{itemize}
 \end{frame}
 
 \begin{frame}
 \frametitle{Motivation}
-Recognise that these goals are very difficult, especially for traditional regression!
+These goals are very difficult, especially for traditional regression!
 
 The underlying data generating process for financial data is unknown - returns are estimated by \textit{risk factors}, defined by \cite{harvey__2016} as a collection of regressors that can proxy for underlying risk factors
 
@@ -151,7 +151,7 @@ Factors are often unsuitable for regression:
 	\item Persistent
 	\item Cross-sectionally correlated (multicollinearity)
 	\item Non-stationary
-	\item Pre-known, and therefore little time series variation
+	\item Pre-known or sampled at a lower frequency, exhibiting low time series variation
 \end{itemize}
 \end{frame}
 
@@ -855,6 +855,19 @@ Key Results:
 
 %% Best Models are penalized Linear and random forests, random forests are only better on g2 specification (most non-linear)
 
+%% Focusing on Neural Networks
+
+%% MAE and MSE are too hard to see the correct trend, so just report R square here. Gets the same point across anyway
+
+\begin{frame}
+	\begin{center}
+		\begin{figure}
+			\includegraphics[max size={\textwidth}{0.85\textheight}]{simulation_test_rsquare_small_nn.pdf}
+			\caption{Test R Squared Across All Simulation Designs}
+		\end{figure}	
+	\end{center}
+\end{frame}
+
 \subsection{Variable Importance}
 
 \begin{frame}
@@ -864,6 +877,17 @@ Key Results:
 	\caption{Variable Importance Across All simulation Designs}
 	\end{figure}
 \end{center}
+\end{frame}
+
+%% Focus on Neural Networks
+
+\begin{frame}
+	\begin{center}
+		\begin{figure}
+			\includegraphics[max size={\textwidth}{0.85\textheight}]{simulation_ave_vi_plot_pre_nn.pdf}
+			\caption{Variable Importance Across All simulation Designs, Neural Networks}
+		\end{figure}
+	\end{center}
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

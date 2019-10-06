@@ -1072,6 +1072,28 @@ all_vi_df_averaged %>%
 ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_ave_vi_plot_pre.pdf",
        width = 15 * a4_aspect_ratio, height = 15, units = "cm")
 
+all_vi_df_averaged %>%
+  filter(model == "NN1_MAE"
+         | model == "NN2_MAE"
+         | model == "NN3_MAE"
+         | model == "NN4_MAE"
+         | model == "NN5_MAE") %>%
+  group_by(dgp_spec, model, cross_corr, variable, SV) %>%
+  summarise(importance = mean(importance)) %>%
+  ungroup() %>%
+  mutate(variable = fct_reorder(variable, importance)) %>%
+  group_by(model) %>%
+  top_n(60, importance) %>%
+  ggplot() + 
+  geom_tile(aes(x = variable, y = model, alpha = importance)) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(legend.position = "none") +
+  # Facet
+  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
+ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_ave_vi_plot_pre_nn.pdf",
+       width = 15 * a4_aspect_ratio, height = 15, units = "cm")
+
 ```
 
 ```{r hyperparam_functions}
