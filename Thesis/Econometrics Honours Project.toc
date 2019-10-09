@@ -2,17 +2,17 @@
 \contentsline {section}{\numberline {1}Introduction}{3}{section.1}
 \contentsline {subsection}{\numberline {1.1}Topic}{3}{subsection.1.1}
 \contentsline {subsection}{\numberline {1.2}Background Literature and Motivations}{3}{subsection.1.2}
-\contentsline {section}{\numberline {2}Model Specification and Methodology}{6}{section.2}
-\contentsline {subsection}{\numberline {2.1}Model Specification}{6}{subsection.2.1}
+\contentsline {section}{\numberline {2}Model Specification and Methodology}{7}{section.2}
+\contentsline {subsection}{\numberline {2.1}Model Specification}{7}{subsection.2.1}
 \contentsline {subsection}{\numberline {2.2}Methodology}{7}{subsection.2.2}
 \contentsline {subsubsection}{\numberline {2.2.1}Sample Splitting}{8}{subsubsection.2.2.1}
-\contentsline {subsubsection}{\numberline {2.2.2}Loss Function}{8}{subsubsection.2.2.2}
+\contentsline {subsubsection}{\numberline {2.2.2}Loss Function}{9}{subsubsection.2.2.2}
 \contentsline {subsubsection}{\numberline {2.2.3}Models}{9}{subsubsection.2.2.3}
 \contentsline {subsubsection}{\numberline {2.2.4}Linear Models}{9}{subsubsection.2.2.4}
 \contentsline {subsubsection}{\numberline {2.2.5}Penalized Linear Models}{10}{subsubsection.2.2.5}
-\contentsline {subsubsection}{\numberline {2.2.6}Classification and Regression Trees}{10}{subsubsection.2.2.6}
+\contentsline {subsubsection}{\numberline {2.2.6}Classification and Regression Trees}{11}{subsubsection.2.2.6}
 \contentsline {subsubsection}{\numberline {2.2.7}Random Forests}{11}{subsubsection.2.2.7}
-\contentsline {subsubsection}{\numberline {2.2.8}Neural Networks}{11}{subsubsection.2.2.8}
+\contentsline {subsubsection}{\numberline {2.2.8}Neural Networks}{12}{subsubsection.2.2.8}
 \contentsline {paragraph}{Model Architecture and Specification}{13}{section*.4}
 \contentsline {subsection}{\numberline {2.3}Model Evaluation}{15}{subsection.2.3}
 \contentsline {paragraph}{Loss Metrics}{15}{section*.5}
