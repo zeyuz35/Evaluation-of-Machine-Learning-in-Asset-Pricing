@@ -77,7 +77,7 @@ panel_formula <- function(panel){
 
 ```{r, eval = FALSE}
 
-pooled_panel <- g1_A1_panel[[1]]$panel
+pooled_panel <- g1_A1_sv_1[[1]]$panel
 
 pooled_panel <- gu_et_al_g1[[1]]$panel
 
