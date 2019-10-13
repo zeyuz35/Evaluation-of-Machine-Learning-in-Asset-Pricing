@@ -78,6 +78,8 @@
 %Graphs
 \usepackage{tikz}
 \usepackage{pgfplots}
+\usepackage[export]{adjustbox}
+
 \graphicspath{{../Results/}}
 
 %Coloured Tables
@@ -134,7 +136,7 @@ We define ``factors" with the more contemporary definition as suggested by \cite
 
 Because of this less strict definition factors are often noted for exhibiting properties which make them highly unsuitable for inclusion in traditional regression, (\cite{harvey__2016}). Factors have been empirically observed to have high persistence, high cross sectional correlation (multicollinearity), non-stationarity or have very low time series variation due to being pre-known or suffering from a lower sampling frequency. The consequences of including such regressors into traditional regression models are well documented. The resulting coefficient estimates and t-statistics can be biased, directly leading to incorrect statistical inference. Additionally, the variances for the the coefficient estimates can be very high, resulting in imprecise coefficient estimates. This will result in any out of sample predictions, which are a direct function of these imprecise coefficients, also imprecise, particularly when the multicollinearity between variables changes over time.
 
-Several real world examples of this have been documented in the literature, and perhaps the most infamous example are the dividend ratio factors. Dividend ratio factors were initially very popular in the 1990s due to its inclusion in regression improving in sample performance. However, later literature such as  \cite{goetzmann_testing_1993} and \cite{ang_stock_2006} note the persistence present in dividend ratio factors. This means that movements in dividend ratios are dominated by movements in price and therefore dividend ratios are correlated with lagged dependent variables on the right hand side of the regression equation. This violates the assumptions of exogeneous regressors (independent from the error term) required for traditional regression models (ordinary least squares) to be unbiased, resulting in t statistics which are biased upwards and increase with time horizon due to autocorrelated errors. Importantly, \cite{goetzmann_testing_1993} show that corrections to t statistics using the Generalized Method of Moments and Newey-West standard errors also appear to be biased upwards, making them unreliable. 
+Several real world examples of this have been documented in the literature, and perhaps the most infamous examples are the dividend ratio factors. Dividend ratio factors were initially very popular in the 1990s due to its inclusion in regression improving in sample performance. However, later literature such as \cite{goetzmann_testing_1993} and \cite{ang_stock_2006} note the persistence present in dividend ratio factors. This means that movements in dividend ratios are dominated by movements in price and therefore dividend ratios are correlated with lagged dependent variables on the right hand side of the regression equation. This violates the assumptions of exogeneous regressors (independent from the error term) required for traditional regression models (ordinary least squares) to be unbiased, resulting in t statistics which are biased upwards and increase with time horizon due to autocorrelated errors. Importantly, \cite{goetzmann_testing_1993} show that corrections to t statistics using the Generalized Method of Moments and Newey-West standard errors also appear to be biased upwards, making them unreliable. 
 
 \cite{goyal_predicting_2003} provide a more comprehensive study on the performance of lagged dividend price ratios, with a specific focus on out of sample predictive performance both in terms of $R^2$ and forecast errors. They conclude that while models incorporating dividend related factors were able to achieve higher in sample performance prior to 1990 than the historical mean, they could not have outperformed the historical mean \textit{out of sample}. \cite{goyal_predicting_2003} attribute this to the increasing persistence and non-stationarity of dividend ratios, noting that they have become like random walks as of 2001. This mirrors the sentiment of (\cite{lettau_consumption_2001}, \cite{schwert_anomalies_2003} and others) who conclude that models incorporating dividend ratios seemed to break down in the 2000s due to a changing economic environment, despite having performed well in the 1990s.
 
@@ -436,13 +438,12 @@ Predictive performance for individual excess stock returns were assessed using p
 
 \begin{align}
 \text{MAE} &= \frac{1}{n} \sum_{j = i}^{n} |y_j - \hat{y_j}| \\
-\text{MSE} &= \frac{1}{n} \sum_{j = i}^{n} \left( y_j - \hat{y_j}\right) ^2 \\
-\text{RMSE} &= \sqrt{\frac{1}{n} \sum_{j = i}^{n} \left( y_j - \hat{y_j}\right) ^2}
+\text{MSE} &= \frac{1}{n} \sum_{j = i}^{n} \left( y_j - \hat{y_j}\right) ^2
 \end{align}
 
-MSE and RMSE are noted to be traditionally very popular within both the machine learning and econometrics literature. However, there is also some literature which argues against the use of RMSE (and all square error measures) due to its innaccuracy in time series settings, and advocates for the use of MAE instead. There is no consensus on an ``ideal" loss metric, and for this reason we produce all of them. These loss metrics also have a one to one correspondence to the loss functions considered for fitting the models.
+MSE is noted to be traditionally very popular within both the machine learning and econometrics literature. However, there is also some literature which argues against the use of MSE (and all square error measures) due to its innaccuracy and potential biasedness in time series settings, and advocates for the use of MAE instead. There is no consensus on an ``ideal" loss metric, and for this reason we produce both of them. These loss metrics also have a one to one correspondence to the loss functions considered for fitting the models.
 
-An out of sample $R^2$ metric was also reported, as is popular in the literature, which we define as:
+An out of sample $R^2$ metric was also reported, as is popular in the empirical finance literature, which we define as:
 
 \begin{equation}
 R^2_{OOS} = 1 - \frac{\sum_{(i, t)\in\mathcal{T}_3}(r_{i, t+1} - \widehat{r}_{i, t+1})^2}
@@ -464,41 +465,13 @@ VI_{j, norm} = \frac{VI_j + \operatorname{min}(VI_j) + o}
 
 This mechanism was chosen because the other popular normalization mechanism "softmax" was observed to be unable to preserve the distances between each original $VI_j$ well enough, squishing together all variable importance measures and making discernment between each $VI_j$ difficult.
 
-%\paragraph{Diebold-Mariano Test}
-%
-%The Diebold-Mariano test (\cite{diebold_comparing_2002}, and \cite{harvey_testing_1997}) is a procedure which compares the forecast accuracy of two forecast methods. It is different to the overall R squared metric because it tests whether the forecasts from two different models are different to a statistically significant degree. 
-%
-%Under the null hypothesis of the Diebold-Mariano test:
-%
-%\begin{align}
-%S_1^* &= \left[ 
-%\frac{n + 1 - 2h + n^{-1}h(h-1)}
-%{n} 
-%\right]^{1/2}S_1 ; \quad S_1^* \sim N(0,1) \\
-%S_1 &= \left[ 
-%\hat{V}(\bar{d})
-%\right] ^{-1/2}\bar{d} \\
-%\hat{\gamma}_k &= n^{-1} \sum_{t = k + 1}^{n}(d_t - \bar{d})(d_{t-k} - \bar{d}) \\
-%V(\bar{d}) &\approx n^{-1}\left[ 
-%\gamma_0 + 2 \sum_{k = 1}^{h - 1}\gamma_k
-%\right] 
-%\end{align}
-%
-%where $d_t$ represents the difference series between the forecast errors of the two models $e_1t - e_2t$, $\hat{\gamma}_k$ represents the sample $k$th autocovariance for $d_t$, and $S_1$ represents the original unmodified Diebold Mariano test statistic.
-%
-%As all models in this paper will be producing forecasts for an entire cross section of stocks, $e_1t$ and $e_2t$ will instead represent the cross sectional average forecast errors for each model.
-%
-%It must be noted that the DM test statistic assumes that the loss differential series $d_t$ is covariance stationary and short memory. The precise behaviour of the DM test statistic with regards to more complex non-linear models such as Random Forests and Neural Networks is not fully understood, which may impact on the validity of the null hypothesis distribution. As such, caution should be exercised when interpreting this test.
-
 \section{Simulation Study}
 
 \subsection{Simulation Design}
 
 \rhs{motivate this section more clearly}
 
-We begin with the simulation study as a way to explore how machine learning performs with specific regards . By specifying a simulation design with the desired characteristics, a controlled and well understood environment is available for testing the predictive performance and causal analysis abilities of the machine learning models considered. 
-
-We specify the characteristics of financial data.
+We begin with the simulation study as a way to explore how machine learning performs with specific regards to the characteristics present in financial data. By specifying a simulation design with the desired characteristics, a controlled and well understood environment is available for testing the predictive performance and causal analysis abilities of the machine learning models considered. 
 
 \begin{itemize}
 \item Low signal to noise ratio
@@ -509,7 +482,15 @@ We specify the characteristics of financial data.
 
 \subsubsection{Overall Design}
 
-Though \cite{gu_empirical_2018} explore the performance of machine learning on simulated returns series, their specification used factors are uncorrelated across $i$, and, in particular, that the factors which enter the return equation are uncorrelated with the factors that do not enter the return equation. As noted by \cite{harvey__2016} and many others, this is not what is observed in practice. Furthermore, their error specification is a white noise process consisting of a gaussian term and a student t error term. Added on to a weak underlying signal representing the predictable portion of the returns process, this amounts to a constant mean white noise process, which fails to capture characteristics of empirical returns, such as time varying volatility and volatility clustering.
+Their overall specification consists of three overall components:
+
+\begin{itemize}
+	\item Simulating individual firm and macroeconomic factors
+	\item Entering these factors into a latent, true data generating process
+	\item Producing the overall returns process as this latent process plus an error process
+\end{itemize}
+
+However, \cite{gu_empirical_2018}'s specification has two main issues: the factors which enter the return equation are uncorrelated across each stock $i$, and the error process specified amounts to a white noise, constant volatility specification. As noted by \cite{harvey__2016} and many others, this is not what is observed in practice. 
 
 Therefore, we simulate a latent factor model with a stochastic volatility process for excess returns  $r_{t+1}$, for $t=1,\dots,T$:
 
@@ -686,8 +667,8 @@ Overall, it appears that the penalized linear models offered the best performanc
 \begin{table}
 	\caption{Simulation Results}
 	\begin{center}
-		\includegraphics{simulation_test_mae.pdf}
-		\includegraphics{simulation_test_mse.pdf}
+		\includegraphics[max size = {\textwidth}{\textheight}]{simulation_test_mae.pdf}
+		\includegraphics[max size = {\textwidth}{\textheight}]{simulation_test_mse.pdf}
 	\end{center}
 \end{table}
 
@@ -784,13 +765,21 @@ We mimic the procedure used in the simulation study. This means that the dataset
 
 % Overall Results
 
-In general, results from the simulation study were reproduced in the empirical study. We similarly see that the penalized linear models generally performing the best, with the random forest models offering slightly worse performance, occasionally outperforming penalized linear models. Models fitted with respect to median quantile loss were similarly observed to typically offer improvements across all machine learning models across all loss metrics.
+In general, results from the simulation study were reproduced in the empirical study. This in of itself is a significant result, as it suggests that the simulation design itself is a reasonable approximation to empirical data, and that results from the simulation study are robust.
+
+We similarly see that the penalized linear models generally performing the best, with the random forest models offering slightly worse performance, occasionally outperforming penalized linear models. Machine learning models fitted with respect to median quantile loss were similarly observed to typically offer improvements across all machine learning models across all loss metrics. 
+
+We do however, see the neural networks start to fail and perform poorly on empirical data.
 
 % Prediction Accuracy
 
-In the empirical data setting, the underlying data generating process of returns is unknown so the ability of the different models at picking out the correct covariates cannot be evaluated. However, we can see that the penalized linear models and random forests (the models with the highest out of sample prediction performance) decide on a similar subset of factors which are determined to be important. In particular, we find that the 1 month momentum and 6 month momentum factors to be the most important factors by far, and this is consistent across all training samples. The conservative sparsity of the penalized linear models seen in the simulated setting is not repeated here; almost all factors are assigned to have small importance. The random forests again seem to struggle with discerning the importance of correlated factors apart: many of the important factors identified are highly correlated with momentum, such as change in momentum, dollar trading volume and return volatility.
+In terms of prediction accuracy, we can see that in general, the elastic net models perform the best, followed by the random forests, then the neural networks, and finally the linear models. We similarly see that machine learning models perform better when fitted with respect to quantile loss instead of MSE. 
 
-The linear models had the worst performance of all the models considered. Interestingly, we find that the linear models assign the controversial dividend price ratio macroeconomic factor as highly important. Their variable importance for individual factors across different training samples is highly non-robust, with the important variables almost completely changing year to year.
+As the data generating process for empirical returns is unknown, the variable importance results cannot be directly compared with those of the simulation study. Even so, we see similar results: the elastic net and random forest models tend to agree on the same subset of predictors, but the random forest struggles with adequately discerning between highly correlated regressors. If we focus on these two top performing models, we see that they consistently pick out the 1 month and 6 month momentum factors out of the individual characteristics as important, and the book-to-market and default yield spread factors out of the macroeconomic factors are important. In general though, the variable importance metrics are less consistent for the random forests, and it should be noted in particular that the random forest tends to determine factors highly correlated with momentum as important, such as change in moment, dollar trading volume and return volatility.
+
+The neural networks tended to believe that the market value factor was the most important among the individual factors, and the dividend-price ratio and earnings-price ratio as the most important among the macroeconomic factors, though these results were non-robust across different architectures, loss functions and training samples. 
+
+The linear models had the worst performance of all the models considered, unsurprisingly. Interestingly, we find that the linear models assign the controversial dividend price ratio macroeconomic factor as highly important. Their variable importance for individual factors across different training samples is highly non-robust, with the important variables almost completely changing year to year.
 
 The neural networks similarly had non-robust results. There is weak evidence to suggest that more complex neural networks with more layers give better performance. The neural networks were also the only models to assign high variable importance to the individual market value factor, a result that is somewhat consistent across all neural networks considered. 
 
