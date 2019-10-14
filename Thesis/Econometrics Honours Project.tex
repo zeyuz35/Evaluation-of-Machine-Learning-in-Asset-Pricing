@@ -164,17 +164,15 @@ machine learning require less strict assumptions on the functional form of retur
 
 \rhs{this section is nice, but too detailed for the introduction. Shove into methodology}
 
-The financial literature already has some applications of machine learning. For example, \cite{kozak_shrinking_2017}, \cite{rapach_forecasting_2013} and \cite{freyberger_dissecting_2017} all apply shrinkage and selection methods from machine learning to assist with the problem of factor selection.
+The financial literature already has some applications of machine learning methods to assist with both returns prediction and causal inference. For example, \cite{kozak_shrinking_2017}, \cite{rapach_forecasting_2013} and \cite{freyberger_dissecting_2017} apply shrinkage and selection methods from machine learning to assist with the problem of factor selection.
 
-Most importantly, portfolios constructed using machine learning have been demonstrated to outperform traditional models in predicting stock returns (\cite{gu_empirical_2018}, \cite{hsu_finding_2014} and \cite{feng_deep_2018}) in terms of out of sample predictive $R^2$ and Sharpe Ratios. \cite{gu_empirical_2018} attribute this to machine learning's ability to evaluate and consider non-linear complexities among factors that cannot be feasibly achieved using traditional techniques. 
+Most recently, there is literature that suggests machine learning methods can result in vastly better prediction prediction performance (\cite{gu_empirical_2018}, \cite{hsu_finding_2014} and \cite{feng_deep_2018}) in terms of out of sample predictive $R^2$. \cite{gu_empirical_2018} attribute this to machine learning's ability to evaluate and consider non-linear complexities among factors that cannot be feasibly achieved using traditional techniques. 
 
 However, there is little work done on how machine learning actually recognises and deals with the challenges of returns prediction documented in the literature. Prior work has been done by \cite{gu_empirical_2018}, however; only basic simulation designs which were not representative of real financial data were considered. In particular, the performance of machine learning in empirical financial contexts with specific regards to characteristics such as stochastic and time varying volatility, long term dependence and cross sectionally correlated regressors has not been adequately explored. 
 
 Furthermore, \cite{feng_deep_2018} in particular use cross validation as part of their model building procedure, destroying the temporal aspect of returns data, in addition to only using a handful of factors. \cite{gu_empirical_2018} produce models using a training sample which ends in the 1970s to ultimately produce forecasts for the most recent 30 years. Given the non-robustness of financial data affecting even traditional regressions which are considered to be more inflexible, more research should be done into the robustness of more flexible machine learning methods with regards to sample selection and periods of returns predictability.
 
-For the aspect of factor selection specifically, \cite{gu_empirical_2018} concludes that all of the machine methods agree on the same subset of important factors. However, while their factor importance metrics for regression-tree based methods and neural networks (the most complex methods considered) are mostly consistent, they have differences in terms of the relative importance of each factor, in addition to completely different conclusions for the dividend yield factor.
-
-This paper is the first to focus on how machine learning algorithms perform in environments with problems exhibited by financial returns data through extending the simulation designs of \cite{gu_empirical_2018}. In addition, these algorithms will once again be evaluated on real world data, but with only more recent and representative data included in order to test their short term robustness in predicting stock returns. These two aspects of the study together are able to offer a better glimpse as to how ``black box" machine learning algorithms deal with the challenges present in asset pricing.
+This paper is the first to document how machine learning algorithms perform in the context of empirical returns data, through a simulation study and an empirical study. The simulation study explicitly explores how different aspects of financial data such as persistence in regressors, cross sectional correlation and different complexities of data generating process can affect machine learning's ability in terms of both prediction performance, and casual inference. These results are then validated against an empirical dataset, filtered to be more recent and representative of recent returns. These two studies together offer a clearer glimpse into how machine learning algorithms deal with the challenges present in financial data, and crucially, we find that the results from both studies mostly consistent, suggesting a robust set of  results.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -456,14 +454,12 @@ Importantly, the choice of loss metrics chosen does not affect the overall concl
 
 \paragraph{Variable Importance}
 
-The importance of each predictor $j$ is denoted as $VI_j$, and is defined as the reduction in predictive R-Squared from setting all values of predictor $j$ to 0, while holding the remaining model estimates fixed, mirroring the procedure of \cite{gu_empirical_2018}. These were then normalized to sum to 1 within each model as a way to assess the relative importance of each predictor for each model. As $VI_j$ can sometimes be negative, or in some cases be 0 across most of the factors, $VI_j$ positively shifted by the magnitude of the smallest $VI_j$ plus a minor offset $o$, then dividing all $VI_j$ by the total to avoid numerical issues:
+To explore the causal inference capabilities of machine learning, we define a simple variable importance metric that is able to be consistently applied to all machine learning models. The importance of each predictor $j$ is denoted as $VI_j$, and is defined as the reduction in predictive R-Squared from setting all values of predictor $j$ to 0, while holding the remaining model estimates fixed, mirroring the procedure of \cite{gu_empirical_2018}. These were then normalized to sum to 1 within each model as a way to assess the relative importance of each predictor for each model. As $VI_j$ can sometimes be negative, or in some cases be 0 across most of the factors, $VI_j$ positively shifted by the magnitude of the smallest $VI_j$ plus a minor offset $o$, then dividing all $VI_j$ by the total to alleviate numerical issues\footnote{This mechanism was chosen because the other popular normalization mechanism "softmax" was observed to be unable to preserve the distances between each original $VI_j$ well enough, squishing together all variable importance measures and making discernment between each $VI_j$ difficult.}:
 
 \begin{equation}
 VI_{j, norm} = \frac{VI_j + \operatorname{min}(VI_j) + o}
 {\Sigma VI_j + \operatorname{min}(VI_j) + o} \quad ; \quad o = 10^{-100}
 \end{equation}
-
-This mechanism was chosen because the other popular normalization mechanism "softmax" was observed to be unable to preserve the distances between each original $VI_j$ well enough, squishing together all variable importance measures and making discernment between each $VI_j$ difficult.
 
 \section{Simulation Study}
 
@@ -485,14 +481,14 @@ We begin with the simulation study as a way to explore how machine learning perf
 Their overall specification consists of three overall components:
 
 \begin{itemize}
-	\item Simulating individual firm and macroeconomic factors
-	\item Entering these factors into a latent, true data generating process
-	\item Producing the overall returns process as this latent process plus an error process
+	\item Simulate individual firm and macroeconomic factors
+	\item Enter these factors into a latent, true data generating process
+	\item Produce the overall returns process as this latent generative process plus an error process
 \end{itemize}
 
 However, \cite{gu_empirical_2018}'s specification has two main issues: the factors which enter the return equation are uncorrelated across each stock $i$, and the error process specified amounts to a white noise, constant volatility specification. As noted by \cite{harvey__2016} and many others, this is not what is observed in practice. 
 
-Therefore, we simulate a latent factor model with a stochastic volatility process for excess returns  $r_{t+1}$, for $t=1,\dots,T$:
+We therefore simulate a latent factor model with a stochastic volatility process for excess returns  $r_{t+1}$, for $t=1,\dots,T$:
 
 \begin{flalign}
 r_{i, t+1} &= 
@@ -519,7 +515,7 @@ A simulation mechanism for $C_t$ that gives some correlation across the factors 
 	\quad \rho_{j} \sim \mathcal{U} \left( \frac{1}{2},1 \right) 
 \end{equation}
 
-Then, define the matrix $B$:
+To build in cross sectional correlation, we the positive-semidefinite matrix $B$:
 
 \begin{equation}
 	B:=\Lambda\Lambda' + \frac{1}{10}\mathbb{I}_{n}, \quad
@@ -527,9 +523,9 @@ Then, define the matrix $B$:
 	\lambda_{ik}\sim N(0, \lambda_{sd}), \; k=1, \dots, 4
 \end{equation}
 
-Note that $B$ is a positive-semidefinite matrix, and thus can serve as a variance covariance matrix with $\lambda_{sd}$ controlling the density of the matrix, and hence degree of cross sectional correlation. $\lambda_{sd}$ values of 0.01, 0.1 and 1 were used to explore increasing degrees of cross sectional correlation.
+to serve as a variance covariance matrix with $\lambda_{sd}$ controlling the density of the matrix, and hence degree of cross sectional correlation. $\lambda_{sd}$ values of 0.01, 0.1 and 1 were used to explore increasing degrees of cross sectional correlation.
 
-To build in cross-sectional correlation, from the $N\times P_{c}$ matrix $\bar{C}_t$, we simulate characteristics according to
+To build this into our $N\times P_{c}$ characteristics matrix $\bar{C}_t$, we simulate characteristics according to
  
 \begin{equation}
 	\widehat{C}_{t}=L\overline{C}_{t} ; \quad B = LL' 
@@ -547,7 +543,7 @@ with the rank transformation normalizing all predictors to be within $[-1, 1]$.
 
 \subsubsection{Simulating Macroeconomic Series}
 
-For simulation of $x_{t}$, a $3 \times 1$ multivariate time series, we consider a Vector Autoregression (VAR) model \footnote{Other more complex and interactive matrix specifications of $A$ were briefly explored, but these did not appear to have a significant impact on results. More complex designs were observed to only affect the variable importance metrics, but only to a small degree.}, a generalization of the univariate autoregressive model to multiple time series:
+For simulation of $x_{t}$, a $3 \times 1$ multivariate time series, we consider a Vector Autoregression (VAR) model \footnote{Other more complex and interactive matrix specifications of $A$ were briefly explored, but these did not appear to have a significant impact on results. More complex designs were observed to only affect the variable importance metrics, but to an insignificant degree}:
 
 \begin{flalign*}
 x_{t} = Ax_{t-1}+u_t; 
@@ -563,19 +559,21 @@ x_{t} = Ax_{t-1}+u_t;
 
 \subsubsection{Simulating Return Series}
 
-We consider three different function for $g(z_{i, t})$:
+We consider three different functions for $g(z_{i, t})$:
 
 \begin{align}
 (1)\; & g_1 \left(z_{i, t}\right)=\left(c_{i 1, t}, c_{i 2, t}, c_{i 3, t} \times x_{t}'[3,]\right) \theta_{0} \\
 (2)\; & g_2 \left(z_{i, t}\right)=\left(c_{i 1, t}^{2}, c_{i 1, t} \times c_{i 2, t}, \operatorname{sgn}\left(c_{i 3, t} \times  x_{t}'[3,]\right)\right) \theta_{0} \\
-(3)\; & g_3 \left(z_{i, t}\right) = \left(1[c_{i3,t}>0],c_{i 2, t}^{3}, c_{i 1, t} \times c_{i 2, t}\times 1[c_{i3,t}>0], \text{logit}\left({c}_{i 3, t} \right)\right) \theta_{0}
+(3)\; & g_3 \left(z_{i, t}\right) = \left(1[c_{i3,t}>0],c_{i 2, t}^{3}, c_{i 1, t} \times c_{i 2, t}\times 1[c_{i3,t}>0], \text{logit}\left({c}_{i3, t} \right)\right) \theta_{0}
 \end{align}
 
 where $x_{t}'[3,]$ denotes the third element of the $x_{t}'$ vector.
 
-$g_1 \left(z_{i, t}\right)$ allows the characteristics to enter the return equation linearly, and $g_2 \left(z_{i, t}\right)$ allows the characteristics to enter the return equation interactively and non-linearly. These two specifications correspond to the simulation design used by \cite{gu_empirical_2018}. 
+$g_1 \left(z_{i, t}\right)$ allows the characteristics to enter the return equation linearly, and $g_2 \left(z_{i, t}\right)$ allows the characteristics to enter the return equation interactively and non-linearly. The true underlying causal regressors for these specifications are $\left(c_{i 1, t}, c_{i 2, t}, c_{i 3, t} \times x_{t}'[3,]\right)$.These two specifications correspond to the simulation design used by \cite{gu_empirical_2018}. 
 
-$g_3 \left(z_{i, t}\right)$ allows the characteristics to enter in a complex and non-linear fashion. In should be noted however, that because $g_2 \left(z_{i, t}\right)$ has a large part of its signal entering through a $\operatorname{sgn}$ function, this should make it the most difficult to estimate given the regressors and resulting returns process.
+$g_3 \left(z_{i, t}\right)$ allows the characteristics to enter in a complex and non-linear fashion. The true underlying causal regressors for this specification are $\left(c_{i 1, t}, c_{i 2, t}, c_{i 3, t} \right)$. 
+
+It should be noted however, that because $g_2 \left(z_{i, t}\right)$ has a large part of its signal entering through a $\operatorname{sgn}$ function, this should make it the most difficult to estimate given the regressors and resulting returns process.
 
 $\theta^0$ was tuned such that the predictive $R^2$ was approximately 5\%.
 
@@ -784,6 +782,8 @@ The linear models had the worst performance of all the models considered, unsurp
 The neural networks similarly had non-robust results. There is weak evidence to suggest that more complex neural networks with more layers give better performance. The neural networks were also the only models to assign high variable importance to the individual market value factor, a result that is somewhat consistent across all neural networks considered. 
 
 % Factor Selection
+
+For the aspect of factor selection specifically, \cite{gu_empirical_2018} concludes that all of the machine methods agree on the same subset of important factors. However, while their factor importance metrics for regression-tree based methods and neural networks (the most complex methods considered) are mostly consistent, they have differences in terms of the relative importance of each factor, in addition to completely different conclusions for the dividend yield factor.
 
 % Other Conclusions
 
@@ -1131,13 +1131,13 @@ The overall findings of this paper differ from the sparse literature on similar 
 %% Hyperparameters
 
 \begin{figure}
-	\includegraphics{eln_alpha_plot.pdf}
-	\caption{Optimal Alpha Values Across Training Samples for Elastic Net}
+	\includegraphics[max size = {\textwidth}{\textheight}]{eln_alpha_plot.pdf}
+	\caption{Optimal Alpha Values Across Training Samples for Elastic Net, each colour representing a different simulation realisation}
 \end{figure}
 
 \begin{figure}
-	\includegraphics{eln_lambda_plot.pdf}
-	\caption{Optimal Lambda Values Across Training Samples for Elastic Net}
+	\includegraphics[max size = {\textwidth}{\textheight}]{eln_lambda_plot.pdf}
+	\caption{Optimal Lambda Values Across Training Samples for Elastic Net, each colour representing a different simulation realisation}
 \end{figure}
 
 \newpage
