@@ -28,16 +28,16 @@
 \contentsline {section}{\numberline {4}Empirical Study}{22}{section.4}
 \contentsline {subsection}{\numberline {4.1}Data}{22}{subsection.4.1}
 \contentsline {subsection}{\numberline {4.2}Empirical Data Results}{25}{subsection.4.2}
-\contentsline {section}{\numberline {5}Conclusion}{33}{section.5}
-\contentsline {section}{\numberline {6}Appendix}{34}{section.6}
-\contentsline {subsection}{\numberline {6.1}Data}{34}{subsection.6.1}
-\contentsline {subsection}{\numberline {6.2}Additional Results}{39}{subsection.6.2}
-\contentsline {subsubsection}{\numberline {6.2.1}Simulation Study}{39}{subsubsection.6.2.1}
-\contentsline {subsubsection}{\numberline {6.2.2}Empirical Study}{46}{subsubsection.6.2.2}
-\contentsline {subsection}{\numberline {6.3}Computational Details}{50}{subsection.6.3}
-\contentsline {subsubsection}{\numberline {6.3.1}Linear Models}{50}{subsubsection.6.3.1}
-\contentsline {subsubsection}{\numberline {6.3.2}Penalized Linear}{50}{subsubsection.6.3.2}
-\contentsline {subsubsection}{\numberline {6.3.3}Classification and Regression Trees}{51}{subsubsection.6.3.3}
-\contentsline {subsubsection}{\numberline {6.3.4}Random Forest}{51}{subsubsection.6.3.4}
-\contentsline {subsubsection}{\numberline {6.3.5}Neural Networks}{52}{subsubsection.6.3.5}
-\contentsline {subsubsection}{\numberline {6.3.6}Tuning of Simulated Datasets}{52}{subsubsection.6.3.6}
+\contentsline {section}{\numberline {5}Conclusion}{32}{section.5}
+\contentsline {section}{\numberline {6}Appendix}{33}{section.6}
+\contentsline {subsection}{\numberline {6.1}Data}{33}{subsection.6.1}
+\contentsline {subsection}{\numberline {6.2}Additional Results}{38}{subsection.6.2}
+\contentsline {subsubsection}{\numberline {6.2.1}Simulation Study}{38}{subsubsection.6.2.1}
+\contentsline {subsubsection}{\numberline {6.2.2}Empirical Study}{45}{subsubsection.6.2.2}
+\contentsline {subsection}{\numberline {6.3}Computational Details}{49}{subsection.6.3}
+\contentsline {subsubsection}{\numberline {6.3.1}Linear Models}{49}{subsubsection.6.3.1}
+\contentsline {subsubsection}{\numberline {6.3.2}Penalized Linear}{49}{subsubsection.6.3.2}
+\contentsline {subsubsection}{\numberline {6.3.3}Classification and Regression Trees}{50}{subsubsection.6.3.3}
+\contentsline {subsubsection}{\numberline {6.3.4}Random Forest}{50}{subsubsection.6.3.4}
+\contentsline {subsubsection}{\numberline {6.3.5}Neural Networks}{51}{subsubsection.6.3.5}
+\contentsline {subsubsection}{\numberline {6.3.6}Tuning of Simulated Datasets}{51}{subsubsection.6.3.6}

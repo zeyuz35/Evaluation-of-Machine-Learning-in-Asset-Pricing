@@ -654,13 +654,15 @@ Focusing on the causal inference capabilities of different models by looking at 
 \begin{figure}
 	\caption{Simulation Variable Importance Plots}
 	\begin{center}
-		\includegraphics{simulation_ave_vi_plot.pdf}
+		\includegraphics[max size = {\textwidth}{\textheight}]{simulation_ave_vi_plot.pdf}
 	\end{center}
 \end{figure}
 
-The random forest models were typically able to correctly identify the true data generating covariates, but struggled with discerning them adequately from other covariates. This is to be expected, likely due to how the random forest algorithms work. The random forest algorithm is an ensemble of tree models, with each tree model only having access to a subset of all available predictors. If this subset does not include the true data generating predictor, then that particular tree will likely select the predictors which have the highest correlation with the true data generating predictor instead. Thus, the resulting ensemble model is likely to believe that cross sectionally correlated predictors are important, relative to the true causal regressor.
+In terms of finding the correct underlying causal regressors, we find that the penalized linear models perform the best at identifying the true data generating regressors, and that this appears to be mostly robust regardless of the amount of cross sectional correlation. The penalized linear models are not perfect and their ability to correctly identify causal regressors worsens as the data generating process becomes more non-linear. On these more difficult specifications, the penalized linear models are generally very conservative, sometimes only identifying a single covariate as important. This is most apparent on the $g_2$ specification. Occasionally, the elastic nets identified the incorrect covariates completely, though the relative importance assigned to them was small. 
 
-In terms of finding the correct underlying causal regressors, we find that the penalized linear models perform the best at identifying the true data generating regressors, and that this appears to be mostly robust regardless of the amount of cross sectional correlation. The penalized linear models are not perfect and their ability to correctly identify causal regressors worsens as the data generating process becomes more non-linear. On these more difficult specifications, the penalized linear models are generally very conservative, sometimes only identifying a single covariate as important. This is most apparent on the $g_2$ specification. Occasionally, the elastic nets identified the incorrect covariates completely, though the relative importance assigned to them was small.
+The random forests and to a lesser extent the neural networks also correctly identified the correct causal regressors, but struggled greatly with adequately discerning relative importance among correlated regressors. This was became more apparent as the degree of cross sectional correlation increased. In the case of the random forests, this is to be expected, likely due to how the random forest algorithms work. The random forest algorithm is an ensemble of tree models, with each tree model only having access to a subset of all available predictors. If this subset does not include the true data generating predictor, then that particular tree will likely select the predictors which have the highest correlation with the true data generating predictor instead. Thus, the resulting ensemble model is likely to believe that cross sectionally correlated predictors are important, relative to the true causal regressor. 
+
+The linear models, unsurprisingly, significantly struggled with causal analysis with respect to both increasing cross sectional correlation and increasing non-linearities.
 
 %% Brief other notes that are not too important
 
@@ -792,14 +794,14 @@ When looking at the macroeconomic factors (see Figure \ref{empirical_macro_facet
 
 \begin{figure}
 	\begin{center}
-		\includegraphics{empirical_test_mse}
+		\includegraphics[max size = {\textwidth}{\textheight}]{empirical_test_mse}
 	\end{center}
 	\caption{Empirical Test MSE Averaged Across All Samples}
 \end{figure}
 
 \begin{figure}
 	\begin{center}
-		\includegraphics{empirical_test_mae}
+		\includegraphics[max size = {\textwidth}{\textheight}]{empirical_test_mae}
 	\end{center}
 	\caption{Empirical Test MAE Averaged Across All Samples}
 \end{figure}
@@ -808,35 +810,35 @@ When looking at the macroeconomic factors (see Figure \ref{empirical_macro_facet
 
 \begin{figure}
 	\begin{center}
-	\includegraphics{empirical_sample_all_vi_ind.pdf}
+	\includegraphics[max size = {\textwidth}{\textheight}]{empirical_sample_all_vi_ind.pdf}
 	\end{center}
 	\caption{Empirical Data Individual Factor Variable Importance Averaged Across All Samples}
 \end{figure}
 
 \begin{figure}
 	\begin{center}
-	\includegraphics{empirical_sample_1_vi_ind.pdf}
+	\includegraphics[max size = {\textwidth}{\textheight}]{empirical_sample_1_vi_ind.pdf}
 	\end{center}
 	\caption{Empirical Data Individual Factor Variable Importance for Sample 1}
 \end{figure}
 
 \begin{figure}
 	\begin{center}
-	\includegraphics{empirical_sample_2_vi_ind.pdf}
+	\includegraphics[max size = {\textwidth}{\textheight}]{empirical_sample_2_vi_ind.pdf}
 	\end{center}
 	\caption{Empirical Data Individual Factor Variable Importance for Sample 2}
 \end{figure}
 
 \begin{figure}
 	\begin{center}
-	\includegraphics{empirical_sample_3_vi_ind.pdf}
+	\includegraphics[max size = {\textwidth}{\textheight}]{empirical_sample_3_vi_ind.pdf}
 	\end{center}
 	\caption{Empirical Data Individual Factor Variable Importance for Sample 3}
 \end{figure}
 
 \begin{landscape}
 \begin{figure}
-	\includegraphics{empirical_sample_all_vi_macro_facet.pdf}
+	\includegraphics[max size = {\textwidth}{\textheight}]{empirical_sample_all_vi_macro_facet.pdf}
 	\caption{Empirical Data Macroeconomic Factor variable Importance Averaged Across All Samples, faceted by training sample}
 	\label{empirical_macro_facet}
 \end{figure}
@@ -848,7 +850,7 @@ Our findings demonstrate that within the contexts considered, the field of machi
 
 Importantly, we find that the feed-forward neural network architectures considered fail in the context of stock return prediction, at both prediction performance and variable importance analysis. This is a result consistent across a variety of simulated datasets, as well as empirical data. We also find weak evidence that deeper neural networks with more hidden layers perform better, though this result, like the performance of neural networks in general, is non-robust.
 
-Lastly, we find that the top performing models - the penalized linear models and random forests, tend to agree and correctly identify the correct causal regressors in simulated contexts, as well as agree on the same subset of factors which are important in empirical contexts. We find that the of all the most considered, the penalized linear models are the most consistent at identifying true causal regressors through the simulation study. We find that in the empirical setting, among the individual the individual 1 and 6 month momentum factors are the most powerful predictors of stock returns, according to the penalized linear models and random forests. 
+Lastly, we find that the top performing models - the penalized linear models and random forests, tend to agree and correctly identify the correct causal regressors in simulated contexts, as well as agree on the same subset of factors which are important in empirical contexts. We find that the of all the most considered, the penalized linear models are the most consistent at identifying true causal regressors through the simulation study. We find that in the empirical setting, among the individual factors the individual 1 and 6 month momentum factors are the most powerful predictors of stock returns, according to the penalized linear models and random forests. 
 
 Across all models except for linear models, we find that minimizing quantile loss yields better prediction performance.
 
