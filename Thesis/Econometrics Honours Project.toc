@@ -25,19 +25,19 @@
 \contentsline {subsubsection}{\numberline {3.1.4}Simulating Return Series}{18}{subsubsection.3.1.4}
 \contentsline {subsubsection}{\numberline {3.1.5}Sample Splitting}{18}{subsubsection.3.1.5}
 \contentsline {subsection}{\numberline {3.2}Simulation Study Results}{19}{subsection.3.2}
-\contentsline {section}{\numberline {4}Empirical Study}{22}{section.4}
-\contentsline {subsection}{\numberline {4.1}Data}{22}{subsection.4.1}
-\contentsline {subsection}{\numberline {4.2}Empirical Data Results}{25}{subsection.4.2}
-\contentsline {section}{\numberline {5}Conclusion}{32}{section.5}
-\contentsline {section}{\numberline {6}Appendix}{33}{section.6}
-\contentsline {subsection}{\numberline {6.1}Data}{33}{subsection.6.1}
-\contentsline {subsection}{\numberline {6.2}Additional Results}{38}{subsection.6.2}
-\contentsline {subsubsection}{\numberline {6.2.1}Simulation Study}{38}{subsubsection.6.2.1}
-\contentsline {subsubsection}{\numberline {6.2.2}Empirical Study}{45}{subsubsection.6.2.2}
-\contentsline {subsection}{\numberline {6.3}Computational Details}{49}{subsection.6.3}
-\contentsline {subsubsection}{\numberline {6.3.1}Linear Models}{49}{subsubsection.6.3.1}
-\contentsline {subsubsection}{\numberline {6.3.2}Penalized Linear}{49}{subsubsection.6.3.2}
-\contentsline {subsubsection}{\numberline {6.3.3}Classification and Regression Trees}{50}{subsubsection.6.3.3}
-\contentsline {subsubsection}{\numberline {6.3.4}Random Forest}{50}{subsubsection.6.3.4}
-\contentsline {subsubsection}{\numberline {6.3.5}Neural Networks}{51}{subsubsection.6.3.5}
-\contentsline {subsubsection}{\numberline {6.3.6}Tuning of Simulated Datasets}{51}{subsubsection.6.3.6}
+\contentsline {section}{\numberline {4}Empirical Study}{23}{section.4}
+\contentsline {subsection}{\numberline {4.1}Data}{23}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Empirical Data Results}{26}{subsection.4.2}
+\contentsline {section}{\numberline {5}Conclusion}{29}{section.5}
+\contentsline {section}{\numberline {6}Appendix}{32}{section.6}
+\contentsline {subsection}{\numberline {6.1}Data}{32}{subsection.6.1}
+\contentsline {subsection}{\numberline {6.2}Additional Results}{37}{subsection.6.2}
+\contentsline {subsubsection}{\numberline {6.2.1}Simulation Study}{37}{subsubsection.6.2.1}
+\contentsline {subsubsection}{\numberline {6.2.2}Empirical Study}{44}{subsubsection.6.2.2}
+\contentsline {subsection}{\numberline {6.3}Computational Details}{48}{subsection.6.3}
+\contentsline {subsubsection}{\numberline {6.3.1}Linear Models}{48}{subsubsection.6.3.1}
+\contentsline {subsubsection}{\numberline {6.3.2}Penalized Linear}{48}{subsubsection.6.3.2}
+\contentsline {subsubsection}{\numberline {6.3.3}Classification and Regression Trees}{49}{subsubsection.6.3.3}
+\contentsline {subsubsection}{\numberline {6.3.4}Random Forest}{49}{subsubsection.6.3.4}
+\contentsline {subsubsection}{\numberline {6.3.5}Neural Networks}{50}{subsubsection.6.3.5}
+\contentsline {subsubsection}{\numberline {6.3.6}Tuning of Simulated Datasets}{50}{subsubsection.6.3.6}

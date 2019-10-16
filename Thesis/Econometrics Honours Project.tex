@@ -448,9 +448,9 @@ R^2_{OOS} = 1 - \frac{\sum_{(i, t)\in\mathcal{T}_3}(r_{i, t+1} - \widehat{r}_{i,
 {\sum_{(i, t)\in\mathcal{T}_3} \left( r_{i, t+1} - \bar{r}_{i, t+1} \right) ^2}
 \end{equation}
 
-where $\mathcal{T}_3$ indicates that the fits are only assessed on the test subsample, which is never used for training or tuning. However, as $R^2$ measures were originally formulated for assessing in sample fit for linear models, the interpretation of this metric is less meaningful in the contexts of forecasting out of sample and non-linear models.
+where $\mathcal{T}_3$ indicates that the fits are only assessed on the test subsample, which is never used for training or tuning. However, as $R^2$ measures were originally formulated for assessing in sample fit for linear models, the interpretation of this metric is less meaningful in the contexts of forecasting out of sample and non-linear models. This metric was nevertheless produced because of its property to exaggerate the differences in performance across different models.
 
-Importantly, the choice of loss metrics chosen does not affect the overall conclusion of model performance.
+Importantly, the choice of loss metrics chosen does not affect the overall conclusion of which model performs the best.
 
 \paragraph{Variable Importance}
 
@@ -636,9 +636,21 @@ Looking at the prediction performance of different models, we find that in gener
 \begin{figure}
 	\caption{Simulation Results}
 	\begin{center}
-		\includegraphics[max size = {\textwidth}{\textheight}]{simulation_test_mae.pdf}
-		\includegraphics[max size = {\textwidth}{\textheight}]{simulation_test_mse.pdf}
-		\caption{Simulation Test Loss Metrics}
+		\includegraphics[max size = {\textwidth}{\textheight}]{simulation_test_mae_pre_all.pdf}
+		\includegraphics[max size = {\textwidth}{\textheight}]{simulation_test_mse_pre_all.pdf}
+		\caption{Simulation Test Loss Metrics, only including best performing Neural Networks}
+	\end{center}
+\end{figure}
+
+%% Figure out what graphs to show here
+
+\begin{figure}
+	\caption{Simulation Results}
+	\begin{center}
+		\includegraphics[max size = {\textwidth}{\textheight}]{simulation_test_mae_pre.pdf}
+		\includegraphics[max size = {\textwidth}{\textheight}]{simulation_test_mse_pre.pdf}
+		\includegraphics[max size = {\textwidth}{\textheight}]{simulation_test_rsquare_pre.pdf}
+		\caption{Simulation Test Loss Metrics, only including best performing Neural Networks}
 	\end{center}
 \end{figure}
 
@@ -660,7 +672,7 @@ Focusing on the causal inference capabilities of different models by looking at 
 
 In terms of finding the correct underlying causal regressors, we find that the penalized linear models perform the best at identifying the true data generating regressors, and that this appears to be mostly robust regardless of the amount of cross sectional correlation. The penalized linear models are not perfect and their ability to correctly identify causal regressors worsens as the data generating process becomes more non-linear. On these more difficult specifications, the penalized linear models are generally very conservative, sometimes only identifying a single covariate as important. This is most apparent on the $g_2$ specification. Occasionally, the elastic nets identified the incorrect covariates completely, though the relative importance assigned to them was small. 
 
-The random forests and to a lesser extent the neural networks also correctly identified the correct causal regressors, but struggled greatly with adequately discerning relative importance among correlated regressors. This was became more apparent as the degree of cross sectional correlation increased. In the case of the random forests, this is to be expected, likely due to how the random forest algorithms work. The random forest algorithm is an ensemble of tree models, with each tree model only having access to a subset of all available predictors. If this subset does not include the true data generating predictor, then that particular tree will likely select the predictors which have the highest correlation with the true data generating predictor instead. Thus, the resulting ensemble model is likely to believe that cross sectionally correlated predictors are important, relative to the true causal regressor. 
+The random forests and to a lesser extent the neural networks also correctly identified the correct causal regressors, but struggled greatly with adequately discerning relative importance among correlated regressors. This was became more apparent as the degree of cross sectional correlation increased. In the case of the random forests, this is to be expected, likely due to how the random forest algorithms work. The random forest algorithm is an ensemble of tree models, with each tree model only having access to a subset of all available predictors. If this subset does not include the true data generating predictor, then that particular tree will likely select the predictors which have the highest correlation with the true data generating predictor instead. Thus, the resulting ensemble model is likely to believe that cross sectionally correlated predictors are important, relative to the true causal regressor. Due to the complexity of the neural networks, there does not exist a similar intuitive explanation for their causal inference ability.
 
 The linear models, unsurprisingly, significantly struggled with causal analysis with respect to both increasing cross sectional correlation and increasing non-linearities.
 
@@ -670,11 +682,13 @@ Of particular note are the instability of the machine learning models' hyperpara
 
 %% Short Summary again (repeat)
 
-Overall, in the simulation study we observe that in general elastic nets are the best performing model, followed closely by random forests, then neural networks. All machine learning models were unaffected by cross sectional correlation in terms of prediction performance, and had better performance when fitted with respect to quantile loss, in stark contrast to linear models. The random forest only outperformed the elastic nets on highly non-linear specifications. 
+Overall, in the simulation study we observe that in general elastic nets are the best performing model, followed closely by random forests, then neural networks. All machine learning models were unaffected by cross sectional correlation in terms of prediction performance, and had better performance when fitted with respect to quantile loss, in stark contrast to linear models. The random forest only outperformed the elastic nets on highly non-linear specifications. The neural network models were not observed to outperform any of the machine learning models.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Empirical Study}
+
+We then 
 
 \subsection{Data}
 
@@ -784,14 +798,6 @@ The neural networks tended to believe that the market value factor was the most 
 
 Interestingly, we find that the linear models assign the controversial dividend price ratio macroeconomic factor as highly important, a result mirroed only with the neural networks Their variable importance for individual factors across different training samples is highly non-robust, with the important variables almost completely changing year to year.
 
-% Factor Selection
-
-For the aspect of factor selection specifically, \cite{gu_empirical_2018} concludes that all of the machine methods agree on the same subset of important factors. However, while their factor importance metrics for regression-tree based methods and neural networks (the most complex methods considered) are mostly consistent, they have differences in terms of the relative importance of each factor, in addition to completely different conclusions for the dividend yield factor.
-
-All models considered typically preferred sparse parameterizations. That is, most if not all of the individual factors had little to no importance across all models.\footnote{Note that because the variable importance here was not evaluated explicitly for each pairwise interaction term, some of the individual factors appear as slightly important. This is because setting an individual factor to zero also sets some of the macroeconomic pairwise terms to zero, increasing its apparent importance.}
-
-When looking at the macroeconomic factors (see Figure \ref{empirical_macro_facet}), there is less consistency on the variable importance between models. Penalized linear models tend to identify the average book to market ratio and the default spread as the most important macroeconomic factors, a result weakly consistent with those of the random forests. The linear models consistently identified the controversial dividend-price ratio as important, a result that was somewhat consistent with the neural networks. Some of the neural networks also occasionally identified the earnings price ratio as important.
-
 \begin{figure}
 	\begin{center}
 		\includegraphics[max size = {\textwidth}{\textheight}]{empirical_test_mse}
@@ -806,43 +812,30 @@ When looking at the macroeconomic factors (see Figure \ref{empirical_macro_facet
 	\caption{Empirical Test MAE Averaged Across All Samples}
 \end{figure}
 
-\newpage
+% Factor Selection
+
+For the aspect of factor selection specifically, \cite{gu_empirical_2018} concludes that all of the machine methods agree on the same subset of important factors. However, while their factor importance metrics for regression-tree based methods and neural networks (the most complex methods considered) are mostly consistent, they have differences in terms of the relative importance of each factor, in addition to completely different conclusions for the dividend yield factor.
+
+All models considered typically preferred sparse parameterizations. That is, most if not all of the individual factors had little to no importance across all models.\footnote{Note that because the variable importance here was not evaluated explicitly for each pairwise interaction term, some of the individual factors appear as slightly important. This is because setting an individual factor to zero also sets some of the macroeconomic pairwise terms to zero, increasing its apparent importance.}
+
+When looking at the macroeconomic factors (see Figure \ref{empirical_macro_facet}), there is less consistency on the variable importance between models. Penalized linear models tend to identify the average book to market ratio and the default spread as the most important macroeconomic factors, a result weakly consistent with those of the random forests. The linear models consistently identified the controversial dividend-price ratio as important, a result that was somewhat consistent with the neural networks. Some of the neural networks also occasionally identified the earnings price ratio as important.
 
 \begin{figure}
 	\begin{center}
-	\includegraphics[max size = {\textwidth}{\textheight}]{empirical_sample_all_vi_ind.pdf}
+		\includegraphics[max size = {\textwidth}{\textheight}]{empirical_sample_all_vi_ind.pdf}
 	\end{center}
 	\caption{Empirical Data Individual Factor Variable Importance Averaged Across All Samples}
 \end{figure}
 
 \begin{figure}
 	\begin{center}
-	\includegraphics[max size = {\textwidth}{\textheight}]{empirical_sample_1_vi_ind.pdf}
+		\includegraphics[max size = {\textwidth}{\textheight}]{empirical_sample_all_vi_macro_facet.pdf}
+		\caption{Empirical Data Macroeconomic Factor variable Importance Averaged Across All Samples, faceted by training sample}
+		\label{empirical_macro_facet}
 	\end{center}
-	\caption{Empirical Data Individual Factor Variable Importance for Sample 1}
 \end{figure}
 
-\begin{figure}
-	\begin{center}
-	\includegraphics[max size = {\textwidth}{\textheight}]{empirical_sample_2_vi_ind.pdf}
-	\end{center}
-	\caption{Empirical Data Individual Factor Variable Importance for Sample 2}
-\end{figure}
-
-\begin{figure}
-	\begin{center}
-	\includegraphics[max size = {\textwidth}{\textheight}]{empirical_sample_3_vi_ind.pdf}
-	\end{center}
-	\caption{Empirical Data Individual Factor Variable Importance for Sample 3}
-\end{figure}
-
-\begin{landscape}
-\begin{figure}
-	\includegraphics[max size = {\textwidth}{\textheight}]{empirical_sample_all_vi_macro_facet.pdf}
-	\caption{Empirical Data Macroeconomic Factor variable Importance Averaged Across All Samples, faceted by training sample}
-	\label{empirical_macro_facet}
-\end{figure}
-\end{landscape}
+\newpage
 
 \section{Conclusion}
 
