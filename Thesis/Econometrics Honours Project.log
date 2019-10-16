@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2019.10.15)  16 OCT 2019 13:50
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2019.10.15)  16 OCT 2019 18:40
 entering extended mode
 **Econometrics*Honours*Project.tex
 
@@ -2001,406 +2001,427 @@ Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
- [14]
-Overfull \vbox (0.3612pt too high) has occurred while \output is active []
-
-
-[15]
+ [14] [15] [16]
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 473.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 477.
 
- ("C:\Program Files\MiKTeX 2.9\tex\latex\base\omscmr.fd"
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\omscmr.fd"
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 473.
- [16] [17]
-Overfull \hbox (5.0441pt too wide) in paragraph at lines 599--601
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 477.
+ [17] [18] [19]
+Overfull \hbox (5.0441pt too wide) in paragraph at lines 609--611
 []|\OT1/cmr/m/n/10.95 NA| 
  []
 
 
-Overfull \hbox (5.0441pt too wide) in paragraph at lines 603--603
+Overfull \hbox (5.0441pt too wide) in paragraph at lines 613--613
 []|\OT1/cmr/m/n/10.95 NA| 
  []
 
 
-Overfull \hbox (5.0441pt too wide) in paragraph at lines 603--604
+Overfull \hbox (5.0441pt too wide) in paragraph at lines 613--614
 []|\OT1/cmr/m/n/10.95 NA| 
  []
 
-[18]
-<../Results/simulation_test_mae_pre_all.pdf, id=485, 639.38875pt x 426.59375pt>
+[20]
+<../Results/simulation_test_mae_pre_all.pdf, id=501, 639.38875pt x 426.59375pt>
 File: ../Results/simulation_test_mae_pre_all.pdf Graphic file (type pdf)
 <use ../Results/simulation_test_mae_pre_all.pdf>
 Package pdftex.def Info: ../Results/simulation_test_mae_pre_all.pdf used on inp
-ut line 639.
+ut line 648.
 (pdftex.def)             Requested size: 639.38718pt x 426.5927pt.
 
-<../Results/simulation_test_mse_pre_all.pdf, id=486, 639.38875pt x 426.59375pt>
+<../Results/simulation_test_mse_pre_all.pdf, id=502, 639.38875pt x 426.59375pt>
 File: ../Results/simulation_test_mse_pre_all.pdf Graphic file (type pdf)
 <use ../Results/simulation_test_mse_pre_all.pdf>
 Package pdftex.def Info: ../Results/simulation_test_mse_pre_all.pdf used on inp
-ut line 640.
+ut line 649.
 (pdftex.def)             Requested size: 639.38718pt x 426.5927pt.
 
-<../Results/simulation_test_mae_pre.pdf, id=487, 526.96875pt x 325.215pt>
+<../Results/simulation_test_mae_pre.pdf, id=503, 526.96875pt x 325.215pt>
 File: ../Results/simulation_test_mae_pre.pdf Graphic file (type pdf)
 
 <use ../Results/simulation_test_mae_pre.pdf>
 Package pdftex.def Info: ../Results/simulation_test_mae_pre.pdf used on input l
-ine 648.
+ine 658.
 (pdftex.def)             Requested size: 526.96745pt x 325.2142pt.
 
-<../Results/simulation_test_mse_pre.pdf, id=488, 526.96875pt x 325.215pt>
+<../Results/simulation_test_mse_pre.pdf, id=504, 526.96875pt x 325.215pt>
 File: ../Results/simulation_test_mse_pre.pdf Graphic file (type pdf)
 
 <use ../Results/simulation_test_mse_pre.pdf>
 Package pdftex.def Info: ../Results/simulation_test_mse_pre.pdf used on input l
-ine 649.
+ine 665.
 (pdftex.def)             Requested size: 526.96745pt x 325.2142pt.
 
-<../Results/simulation_test_rsquare_pre.pdf, id=489, 526.96875pt x 325.215pt>
+<../Results/simulation_test_rsquare_pre.pdf, id=505, 526.96875pt x 325.215pt>
 File: ../Results/simulation_test_rsquare_pre.pdf Graphic file (type pdf)
 
 <use ../Results/simulation_test_rsquare_pre.pdf>
 Package pdftex.def Info: ../Results/simulation_test_rsquare_pre.pdf used on inp
-ut line 650.
+ut line 672.
 (pdftex.def)             Requested size: 526.96745pt x 325.2142pt.
 
+<../Results/simulation_test_rsquare_small_nn.pdf, id=510, 526.96875pt x 325.215
+pt>
+File: ../Results/simulation_test_rsquare_small_nn.pdf Graphic file (type pdf)
+ <use ../Results/simulation_test_rsquare_small_nn.pdf>
+Package pdftex.def Info: ../Results/simulation_test_rsquare_small_nn.pdf used o
+n input line 683.
+(pdftex.def)             Requested size: 526.96745pt x 325.2142pt.
 
-LaTeX Warning: Float too large for page by 222.10751pt on input line 653.
+<../Results/simulation_ave_vi_plot_pre.pdf, id=512, 853.1875pt x 568.1225pt>
+File: ../Results/simulation_ave_vi_plot_pre.pdf Graphic file (type pdf)
 
-[19] [20 <//ad.monash.edu/home/User030/zyzho4/Documents/GitHub/Evaluation-of-Ma
-chine-Learning-in-Asset-Pricing/Results/simulation_test_mae_pre_all.pdf> <//ad.
+<use ../Results/simulation_ave_vi_plot_pre.pdf>
+Package pdftex.def Info: ../Results/simulation_ave_vi_plot_pre.pdf used on inpu
+t line 695.
+(pdftex.def)             Requested size: 853.18542pt x 568.1211pt.
+ [21] [22 <//ad.monash.edu/home/User030/zyzho4/Documents/GitHub/Evaluation-of-M
+achine-Learning-in-Asset-Pricing/Results/simulation_test_mae_pre_all.pdf> <//ad
+.monash.edu/home/User030/zyzho4/Documents/GitHub/Evaluation-of-Machine-Learning
+-in-Asset-Pricing/Results/simulation_test_mse_pre_all.pdf>] [23 <//ad.monash.ed
+u/home/User030/zyzho4/Documents/GitHub/Evaluation-of-Machine-Learning-in-Asset-
+Pricing/Results/simulation_test_mae_pre.pdf> <//ad.monash.edu/home/User030/zyzh
+o4/Documents/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/sim
+ulation_test_mse_pre.pdf>]
+[24 <//ad.monash.edu/home/User030/zyzho4/Documents/GitHub/Evaluation-of-Machine
+-Learning-in-Asset-Pricing/Results/simulation_test_rsquare_pre.pdf> <//ad.monas
+h.edu/home/User030/zyzho4/Documents/GitHub/Evaluation-of-Machine-Learning-in-As
+set-Pricing/Results/simulation_test_rsquare_small_nn.pdf>]
+<../Results/simulation_ave_vi_plot_pre_rf.pdf, id=574, 853.1875pt x 568.1225pt>
+File: ../Results/simulation_ave_vi_plot_pre_rf.pdf Graphic file (type pdf)
+<use ../Results/simulation_ave_vi_plot_pre_rf.pdf>
+Package pdftex.def Info: ../Results/simulation_ave_vi_plot_pre_rf.pdf used on i
+nput line 707.
+(pdftex.def)             Requested size: 853.18542pt x 568.1211pt.
+
+<../Results/simulation_ave_vi_plot_pre_nn.pdf, id=575, 853.1875pt x 568.1225pt>
+File: ../Results/simulation_ave_vi_plot_pre_nn.pdf Graphic file (type pdf)
+<use ../Results/simulation_ave_vi_plot_pre_nn.pdf>
+Package pdftex.def Info: ../Results/simulation_ave_vi_plot_pre_nn.pdf used on i
+nput line 715.
+(pdftex.def)             Requested size: 853.18542pt x 568.1211pt.
+ [25 <//ad.monash.edu/home/User030/zyzho4/Documents/GitHub/Evaluation-of-Machin
+e-Learning-in-Asset-Pricing/Results/simulation_ave_vi_plot_pre.pdf>] [26 <//ad.
 monash.edu/home/User030/zyzho4/Documents/GitHub/Evaluation-of-Machine-Learning-
-in-Asset-Pricing/Results/simulation_test_mse_pre_all.pdf>] [21 <//ad.monash.edu
-/home/User030/zyzho4/Documents/GitHub/Evaluation-of-Machine-Learning-in-Asset-P
-ricing/Results/simulation_test_mae_pre.pdf> <//ad.monash.edu/home/User030/zyzho
-4/Documents/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simu
-lation_test_mse_pre.pdf> <//ad.monash.edu/home/User030/zyzho4/Documents/GitHub/
-Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_rsquare
-_pre.pdf>]
-<../Results/simulation_ave_vi_plot.pdf, id=542, 639.38875pt x 426.59375pt>
-File: ../Results/simulation_ave_vi_plot.pdf Graphic file (type pdf)
-
-<use ../Results/simulation_ave_vi_plot.pdf>
-Package pdftex.def Info: ../Results/simulation_ave_vi_plot.pdf used on input li
-ne 667.
-(pdftex.def)             Requested size: 639.38718pt x 426.5927pt.
- [22 <//ad.monash.edu/home/User030/zyzho4/Documents/GitHub/Evaluation-of-Machin
-e-Learning-in-Asset-Pricing/Results/simulation_ave_vi_plot.pdf>] [23] [24]
-Overfull \hbox (2.19865pt too wide) in paragraph at lines 742--744
+in-Asset-Pricing/Results/simulation_ave_vi_plot_pre_rf.pdf> <//ad.monash.edu/ho
+me/User030/zyzho4/Documents/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pric
+ing/Results/simulation_ave_vi_plot_pre_nn.pdf>] [27] [28]
+Overfull \hbox (2.19865pt too wide) in paragraph at lines 785--787
 []|\OT1/cmr/m/n/10.95 NA| 
  []
 
 
-Overfull \hbox (2.19865pt too wide) in paragraph at lines 745--745
+Overfull \hbox (2.19865pt too wide) in paragraph at lines 788--788
 []|\OT1/cmr/m/n/10.95 NA| 
  []
 
 
-Overfull \hbox (2.19865pt too wide) in paragraph at lines 745--746
+Overfull \hbox (2.19865pt too wide) in paragraph at lines 788--789
 []|\OT1/cmr/m/n/10.95 NA| 
  []
 
 
-Overfull \hbox (21.66536pt too wide) in paragraph at lines 747--747
+Overfull \hbox (21.66536pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10.95 1993Q3| 
  []
 
 
-Overfull \hbox (21.66536pt too wide) in paragraph at lines 747--747
+Overfull \hbox (21.66536pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10.95 1993Q4| 
  []
 
 
-Overfull \hbox (7.67366pt too wide) in paragraph at lines 747--747
+Overfull \hbox (7.67366pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10.95 1994| 
  []
 
 
-Overfull \hbox (7.67366pt too wide) in paragraph at lines 747--747
+Overfull \hbox (7.67366pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10.95 1995| 
  []
 
 
-Overfull \hbox (7.67366pt too wide) in paragraph at lines 747--747
+Overfull \hbox (7.67366pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10.95 1996| 
  []
 
 
-Overfull \hbox (7.67366pt too wide) in paragraph at lines 747--747
+Overfull \hbox (7.67366pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10.95 2006| 
  []
 
 
-Overfull \hbox (7.67366pt too wide) in paragraph at lines 747--747
+Overfull \hbox (7.67366pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10.95 2007| 
  []
 
 
-Overfull \hbox (7.67366pt too wide) in paragraph at lines 747--747
+Overfull \hbox (7.67366pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10.95 2008| 
  []
 
 
-Overfull \hbox (7.67366pt too wide) in paragraph at lines 747--747
+Overfull \hbox (7.67366pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10.95 2011| 
  []
 
 
-Overfull \hbox (7.67366pt too wide) in paragraph at lines 747--747
+Overfull \hbox (7.67366pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10.95 2012| 
  []
 
 
-Overfull \hbox (7.67366pt too wide) in paragraph at lines 747--747
+Overfull \hbox (7.67366pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10.95 2013| 
  []
 
 
-Overfull \hbox (7.67366pt too wide) in paragraph at lines 747--747
+Overfull \hbox (7.67366pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10.95 2014| 
  []
 
 
-Overfull \hbox (7.67366pt too wide) in paragraph at lines 747--747
+Overfull \hbox (7.67366pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10.95 2015| 
  []
 
 
-Overfull \hbox (7.67366pt too wide) in paragraph at lines 747--748
+Overfull \hbox (7.67366pt too wide) in paragraph at lines 790--791
 []|\OT1/cmr/m/n/10.95 2016| 
  []
 
 
-Overfull \hbox (15.44145pt too wide) in paragraph at lines 732--760
+Overfull \hbox (15.44145pt too wide) in paragraph at lines 775--803
  [] 
  []
 
-[25] [26]
-<../Results/empirical_test_mse.pdf, id=630, 639.38875pt x 426.59375pt>
+[29] [30]
+<../Results/empirical_test_mse.pdf, id=634, 639.38875pt x 426.59375pt>
 File: ../Results/empirical_test_mse.pdf Graphic file (type pdf)
 
 <use ../Results/empirical_test_mse.pdf>
-Package pdftex.def Info: ../Results/empirical_test_mse.pdf used on input line 7
-99.
+Package pdftex.def Info: ../Results/empirical_test_mse.pdf used on input line 8
+42.
 (pdftex.def)             Requested size: 639.38718pt x 426.5927pt.
 
-<../Results/empirical_test_mae.pdf, id=631, 639.38875pt x 426.59375pt>
+<../Results/empirical_test_mae.pdf, id=635, 639.38875pt x 426.59375pt>
 File: ../Results/empirical_test_mae.pdf Graphic file (type pdf)
 
 <use ../Results/empirical_test_mae.pdf>
 Package pdftex.def Info: ../Results/empirical_test_mae.pdf used on input line 8
-06.
+49.
 (pdftex.def)             Requested size: 639.38718pt x 426.5927pt.
- [27 <//ad.monash.edu/home/User030/zyzho4/Documents/GitHub/Evaluation-of-Machin
+ [31 <//ad.monash.edu/home/User030/zyzho4/Documents/GitHub/Evaluation-of-Machin
 e-Learning-in-Asset-Pricing/Results/empirical_test_mse.pdf>]
-<../Results/empirical_sample_all_vi_ind.pdf, id=648, 639.38875pt x 426.59375pt>
+<../Results/empirical_sample_all_vi_ind.pdf, id=653, 639.38875pt x 426.59375pt>
 File: ../Results/empirical_sample_all_vi_ind.pdf Graphic file (type pdf)
 <use ../Results/empirical_sample_all_vi_ind.pdf>
 Package pdftex.def Info: ../Results/empirical_sample_all_vi_ind.pdf used on inp
-ut line 821.
+ut line 864.
 (pdftex.def)             Requested size: 639.38718pt x 426.5927pt.
 
-<../Results/empirical_sample_all_vi_macro_facet.pdf, id=649, 639.38875pt x 426.
+<../Results/empirical_sample_all_vi_macro_facet.pdf, id=654, 639.38875pt x 426.
 59375pt>
 File: ../Results/empirical_sample_all_vi_macro_facet.pdf Graphic file (type pdf
 )
  <use ../Results/empirical_sample_all_vi_macro_facet.pdf>
 Package pdftex.def Info: ../Results/empirical_sample_all_vi_macro_facet.pdf use
-d on input line 828.
+d on input line 871.
 (pdftex.def)             Requested size: 639.38718pt x 426.5927pt.
- [28 <//ad.monash.edu/home/User030/zyzho4/Documents/GitHub/Evaluation-of-Machin
-e-Learning-in-Asset-Pricing/Results/empirical_test_mae.pdf>] [29 <//ad.monash.e
+ [32 <//ad.monash.edu/home/User030/zyzho4/Documents/GitHub/Evaluation-of-Machin
+e-Learning-in-Asset-Pricing/Results/empirical_test_mae.pdf>] [33 <//ad.monash.e
 du/home/User030/zyzho4/Documents/GitHub/Evaluation-of-Machine-Learning-in-Asset
--Pricing/Results/empirical_sample_all_vi_ind.pdf>] [30 <//ad.monash.edu/home/Us
+-Pricing/Results/empirical_sample_all_vi_ind.pdf>] [34 <//ad.monash.edu/home/Us
 er030/zyzho4/Documents/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R
-esults/empirical_sample_all_vi_macro_facet.pdf>] [31] [32]pdfTeX warning (ext4)
+esults/empirical_sample_all_vi_macro_facet.pdf>] [35] [36]pdfTeX warning (ext4)
 : destination with the same identifier (name{Hfootnote.8}) has been already use
 d, duplicate ignored
 <to be read again> 
                    \relax 
-l.857 ... was not used due to missing data issues}
+l.900 ... was not used due to missing data issues}
                                                   
-Overfull \hbox (22.81706pt too wide) in alignment at lines 860--900
+Overfull \hbox (22.81706pt too wide) in alignment at lines 903--943
  [] [] [] [] [] [] [] 
  []
 
 Missing character: There is no Ã in font cmr10!
 Missing character: There is no ³ in font cmr10!
 
-Overfull \hbox (22.81706pt too wide) in alignment at lines 900--942
+Overfull \hbox (22.81706pt too wide) in alignment at lines 943--985
  [] [] [] [] [] [] [] 
  []
 
 
-Overfull \hbox (22.81706pt too wide) in alignment at lines 942--984
+Overfull \hbox (22.81706pt too wide) in alignment at lines 985--1027
  [] [] [] [] [] [] [] 
  []
 
-[33
+[37
 
 ]
-Overfull \hbox (22.81706pt too wide) in alignment at lines 984--1026
+Overfull \hbox (22.81706pt too wide) in alignment at lines 1027--1069
  [] [] [] [] [] [] [] 
  []
 
-[34]
-Overfull \hbox (22.81706pt too wide) in alignment at lines 1026--1060
+[38]
+Overfull \hbox (22.81706pt too wide) in alignment at lines 1069--1103
  [] [] [] [] [] [] [] 
  []
 
-[35] [36]
-<../Results/simulation_test_mae.pdf, id=1042, 526.96875pt x 325.215pt>
+[39] [40]
+<../Results/simulation_test_mae.pdf, id=1047, 526.96875pt x 325.215pt>
 File: ../Results/simulation_test_mae.pdf Graphic file (type pdf)
 
 <use ../Results/simulation_test_mae.pdf>
 Package pdftex.def Info: ../Results/simulation_test_mae.pdf used on input line 
-1092.
+1135.
 (pdftex.def)             Requested size: 526.96745pt x 325.2142pt.
 
-Overfull \hbox (73.99956pt too wide) in paragraph at lines 1092--1093
+Overfull \hbox (73.99956pt too wide) in paragraph at lines 1135--1136
 [][] 
  []
 
-<../Results/simulation_test_mse.pdf, id=1043, 526.96875pt x 325.215pt>
+<../Results/simulation_test_mse.pdf, id=1048, 526.96875pt x 325.215pt>
 File: ../Results/simulation_test_mse.pdf Graphic file (type pdf)
 
 <use ../Results/simulation_test_mse.pdf>
 Package pdftex.def Info: ../Results/simulation_test_mse.pdf used on input line 
-1097.
+1140.
 (pdftex.def)             Requested size: 526.96745pt x 325.2142pt.
 
-Overfull \hbox (73.99956pt too wide) in paragraph at lines 1097--1098
+Overfull \hbox (73.99956pt too wide) in paragraph at lines 1140--1141
 [][] 
  []
 
-<../Results/simulation_test_rsquare.pdf, id=1044, 505.89pt x 505.89pt>
+<../Results/simulation_test_rsquare.pdf, id=1049, 505.89pt x 505.89pt>
 File: ../Results/simulation_test_rsquare.pdf Graphic file (type pdf)
 
 <use ../Results/simulation_test_rsquare.pdf>
 Package pdftex.def Info: ../Results/simulation_test_rsquare.pdf used on input l
-ine 1102.
+ine 1145.
 (pdftex.def)             Requested size: 505.88875pt x 505.88875pt.
 
-Overfull \hbox (52.92085pt too wide) in paragraph at lines 1102--1103
+Overfull \hbox (52.92085pt too wide) in paragraph at lines 1145--1146
 [][] 
  []
 
-<../Results/simulation_train_mae.pdf, id=1045, 526.96875pt x 325.215pt>
+<../Results/simulation_train_mae.pdf, id=1050, 526.96875pt x 325.215pt>
 File: ../Results/simulation_train_mae.pdf Graphic file (type pdf)
 
 <use ../Results/simulation_train_mae.pdf>
 Package pdftex.def Info: ../Results/simulation_train_mae.pdf used on input line
- 1107.
+ 1150.
 (pdftex.def)             Requested size: 526.96745pt x 325.2142pt.
 
-Overfull \hbox (73.99956pt too wide) in paragraph at lines 1107--1108
+Overfull \hbox (73.99956pt too wide) in paragraph at lines 1150--1151
 [][] 
  []
 
-<../Results/simulation_train_mse.pdf, id=1046, 526.96875pt x 325.215pt>
+<../Results/simulation_train_mse.pdf, id=1051, 526.96875pt x 325.215pt>
 File: ../Results/simulation_train_mse.pdf Graphic file (type pdf)
 
 <use ../Results/simulation_train_mse.pdf>
 Package pdftex.def Info: ../Results/simulation_train_mse.pdf used on input line
- 1112.
+ 1155.
 (pdftex.def)             Requested size: 526.96745pt x 325.2142pt.
 
-Overfull \hbox (73.99956pt too wide) in paragraph at lines 1112--1113
+Overfull \hbox (73.99956pt too wide) in paragraph at lines 1155--1156
 [][] 
  []
 
-<../Results/simulation_train_rsquare.pdf, id=1047, 526.96875pt x 325.215pt>
+<../Results/simulation_train_rsquare.pdf, id=1052, 526.96875pt x 325.215pt>
 File: ../Results/simulation_train_rsquare.pdf Graphic file (type pdf)
 
 <use ../Results/simulation_train_rsquare.pdf>
 Package pdftex.def Info: ../Results/simulation_train_rsquare.pdf used on input 
-line 1117.
+line 1160.
 (pdftex.def)             Requested size: 526.96745pt x 325.2142pt.
 
-Overfull \hbox (73.99956pt too wide) in paragraph at lines 1117--1118
+Overfull \hbox (73.99956pt too wide) in paragraph at lines 1160--1161
 [][] 
  []
 
-<../Results/eln_alpha_plot.pdf, id=1048, 526.96875pt x 325.215pt>
+<../Results/eln_alpha_plot.pdf, id=1053, 526.96875pt x 325.215pt>
 File: ../Results/eln_alpha_plot.pdf Graphic file (type pdf)
 
 <use ../Results/eln_alpha_plot.pdf>
-Package pdftex.def Info: ../Results/eln_alpha_plot.pdf used on input line 1124.
+Package pdftex.def Info: ../Results/eln_alpha_plot.pdf used on input line 1167.
 
 (pdftex.def)             Requested size: 526.96745pt x 325.2142pt.
 
-<../Results/eln_lambda_plot.pdf, id=1049, 526.96875pt x 325.215pt>
+<../Results/eln_lambda_plot.pdf, id=1054, 526.96875pt x 325.215pt>
 File: ../Results/eln_lambda_plot.pdf Graphic file (type pdf)
 
 <use ../Results/eln_lambda_plot.pdf>
-Package pdftex.def Info: ../Results/eln_lambda_plot.pdf used on input line 1129
+Package pdftex.def Info: ../Results/eln_lambda_plot.pdf used on input line 1172
 .
 (pdftex.def)             Requested size: 526.96745pt x 325.2142pt.
- [37
+ [41
 
-] [38 <//ad.monash.edu/home/User030/zyzho4/Documents/GitHub/Evaluation-of-Machi
-ne-Learning-in-Asset-Pricing/Results/simulation_test_mae.pdf>] [39 <//ad.monash
+] [42 <//ad.monash.edu/home/User030/zyzho4/Documents/GitHub/Evaluation-of-Machi
+ne-Learning-in-Asset-Pricing/Results/simulation_test_mae.pdf>] [43 <//ad.monash
 .edu/home/User030/zyzho4/Documents/GitHub/Evaluation-of-Machine-Learning-in-Ass
-et-Pricing/Results/simulation_test_mse.pdf>] [40 <//ad.monash.edu/home/User030/
+et-Pricing/Results/simulation_test_mse.pdf>] [44 <//ad.monash.edu/home/User030/
 zyzho4/Documents/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results
-/simulation_test_rsquare.pdf>] [41 <//ad.monash.edu/home/User030/zyzho4/Documen
+/simulation_test_rsquare.pdf>] [45 <//ad.monash.edu/home/User030/zyzho4/Documen
 ts/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_tr
-ain_mae.pdf>] [42 <//ad.monash.edu/home/User030/zyzho4/Documents/GitHub/Evaluat
-ion-of-Machine-Learning-in-Asset-Pricing/Results/simulation_train_mse.pdf>] [43
+ain_mae.pdf>] [46 <//ad.monash.edu/home/User030/zyzho4/Documents/GitHub/Evaluat
+ion-of-Machine-Learning-in-Asset-Pricing/Results/simulation_train_mse.pdf>] [47
  <//ad.monash.edu/home/User030/zyzho4/Documents/GitHub/Evaluation-of-Machine-Le
 arning-in-Asset-Pricing/Results/simulation_train_rsquare.pdf> <//ad.monash.edu/
 home/User030/zyzho4/Documents/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pr
 icing/Results/eln_alpha_plot.pdf>]
-<../Results/empirical_sample_1_vi_ind.pdf, id=1123, 426.59375pt x 639.38875pt>
+<../Results/empirical_sample_1_vi_ind.pdf, id=1127, 426.59375pt x 639.38875pt>
 File: ../Results/empirical_sample_1_vi_ind.pdf Graphic file (type pdf)
 
 <use ../Results/empirical_sample_1_vi_ind.pdf>
 Package pdftex.def Info: ../Results/empirical_sample_1_vi_ind.pdf used on input
- line 1138.
+ line 1181.
 (pdftex.def)             Requested size: 426.5927pt x 639.38718pt.
 
-<../Results/empirical_sample_2_vi_ind.pdf, id=1124, 426.59375pt x 639.38875pt>
+<../Results/empirical_sample_2_vi_ind.pdf, id=1128, 426.59375pt x 639.38875pt>
 File: ../Results/empirical_sample_2_vi_ind.pdf Graphic file (type pdf)
 
 <use ../Results/empirical_sample_2_vi_ind.pdf>
 Package pdftex.def Info: ../Results/empirical_sample_2_vi_ind.pdf used on input
- line 1143.
+ line 1186.
 (pdftex.def)             Requested size: 426.5927pt x 639.38718pt.
 
-<../Results/empirical_sample_3_vi_ind.pdf, id=1125, 426.59375pt x 639.38875pt>
+<../Results/empirical_sample_3_vi_ind.pdf, id=1129, 426.59375pt x 639.38875pt>
 File: ../Results/empirical_sample_3_vi_ind.pdf Graphic file (type pdf)
 
 <use ../Results/empirical_sample_3_vi_ind.pdf>
 Package pdftex.def Info: ../Results/empirical_sample_3_vi_ind.pdf used on input
- line 1148.
+ line 1191.
 (pdftex.def)             Requested size: 426.5927pt x 639.38718pt.
- [44 <//ad.monash.edu/home/User030/zyzho4/Documents/GitHub/Evaluation-of-Machin
-e-Learning-in-Asset-Pricing/Results/eln_lambda_plot.pdf>] [45 <//ad.monash.edu/
+ [48 <//ad.monash.edu/home/User030/zyzho4/Documents/GitHub/Evaluation-of-Machin
+e-Learning-in-Asset-Pricing/Results/eln_lambda_plot.pdf>] [49 <//ad.monash.edu/
 home/User030/zyzho4/Documents/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pr
-icing/Results/empirical_sample_1_vi_ind.pdf>] [46 <//ad.monash.edu/home/User030
+icing/Results/empirical_sample_1_vi_ind.pdf>] [50 <//ad.monash.edu/home/User030
 /zyzho4/Documents/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Result
-s/empirical_sample_2_vi_ind.pdf>] [47 <//ad.monash.edu/home/User030/zyzho4/Docu
+s/empirical_sample_2_vi_ind.pdf>] [51 <//ad.monash.edu/home/User030/zyzho4/Docu
 ments/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_
-sample_3_vi_ind.pdf>] [48]
-[49]
-Overfull \hbox (79.12616pt too wide) in paragraph at lines 1247--1257
+sample_3_vi_ind.pdf>] [52]
+[53]
+Overfull \hbox (79.12616pt too wide) in paragraph at lines 1290--1300
 [][] 
  []
 
 
-Overfull \hbox (1.60724pt too wide) in paragraph at lines 1303--1304
+Overfull \hbox (1.60724pt too wide) in paragraph at lines 1344--1345
 \OT1/cmr/m/n/10.95 se-ries R squared, av-er-age an-nu-al-ized volatil-ity, and 
 cross sec-tional R squared, and true/predictive
  []
 
-[50]
+[54] [55]
 ("\\ad.monash.edu\home\User030\zyzho4\Documents\GitHub\Evaluation-of-Machine-Le
-arning-in-Asset-Pricing\Thesis\Econometrics Honours Project.bbl" [51]
+arning-in-Asset-Pricing\Thesis\Econometrics Honours Project.bbl"
 Missing character: There is no Ã in font cmr10!
 Missing character: There is no ³ in font cmr10!
 Missing character: There is no â in font cmr10!
@@ -2412,35 +2433,35 @@ Missing character: There is no “ in font cmr10!
 Missing character: There is no â in font cmr10!
 Missing character: There is no € in font cmr10!
 Missing character: There is no “ in font cmr10!
- [52]
-[53]
+ [56] [57]
 Missing character: There is no â in font cmr10!
 Missing character: There is no € in font cmr10!
 Missing character: There is no ¦ in font cmr10!
- [54] [55]
+
+[58] [59] [60]
 Underfull \hbox (badness 1783) in paragraph at lines 364--366
 []\OT1/cmr/m/n/10.95 Ramachandran, P., Zoph, B., Le, Q. V., 2017. Search-ing fo
 r Ac-ti-va-tion Func-tions.
  []
 
-[56]) [57]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1333.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1333.
+[61]) [62]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1374.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1374.
 
 ("\\ad.monash.edu\home\User030\zyzho4\Documents\GitHub\Evaluation-of-Machine-Le
 arning-in-Asset-Pricing\Thesis\Econometrics Honours Project.aux")
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1333.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1333.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1374.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1374.
 
 Package rerunfilecheck Info: File `Econometrics*Honours*Project.out' has not ch
 anged.
 (rerunfilecheck)             Checksum: <no file>.
  ) 
 Here is how much of TeX's memory you used:
- 42630 strings out of 493705
- 976058 string characters out of 3144566
- 1241054 words of memory out of 3000000
- 44969 multiletter control sequences out of 15000+200000
+ 42657 strings out of 493705
+ 976887 string characters out of 3144566
+ 1243612 words of memory out of 3000000
+ 44983 multiletter control sequences out of 15000+200000
  14549 words of font info for 55 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
  69i,15n,76p,10418b,1294s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -2462,9 +2483,9 @@ onts/cm/cmsy6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/c
 msy8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb
 ><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti12.pfb><C:/Pro
 gram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on "Econometrics Honours Project.pdf" (57 pages, 720131 bytes).
+Output written on "Econometrics Honours Project.pdf" (62 pages, 780644 bytes).
 PDF statistics:
- 1428 PDF objects out of 1440 (max. 8388607)
- 281 named destinations out of 1000 (max. 500000)
- 430 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1440 PDF objects out of 1440 (max. 8388607)
+ 291 named destinations out of 1000 (max. 500000)
+ 445 words of extra memory for PDF output out of 10000 (max. 10000000)
 

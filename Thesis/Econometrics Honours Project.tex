@@ -351,9 +351,9 @@ Due to the complexity and hence non-existent analytical form for this solution, 
 
 where $\gamma$ controls the size of each update. This $\gamma$ parameter is known as the learning rate in neural network training, and controlling this is critical for good performance. As the loss functions of neural networks can be very complex with many local minima, the learning rate should be high enough such that the parameter updates are large enough to skip or jump over them. Too large of a learning rate however, and the neural may fail to converge to a solution at all. Due to computational limitations, we tune the learning rate manually, and employ the ADAM algorithm to apply allow different learning rates for each parameter.
 
-Stochastic gradient descent is a variation of traditional gradient descent which assists with computational feasibility and producing solutions which generalize better, and hence better performance. Instead of optimizing the weight parameters with respect to the entire training sample, a small random subset is instead used, the size of which is called the batch size. This has the effect of potentially increasing computational feasibility due to smaller memory requirements. Less understood, but empirically evident is that smaller batch sizes tend to produce better solutions, (\cite{keskar_large-batch_2016}). It is therefore a critical hyperparameter to tune.
+Stochastic gradient descent is a variation of traditional gradient descent which assists with computational feasibility and producing solutions which generalize better, and hence better performance. Instead of optimizing the weight parameters with respect to the entire training sample, a small random subset is instead used, the size of which is called the batch size. This has the effect of potentially increasing computational feasibility due to smaller memory requirements. Less understood, but empirically evident is that smaller batch sizes tend to produce better solutions, (\cite{keskar_large-batch_2016}). There is however, a trade-off: smaller batch sizes can result in substantial noise due to the randomness of subsampling, and the batch size should be large enough such that this noise does not overpower weight updates. It is therefore a critical hyperparameter to tune.
 
-We also employ $l_1$ penalty to impose some sparse restrictions on the weight terms, aiding with the production of better generalization. This simply adds the absolute value of each weight parameter, multiplied by a scaling factor which is a hyperparameter to be tuned to the overall loss function. 
+We also employ $l_1$ penalty to impose some sparse restrictions on the weight terms, aiding with the production of better generalization. This simply adds the absolute value of each weight parameter, multiplied by a scaling factor which is a hyperparameter to be tuned. It was observed that some $l_1$ penalty was necessary to ensure good convergence of the neural networks.
 
 ``Batch normalization" is a technique for addressing a phenomenon known as internal covariate shift, which occurs when the distributions of each layers' inputs change as the parameters of the previous layer change \citep{ioffe_batch_2015}. This occurs due to how neural networks repeatedly apply the activation function many times over different hidden layers. For activation functions such as tanh, this results in weight parameters getting pushed and thus "saturated" towards -1 and 1, leading to difficult and slow training. Batch normalization addresses this by normalizing (de-meaning and variance standardizing) the outputs of each layer, hence restoring the representative power of each neuron.
 
@@ -367,13 +367,13 @@ Several choices of activation functions exist in the literature. We use the hype
 \operatorname{tanh}(x) = \frac{e^x - e^{-x}}{e^x + e^{-x}}
 \end{equation}
 
-for all hidden layers due to its observed performance, and ability to retain weight terms and hence always receive weight updates during training. This point is particularly important, because the popular ReLU activation function (see see \cite{lecun_deep_2015} and \cite{ramachandran_searching_2017}, among others):
+for all hidden layers due to its observed performance, and ability to retain weight terms and hence always receive weight updates during training. This point is particularly important, because the popular ReLU activation function (see \cite{lecun_deep_2015} and \cite{ramachandran_searching_2017}, among others):
 
 \begin{equation}
 \operatorname{ReLU}(x) = max(0, x)
 \end{equation}
 
-was considered, but observed to suffer tremendously from the "dying-ReLU problem". This is where ReLU neurons receive weight updates that fail to activate (output a 0), hence making it unable to receive further weight updates and learn. This resulted in networks which outputted the same value for the majority of, if not all inputs. Variants of the ReLU activation function aimed at addressing this issue such as the leaky ReLU, which allows a small, non-zero gradient for negative weights were explored, but still suffered from poor convergence.
+was considered, but observed to suffer tremendously from the "dying-ReLU problem". This is where ReLU neurons receive weight updates that fail to activate (output a 0), hence making it unable to receive further weight updates and learn. Networks trained using this activation function were observed to output the same value for the majority of, if not all inputs. Variants of the ReLU activation function aimed at addressing this issue such as the leaky ReLU, which allows a small, non-zero gradient for negative weights were explored, but still suffered from poor convergence.
 
 \begin{figure}
 	\begin{center}
@@ -432,34 +432,38 @@ was considered, but observed to suffer tremendously from the "dying-ReLU problem
 
 \paragraph{Loss Metrics}
 
-Predictive performance for individual excess stock returns were assessed using popular loss metrics in the literature: Mean Absolute Error (MAE), Mean Squared Error (MSE) and Root Mean Squared Error (RMSE):
+Predictive performance for individual excess stock returns were assessed using popular loss metrics in the literature: Mean Absolute Error (MAE), Mean Squared Error (MSE) and an out-of-sample R-squared metric.
+
+
+MSE is noted to be traditionally very popular within both the machine learning and econometrics literature. However, there is also some literature which argues against the use of MSE (and all square error measures) due to its innaccuracy and potential biasedness in time series settings, and advocates for the use of MAE instead. There is no consensus on an ``ideal" loss metric, and for this reason we produce both of them. These loss metrics also have a one-to-one correspondence to the loss functions considered for fitting the models.
+
+An out of sample $R^2$ metric was also reported, as is popular in the empirical finance literature. Due to the lack of consensus as to how this metric is defined, we provide our formulation: 
 
 \begin{align}
 \text{MAE} &= \frac{1}{n} \sum_{j = i}^{n} |y_j - \hat{y_j}| \\
-\text{MSE} &= \frac{1}{n} \sum_{j = i}^{n} \left( y_j - \hat{y_j}\right) ^2
+\text{MSE} &= \frac{1}{n} \sum_{j = i}^{n} \left( y_j - \hat{y_j}\right) ^2 \\
+R^2_{OOS} &= 1 - \frac{\sum_{(i, t)\in\mathcal{T}_3}(r_{i, t+1} - \widehat{r}_{i, t+1})^2}
+{\sum_{(i, t)\in\mathcal{T}_3} \left( r_{i, t+1} - \bar{r}_{i, t+1} \right) ^2}
 \end{align}
 
-MSE is noted to be traditionally very popular within both the machine learning and econometrics literature. However, there is also some literature which argues against the use of MSE (and all square error measures) due to its innaccuracy and potential biasedness in time series settings, and advocates for the use of MAE instead. There is no consensus on an ``ideal" loss metric, and for this reason we produce both of them. These loss metrics also have a one to one correspondence to the loss functions considered for fitting the models.
+where $\mathcal{T}_3$ indicates that the fits are only assessed on the test subsample, which is never used for training or tuning.
 
-An out of sample $R^2$ metric was also reported, as is popular in the empirical finance literature, which we define as:
+Note that because $R^2$ measures were originally formulated for assessing in sample fit for linear models, the interpretation of this metric is less meaningful in the contexts of forecasting out of sample and non-linear models. This metric was nevertheless produced because of its property to exaggerate the differences in performance across different models.
 
-\begin{equation}
-R^2_{OOS} = 1 - \frac{\sum_{(i, t)\in\mathcal{T}_3}(r_{i, t+1} - \widehat{r}_{i, t+1})^2}
-{\sum_{(i, t)\in\mathcal{T}_3} \left( r_{i, t+1} - \bar{r}_{i, t+1} \right) ^2}
-\end{equation}
-
-where $\mathcal{T}_3$ indicates that the fits are only assessed on the test subsample, which is never used for training or tuning. However, as $R^2$ measures were originally formulated for assessing in sample fit for linear models, the interpretation of this metric is less meaningful in the contexts of forecasting out of sample and non-linear models. This metric was nevertheless produced because of its property to exaggerate the differences in performance across different models.
-
-Importantly, the choice of loss metrics chosen does not affect the overall conclusion of which model performs the best.
+Importantly, we see that the choice of loss metrics chosen does not affect the overall conclusion of which model performs the best.
 
 \paragraph{Variable Importance}
 
-To explore the causal inference capabilities of machine learning, we define a simple variable importance metric that is able to be consistently applied to all machine learning models. The importance of each predictor $j$ is denoted as $VI_j$, and is defined as the reduction in predictive R-Squared from setting all values of predictor $j$ to 0, while holding the remaining model estimates fixed, mirroring the procedure of \cite{gu_empirical_2018}. These were then normalized to sum to 1 within each model as a way to assess the relative importance of each predictor for each model. As $VI_j$ can sometimes be negative, or in some cases be 0 across most of the factors, $VI_j$ positively shifted by the magnitude of the smallest $VI_j$ plus a minor offset $o$, then dividing all $VI_j$ by the total to alleviate numerical issues\footnote{This mechanism was chosen because the other popular normalization mechanism "softmax" was observed to be unable to preserve the distances between each original $VI_j$ well enough, squishing together all variable importance measures and making discernment between each $VI_j$ difficult.}:
+To explore the causal inference capabilities of machine learning, we define a simple variable importance metric that is able to be consistently applied to all machine learning models. The importance of each predictor $j$ is denoted as $VI_j$, and is defined as the reduction in predictive R-Squared from setting all values of predictor $j$ to 0, while holding the remaining model estimates fixed, mirroring the procedure of \cite{gu_empirical_2018}. These were then normalized to sum to 1 within each model as a way to assess the relative importance of each predictor for each model. 
+
+As $VI_j$ can sometimes be negative, or in some cases be 0 across most of the factors, $VI_j$ positively shifted by the magnitude of the smallest $VI_j$ plus a minor offset $o$, then dividing all $VI_j$ by the total to alleviate numerical issues\footnote{This mechanism was chosen because the other popular normalization mechanism "softmax" was observed to be unable to preserve the distances between each original $VI_j$, making discernment between each $VI_j$ difficult.}:
 
 \begin{equation}
 VI_{j, norm} = \frac{VI_j + \operatorname{min}(VI_j) + o}
 {\Sigma VI_j + \operatorname{min}(VI_j) + o} \quad ; \quad o = 10^{-100}
 \end{equation}
+
+\newpage
 
 \section{Simulation Study}
 
@@ -467,7 +471,7 @@ VI_{j, norm} = \frac{VI_j + \operatorname{min}(VI_j) + o}
 
 \rhs{motivate this section more clearly}
 
-We begin with the simulation study as a way to explore how machine learning performs with specific regards to the characteristics present in financial data. By specifying a simulation design with the desired characteristics, a controlled and well understood environment is available for testing the predictive performance and causal analysis abilities of the machine learning models considered. 
+We begin with the simulation study as a way to explore how machine learning performs with specific regards to the characteristics present in financial data. By specifying a simulation design with the desired characteristics, a controlled and well understood environment is available for explicitly testing the predictive performance and causal analysis abilities of the machine learning models considered. In particular, a sensible simulation design which incorporated the following characteristics of financial data was needed:
 
 \begin{itemize}
 \item Low signal to noise ratio
@@ -478,8 +482,7 @@ We begin with the simulation study as a way to explore how machine learning perf
 
 \subsubsection{Overall Design}
 
-Their overall specification consists of three overall components:
-
+We first construct our simulation design by considering the design considered by \cite{gu_empirical_2018}, which consists of three overall components:
 \begin{itemize}
 	\item Simulate individual firm and macroeconomic factors
 	\item Enter these factors into a latent, true data generating process
@@ -490,7 +493,7 @@ However, \cite{gu_empirical_2018}'s specification has two main issues: the facto
 
 We therefore simulate a latent factor model with a stochastic volatility process for excess returns  $r_{t+1}$, for $t=1,\dots,T$:
 
-\begin{flalign}
+\begin{align}
 r_{i, t+1} &= 
 g\left(z_{i, t}\right) + \beta_{i,t+1}v_{t+1} + e_{i, t+1}; 
 	\quad z_{i, t}=\left(1, x_{t}\right)^{\prime} \otimes c_{i, t}, 
@@ -500,11 +503,18 @@ e_{i, t+1} &=
 \operatorname{log} (\sigma^2_{i,t+1}) &= 
 	\omega + \gamma \operatorname{log} (\sigma^2_{t}) + \sigma_{u}u; 
 	\quad u \sim N(0, 1)
-\end{flalign}
+\end{align}
 
 Let $v_{t+1}$ be a $3\times 1$ vector of errors, and $w_{t+1} \sim N(0, 1)$ and $\varepsilon_{i,t+1} \sim N(0, 1)$ scalar error terms. The parameters of these are tuned such that the annualized volatility of each return series was approximately 22\%, as is often observed empirically.
 
 The matrix $C_t$ is an $N\times P_c$ vector of latent factors, where the first three columns correspond to $\beta_{i,t}$, across the $1\leq i\leq N$ dimensions, while the remaining $P_c-3$ factors do not enter the return equation. The $P_x\times1$ vector $x_t$ is a $3 \times 1$ multivariate time series, and $\varepsilon_{t+1}$ is a $N\times 1$ vector of idiosyncratic errors. 
+
+Note that we also reproduce \cite{gu_empirical_2018}'s error specification as a case where there is no stochastic volatility:
+
+\begin{align}
+	v_{t+1} \sim N(0, 0.05^2 \times I_3) \\
+	e_{i, t+1} \sim t_5(0, 0.05^2)
+\end{align}
 
 \subsubsection{Simulating Characteristics}
 
@@ -515,7 +525,7 @@ A simulation mechanism for $C_t$ that gives some correlation across the factors 
 	\quad \rho_{j} \sim \mathcal{U} \left( \frac{1}{2},1 \right) 
 \end{equation}
 
-To build in cross sectional correlation, we the positive-semidefinite matrix $B$:
+To build in cross sectional correlation, we define the positive-semidefinite matrix $B$:
 
 \begin{equation}
 	B:=\Lambda\Lambda' + \frac{1}{10}\mathbb{I}_{n}, \quad
@@ -581,7 +591,7 @@ The simulation design results in $3 \times 3 = 12$ different simulated datasets,
 
 \subsubsection{Sample Splitting}
 
-If viewed as monthly periods, $T = 180$ corresponds to 15 years. A data splitting scheme similar to to the scheme to be used in the empirical data study was used: a training:validation length ratio of approximately 1.5 to begin, and a test set that is 1 year in length. We employ the hybrid growing window approach as described earlier in section \ref{sample_split} (see Figure \ref{sample_split_diag} for a graphical representation).
+If viewed as monthly periods, $T = 180$ corresponds to 15 years. A data splitting scheme similar to the scheme to be used in the empirical data study was used: a training:validation length ratio of approximately 1.5 to begin, and a test set that is 1 year in length. We employ the hybrid growing window approach as described earlier in section \ref{sample_split} (see Figure \ref{sample_split_diag} for a graphical representation).
 
 \begin{figure}
 	\begin{center}
@@ -620,21 +630,20 @@ If viewed as monthly periods, $T = 180$ corresponds to 15 years. A data splittin
 	\label{sample_split_diag}
 \end{figure}
 
-Other schemes in the forecasting literature such as using an "inner" rolling window validation loop to find the best hyperparameters on average, finally aggregating them in an "outer" loop for a more robust error were considered but not implemented for a variety of reasons. Firstly, many of the models were computationally too intensive for this to be feasible for this to be feasible. More importantly, during the model fitting process it was observed that the optimal hyperparameters for the different rolling windows were highly unstable. Thus, this would have made the selection of the best hyperparameters on average across all windows significantly less meaningful.
+Other schemes in the forecasting literature such as using an ``inner" rolling window validation loop to find the best hyperparameters on average, finally aggregating them in an "outer" loop for a more robust error were considered but not implemented for a variety of reasons. Firstly, many of the models were computationally too intensive for this to be feasible. More importantly, during the model fitting process it was observed that the optimal hyperparameters for the different rolling windows were highly unstable (see Appendix). Thus, this would have made the selection of the best hyperparameters on average across all windows significantly less meaningful.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Simulation Study Results}
 
-%% Basic overview of results
-
-In our simulation study, we find that the penalized linear models consistently perform the best, followed extremely closely by random forests. 
+Overall, in the simulation study we observe that in general elastic nets are the best performing model, followed closely by random forests, then neural networks. All machine learning models were unaffected by cross sectional correlation in terms of prediction performance, and had better performance when fitted with respect to quantile loss, in stark contrast to linear models. The random forest only outperformed the elastic nets on highly non-linear specifications. The neural network models were not observed to outperform any of the machine learning models. We note that most of these results contradict sparse literature, and in particular, the results reported by \cite{gu_empirical_2018}, even on their proposed simulation design.
 
 %% Prediction Peformance
 
-Looking at the prediction performance of different models, we find that in general, penalized linear models performed the best, followed extremely closely by random forests and then neural networks, which all outperform the baseline linear models. Most importantly, we observes that for machine learning models, cross sectional correlation does not seem to affect prediction performance by much, in stark contrast to linear models. Machine learning models fitted with respect to minimizing MAE (quantile loss) generally perform better, even when evaluated against MSE loss metrics. This is not a surprising result, especially considering the stochastic error design which introduces significant shocks to the returns process, leading to large outliers which the mean squared error metric is more sensitive to. Though the actual difference between the loss metrics between the penalized linear models, random forests and neural networks are very small, when considering the consistency of the results across numerous Monte Carlo simulations, the differences in prediction performance, though small, is robust and significant.
+Looking at the prediction performance of different models, we find that in general, penalized linear models performed the best, followed extremely closely by random forests and then neural networks, which all outperform the baseline linear models. Most importantly, we observes that for machine learning models, cross sectional correlation does not seem to affect prediction performance by much. This is in stark contrast to the linear models, whose prediction performance is severely affected by both non-linearities, and increasing cross sectional correlation. This result is consistent across all loss metrics, and is most obvious when looking at the out-of-sample R-squared metrics.
+
+Machine learning models fitted with respect to minimizing MAE (quantile loss) generally perform better, even when evaluated against MSE loss metrics. This is not a surprising result, especially considering the stochastic error design which introduces significant shocks to the returns process, leading to large outliers which the mean squared error metric is more sensitive to. Though the actual difference between the loss metrics between the penalized linear models, random forests and neural networks are very small, when considering the consistency of the results across numerous Monte Carlo simulations, the differences in prediction performance, though small, is robust and significant.
 
 \begin{figure}
-	\caption{Simulation Results}
 	\begin{center}
 		\includegraphics[max size = {\textwidth}{\textheight}]{simulation_test_mae_pre_all.pdf}
 		\includegraphics[max size = {\textwidth}{\textheight}]{simulation_test_mse_pre_all.pdf}
@@ -645,12 +654,23 @@ Looking at the prediction performance of different models, we find that in gener
 %% Figure out what graphs to show here
 
 \begin{figure}
-	\caption{Simulation Results}
 	\begin{center}
 		\includegraphics[max size = {\textwidth}{\textheight}]{simulation_test_mae_pre.pdf}
+		\caption{Simulation Test MAE, only including best performing Neural Networks}
+	\end{center}
+\end{figure}
+
+\begin{figure}
+	\begin{center}
 		\includegraphics[max size = {\textwidth}{\textheight}]{simulation_test_mse_pre.pdf}
+		\caption{Simulation Test MSE, only including best performing Neural Networks}
+	\end{center}
+\end{figure}
+
+\begin{figure}
+	\begin{center}
 		\includegraphics[max size = {\textwidth}{\textheight}]{simulation_test_rsquare_pre.pdf}
-		\caption{Simulation Test Loss Metrics, only including best performing Neural Networks}
+		\caption{Simulation Test OOS R Squared, only including best performing Neural Networks}
 	\end{center}
 \end{figure}
 
@@ -658,37 +678,58 @@ Across all specifications with a stochastic volatility component, we observe a d
 
 Focusing on the neural networks, we clearly see that they do not outperform any of the other machine learning models, even when the underlying data generating process is non-linear. This directly contradicts the result which \cite{gu_empirical_2018} find, even when considering the design with no cross sectional correlation and stochastic volatility (top row in graphs), which corresponds to their exact specification but with a multivariate macroeconomic series. We also find consistent evidence that deeper architectures provide better prediction performance, another result which contradicts \cite{gu_empirical_2018}'s conclusions that shallow learning may be better.
 
+\begin{figure}
+	\begin{center}
+		\includegraphics[max size = {\textwidth}{\textheight}]{simulation_test_rsquare_small_nn.pdf}
+		\caption{Simulation Test OOS R-Squared for Neural Networks optimized w.r.t. MAE}
+	\end{center}
+\end{figure}
+
 %% Causal Performance
 
 Focusing on the causal inference capabilities of different models by looking at variable importance metrics however reveals a more interesting comparison between models. We can clearly observe that the elastic net outperforms all other models consistently in terms of assigning the correct relative importance to the true causal regressors \footnote{($c_1.\text{constant}$, $c_2.\text{constant}$ and $c_3.x_3$ for $g1$ and $g_2$ specifications, and $c_1.\text{constant}$, $c_2.\text{constant}$ and $c_3.\text{constant}$ for $g_3$)}, even in settings with very high cross sectional correlation. 
 
 %% Variable Importance Plots
 \begin{figure}
-	\caption{Simulation Variable Importance Plots}
 	\begin{center}
-		\includegraphics[max size = {\textwidth}{\textheight}]{simulation_ave_vi_plot.pdf}
+		\includegraphics[max size = {\textwidth}{\textheight}]{simulation_ave_vi_plot_pre.pdf}
+		\caption{Simulation Variable Importance Plots}
 	\end{center}
 \end{figure}
 
-In terms of finding the correct underlying causal regressors, we find that the penalized linear models perform the best at identifying the true data generating regressors, and that this appears to be mostly robust regardless of the amount of cross sectional correlation. The penalized linear models are not perfect and their ability to correctly identify causal regressors worsens as the data generating process becomes more non-linear. On these more difficult specifications, the penalized linear models are generally very conservative, sometimes only identifying a single covariate as important. This is most apparent on the $g_2$ specification. Occasionally, the elastic nets identified the incorrect covariates completely, though the relative importance assigned to them was small. 
+In terms of finding the correct underlying causal regressors, we find that the penalized linear models perform the best at identifying the true data generating regressors, and that this appears to be mostly robust regardless of the amount of cross sectional correlation in the factor set. The penalized linear models are not perfect and their ability to correctly identify causal regressors worsens as the data generating process becomes more non-linear. On these more difficult specifications, the penalized linear models are generally very conservative, sometimes only identifying a single covariate as important. This is most apparent on the $g_2$ specification. Occasionally, the elastic nets identified the incorrect covariates completely, though the relative importance assigned to them was small. 
 
-The random forests and to a lesser extent the neural networks also correctly identified the correct causal regressors, but struggled greatly with adequately discerning relative importance among correlated regressors. This was became more apparent as the degree of cross sectional correlation increased. In the case of the random forests, this is to be expected, likely due to how the random forest algorithms work. The random forest algorithm is an ensemble of tree models, with each tree model only having access to a subset of all available predictors. If this subset does not include the true data generating predictor, then that particular tree will likely select the predictors which have the highest correlation with the true data generating predictor instead. Thus, the resulting ensemble model is likely to believe that cross sectionally correlated predictors are important, relative to the true causal regressor. Due to the complexity of the neural networks, there does not exist a similar intuitive explanation for their causal inference ability.
+The random forests and to a lesser extent the neural networks also correctly identified the correct causal regressors, but struggled with adequately discerning relative importance among correlated regressors. This was became more apparent as the degree of cross sectional correlation increased (see decreasing relative importance of true causal regressors in Figures \ref{rf_sim_vi} and \ref{nn_sim_vi}). In the case of the random forests, this is to be expected, likely due to how the random forest algorithms work. The random forest algorithm is an ensemble of tree models, with each tree model only having access to a subset of all available predictors. If this subset does not include the true data generating predictor, then that particular tree will likely select the predictors which have the highest correlation with the true data generating predictor instead. Thus, the resulting ensemble model is likely to believe that cross sectionally correlated predictors are important, relative to the true causal regressor. Due to the complexity of the neural networks, there does not exist a similar intuitive explanation for their causal inference ability.
 
-The linear models, unsurprisingly, significantly struggled with causal analysis with respect to both increasing cross sectional correlation and increasing non-linearities.
+\begin{figure}
+	\label{rf_sim_vi}
+	\begin{center}
+		\includegraphics[max size = {\textwidth}{\textheight}]{simulation_ave_vi_plot_pre_rf.pdf}
+		\caption{Simulation Variable Importance Plots for Random Forests}
+	\end{center}
+\end{figure}
+
+\begin{figure}
+	\label{nn_sim_vi}
+	\begin{center}
+		\includegraphics[max size = {\textwidth}{\textheight}]{simulation_ave_vi_plot_pre_nn.pdf}
+		\caption{Simulation Variable Importance Plots for Neural Networks}
+	\end{center}
+\end{figure}
+
+The linear models, unsurprisingly, struggled with causal analysis with respect to both increasing cross sectional correlation and increasing non-linearities. This highlights the non-robustness and ineffectiveness of using traditional linear regression as documented by the literature; linear models were consistently observed to identify non-causal regressors as important, especially as the degree of cross sectional correlation increased. Considering that the graphs represent the averaged variable importance metrics over different simulation realisations which each have random patterns of cross sectional correlation, this means that on a single simulation realization, the performance of linear models is significantly worse.
 
 %% Brief other notes that are not too important
 
 Of particular note are the instability of the machine learning models' hyperparameters across different training samples. For the elastic nets, the optimal value for $\alpha$ is generally 1 (corresponding to LASSO and thus a sparse representation), but it was not uncommon to observe $\alpha$ values swinging between values close to 0 (corresponding to ridge regression, and thus a dense representation) to 1 as the training sample moved forwards in time. As the penalized linear models consistently performed the best and still remained able to correctly identify the true covariates this is not a large issue, but it should be noted that this can lead to interpretation issues. For the random forests, it was similarly observed that the optimal value for $mtry$ (the number of variables subsetted) and $nodesize$ was highly non-robust. Again, given that the final prediction performance was consistent this is not a large issue, but can lead to some interpretation issues.
 
-%% Short Summary again (repeat)
-
-Overall, in the simulation study we observe that in general elastic nets are the best performing model, followed closely by random forests, then neural networks. All machine learning models were unaffected by cross sectional correlation in terms of prediction performance, and had better performance when fitted with respect to quantile loss, in stark contrast to linear models. The random forest only outperformed the elastic nets on highly non-linear specifications. The neural network models were not observed to outperform any of the machine learning models.
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Empirical Study}
 
-We then 
+We then begin the empirical study to validate and check the robustness of the results observed in the simulation study. Though our simulation study aimed at capturing the main characteristics of empirical data, the underlying data generating process for empirical returns is unknown this thus as a robustness check as to how machine learning performs on real world data, which can be significantly more complex and noisy than simulated contexts. This also acts as a final validation against what has been reported in the literature.
+
+Importantly, we find that our results from the simulation study are largely repeated, suggesting a degree of robustness for our simulation study results.
 
 \subsection{Data}
 
@@ -1169,7 +1210,7 @@ The \textbf{quantreg} package which implements quantile linear regression used f
 
 The package \textbf{hqreg} was used to fit penalized regression models with respect to MSE and MAE.
 
-This package efficiently calculates a regularization path of penalization values given a value for $\alpha$. This means that it is much more efficient to instead only supply a grid for $\alpha$, let the algorithm decide its own path of penalization values. The combination of these two parameters which produces the best results on the validation set were then chosen. Note that this is the approach originally suggested by \cite{zou_regularization_2005}.
+This package efficiently calculates a regularization path of penalization values given a value for $\alpha$. This means that it is much more efficient to instead only supply a grid for $\alpha$, let the algorithm decide its own path of penalization values. The combination of these two parameters which produces the best results on the validation set were then chosen to produce the final model. Note that this is the approach originally suggested by \cite{zou_regularization_2005}.
 
 \subsubsection{Classification and Regression Trees}
 
@@ -1217,7 +1258,7 @@ For full details of the Classification and Regression Tree algorithm see \cite{b
 
 The \textbf{randomforestSRC} package was used to fit both random forests for mean regression and quantile regression.
 
-To maintain computational feasibility, all random forest models were grown using 50 trees, and their \textit{mtry} \textit{nodesize} hyperparameters tuned. 
+To maintain computational feasibility, all random forest models were grown using 50 trees, and their \textit{mtry} \textit{nodesize} hyperparameters tuned. These correspond to the number of predictors included for each tree, and the depth of each tree respectively. 
 
 Rather than use the randomly determined out of bag (OOB) observations for hyperparameter tuning, we explicitly use a separate validation set that is closer to the test set in time, in order to maintain temporal ordering of the data.
 
@@ -1260,8 +1301,6 @@ Due to computational limitations, a systematic grid search or random search appr
 	\end{tabular}
 	\caption{Hyperparameters Considered for Neural Networks}
 \end{table}
-
-
 
 ADAM algorithm for stochastic gradient descent and learning rate shrinkage as detailed by \cite{kingma_adam:_2014}.
 
