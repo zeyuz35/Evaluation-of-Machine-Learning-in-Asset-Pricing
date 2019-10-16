@@ -825,20 +825,6 @@ In terms of prediction accuracy, we can see that in general the results of the s
 
 The differences between each model using the MSE and MAE loss metrics are much more pronounced on empirical data.
 
-Focusing on the neural networks specifically, their non-robustness is amplified on the empirical dataset, with some neural networks in some samples even performing worse than linear models. This was observed to be somewhat more common on neural networks fitted with respect to MSE, suggesting that they are indeed very sensitive to outliers in training data. We similarly observe some evidence that deeper neural networks perform better, though this result is less apparent to the lower robustness on empirical data.
-
-Interestingly, we do not observe worsening performance as the training sample increases as we did in the simulation study. This suggests that the simulation design may have been too volatile when compared to the specific empirical time periods examined.
-
-%% Causal Inference
-
-As the data generating process for empirical returns is unknown, the variable importance results cannot be directly compared with those of the simulation study. Even so, we see similar results: the elastic net and random forest models tend to agree on the same subset of predictors, but the random forest struggles with adequately discerning between highly correlated regressors. However, we see similarly to the prediction performance results that the neural networks become less robust. 
-
-If we focus on the two top performing models of elastic net and random forest, we see that they consistently pick out the 1 month and 6 month momentum factors out of the individual characteristics as important, and the book-to-market and default yield spread factors out of the macroeconomic factors are important. In general though, the variable importance metrics are less consistent for the random forests, and it should be noted in particular that the random forest tends to determine factors highly correlated with momentum as important, such as change in moment, dollar trading volume and return volatility.
-
-The neural networks tended to believe that the market value factor was the most important among the individual factors, and the dividend-price ratio and earnings-price ratio as the most important among the macroeconomic factors, though these results were non-robust across different architectures, loss functions and training samples. 
-
-Interestingly, we find that the linear models assign the controversial dividend price ratio macroeconomic factor as highly important, a result mirroed only with the neural networks Their variable importance for individual factors across different training samples is highly non-robust, with the important variables almost completely changing year to year.
-
 \begin{figure}
 	\begin{center}
 		\includegraphics[max size = {\textwidth}{\textheight}]{empirical_test_mse}
@@ -853,28 +839,47 @@ Interestingly, we find that the linear models assign the controversial dividend 
 	\caption{Empirical Test MAE Averaged Across All Samples}
 \end{figure}
 
-% Factor Selection
+Focusing on the neural networks specifically, their non-robustness is amplified on the empirical dataset, with some neural networks in some samples even performing worse than linear models. This was observed to be somewhat more common on neural networks fitted with respect to MSE, suggesting that they are indeed very sensitive to outliers in training data. We similarly observe some evidence that deeper neural networks perform better, though this result is less apparent to the lower robustness on empirical data.
 
-For the aspect of factor selection specifically, \cite{gu_empirical_2018} concludes that all of the machine methods agree on the same subset of important factors. However, while their factor importance metrics for regression-tree based methods and neural networks (the most complex methods considered) are mostly consistent, they have differences in terms of the relative importance of each factor, in addition to completely different conclusions for the dividend yield factor.
+Interestingly, we do not observe worsening performance as the training sample increases as we did in the simulation study. This suggests that the simulation design may have been too volatile when compared to the specific empirical time periods examined.
+
+%% Causal Inference
+
+As the data generating process for empirical returns is unknown, the variable importance results cannot be directly compared with those of the simulation study. Even so, we see similar results: the elastic net and random forest models tend to agree on the same subset of predictors, but the random forest struggles with adequately discerning between highly correlated regressors. However, we see similarly to the prediction performance results that the neural networks become less robust. 
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[max size = {\textwidth}{\textheight}]{empirical_sample_all_vi_ind}
+		\caption{Empirical Individual Factor Importance, averaged across all training samples}
+	\end{center}
+\end{figure}
+
+If we focus on the two top performing models of elastic net and random forest, we see that they consistently pick out the 1 month and 6 month momentum factors out of the individual characteristics as important, and the book-to-market and default yield spread factors out of the macroeconomic factors are important. In general though, the variable importance metrics are less consistent for the random forests, and it should be noted in particular that the random forest tends to determine factors highly correlated with momentum as important, such as change in moment, dollar trading volume and return volatility. Looking at the macroeconomic factors, penalized linear models tend to identify the average book to market ratio and the default spread as the most important macroeconomic factors. On the macroeconomic factor set, the random forests were inconsistent with the elastic nets. 
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[max size = {\textwidth}{\textheight}]{empirical_sample_all_vi_ind}
+		\caption{Empirical Individual Factor Importance, averaged across all training samples}
+	\end{center}
+\end{figure}
+
+\begin{figure}
+	\label{empirical_macro_facet}
+	\begin{center}
+		\includegraphics[max size = {\textwidth}{\textheight}]{empirical_sample_all_vi_macro_facet}
+		\caption{Empirical Macroeconomic Factor Importance, faceted by training sample}
+	\end{center}
+\end{figure}
+
+The neural networks tended to believe that the market value factor was the most important among the individual factors, and the dividend-price ratio and earnings-price ratio as the most important among the macroeconomic factors, though these results were highly non-robust across different architectures, loss functions and training samples. 
+
+Interestingly, we find that the linear models assign the controversial dividend price ratio macroeconomic factor as highly important, a result mirrored only with the neural networks Their variable importance for individual factors across different training samples is highly non-robust, with the important variables almost completely changing year to year. The linear models consistently identified the controversial dividend-price ratio as important, a result that was somewhat consistent with the neural networks. 
+
+The overall results again contradict the results of \cite{gu_empirical_2018}, who conclude that all of the machine methods agree on the same subset of important factors. Indeed, we only see consistency in variable importance between the elastic nets and random forests on the individual factors only - all other variable importance metrics were either inconsistent between different models, or non-robust.
+
+%% Other Notes
 
 All models considered typically preferred sparse parameterizations. That is, most if not all of the individual factors had little to no importance across all models.\footnote{Note that because the variable importance here was not evaluated explicitly for each pairwise interaction term, some of the individual factors appear as slightly important. This is because setting an individual factor to zero also sets some of the macroeconomic pairwise terms to zero, increasing its apparent importance.}
-
-When looking at the macroeconomic factors (see Figure \ref{empirical_macro_facet}), there is less consistency on the variable importance between models. Penalized linear models tend to identify the average book to market ratio and the default spread as the most important macroeconomic factors, a result weakly consistent with those of the random forests. The linear models consistently identified the controversial dividend-price ratio as important, a result that was somewhat consistent with the neural networks. Some of the neural networks also occasionally identified the earnings price ratio as important.
-
-\begin{figure}
-	\begin{center}
-		\includegraphics[max size = {\textwidth}{\textheight}]{empirical_sample_all_vi_ind.pdf}
-	\end{center}
-	\caption{Empirical Data Individual Factor Variable Importance Averaged Across All Samples}
-\end{figure}
-
-\begin{figure}
-	\begin{center}
-		\includegraphics[max size = {\textwidth}{\textheight}]{empirical_sample_all_vi_macro_facet.pdf}
-		\caption{Empirical Data Macroeconomic Factor variable Importance Averaged Across All Samples, faceted by training sample}
-		\label{empirical_macro_facet}
-	\end{center}
-\end{figure}
 
 \newpage
 

@@ -745,7 +745,7 @@ empirical_tidy_vi_macro %>%
   scale_fill_distiller(palette = "Spectral") + 
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  theme(legend.position = "none")
+  theme(legend.position = "right")
 ggsave(filename= "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_sample_all_vi_macro_facet.pdf", 
        width = 15 * a4_aspect_ratio, height = 15, units = "cm")
 ```
