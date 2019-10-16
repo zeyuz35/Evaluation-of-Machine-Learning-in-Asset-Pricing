@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.7140 64-bit) (preloaded format=pdflatex 2019.5.8)  17 OCT 2019 00:05
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.7140 64-bit) (preloaded format=pdflatex 2019.5.8)  17 OCT 2019 00:40
 entering extended mode
 **"./Econometrics Honours Project.tex"
 ("Econometrics Honours Project.tex"
@@ -1466,18 +1466,15 @@ LaTeX Font Info:    Try loading font information for U+msb on input line 116.
 
 ("C:\Program Files\MiKTeX 2.9\tex/latex/amsfonts\umsb.fd"
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-)
-("Econometrics Honours Project.toc" [1
+) [1
 
-{C:/Users/Zeyu Zhong/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}])
+{C:/Users/Zeyu Zhong/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}]
+("Econometrics Honours Project.toc" [2])
 \tf@toc=\write6
 \openout6 = `"Econometrics Honours Project.toc"'.
 
- [2] [3] [4]
-Package hyperref Info: bookmark level for unknown todo defaults to 0 on input l
-ine 153.
- [5] [6] [7] [8] [9] [10] [11]
-[12] [13]
+ [3] [4] [5] [6] [7] [8] [9] [10]
+[11] [12] [13] [14]
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
@@ -1915,395 +1912,398 @@ Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
 Missing character: There is no ; in font nullfont!
- [14] [15] [16]
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 477.
+ [15] [16] [17]
+Package hyperref Info: bookmark level for unknown todo defaults to 0 on input l
+ine 468.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 473.
 
- ("C:\Program Files\MiKTeX 2.9\tex/latex/base\omscmr.fd"
+
+("C:\Program Files\MiKTeX 2.9\tex/latex/base\omscmr.fd"
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 477.
- [17] [18] [19]
-Overfull \hbox (5.0441pt too wide) in paragraph at lines 609--611
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 473.
+ [18] [19] [20]
+Overfull \hbox (5.0441pt too wide) in paragraph at lines 605--607
 []|\OT1/cmr/m/n/10.95 NA| 
  []
 
 
-Overfull \hbox (5.0441pt too wide) in paragraph at lines 613--613
+Overfull \hbox (5.0441pt too wide) in paragraph at lines 609--609
 []|\OT1/cmr/m/n/10.95 NA| 
  []
 
 
-Overfull \hbox (5.0441pt too wide) in paragraph at lines 613--614
+Overfull \hbox (5.0441pt too wide) in paragraph at lines 609--610
 []|\OT1/cmr/m/n/10.95 NA| 
  []
 
-[20]
-<../Results/simulation_test_mae_pre_all.pdf, id=525, 639.38875pt x 426.59375pt>
+[21]
+<../Results/simulation_test_mae_pre_all.pdf, id=526, 639.38875pt x 426.59375pt>
 
 File: ../Results/simulation_test_mae_pre_all.pdf Graphic file (type pdf)
 <use ../Results/simulation_test_mae_pre_all.pdf>
 Package pdftex.def Info: ../Results/simulation_test_mae_pre_all.pdf  used on in
-put line 648.
+put line 644.
 (pdftex.def)             Requested size: 639.38718pt x 426.5927pt.
-<../Results/simulation_test_mse_pre_all.pdf, id=526, 639.38875pt x 426.59375pt>
+<../Results/simulation_test_mse_pre_all.pdf, id=527, 639.38875pt x 426.59375pt>
 
 File: ../Results/simulation_test_mse_pre_all.pdf Graphic file (type pdf)
 <use ../Results/simulation_test_mse_pre_all.pdf>
 Package pdftex.def Info: ../Results/simulation_test_mse_pre_all.pdf  used on in
-put line 649.
+put line 645.
 (pdftex.def)             Requested size: 639.38718pt x 426.5927pt.
-<../Results/simulation_test_mae_pre.pdf, id=527, 526.96875pt x 325.215pt>
+<../Results/simulation_test_mae_pre.pdf, id=528, 526.96875pt x 325.215pt>
 File: ../Results/simulation_test_mae_pre.pdf Graphic file (type pdf)
 <use ../Results/simulation_test_mae_pre.pdf>
 Package pdftex.def Info: ../Results/simulation_test_mae_pre.pdf  used on input 
-line 658.
+line 654.
 (pdftex.def)             Requested size: 526.96745pt x 325.2142pt.
-<../Results/simulation_test_mse_pre.pdf, id=528, 526.96875pt x 325.215pt>
+<../Results/simulation_test_mse_pre.pdf, id=529, 526.96875pt x 325.215pt>
 File: ../Results/simulation_test_mse_pre.pdf Graphic file (type pdf)
 <use ../Results/simulation_test_mse_pre.pdf>
 Package pdftex.def Info: ../Results/simulation_test_mse_pre.pdf  used on input 
-line 665.
+line 661.
 (pdftex.def)             Requested size: 526.96745pt x 325.2142pt.
-<../Results/simulation_test_rsquare_pre.pdf, id=529, 526.96875pt x 325.215pt>
+<../Results/simulation_test_rsquare_pre.pdf, id=530, 526.96875pt x 325.215pt>
 File: ../Results/simulation_test_rsquare_pre.pdf Graphic file (type pdf)
 <use ../Results/simulation_test_rsquare_pre.pdf>
 Package pdftex.def Info: ../Results/simulation_test_rsquare_pre.pdf  used on in
-put line 672.
+put line 668.
 (pdftex.def)             Requested size: 526.96745pt x 325.2142pt.
-<../Results/simulation_test_rsquare_small_nn.pdf, id=534, 526.96875pt x 325.215
+<../Results/simulation_test_rsquare_small_nn.pdf, id=535, 526.96875pt x 325.215
 pt>
 File: ../Results/simulation_test_rsquare_small_nn.pdf Graphic file (type pdf)
 <use ../Results/simulation_test_rsquare_small_nn.pdf>
 Package pdftex.def Info: ../Results/simulation_test_rsquare_small_nn.pdf  used 
-on input line 683.
+on input line 679.
 (pdftex.def)             Requested size: 526.96745pt x 325.2142pt.
-<../Results/simulation_ave_vi_plot_pre.pdf, id=536, 853.1875pt x 568.1225pt>
+<../Results/simulation_ave_vi_plot_pre.pdf, id=537, 853.1875pt x 568.1225pt>
 File: ../Results/simulation_ave_vi_plot_pre.pdf Graphic file (type pdf)
 <use ../Results/simulation_ave_vi_plot_pre.pdf>
 Package pdftex.def Info: ../Results/simulation_ave_vi_plot_pre.pdf  used on inp
-ut line 695.
+ut line 691.
 (pdftex.def)             Requested size: 853.18542pt x 568.1211pt.
- [21] [22 <../Results/simulation_test_mae_pre_all.pdf> <../Results/simulation_t
-est_mse_pre_all.pdf>] [23 <../Results/simulation_test_mae_pre.pdf> <../Results/
-simulation_test_mse_pre.pdf>] [24 <../Results/simulation_test_rsquare_pre.pdf> 
+ [22] [23 <../Results/simulation_test_mae_pre_all.pdf> <../Results/simulation_t
+est_mse_pre_all.pdf>] [24 <../Results/simulation_test_mae_pre.pdf> <../Results/
+simulation_test_mse_pre.pdf>] [25 <../Results/simulation_test_rsquare_pre.pdf> 
 <../Results/simulation_test_rsquare_small_nn.pdf>]
-<../Results/simulation_ave_vi_plot_pre_rf.pdf, id=598, 853.1875pt x 568.1225pt>
+<../Results/simulation_ave_vi_plot_pre_rf.pdf, id=600, 853.1875pt x 568.1225pt>
 
 File: ../Results/simulation_ave_vi_plot_pre_rf.pdf Graphic file (type pdf)
 <use ../Results/simulation_ave_vi_plot_pre_rf.pdf>
 Package pdftex.def Info: ../Results/simulation_ave_vi_plot_pre_rf.pdf  used on 
-input line 707.
+input line 703.
 (pdftex.def)             Requested size: 853.18542pt x 568.1211pt.
-<../Results/simulation_ave_vi_plot_pre_nn.pdf, id=599, 853.1875pt x 568.1225pt>
+<../Results/simulation_ave_vi_plot_pre_nn.pdf, id=601, 853.1875pt x 568.1225pt>
 
 File: ../Results/simulation_ave_vi_plot_pre_nn.pdf Graphic file (type pdf)
 <use ../Results/simulation_ave_vi_plot_pre_nn.pdf>
 Package pdftex.def Info: ../Results/simulation_ave_vi_plot_pre_nn.pdf  used on 
-input line 715.
+input line 711.
 (pdftex.def)             Requested size: 853.18542pt x 568.1211pt.
- [25 <../Results/simulation_ave_vi_plot_pre.pdf>] [26 <../Results/simulation_av
-e_vi_plot_pre_rf.pdf> <../Results/simulation_ave_vi_plot_pre_nn.pdf>] [27] [28]
-
-Overfull \hbox (2.19865pt too wide) in paragraph at lines 787--789
+ [26 <../Results/simulation_ave_vi_plot_pre.pdf>] [27 <../Results/simulation_av
+e_vi_plot_pre_rf.pdf> <../Results/simulation_ave_vi_plot_pre_nn.pdf>] [28] [29]
+ [30]
+Overfull \hbox (2.19865pt too wide) in paragraph at lines 785--787
 []|\OT1/cmr/m/n/10.95 NA| 
  []
 
 
-Overfull \hbox (2.19865pt too wide) in paragraph at lines 790--790
+Overfull \hbox (2.19865pt too wide) in paragraph at lines 788--788
 []|\OT1/cmr/m/n/10.95 NA| 
  []
 
 
-Overfull \hbox (2.19865pt too wide) in paragraph at lines 790--791
+Overfull \hbox (2.19865pt too wide) in paragraph at lines 788--789
 []|\OT1/cmr/m/n/10.95 NA| 
  []
 
 
-Overfull \hbox (21.66536pt too wide) in paragraph at lines 792--792
+Overfull \hbox (21.66536pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10.95 1993Q3| 
  []
 
 
-Overfull \hbox (21.66536pt too wide) in paragraph at lines 792--792
+Overfull \hbox (21.66536pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10.95 1993Q4| 
  []
 
 
-Overfull \hbox (7.67366pt too wide) in paragraph at lines 792--792
+Overfull \hbox (7.67366pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10.95 1994| 
  []
 
 
-Overfull \hbox (7.67366pt too wide) in paragraph at lines 792--792
+Overfull \hbox (7.67366pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10.95 1995| 
  []
 
 
-Overfull \hbox (7.67366pt too wide) in paragraph at lines 792--792
+Overfull \hbox (7.67366pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10.95 1996| 
  []
 
 
-Overfull \hbox (7.67366pt too wide) in paragraph at lines 792--792
+Overfull \hbox (7.67366pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10.95 2006| 
  []
 
 
-Overfull \hbox (7.67366pt too wide) in paragraph at lines 792--792
+Overfull \hbox (7.67366pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10.95 2007| 
  []
 
 
-Overfull \hbox (7.67366pt too wide) in paragraph at lines 792--792
+Overfull \hbox (7.67366pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10.95 2008| 
  []
 
 
-Overfull \hbox (7.67366pt too wide) in paragraph at lines 792--792
+Overfull \hbox (7.67366pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10.95 2011| 
  []
 
 
-Overfull \hbox (7.67366pt too wide) in paragraph at lines 792--792
+Overfull \hbox (7.67366pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10.95 2012| 
  []
 
 
-Overfull \hbox (7.67366pt too wide) in paragraph at lines 792--792
+Overfull \hbox (7.67366pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10.95 2013| 
  []
 
 
-Overfull \hbox (7.67366pt too wide) in paragraph at lines 792--792
+Overfull \hbox (7.67366pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10.95 2014| 
  []
 
 
-Overfull \hbox (7.67366pt too wide) in paragraph at lines 792--792
+Overfull \hbox (7.67366pt too wide) in paragraph at lines 790--790
 []|\OT1/cmr/m/n/10.95 2015| 
  []
 
 
-Overfull \hbox (7.67366pt too wide) in paragraph at lines 792--793
+Overfull \hbox (7.67366pt too wide) in paragraph at lines 790--791
 []|\OT1/cmr/m/n/10.95 2016| 
  []
 
 
-Overfull \hbox (15.44145pt too wide) in paragraph at lines 777--805
+Overfull \hbox (15.44145pt too wide) in paragraph at lines 775--803
  [] 
  []
 
-[29]
-<../Results/empirical_test_mse.pdf, id=654, 639.38875pt x 426.59375pt>
+[31]
+<../Results/empirical_test_mse.pdf, id=660, 639.38875pt x 426.59375pt>
 File: ../Results/empirical_test_mse.pdf Graphic file (type pdf)
 <use ../Results/empirical_test_mse.pdf>
 Package pdftex.def Info: ../Results/empirical_test_mse.pdf  used on input line 
-830.
+826.
 (pdftex.def)             Requested size: 639.38718pt x 426.5927pt.
-<../Results/empirical_test_mae.pdf, id=655, 639.38875pt x 426.59375pt>
+<../Results/empirical_test_mae.pdf, id=661, 639.38875pt x 426.59375pt>
 File: ../Results/empirical_test_mae.pdf Graphic file (type pdf)
 <use ../Results/empirical_test_mae.pdf>
 Package pdftex.def Info: ../Results/empirical_test_mae.pdf  used on input line 
-837.
+833.
 (pdftex.def)             Requested size: 639.38718pt x 426.5927pt.
- [30 <../Results/empirical_test_mse.pdf>]
-<../Results/empirical_sample_all_vi_ind.pdf, id=667, 639.38875pt x 426.59375pt>
+ [32 <../Results/empirical_test_mse.pdf>]
+<../Results/empirical_sample_all_vi_ind.pdf, id=673, 639.38875pt x 426.59375pt>
 
 File: ../Results/empirical_sample_all_vi_ind.pdf Graphic file (type pdf)
 <use ../Results/empirical_sample_all_vi_ind.pdf>
 Package pdftex.def Info: ../Results/empirical_sample_all_vi_ind.pdf  used on in
-put line 852.
+put line 848.
 (pdftex.def)             Requested size: 639.38718pt x 426.5927pt.
- [31 <../Results/empirical_test_mae.pdf>]
+ [33 <../Results/empirical_test_mae.pdf>]
 File: ../Results/empirical_sample_all_vi_ind.pdf Graphic file (type pdf)
 <use ../Results/empirical_sample_all_vi_ind.pdf>
 Package pdftex.def Info: ../Results/empirical_sample_all_vi_ind.pdf  used on in
-put line 861.
+put line 857.
 (pdftex.def)             Requested size: 639.38718pt x 426.5927pt.
-<../Results/empirical_sample_all_vi_macro_facet.pdf, id=680, 639.38875pt x 426.
+<../Results/empirical_sample_all_vi_macro_facet.pdf, id=685, 639.38875pt x 426.
 59375pt>
 File: ../Results/empirical_sample_all_vi_macro_facet.pdf Graphic file (type pdf
 )
 <use ../Results/empirical_sample_all_vi_macro_facet.pdf>
 Package pdftex.def Info: ../Results/empirical_sample_all_vi_macro_facet.pdf  us
-ed on input line 869.
+ed on input line 865.
 (pdftex.def)             Requested size: 639.38718pt x 426.5927pt.
- [32 <../Results/empirical_sample_all_vi_ind.pdf>] [33 <../Results/empirical_sa
-mple_all_vi_macro_facet.pdf>] [34] [35] [36]pdfTeX warning (ext4): destination 
+ [34 <../Results/empirical_sample_all_vi_ind.pdf>] [35 <../Results/empirical_sa
+mple_all_vi_macro_facet.pdf>] [36] [37] [38]pdfTeX warning (ext4): destination 
 with the same identifier (name{Hfootnote.8}) has been already used, duplicate i
 gnored
 <to be read again> 
                    \relax 
-l.907 ... was not used due to missing data issues}
+l.903 ... was not used due to missing data issues}
                                                   
-Overfull \hbox (22.81706pt too wide) in alignment at lines 910--950
+Overfull \hbox (22.81706pt too wide) in alignment at lines 906--946
  [] [] [] [] [] [] [] 
  []
 
 
-Overfull \hbox (22.81706pt too wide) in alignment at lines 950--992
+Overfull \hbox (22.81706pt too wide) in alignment at lines 946--988
  [] [] [] [] [] [] [] 
  []
 
 
-Overfull \hbox (22.81706pt too wide) in alignment at lines 992--1034
+Overfull \hbox (22.81706pt too wide) in alignment at lines 988--1030
  [] [] [] [] [] [] [] 
  []
 
-[37
+[39
 
 ]
-Overfull \hbox (22.81706pt too wide) in alignment at lines 1034--1076
+Overfull \hbox (22.81706pt too wide) in alignment at lines 1030--1072
  [] [] [] [] [] [] [] 
  []
 
-[38]
-Overfull \hbox (22.81706pt too wide) in alignment at lines 1076--1110
+[40]
+Overfull \hbox (22.81706pt too wide) in alignment at lines 1072--1106
  [] [] [] [] [] [] [] 
  []
 
-[39] [40]
-<../Results/simulation_test_mae.pdf, id=1076, 526.96875pt x 325.215pt>
+[41] [42]
+<../Results/simulation_test_mae.pdf, id=1081, 526.96875pt x 325.215pt>
 File: ../Results/simulation_test_mae.pdf Graphic file (type pdf)
 <use ../Results/simulation_test_mae.pdf>
 Package pdftex.def Info: ../Results/simulation_test_mae.pdf  used on input line
- 1142.
+ 1138.
 (pdftex.def)             Requested size: 526.96745pt x 325.2142pt.
 
-Overfull \hbox (73.99956pt too wide) in paragraph at lines 1142--1143
+Overfull \hbox (73.99956pt too wide) in paragraph at lines 1138--1139
 [][] 
  []
 
-<../Results/simulation_test_mse.pdf, id=1077, 526.96875pt x 325.215pt>
+<../Results/simulation_test_mse.pdf, id=1082, 526.96875pt x 325.215pt>
 File: ../Results/simulation_test_mse.pdf Graphic file (type pdf)
 <use ../Results/simulation_test_mse.pdf>
 Package pdftex.def Info: ../Results/simulation_test_mse.pdf  used on input line
- 1147.
+ 1143.
 (pdftex.def)             Requested size: 526.96745pt x 325.2142pt.
 
-Overfull \hbox (73.99956pt too wide) in paragraph at lines 1147--1148
+Overfull \hbox (73.99956pt too wide) in paragraph at lines 1143--1144
 [][] 
  []
 
-<../Results/simulation_test_rsquare.pdf, id=1078, 505.89pt x 505.89pt>
+<../Results/simulation_test_rsquare.pdf, id=1083, 505.89pt x 505.89pt>
 File: ../Results/simulation_test_rsquare.pdf Graphic file (type pdf)
 <use ../Results/simulation_test_rsquare.pdf>
 Package pdftex.def Info: ../Results/simulation_test_rsquare.pdf  used on input 
-line 1152.
+line 1148.
 (pdftex.def)             Requested size: 505.88875pt x 505.88875pt.
 
-Overfull \hbox (52.92085pt too wide) in paragraph at lines 1152--1153
+Overfull \hbox (52.92085pt too wide) in paragraph at lines 1148--1149
 [][] 
  []
 
-<../Results/simulation_train_mae.pdf, id=1079, 526.96875pt x 325.215pt>
+<../Results/simulation_train_mae.pdf, id=1084, 526.96875pt x 325.215pt>
 File: ../Results/simulation_train_mae.pdf Graphic file (type pdf)
 <use ../Results/simulation_train_mae.pdf>
 Package pdftex.def Info: ../Results/simulation_train_mae.pdf  used on input lin
-e 1157.
+e 1153.
 (pdftex.def)             Requested size: 526.96745pt x 325.2142pt.
 
-Overfull \hbox (73.99956pt too wide) in paragraph at lines 1157--1158
+Overfull \hbox (73.99956pt too wide) in paragraph at lines 1153--1154
 [][] 
  []
 
-<../Results/simulation_train_mse.pdf, id=1080, 526.96875pt x 325.215pt>
+<../Results/simulation_train_mse.pdf, id=1085, 526.96875pt x 325.215pt>
 File: ../Results/simulation_train_mse.pdf Graphic file (type pdf)
 <use ../Results/simulation_train_mse.pdf>
 Package pdftex.def Info: ../Results/simulation_train_mse.pdf  used on input lin
-e 1162.
+e 1158.
 (pdftex.def)             Requested size: 526.96745pt x 325.2142pt.
 
-Overfull \hbox (73.99956pt too wide) in paragraph at lines 1162--1163
+Overfull \hbox (73.99956pt too wide) in paragraph at lines 1158--1159
 [][] 
  []
 
-<../Results/simulation_train_rsquare.pdf, id=1081, 526.96875pt x 325.215pt>
+<../Results/simulation_train_rsquare.pdf, id=1086, 526.96875pt x 325.215pt>
 File: ../Results/simulation_train_rsquare.pdf Graphic file (type pdf)
 <use ../Results/simulation_train_rsquare.pdf>
 Package pdftex.def Info: ../Results/simulation_train_rsquare.pdf  used on input
- line 1167.
+ line 1163.
 (pdftex.def)             Requested size: 526.96745pt x 325.2142pt.
 
-Overfull \hbox (73.99956pt too wide) in paragraph at lines 1167--1168
+Overfull \hbox (73.99956pt too wide) in paragraph at lines 1163--1164
 [][] 
  []
 
-<../Results/eln_alpha_plot.pdf, id=1082, 526.96875pt x 325.215pt>
+<../Results/eln_alpha_plot.pdf, id=1087, 526.96875pt x 325.215pt>
 File: ../Results/eln_alpha_plot.pdf Graphic file (type pdf)
 <use ../Results/eln_alpha_plot.pdf>
-Package pdftex.def Info: ../Results/eln_alpha_plot.pdf  used on input line 1174
+Package pdftex.def Info: ../Results/eln_alpha_plot.pdf  used on input line 1170
 .
 (pdftex.def)             Requested size: 526.96745pt x 325.2142pt.
-<../Results/eln_lambda_plot.pdf, id=1083, 526.96875pt x 325.215pt>
+<../Results/eln_lambda_plot.pdf, id=1088, 526.96875pt x 325.215pt>
 File: ../Results/eln_lambda_plot.pdf Graphic file (type pdf)
 <use ../Results/eln_lambda_plot.pdf>
 Package pdftex.def Info: ../Results/eln_lambda_plot.pdf  used on input line 117
-9.
+5.
 (pdftex.def)             Requested size: 526.96745pt x 325.2142pt.
-[41
+[43
 
-] [42 <../Results/simulation_test_mae.pdf>] [43 <../Results/simulation_test_mse
-.pdf>] [44 <../Results/simulation_test_rsquare.pdf>] [45 <../Results/simulation
-_train_mae.pdf>] [46 <../Results/simulation_train_mse.pdf>] [47 <../Results/sim
+] [44 <../Results/simulation_test_mae.pdf>] [45 <../Results/simulation_test_mse
+.pdf>] [46 <../Results/simulation_test_rsquare.pdf>] [47 <../Results/simulation
+_train_mae.pdf>] [48 <../Results/simulation_train_mse.pdf>] [49 <../Results/sim
 ulation_train_rsquare.pdf> <../Results/eln_alpha_plot.pdf>]
-<../Results/empirical_sample_1_vi_ind.pdf, id=1156, 426.59375pt x 639.38875pt>
+<../Results/empirical_sample_1_vi_ind.pdf, id=1162, 426.59375pt x 639.38875pt>
 File: ../Results/empirical_sample_1_vi_ind.pdf Graphic file (type pdf)
 <use ../Results/empirical_sample_1_vi_ind.pdf>
 Package pdftex.def Info: ../Results/empirical_sample_1_vi_ind.pdf  used on inpu
-t line 1188.
+t line 1184.
 (pdftex.def)             Requested size: 426.5927pt x 639.38718pt.
-<../Results/empirical_sample_2_vi_ind.pdf, id=1157, 426.59375pt x 639.38875pt>
+<../Results/empirical_sample_2_vi_ind.pdf, id=1163, 426.59375pt x 639.38875pt>
 File: ../Results/empirical_sample_2_vi_ind.pdf Graphic file (type pdf)
 <use ../Results/empirical_sample_2_vi_ind.pdf>
 Package pdftex.def Info: ../Results/empirical_sample_2_vi_ind.pdf  used on inpu
-t line 1193.
+t line 1189.
 (pdftex.def)             Requested size: 426.5927pt x 639.38718pt.
-<../Results/empirical_sample_3_vi_ind.pdf, id=1158, 426.59375pt x 639.38875pt>
+<../Results/empirical_sample_3_vi_ind.pdf, id=1164, 426.59375pt x 639.38875pt>
 File: ../Results/empirical_sample_3_vi_ind.pdf Graphic file (type pdf)
 <use ../Results/empirical_sample_3_vi_ind.pdf>
 Package pdftex.def Info: ../Results/empirical_sample_3_vi_ind.pdf  used on inpu
-t line 1198.
+t line 1194.
 (pdftex.def)             Requested size: 426.5927pt x 639.38718pt.
- [48 <../Results/eln_lambda_plot.pdf>] [49 <../Results/empirical_sample_1_vi_in
-d.pdf>] [50 <../Results/empirical_sample_2_vi_ind.pdf>] [51 <../Results/empiric
-al_sample_3_vi_ind.pdf>] [52] [53]
-Overfull \hbox (79.12616pt too wide) in paragraph at lines 1297--1307
+ [50 <../Results/eln_lambda_plot.pdf>] [51 <../Results/empirical_sample_1_vi_in
+d.pdf>] [52 <../Results/empirical_sample_2_vi_ind.pdf>] [53 <../Results/empiric
+al_sample_3_vi_ind.pdf>] [54] [55]
+Overfull \hbox (79.12616pt too wide) in paragraph at lines 1293--1303
 [][] 
  []
 
 
-Overfull \hbox (1.60724pt too wide) in paragraph at lines 1351--1352
+Overfull \hbox (1.60724pt too wide) in paragraph at lines 1347--1348
 \OT1/cmr/m/n/10.95 se-ries R squared, av-er-age an-nu-al-ized volatil-ity, and 
 cross sec-tional R squared, and true/predictive
  []
 
-[54] [55] ("Econometrics Honours Project.bbl" [56] [57] [58] [59] [60]
-Underfull \hbox (badness 1783) in paragraph at lines 364--366
+[56] [57] ("Econometrics Honours Project.bbl" [58] [59] [60] [61] [62]
+Underfull \hbox (badness 1783) in paragraph at lines 370--372
 []\OT1/cmr/m/n/10.95 Ramachandran, P., Zoph, B., Le, Q. V., 2017. Search-ing fo
 r Ac-ti-va-tion Func-tions.
  []
 
-[61]) [62]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1381.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1381.
+[63]) [64]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1377.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1377.
  ("Econometrics Honours Project.aux")
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1381.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1381.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1377.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1377.
 
 Package rerunfilecheck Info: File `"Econometrics Honours Project".out' has not 
 changed.
 (rerunfilecheck)             Checksum: 5561284A6F70B4FEA96B00500E3FB79B;2797.
  ) 
 Here is how much of TeX's memory you used:
- 53200 strings out of 492895
- 1253106 string characters out of 3133463
- 1529539 words of memory out of 3000000
- 56087 multiletter control sequences out of 15000+200000
- 543247 words of font info for 65 fonts, out of 3000000 for 9000
+ 53186 strings out of 492895
+ 1252842 string characters out of 3133463
+ 1524640 words of memory out of 3000000
+ 56075 multiletter control sequences out of 15000+200000
+ 543555 words of font info for 66 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 62i,15n,96p,1637b,1391s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 62i,15n,96p,1637b,1394s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Pr
 ogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Program Fi
 les/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx8.pfb><C:/Program Files/MiKTe
@@ -2322,9 +2322,9 @@ onts/cm/cmsy6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/c
 msy8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb
 ><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti12.pfb><C:/Pro
 gram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on "Econometrics Honours Project.pdf" (62 pages, 794232 bytes).
+Output written on "Econometrics Honours Project.pdf" (64 pages, 793808 bytes).
 PDF statistics:
- 1470 PDF objects out of 1728 (max. 8388607)
- 292 named destinations out of 1000 (max. 500000)
+ 1475 PDF objects out of 1728 (max. 8388607)
+ 290 named destinations out of 1000 (max. 500000)
  541 words of extra memory for PDF output out of 10000 (max. 10000000)
 

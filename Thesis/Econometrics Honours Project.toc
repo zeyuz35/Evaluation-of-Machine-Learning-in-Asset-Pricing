@@ -1,43 +1,43 @@
 \babel@toc {english}{}
-\contentsline {section}{\numberline {1}Introduction}{3}{section.1}% 
-\contentsline {subsection}{\numberline {1.1}Topic}{3}{subsection.1.1}% 
-\contentsline {subsection}{\numberline {1.2}Background Literature and Motivations}{3}{subsection.1.2}% 
-\contentsline {section}{\numberline {2}Model Specification and Methodology}{6}{section.2}% 
-\contentsline {subsection}{\numberline {2.1}Model Specification}{6}{subsection.2.1}% 
-\contentsline {subsection}{\numberline {2.2}Methodology}{7}{subsection.2.2}% 
-\contentsline {subsubsection}{\numberline {2.2.1}Sample Splitting}{8}{subsubsection.2.2.1}% 
-\contentsline {subsubsection}{\numberline {2.2.2}Loss Function}{8}{subsubsection.2.2.2}% 
-\contentsline {subsubsection}{\numberline {2.2.3}Models}{9}{subsubsection.2.2.3}% 
-\contentsline {subsubsection}{\numberline {2.2.4}Linear Models}{9}{subsubsection.2.2.4}% 
-\contentsline {subsubsection}{\numberline {2.2.5}Penalized Linear Models}{10}{subsubsection.2.2.5}% 
-\contentsline {subsubsection}{\numberline {2.2.6}Classification and Regression Trees}{10}{subsubsection.2.2.6}% 
-\contentsline {subsubsection}{\numberline {2.2.7}Random Forests}{11}{subsubsection.2.2.7}% 
-\contentsline {subsubsection}{\numberline {2.2.8}Neural Networks}{12}{subsubsection.2.2.8}% 
-\contentsline {paragraph}{Model Architecture and Specification}{13}{section*.4}% 
-\contentsline {subsection}{\numberline {2.3}Model Evaluation}{15}{subsection.2.3}% 
-\contentsline {paragraph}{Loss Metrics}{15}{section*.5}% 
-\contentsline {paragraph}{Variable Importance}{15}{section*.6}% 
-\contentsline {section}{\numberline {3}Simulation Study}{17}{section.3}% 
-\contentsline {subsection}{\numberline {3.1}Simulation Design}{17}{subsection.3.1}% 
-\contentsline {subsubsection}{\numberline {3.1.1}Overall Design}{17}{subsubsection.3.1.1}% 
-\contentsline {subsubsection}{\numberline {3.1.2}Simulating Characteristics}{18}{subsubsection.3.1.2}% 
-\contentsline {subsubsection}{\numberline {3.1.3}Simulating Macroeconomic Series}{19}{subsubsection.3.1.3}% 
-\contentsline {subsubsection}{\numberline {3.1.4}Simulating Return Series}{19}{subsubsection.3.1.4}% 
-\contentsline {subsubsection}{\numberline {3.1.5}Sample Splitting}{19}{subsubsection.3.1.5}% 
-\contentsline {subsection}{\numberline {3.2}Simulation Study Results}{20}{subsection.3.2}% 
-\contentsline {section}{\numberline {4}Empirical Study}{27}{section.4}% 
-\contentsline {subsection}{\numberline {4.1}Data}{27}{subsection.4.1}% 
-\contentsline {subsection}{\numberline {4.2}Empirical Data Results}{30}{subsection.4.2}% 
-\contentsline {section}{\numberline {5}Conclusion}{35}{section.5}% 
-\contentsline {section}{\numberline {6}Appendix}{36}{section.6}% 
-\contentsline {subsection}{\numberline {6.1}Data}{36}{subsection.6.1}% 
-\contentsline {subsection}{\numberline {6.2}Additional Results}{41}{subsection.6.2}% 
-\contentsline {subsubsection}{\numberline {6.2.1}Simulation Study}{41}{subsubsection.6.2.1}% 
-\contentsline {subsubsection}{\numberline {6.2.2}Empirical Study}{48}{subsubsection.6.2.2}% 
-\contentsline {subsection}{\numberline {6.3}Computational Details}{52}{subsection.6.3}% 
-\contentsline {subsubsection}{\numberline {6.3.1}Linear Models}{52}{subsubsection.6.3.1}% 
-\contentsline {subsubsection}{\numberline {6.3.2}Penalized Linear}{52}{subsubsection.6.3.2}% 
-\contentsline {subsubsection}{\numberline {6.3.3}Classification and Regression Trees}{53}{subsubsection.6.3.3}% 
-\contentsline {subsubsection}{\numberline {6.3.4}Random Forest}{53}{subsubsection.6.3.4}% 
-\contentsline {subsubsection}{\numberline {6.3.5}Neural Networks}{54}{subsubsection.6.3.5}% 
-\contentsline {subsubsection}{\numberline {6.3.6}Tuning of Simulated Datasets}{55}{subsubsection.6.3.6}% 
+\contentsline {section}{\numberline {1}Introduction}{4}{section.1}% 
+\contentsline {subsection}{\numberline {1.1}Topic}{4}{subsection.1.1}% 
+\contentsline {subsection}{\numberline {1.2}Background Literature and Motivations}{4}{subsection.1.2}% 
+\contentsline {section}{\numberline {2}Model Specification and Methodology}{8}{section.2}% 
+\contentsline {subsection}{\numberline {2.1}Model Specification}{8}{subsection.2.1}% 
+\contentsline {subsection}{\numberline {2.2}Methodology}{8}{subsection.2.2}% 
+\contentsline {subsubsection}{\numberline {2.2.1}Sample Splitting}{9}{subsubsection.2.2.1}% 
+\contentsline {subsubsection}{\numberline {2.2.2}Loss Function}{10}{subsubsection.2.2.2}% 
+\contentsline {subsubsection}{\numberline {2.2.3}Models}{10}{subsubsection.2.2.3}% 
+\contentsline {subsubsection}{\numberline {2.2.4}Linear Models}{10}{subsubsection.2.2.4}% 
+\contentsline {subsubsection}{\numberline {2.2.5}Penalized Linear Models}{11}{subsubsection.2.2.5}% 
+\contentsline {subsubsection}{\numberline {2.2.6}Classification and Regression Trees}{12}{subsubsection.2.2.6}% 
+\contentsline {subsubsection}{\numberline {2.2.7}Random Forests}{12}{subsubsection.2.2.7}% 
+\contentsline {subsubsection}{\numberline {2.2.8}Neural Networks}{13}{subsubsection.2.2.8}% 
+\contentsline {paragraph}{Model Architecture and Specification}{14}{section*.2}% 
+\contentsline {subsection}{\numberline {2.3}Model Evaluation}{16}{subsection.2.3}% 
+\contentsline {paragraph}{Loss Metrics}{16}{section*.3}% 
+\contentsline {paragraph}{Variable Importance}{17}{section*.4}% 
+\contentsline {section}{\numberline {3}Simulation Study}{18}{section.3}% 
+\contentsline {subsection}{\numberline {3.1}Simulation Design}{18}{subsection.3.1}% 
+\contentsline {subsubsection}{\numberline {3.1.1}Overall Design}{18}{subsubsection.3.1.1}% 
+\contentsline {subsubsection}{\numberline {3.1.2}Simulating Characteristics}{19}{subsubsection.3.1.2}% 
+\contentsline {subsubsection}{\numberline {3.1.3}Simulating Macroeconomic Series}{20}{subsubsection.3.1.3}% 
+\contentsline {subsubsection}{\numberline {3.1.4}Simulating Return Series}{20}{subsubsection.3.1.4}% 
+\contentsline {subsubsection}{\numberline {3.1.5}Sample Splitting}{20}{subsubsection.3.1.5}% 
+\contentsline {subsection}{\numberline {3.2}Simulation Study Results}{21}{subsection.3.2}% 
+\contentsline {section}{\numberline {4}Empirical Study}{29}{section.4}% 
+\contentsline {subsection}{\numberline {4.1}Data}{29}{subsection.4.1}% 
+\contentsline {subsection}{\numberline {4.2}Empirical Data Results}{32}{subsection.4.2}% 
+\contentsline {section}{\numberline {5}Conclusion}{37}{section.5}% 
+\contentsline {section}{\numberline {6}Appendix}{38}{section.6}% 
+\contentsline {subsection}{\numberline {6.1}Data}{38}{subsection.6.1}% 
+\contentsline {subsection}{\numberline {6.2}Additional Results}{43}{subsection.6.2}% 
+\contentsline {subsubsection}{\numberline {6.2.1}Simulation Study}{43}{subsubsection.6.2.1}% 
+\contentsline {subsubsection}{\numberline {6.2.2}Empirical Study}{50}{subsubsection.6.2.2}% 
+\contentsline {subsection}{\numberline {6.3}Computational Details}{54}{subsection.6.3}% 
+\contentsline {subsubsection}{\numberline {6.3.1}Linear Models}{54}{subsubsection.6.3.1}% 
+\contentsline {subsubsection}{\numberline {6.3.2}Penalized Linear}{54}{subsubsection.6.3.2}% 
+\contentsline {subsubsection}{\numberline {6.3.3}Classification and Regression Trees}{55}{subsubsection.6.3.3}% 
+\contentsline {subsubsection}{\numberline {6.3.4}Random Forest}{55}{subsubsection.6.3.4}% 
+\contentsline {subsubsection}{\numberline {6.3.5}Neural Networks}{56}{subsubsection.6.3.5}% 
+\contentsline {subsubsection}{\numberline {6.3.6}Tuning of Simulated Datasets}{57}{subsubsection.6.3.6}% 
