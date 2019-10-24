@@ -766,34 +766,40 @@ empirical_tidy_vi_ind %>%
   filter(sample == 1) %>%
   group_by(sample, model) %>%
   ggplot() +
-  geom_tile(aes(x = model, y = variable, alpha = importance)) +
+  geom_tile(aes(x = variable, y = model, fill = importance)) +
+  scale_x_discrete(label = labels, breaks = breaks) +
+  scale_fill_distiller(palette = "Spectral") + 
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   theme(legend.position = "none")
 ggsave(filename= "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_sample_1_vi_ind.pdf", 
-       width = 15, height = 15 * a4_aspect_ratio, units = "cm")
+       width = 15 * a4_aspect_ratio, height = 15, units = "cm")
 
 empirical_tidy_vi_ind %>%
   filter(sample == 2) %>%
   group_by(sample, model) %>%
   ggplot() +
-  geom_tile(aes(x = model, y = variable, alpha = importance)) +
+  geom_tile(aes(x = variable, y = model, fill = importance)) +
+  scale_x_discrete(label = labels, breaks = breaks) +
+  scale_fill_distiller(palette = "Spectral") + 
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   theme(legend.position = "none")
 ggsave(filename= "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_sample_2_vi_ind.pdf", 
-       width = 15, height = 15 * a4_aspect_ratio, units = "cm")
+       width = 15 * a4_aspect_ratio, height = 15, units = "cm")
 
 empirical_tidy_vi_ind %>%
   filter(sample == 3) %>%
   group_by(sample, model) %>%
   ggplot() +
-  geom_tile(aes(x = model, y = variable, alpha = importance)) +
+  geom_tile(aes(x = variable, y = model, fill = importance)) +
+  scale_x_discrete(label = labels, breaks = breaks) +
+  scale_fill_distiller(palette = "Spectral") + 
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   theme(legend.position = "none")
 ggsave(filename= "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_sample_3_vi_ind.pdf", 
-       width = 15, height = 15 * a4_aspect_ratio, units = "cm")
+       width = 15 * a4_aspect_ratio, height = 15, units = "cm")
 
 ## All sample variable importance
 empirical_tidy_vi_ind %>%

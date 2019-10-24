@@ -522,6 +522,44 @@ all_loss_df_averaged %>%
   scale_fill_brewer(palette = "Paired") +
   facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
 ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_rsquare_small_nn.pdf")
+
+## All Models
+
+all_loss_df_averaged %>%
+  ungroup() %>%
+  mutate(sample = as.factor(sample)) %>%
+  ## Filter out certain models
+  ggplot() +
+  geom_bar(aes(x = model, y = test_MSE, fill = sample), stat = "identity", position = position_dodge()) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  scale_fill_brewer(palette = "Paired") +
+  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_mse.pdf")
+
+all_loss_df_averaged %>%
+  ungroup() %>%
+  mutate(sample = as.factor(sample)) %>%
+  ## Filter out certain models
+  ggplot() +
+  geom_bar(aes(x = model, y = test_MAE, fill = sample), stat = "identity", position = position_dodge()) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  scale_fill_brewer(palette = "Paired") +
+  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_mae.pdf")
+
+all_loss_df_averaged %>%
+  ungroup() %>%
+  mutate(sample = as.factor(sample)) %>%
+  ## Filter out certain models
+  ggplot() +
+  geom_bar(aes(x = model, y = test_RSquare, fill = sample), stat = "identity", position = position_dodge()) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  scale_fill_brewer(palette = "Paired") +
+  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_rsquare.pdf")
 ```
 
 ```{r variable_importance_plots}
@@ -592,7 +630,7 @@ top_variables <- all_vi_df_averaged %>%
   group_by(variable) %>%
   summarise(importance = mean(importance)) %>%
   arrange(desc(importance)) %>%
-  top_n(35, importance)
+  top_n(30, importance)
 
 top_variables <- as.character(top_variables$variable)
 
@@ -679,6 +717,24 @@ all_vi_df_averaged %>%
   # Facet
   facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
 
+all_vi_df_averaged %>%
+  filter(variable %in% top_variables) %>%
+  group_by(dgp_spec, model, cross_corr, variable, SV) %>%
+  summarise(importance = mean(importance)) %>%
+  ungroup() %>%
+  mutate(variable = fct_reorder(variable, importance)) %>%
+  ggplot() + 
+  geom_tile(aes(x = variable, y = model, fill = importance)) +
+  scale_x_discrete(label = labels, breaks = breaks) + 
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(legend.position = "right") +
+  scale_fill_distiller(palette = "Spectral") + 
+  # Facet
+  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
+ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_ave_vi_plot.pdf",
+       width = 20 * a4_aspect_ratio, height = 20, units = "cm")
+
 ```
 
 ```{r hyperparam_functions}
@@ -729,9 +785,11 @@ eln_hyperparameters_df %>%
   mutate(group_id = as.factor(group_id)) %>%
   ggplot() +
   geom_line(aes(x = sample, y = alpha, group = group_id, colour = group_id)) +
+  scale_x_continuous(breaks = c(1, 2, 3)) +
   theme_bw() +
   theme(legend.position = "none")
-ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/eln_alpha_plot.pdf")
+ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/eln_alpha_plot.pdf",
+       width = 15 * a4_aspect_ratio, height = 15, units = "cm")
 
 ## Lambda Value Plot
 eln_hyperparameters_df %>%
@@ -739,9 +797,11 @@ eln_hyperparameters_df %>%
   mutate(group_id = as.factor(group_id)) %>%
   ggplot() +
   geom_line(aes(x = sample, y = lambda, group = group_id, colour = group_id)) +
+  scale_x_continuous(breaks = c(1, 2, 3)) +
   theme_bw() +
   theme(legend.position = "none")
-ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/eln_lambda_plot.pdf")
+ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/eln_lambda_plot.pdf",
+       width = 15 * a4_aspect_ratio, height = 15, units = "cm")
 ```
 
 ```{r hyperparam_plots}
@@ -765,21 +825,21 @@ iterate_over_realization <- function(simulation_results_list, dgp_spec, SV, cros
 }
 
 rf_hyperparameters_df <- rbind(
-  iterate_over_realization(g1_A1_nosv_0_results, "g1", 0, 0),
-  iterate_over_realization(g2_A1_nosv_0_results, "g2", 0, 0),
-  iterate_over_realization(g3_A1_nosv_0_results, "g3", 0, 0),
+  iterate_over_realization(g1_A1_nosv_0_results_all, "g1", 0, 0),
+  iterate_over_realization(g2_A1_nosv_0_results_all, "g2", 0, 0),
+  iterate_over_realization(g3_A1_nosv_0_results_all, "g3", 0, 0),
   
-  iterate_over_realization(g1_A1_sv_0.01_results, "g1", 1, 0.01),
-  iterate_over_realization(g2_A1_sv_0.01_results, "g2", 1, 0.01),
-  iterate_over_realization(g3_A1_sv_0.01_results, "g3", 1, 0.01),
+  iterate_over_realization(g1_A1_sv_0.01_results_all, "g1", 1, 0.01),
+  iterate_over_realization(g2_A1_sv_0.01_results_all, "g2", 1, 0.01),
+  iterate_over_realization(g3_A1_sv_0.01_results_all, "g3", 1, 0.01),
   
-  iterate_over_realization(g1_A1_sv_0.1_results, "g1", 1, 0.1),
-  iterate_over_realization(g2_A1_sv_0.1_results, "g2", 1, 0.1),
-  iterate_over_realization(g3_A1_sv_0.1_results, "g3", 1, 0.1),
+  iterate_over_realization(g1_A1_sv_0.1_results_all, "g1", 1, 0.1),
+  iterate_over_realization(g2_A1_sv_0.1_results_all, "g2", 1, 0.1),
+  iterate_over_realization(g3_A1_sv_0.1_results_all, "g3", 1, 0.1),
   
-  iterate_over_realization(g1_A1_sv_1_results, "g1", 1, 1),
-  iterate_over_realization(g2_A1_sv_1_results, "g2", 1, 1),
-  iterate_over_realization(g3_A1_sv_1_results, "g3", 1, 1)
+  iterate_over_realization(g1_A1_sv_1_results_all, "g1", 1, 1),
+  iterate_over_realization(g2_A1_sv_1_results_all, "g2", 1, 1),
+  iterate_over_realization(g3_A1_sv_1_results_all, "g3", 1, 1)
 )
 
 rf_hyperparameters_df %>%
@@ -787,7 +847,21 @@ rf_hyperparameters_df %>%
   mutate(group_id = as.factor(group_id)) %>%
   ggplot() +
   geom_line(aes(x = sample, y = mtry, group = group_id, colour = group_id)) +
+  scale_x_continuous(breaks = c(1, 2, 3)) +
   theme_bw() +
   theme(legend.position = "none")
+ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/rf_mtry_plot.pdf",
+       width = 15 * a4_aspect_ratio, height = 15, units = "cm")
+
+rf_hyperparameters_df %>%
+  mutate(group_id = group_indices(., realization_no, model, dgp_spec, SV, cross_corr)) %>%
+  mutate(group_id = as.factor(group_id)) %>%
+  ggplot() +
+  geom_line(aes(x = sample, y = nodesize, group = group_id, colour = group_id)) +
+  scale_x_continuous(breaks = c(1, 2, 3)) +
+  theme_bw() +
+  theme(legend.position = "none")
+ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/rf_nodesize_plot.pdf",
+       width = 15 * a4_aspect_ratio, height = 15, units = "cm")
 ```
 

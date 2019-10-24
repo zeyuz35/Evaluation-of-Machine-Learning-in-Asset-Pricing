@@ -103,8 +103,14 @@
 	urlcolor = {blue!80!black}
 }
 
-\title{Evaluation of Machine Learning in Empirical Asset Pricing}
-\author{Ze Yu Zhong}
+\title{Evaluation of Machine Learning in Empirical Asset Pricing
+\thanks{I acknowledge the support of David Frazier, my supervisor, and Xueyan Zhao and Jun Sung Kim, my honours degree coordinators. I would also like to acknowledge the work of \cite{gu_empirical_2018}, and in particular for their provision of the dataset which they constructed.}
+}
+\author{Ze Yu Zhong \\
+Supervisor: David Frazier \\ 
+Thesis submitted for the completion of the \\
+Bachelor of Commerce (Honours) in Econometrics at \\
+Monash University}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%BEGIN DOCUMENT
@@ -228,9 +234,9 @@ The third is a "recursive" method, which is the same as the rolling window metho
 
 Both the rolling window and recursive schemes are very computationally intensive. Therefore, a hybrid of the rolling and recursive schemes was considered: the training set is increased by one year with each refit, the validation set remains one year in length but moves forward by one year, and forecasts are made using that model for the subsequent year. The ``traditional" cross validation method of randomly sampling to determine a train and validation set was not done to maintain the temporal ordering of the data.
 
-\subsubsection{Loss Function}
+\subsubsection{Loss/Objective Function}
 \label{loss_function}
-The choice of the loss function used in models is imperative to machine learning. The loss functions considered are Mean Absolute Error (MAE) and Mean Squared Error \footnote{Also referred to as $l_1$ and $l_2$ loss respectively within the machine learning literature}.
+The choice of the loss function used in models is imperative to machine learning. The loss functions considered are Mean Absolute Error (MAE) and Mean Squared Error (MSE) \footnote{Also referred to as $l_1$ and $l_2$ loss respectively within the machine learning literature}.
 
 The mean absolute error (MAE) is simply the average magnitude of errors. Because of this, it places equal weighting to all magnitudes of errors and is more robust to outliers. 
 
@@ -423,13 +429,12 @@ was considered, but observed to suffer tremendously from the "dying-ReLU problem
 
 \newpage
 
-\subsection{Model Evaluation}
+\subsubsection{Model Evaluation}
 \label{model_evaluation}
 
 \paragraph{Loss Metrics}
 
 Predictive performance for individual excess stock returns were assessed using popular loss metrics in the literature: Mean Absolute Error (MAE), Mean Squared Error (MSE) and an out-of-sample R-squared metric.
-
 
 MSE is noted to be traditionally very popular within both the machine learning and econometrics literature. However, there is also some literature which argues against the use of MSE (and all square error measures) due to its innaccuracy and potential biasedness in time series settings, and advocates for the use of MAE instead. There is no consensus on an ``ideal" loss metric, and for this reason we produce both of them. These loss metrics also have a one-to-one correspondence to the loss functions considered for fitting the models.
 
@@ -465,9 +470,7 @@ VI_{j, norm} = \frac{VI_j + \operatorname{min}(VI_j) + o}
 
 \subsection{Simulation Design}
 
-\rhs{motivate this section more clearly}
-
-We begin with the simulation study as a way to explore how machine learning performs with specific regards to the characteristics present in financial data. By specifying a simulation design with the desired characteristics, a controlled and well understood environment is available for explicitly testing the predictive performance and causal analysis abilities of the machine learning models considered. In particular, a sensible simulation design which incorporated the following characteristics of financial data was needed:
+We begin with the simulation study as a way to explore how machine learning performs with specific regards to the characteristics present in financial data. By specifying a simulation design with the desired characteristics, a controlled and well understood environment is available for explicitly testing the predictive performance and causal analysis abilities of the machine learning models considered. In particular, a simulation design which incorporated the following characteristics of financial data was needed:
 
 \begin{itemize}
 \item Low signal to noise ratio
@@ -501,9 +504,11 @@ e_{i, t+1} &=
 	\quad u \sim N(0, 1)
 \end{align}
 
-Let $v_{t+1}$ be a $3\times 1$ vector of errors, and $w_{t+1} \sim N(0, 1)$ and $\varepsilon_{i,t+1} \sim N(0, 1)$ scalar error terms. The parameters of these are tuned such that the annualized volatility of each return series was approximately 22\%, as is often observed empirically.
+Let $v_{t+1}$ be a $3\times 1$ vector of errors, and $w_{t+1} \sim N(0, 1)$ and $\varepsilon_{i,t+1} \sim N(0, 1)$ scalar error terms. 
 
 The matrix $C_t$ is an $N\times P_c$ vector of latent factors, where the first three columns correspond to $\beta_{i,t}$, across the $1\leq i\leq N$ dimensions, while the remaining $P_c-3$ factors do not enter the return equation. The $P_x\times1$ vector $x_t$ is a $3 \times 1$ multivariate time series, and $\varepsilon_{t+1}$ is a $N\times 1$ vector of idiosyncratic errors. 
+
+The parameters of these were tuned such that the annualized volatility of each return series was approximately 22\%, as is often observed empirically.
 
 Note that we also reproduce \cite{gu_empirical_2018}'s error specification as a case where there is no stochastic volatility:
 
@@ -589,7 +594,7 @@ The simulation design results in $3 \times 3 = 12$ different simulated datasets,
 
 If viewed as monthly periods, $T = 180$ corresponds to 15 years. A data splitting scheme similar to the scheme to be used in the empirical data study was used: a training:validation length ratio of approximately 1.5 to begin, and a test set that is 1 year in length. We employ the hybrid growing window approach as described earlier in section \ref{sample_split} (see Figure \ref{sample_split_diag} for a graphical representation).
 
-\begin{figure}
+\begin{figure}[!htb]
 	\begin{center}
 		\begin{tabular}{|c|p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}|}
 			\hline
@@ -639,33 +644,33 @@ Looking at the prediction performance of different models, we find that in gener
 
 Machine learning models fitted with respect to minimizing MAE (quantile loss) generally perform better, even when evaluated against MSE loss metrics. This is not a surprising result, especially considering the stochastic error design which introduces significant shocks to the returns process, leading to large outliers which the mean squared error metric is more sensitive to. Though the actual difference between the loss metrics between the penalized linear models, random forests and neural networks are very small, when considering the consistency of the results across numerous Monte Carlo simulations, the differences in prediction performance, though small, is robust and significant.
 
-\begin{figure}
+\begin{figure}[!htb]
 	\begin{center}
-		\includegraphics[max size = {\textwidth}{\textheight}]{simulation_test_mae_pre_all.pdf}
-		\includegraphics[max size = {\textwidth}{\textheight}]{simulation_test_mse_pre_all.pdf}
+		\includegraphics[max size = {\textwidth}{0.5\textheight}]{simulation_test_mae_pre_all.pdf}
+		\includegraphics[max size = {\textwidth}{0.5\textheight}]{simulation_test_mse_pre_all.pdf}
 		\caption{Simulation Test Loss Metrics, only including best performing Neural Networks}
 	\end{center}
 \end{figure}
 
 %% Figure out what graphs to show here
 
-\begin{figure}
+\begin{figure}[!htb]
 	\begin{center}
-		\includegraphics[max size = {\textwidth}{\textheight}]{simulation_test_mae_pre.pdf}
+		\includegraphics[max size = {\textwidth}{0.5\textheight}]{simulation_test_mae_pre.pdf}
 		\caption{Simulation Test MAE, only including best performing Neural Networks}
 	\end{center}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[!htb]
 	\begin{center}
-		\includegraphics[max size = {\textwidth}{\textheight}]{simulation_test_mse_pre.pdf}
+		\includegraphics[max size = {\textwidth}{0.5\textheight}]{simulation_test_mse_pre.pdf}
 		\caption{Simulation Test MSE, only including best performing Neural Networks}
 	\end{center}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[!htb]
 	\begin{center}
-		\includegraphics[max size = {\textwidth}{\textheight}]{simulation_test_rsquare_pre.pdf}
+		\includegraphics[max size = {\textwidth}{0.5\textheight}]{simulation_test_rsquare_pre.pdf}
 		\caption{Simulation Test OOS R Squared, only including best performing Neural Networks}
 	\end{center}
 \end{figure}
@@ -674,9 +679,9 @@ Across all specifications with a stochastic volatility component, we observe a d
 
 Focusing on the neural networks, we clearly see that they do not outperform any of the other machine learning models, even when the underlying data generating process is non-linear. This directly contradicts the result which \cite{gu_empirical_2018} find, even when considering the design with no cross sectional correlation and stochastic volatility (top row in graphs), which corresponds to their exact specification but with a multivariate macroeconomic series. We also find consistent evidence that deeper architectures provide better prediction performance, another result which contradicts \cite{gu_empirical_2018}'s conclusions that shallow learning may be better.
 
-\begin{figure}
+\begin{figure}[!htb]
 	\begin{center}
-		\includegraphics[max size = {\textwidth}{\textheight}]{simulation_test_rsquare_small_nn.pdf}
+		\includegraphics[max size = {\textwidth}{0.5\textheight}]{simulation_test_rsquare_small_nn.pdf}
 		\caption{Simulation Test OOS R-Squared for Neural Networks optimized w.r.t. MAE}
 	\end{center}
 \end{figure}
@@ -686,12 +691,15 @@ Focusing on the neural networks, we clearly see that they do not outperform any 
 Focusing on the causal inference capabilities of different models by looking at variable importance metrics however reveals a more interesting comparison between models. We can clearly observe that the elastic net outperforms all other models consistently in terms of assigning the correct relative importance to the true causal regressors \footnote{($c_1.\text{constant}$, $c_2.\text{constant}$ and $c_3.x_3$ for $g1$ and $g_2$ specifications, and $c_1.\text{constant}$, $c_2.\text{constant}$ and $c_3.\text{constant}$ for $g_3$)}, even in settings with very high cross sectional correlation. 
 
 %% Variable Importance Plots
-\begin{figure}
+\begin{landscape}
+\begin{figure}[!htb]
 	\begin{center}
-		\includegraphics[max size = {\textwidth}{\textheight}]{simulation_ave_vi_plot_pre.pdf}
+		\includegraphics[max size = {20cm}{20cm}]{simulation_ave_vi_plot.pdf}
 		\caption{Simulation Variable Importance Plots}
 	\end{center}
 \end{figure}
+\end{landscape}
+
 
 In terms of finding the correct underlying causal regressors, we find that the penalized linear models perform the best at identifying the true data generating regressors, and that this appears to be mostly robust regardless of the amount of cross sectional correlation in the factor set. The penalized linear models are not perfect and their ability to correctly identify causal regressors worsens as the data generating process becomes more non-linear. On these more difficult specifications, the penalized linear models are generally very conservative, sometimes only identifying a single covariate as important. This is most apparent on the $g_2$ specification. Occasionally, the elastic nets identified the incorrect covariates completely, though the relative importance assigned to them was small. 
 
@@ -700,7 +708,7 @@ The random forests and to a lesser extent the neural networks also correctly ide
 \begin{figure}
 	\label{rf_sim_vi}
 	\begin{center}
-		\includegraphics[max size = {\textwidth}{\textheight}]{simulation_ave_vi_plot_pre_rf.pdf}
+		\includegraphics[max size = {\textwidth}{0.5\textheight}]{simulation_ave_vi_plot_pre_rf.pdf}
 		\caption{Simulation Variable Importance Plots for Random Forests}
 	\end{center}
 \end{figure}
@@ -708,7 +716,7 @@ The random forests and to a lesser extent the neural networks also correctly ide
 \begin{figure}
 	\label{nn_sim_vi}
 	\begin{center}
-		\includegraphics[max size = {\textwidth}{\textheight}]{simulation_ave_vi_plot_pre_nn.pdf}
+		\includegraphics[max size = {\textwidth}{0.5\textheight}]{simulation_ave_vi_plot_pre_nn.pdf}
 		\caption{Simulation Variable Importance Plots for Neural Networks}
 	\end{center}
 \end{figure}
@@ -751,6 +759,23 @@ There existed a significant amount of missing data in the dataset. The dataset's
 
 We then follow \cite{gu_empirical_2018} and construct eight macroeconomic factors following the variable definitions in \cite{welch_comprehensive_2008}: dividend-price ratio (dp), earnings-price ratio (ep), book-to-market ratio (bm), net equity expansion (ntis), Treasury-bill rate (tbl), term spread (tms), default spread (dfy) and stock variance (svar). These factors were lagged by one period so as to be used to predict one period ahead quarterly returns. The treasury bill rate was also used from this source to proxy for the risk free rate in order to construct excess quarterly returns. 
 
+\begin{table}
+	\caption{Macroeconomic Factors, (\cite{welch_comprehensive_2008})}
+	\begin{center}
+		\begin{tabular}{lccc} \hline
+			No. & Acronym & Macroeconomic Factor \\ \hline
+			1 & macro\_dp & Dividend Price Ratio \\
+			2 & macro\_ep & Earnings Price Ratio \\
+			3 & macro\_bm & Book to Market Ratio \\
+			4 & macro\_ntis & Net Equity Expansion \\
+			5 & macro\_tbl & Treasury Bill Rate \\
+			6 & macro\_tms & Term Spread \\
+			7 & macro\_dfy & Default Spread \\
+			8 & macro\_svar & Stock Variance \\ \hline
+		\end{tabular}
+	\end{center}
+\end{table}
+
 The two sets of factors were then combined to form a baseline set of covariates, which we define throughout all methods and analysis as:
 
 \begin{equation}
@@ -770,9 +795,9 @@ The final dataset spanned from 1993 Q3 to 2016 Q4 with 202066 individual observa
 
 We mimic the procedure used in the simulation study. This means that the dataset was split such that the training and validation sets were split such that the training set was approximately 1.5 times the length of the validation set, in order to predict a test set that is one year in length.
 
-\begin{figure}
+\begin{figure}[!htb]
 	\begin{center}
-		\begin{tabular}{|c|p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}|}
+		\begin{tabular}{|c|p{0.55cm}p{0.55cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}|}
 			\hline
 			Set No. &&&&&&&&&&&&&&&& \\
 			\hline
@@ -787,7 +812,7 @@ We mimic the procedure used in the simulation study. This means that the dataset
 			1 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
 			\cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{olive} & NA & NA \\
 			\hline
-			Time & 1993Q3 & 1993Q4 & 1994 & 1995 & 1996 & ... & 2006 & 2007 & 2008 & ... & 2011 & 2012 & 2013 & 2014 & 2015 & 2016 \\
+			Time & 93Q3 & 93Q4 & 94 & 95 & 96 & ... & 06 & 07 & 08 & ... & 11 & 12 & 13 & 14 & 15 & 16 \\
 			\hline
 		\end{tabular}
 		\medskip
@@ -805,8 +830,6 @@ We mimic the procedure used in the simulation study. This means that the dataset
 	\label{emp_sample_split_diag}
 \end{figure}
 
-\newpage
-
 \subsection{Empirical Data Results}
 
 % Overall Results
@@ -821,16 +844,16 @@ However, on the empirical data we start to see the neural networks start to fail
 
 In terms of prediction accuracy, we can see that in general the results of the simulation study were repeated: the elastic net models perform the best, followed by the random forests, then the neural networks, and finally the linear models. We note that the differences between each model using the MSE and MAE loss metrics are much more pronounced on empirical data. We similarly see that machine learning models perform better when fitted with respect to quantile loss instead of MSE. 
 
-\begin{figure}
+\begin{figure}[!htb]
 	\begin{center}
-		\includegraphics[max size = {\textwidth}{\textheight}]{empirical_test_mse}
+		\includegraphics[max size = {\textwidth}{0.5\textheight}]{empirical_test_mse}
 	\end{center}
 	\caption{Empirical Test MSE Averaged Across All Samples}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[!htb]
 	\begin{center}
-		\includegraphics[max size = {\textwidth}{\textheight}]{empirical_test_mae}
+		\includegraphics[max size = {\textwidth}{0.5\textheight}]{empirical_test_mae}
 	\end{center}
 	\caption{Empirical Test MAE Averaged Across All Samples}
 \end{figure}
@@ -843,26 +866,19 @@ Interestingly, we do not observe worsening performance as the training sample in
 
 As the data generating process for empirical returns is unknown, the variable importance results cannot be directly compared with those of the simulation study. Even so, we see similar results: the elastic net and random forest models tend to agree on the same subset of predictors, but the random forest struggles with adequately discerning between highly correlated regressors. However, we see similarly to the prediction performance results that the neural networks become less robust. 
 
-\begin{figure}
+\begin{figure}[!htb]
 	\begin{center}
-		\includegraphics[max size = {\textwidth}{\textheight}]{empirical_sample_all_vi_ind}
+		\includegraphics[max size = {\textwidth}{0.5\textheight}]{empirical_sample_all_vi_ind}
 		\caption{Empirical Individual Factor Importance, averaged across all training samples}
 	\end{center}
 \end{figure}
 
 If we focus on the two top performing models of elastic net and random forest, we see that they consistently pick out the 1 month and 6 month momentum factors out of the individual characteristics as important, and the book-to-market and default yield spread factors out of the macroeconomic factors are important. In general though, the variable importance metrics are less consistent for the random forests, and it should be noted in particular that the random forest tends to determine factors highly correlated with momentum as important, such as change in moment, dollar trading volume and return volatility. Looking at the macroeconomic factors, penalized linear models tend to identify the average book to market ratio and the default spread as the most important macroeconomic factors. On the macroeconomic factor set, the random forests were inconsistent with the elastic nets, and tended to assign very similar variable importance metrics to most macroeconomic factors.
 
-\begin{figure}
-	\begin{center}
-		\includegraphics[max size = {\textwidth}{\textheight}]{empirical_sample_all_vi_ind}
-		\caption{Empirical Individual Factor Importance, averaged across all training samples}
-	\end{center}
-\end{figure}
-
-\begin{figure}
+\begin{figure}[!htb]
 	\label{empirical_macro_facet}
 	\begin{center}
-		\includegraphics[max size = {\textwidth}{\textheight}]{empirical_sample_all_vi_macro_facet}
+		\includegraphics[max size = {\textwidth}{0.5\textheight}]{empirical_sample_all_vi_macro_facet}
 		\caption{Empirical Macroeconomic Factor Importance, faceted by training sample}
 	\end{center}
 \end{figure}
@@ -896,6 +912,25 @@ The overall findings of this paper differ from the sparse literature on similar 
 \section{Appendix}
 
 \subsection{Data}
+
+%% Macroeconomic Factor Table
+
+\begin{table}[!htb]
+	\caption{Macroeconomic Factors}
+	\begin{center}
+		\begin{tabular}{lccc} \hline
+			No. & Acronym & Macroeconomic Factor \\ \hline
+			1 & macro\_dp & Dividend Price Ratio \\
+			2 & macro\_ep & Earnings Price Ratio \\
+			3 & macro\_bm & Book to Market Ratio \\
+			4 & macro\_ntis & Net Equity Expansion \\
+			5 & macro\_tbl & Treasury Bill Rate \\
+			6 & macro\_tms & Term Spread \\
+			7 & macro\_dfy & Default Spread \\
+			8 & macro\_svar & Stock Variance \\ \hline
+		\end{tabular}
+	\end{center}
+\end{table}
 
 %% Individual Factor Table
 
@@ -1109,89 +1144,81 @@ The overall findings of this paper differ from the sparse literature on similar 
 
 \newpage
 
-%% Macroeconomic Factor Table
-
-\begin{table}
-	\caption{Macroeconomic Factors}
-	\begin{center}
-	\begin{tabular}{lccc} \hline
-		No. & Acronym & Macroeconomic Factor \\ \hline
-		1 & macro\_dp & Dividend Price Ratio \\
-		2 & macro\_ep & Earnings Price Ratio \\
-		3 & macro\_bm & Book to Market Ratio \\
-		4 & macro\_ntis & Net Equity Expansion \\
-		5 & macro\_tbl & Treasury Bill Rate \\
-		6 & macro\_tms & Term Spread \\
-		7 & macro\_dfy & Default Spread \\
-		8 & macro\_svar & Stock Variance \\ \hline
-	\end{tabular}
-	\end{center}
-\end{table}
-
-\newpage
-
 \subsection{Additional Results}
 
 \subsubsection{Simulation Study}
 
-\begin{figure}
-	\includegraphics{simulation_test_mae.pdf}
+\begin{figure}[!htb]
+	\includegraphics[max size = {\textwidth}{0.5\textheight}]{simulation_test_mae.pdf}
 	\caption{Simulation Test MAE}
 \end{figure}
 
-\begin{figure}
-	\includegraphics{simulation_test_mse.pdf}
+\begin{figure}[!htb]
+	\includegraphics[max size = {\textwidth}{0.5\textheight}]{simulation_test_mse.pdf}
 	\caption{Simulation Test MSE}
 \end{figure}
 
 \begin{figure}
-	\includegraphics{simulation_test_rsquare.pdf}
+	\includegraphics[max size = {\textwidth}{0.5\textheight}]{simulation_test_rsquare.pdf}
 	\caption{Simulation Test R Squared}
 \end{figure}
 
-\begin{figure}
-	\includegraphics{simulation_train_mae.pdf}
+\begin{figure}[!htb]
+	\includegraphics[max size = {\textwidth}{0.5\textheight}]{simulation_train_mae.pdf}
 	\caption{Simulation Train MAE}
 \end{figure}
 
-\begin{figure}
-	\includegraphics{simulation_train_mse.pdf}
+\begin{figure}[!htb]
+	\includegraphics[max size = {\textwidth}{0.5\textheight}]{simulation_train_mse.pdf}
 	\caption{Simulation Train MSE}
 \end{figure}
 
-\begin{figure}
-	\includegraphics{simulation_train_rsquare.pdf}
+\begin{figure}[!htb]
+	\includegraphics[max size = {\textwidth}{0.5\textheight}]{simulation_train_rsquare.pdf}
 	\caption{Simulation Train R Squared}
 \end{figure}
 
 %% Hyperparameters
 
-\begin{figure}
-	\includegraphics[max size = {\textwidth}{\textheight}]{eln_alpha_plot.pdf}
+% Penalized Linear Models
+\begin{figure}[!htb]
+	\includegraphics[max size = {\textwidth}{0.5\textheight}]{eln_alpha_plot.pdf}
 	\caption{Optimal Alpha Values Across Training Samples for Elastic Net, each colour representing a different simulation realisation}
 \end{figure}
 
-\begin{figure}
-	\includegraphics[max size = {\textwidth}{\textheight}]{eln_lambda_plot.pdf}
+\begin{figure}[!htb]
+	\includegraphics[max size = {\textwidth}{0.5\textheight}]{eln_lambda_plot.pdf}
 	\caption{Optimal Lambda Values Across Training Samples for Elastic Net, each colour representing a different simulation realisation}
+\end{figure}
+
+% Random Forests
+
+\begin{figure}[!htb]
+	\includegraphics[max size = {\textwidth}{0.5\textheight}]{rf_mtry_plot.pdf}
+	\caption{Optimal mtry Values Across Training Samples for Random Forest, each colour representing a different simulation realisation}
+\end{figure}
+
+\begin{figure}[!htb]
+	\includegraphics[max size = {\textwidth}{0.5\textheight}]{rf_nodesize_plot.pdf}
+	\caption{Optimal nodesize Values Across Training Samples for Random Forest, each colour representing a different simulation realisation}
 \end{figure}
 
 \newpage
 
 \subsubsection{Empirical Study}
 
-\begin{figure}
-	\includegraphics{empirical_sample_1_vi_ind.pdf}
+\begin{figure}[!htb]
+	\includegraphics[max size = {\textwidth}{0.5\textheight}]{empirical_sample_1_vi_ind.pdf}
 	\caption{Empirical Data Individual Factor Variable Importance for Sample 1}
 \end{figure}
 
-\begin{figure}
-	\includegraphics{empirical_sample_2_vi_ind.pdf}
+\begin{figure}[!htb]
+	\includegraphics[max size = {\textwidth}{0.5\textheight}]{empirical_sample_2_vi_ind.pdf}
 	\caption{Empirical Data Individual Factor Variable Importance for Sample 2}
 \end{figure}
 
-\begin{figure}
-	\includegraphics{empirical_sample_3_vi_ind.pdf}
+\begin{figure}[!htb]
+	\includegraphics[max size = {\textwidth}{0.5\textheight}]{empirical_sample_3_vi_ind.pdf}
 	\caption{Empirical Data Individual Factor Variable Importance for Sample 3}
 \end{figure}
 
@@ -1203,7 +1230,7 @@ The overall findings of this paper differ from the sparse literature on similar 
 
 \subsubsection{Linear Models}
 
-Ordinary Least Squares (OLS) used for fitting wrt MS.
+Ordinary Least Squares (OLS) used for fitting with respect to MSE. This is available from many statistical packages, including R's \textbf{stats} package.
 
 The \textbf{quantreg} package which implements quantile linear regression used for fitting linear models with respect to mean absolute error (noting that minimizing 0.5 quantile loss is equivalent to minimizing mae).
 
@@ -1213,49 +1240,7 @@ The package \textbf{hqreg} was used to fit penalized regression models with resp
 
 This package efficiently calculates a regularization path of penalization values given a value for $\alpha$. This means that it is much more efficient to instead only supply a grid for $\alpha$, let the algorithm decide its own path of penalization values. The combination of these two parameters which produces the best results on the validation set were then chosen to produce the final model. Note that this is the approach originally suggested by \cite{zou_regularization_2005}.
 
-\subsubsection{Classification and Regression Trees}
-
-For full details of the Classification and Regression Tree algorithm see \cite{breiman_classification_1984}. 
-
-\begin{algorithm}[H]
-	\SetAlgoLined
-	Initialize \;
-	\For{$d$ from 1 to $L$}{
-		\For{$i$ in ${C_l(d-1), l = 1, \dots, 2^{d-1}}$}{
-			For each feature $j = 1, 2, \dots, P,$ and each threshold level $\alpha$, define a split as $s = (j, \alpha)$ which divides $C_l(d-1)$ into $C_{left}$ and $C_{right}$:
-			\begin{equation*}
-				C_{left}s = \{z_j \leq \alpha\} \cap C_l(d-1); C_{right}s = \{z_j > \alpha\} \cap C_l(d-1)
-			\end{equation*}
-			
-			Define the impurity function:
-			\begin{equation*}
-				\mathcal{L}(C, C_{left}, C_{right}) = \frac{|C_{left}|}{|C|}H(C_{left}) + \frac{|C_{right}|}{|C|}H(C_{right})
-			\end{equation*}
-			where
-			\begin{equation*}
-			H(C) = \frac{1}{|C|} \sum_{ }^{z_{i,t}\in C}(r_{i,t+1}-\theta)^2, \theta = \frac{1}{|C|} \sum_{z_{i,t}\in C}^{ }r_{i,t+1}
-			\end{equation*}
-			and $|C|$ denotes the number of observations in set C
-			
-			Find the optimal split
-			\begin{equation*}
-				s^* \leftarrow \underset{s}{argmin}\mathcal{L}(C(s),C_{left}(s),C_{right}(s))
-			\end{equation*}
-			Update nodes (partition the data):
-			\begin{equation*}
-				C_{2l-1}(d) \leftarrow C_{left}(s^*), C_{2l}(d) \leftarrow C_{right}(s^*)
-			\end{equation*}
-		}
-	}
-	\KwResult{The prediction of a regression tree is:
-	\begin{equation*}
-		g(z_{i,t};\theta,L) = \sum_{k=1}^{2^L}\theta_k\textbf{1}_{z_{i,t}\in C_k(L)}; \theta_k = \frac{1}{|C_{k}(L)|} \sum_{z_{i,t}\in C_k(L)}^{ }r_{i,t+1}
-	\end{equation*}
-	}
-	\caption{Classification and Regression Tree}
-\end{algorithm}
-
-\subsubsection{Random Forest}
+\subsubsection{Classification and Regression Trees and Random Forests}
 
 The \textbf{randomforestSRC} package was used to fit both random forests for mean regression and quantile regression.
 
@@ -1263,25 +1248,9 @@ To maintain computational feasibility, all random forest models were grown using
 
 Rather than use the randomly determined out of bag (OOB) observations for hyperparameter tuning, we explicitly use a separate validation set that is closer to the test set in time, in order to maintain temporal ordering of the data.
 
-For full details of the Random Forest algorithm see \cite{breiman_random_2001}. 
+For full details of the classification and regression tree algorithms see \cite{breiman_classification_1984}. 
 
-\begin{algorithm}[H]
-	\SetAlgoLined
-	\For{$b$ from $1$ to $B$}{
-		Draw bootstrap samples {$(z_{i,t},r_{i,t+1}),(i,t) \in Bootstrap(b)$} from the dataset\
-		Grow a tree $T_b$ using Algorithm, using only a random subsample, say $\sqrt{P}$ of all features \
-		Denote the resulting $bth$ tree as
-		\begin{equation*}
-			\hat{g}_b (z_{i,t},\hat{\theta}_b, L) = \sum_{k=1}^{2^L}\theta_b^k\textbf{1}_{z_{i,t}\in C_k(L)}
-		\end{equation*}
-	}
-	\KwResult{The final random forest prediction is given by the output of all trees:
-		\begin{equation*}
-			\hat{g}_b (z_{i,t}; L, B) = \frac{1}{B} \sum_{b=1}^B \hat{g}_b (z_{i,t},\hat{\theta}_b, L)
-		\end{equation*}
-	}
-	\caption{Random Forest}
-\end{algorithm}
+For full details of the Random Forest algorithm see \cite{breiman_random_2001}. 
 
 \subsubsection{Neural Networks}
 
@@ -1293,17 +1262,21 @@ Due to computational limitations, a systematic grid search or random search appr
 	\begin{tabular}{|lll|}
 		\hline
 		Hyperparameter & Options Considered & Optimal Choice \\ \hline
-		Activation Function & ReLU, Leaky ReLU with $\alpha = (0.01, 0.1)$, tanh & tanh \\
-		Optimizer & ADAM, NADAM & ADAM \\
-		Learning Rate & (0.1, 0.01, 0.001, 0.0001) & 0.01 \\
-		L1 Penalty & (1, 0.1, 0.01) & 0.01 \\
-		Batch Size & (32, 64, 128, 256, 512, 1024, 2048, 4096) & 256 (Empirical), 128 (Simulated) \\
+		Activation Function & ReLU, Leaky ReLU, tanh & tanh \\
+		Optimizer & ADAM, NADAM, SGD, RMSPROP & ADAM \\
+		Learning Rate & (0.1, 0.01, 0.001, 0.0001) & 0.001 \\
+		L1 Penalty & (1, 0.1, 0.01, 0.001) & 0.01 \\
+		Batch Size & (32, 64, 128, 256, 512, 1024, 2048) & 256 (Empirical), 128 (Simulated) \\
 		Early Stopping Patience & (10, 20, 30, 40, 50) & 40 \\ \hline
 	\end{tabular}
 	\caption{Hyperparameters Considered for Neural Networks}
 \end{table}
 
-ADAM algorithm for stochastic gradient descent and learning rate shrinkage as detailed by \cite{kingma_adam:_2014}.
+For full details of the ADAM optimizer see \cite{kingma_adam:_2014}.
+
+For full details of the Batch Normalization Algorithm see \cite{ioffe_batch_2015}.
+
+We present the algorithm implemented for early stopping of training. Note that this corresponds to \textit{restore\_best\_weights = TRUE} in \textbf{keras}'s implementation.
 
 \begin{algorithm}
 	\SetAlgoLined
@@ -1314,32 +1287,15 @@ ADAM algorithm for stochastic gradient descent and learning rate shrinkage as de
 		Calculate the prediction error from the validation sample, denoted as \(\epsilon'\)\
 		
 		\eIf{\(\epsilon' < \epsilon\)}
-			{\(j \leftarrow 0\)\
-				
-			 \(\epsilon \leftarrow \epsilon'\)\
-			 
-		     \(\theta' \leftarrow \theta\)}
-	     	{\(j \leftarrow j+1\)}
+		{\(j \leftarrow 0\)\
+			
+			\(\epsilon \leftarrow \epsilon'\)\
+			
+			\(\theta' \leftarrow \theta\)}
+		{\(j \leftarrow j+1\)}
 	}
 	\KwResult{$\theta'$ is the final parameter estimate}
 	\caption{Early stopping via validation}
-\end{algorithm}
-
-Batch Normalization Algorithm as detailed by \cite{ioffe_batch_2015}.
-
-\begin{algorithm}
-	Input: Values of \(x\) for each activation over a batch \(\mathcal{B} = {x_1, x_2, \dots, x_N}\)
-	
-	\(\mu_\mathcal{B} \leftarrow \frac{1}{N} \sum_{i = 1}^{N}x_i\)
-	
-	\(\sigma_\mathcal{B}^2 \leftarrow \frac{1}{N} \sum_{i = 1}^{N}(x_i - \mu_\mathcal{B})^2\)
-	
-	\(\hat{x_i} \leftarrow \frac{x_i - \mu_\mathcal{B}}{\sqrt{\sigma_\mathcal{B}^2 + \epsilon}}\)
-	
-	\(y_i \leftarrow \gamma\hat{x_i} + \beta := BN_{\gamma, \beta}(x_i)\)
-	
-	\KwResult{\(y_i = BN_{\gamma, \beta}(x_i) : i = 1, 2, ..., N\)}
-	\caption{Batch Normalization for one activation over one batch}
 \end{algorithm}
 
 \subsubsection{Tuning of Simulated Datasets}
