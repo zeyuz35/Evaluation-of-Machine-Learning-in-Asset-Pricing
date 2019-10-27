@@ -1,4 +1,4 @@
-\begin{thebibliography}{96}
+\begin{thebibliography}{98}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
 
 \bibitem[{Abarbanell and Bushee(1998)}]{abarbanell_abnormal_1998}
@@ -209,6 +209,11 @@ Guo, R.-J., Lev, B., Shi, C., 2006. Explaining the {Short}-and {Long}-{Term}
 Hafzalla, N., Lundholm, R., Matthew Van~Winkle, E., 2011. Percent accruals. The
   Accounting Review 86, 209--236.
 
+\bibitem[{Hameed(1997)}]{hameed_time-varying_1997}
+Hameed, A., 1997. Time-{Varying} {Factors} and {Cross}-{Autocorrelations} in
+  {Short}-{Horizon} {Stock} {Returns}. Journal of Financial Research 20,
+  435--458.
+
 \bibitem[{Harvey and Liu(2019)}]{harvey_census_2019}
 Harvey, C.~R., Liu, Y., 2019. A {Census} of the {Factor} {Zoo}. Social Science
   Research Network p.~7.
@@ -300,6 +305,10 @@ Kozak, S., Nagel, S., Santosh, S., 2017. Shrinking the cross section. Tech.
 
 \bibitem[{Lecun et~al.(2015)Lecun, Bengio, and Hinton}]{lecun_deep_2015}
 Lecun, Y., Bengio, Y., Hinton, G., 2015. Deep learning. Nature 521, 436--444.
+
+\bibitem[{Lee(1992)}]{lee_causal_1992}
+Lee, B.-S., 1992. Causal {Relations} {Among} {Stock} {Returns}, {Interest}
+  {Rates}, {Real} {Activity}, and {Inflation} p.~14.
 
 \bibitem[{Lerman et~al.(2008)Lerman, Livnat, and
   Mendenhall}]{lerman_high-volume_2008}

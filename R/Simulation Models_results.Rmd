@@ -762,21 +762,21 @@ iterate_over_realization <- function(simulation_results_list, dgp_spec, SV, cros
 }
 
 eln_hyperparameters_df <- rbind(
-  iterate_over_realization(g1_A1_nosv_0_results, "g1", 0, 0),
-  iterate_over_realization(g2_A1_nosv_0_results, "g2", 0, 0),
-  iterate_over_realization(g3_A1_nosv_0_results, "g3", 0, 0),
+  iterate_over_realization(g1_A1_nosv_0_results_all, "g1", 0, 0),
+  iterate_over_realization(g2_A1_nosv_0_results_all, "g2", 0, 0),
+  iterate_over_realization(g3_A1_nosv_0_results_all, "g3", 0, 0),
   
-  iterate_over_realization(g1_A1_sv_0.01_results, "g1", 1, 0.01),
-  iterate_over_realization(g2_A1_sv_0.01_results, "g2", 1, 0.01),
-  iterate_over_realization(g3_A1_sv_0.01_results, "g3", 1, 0.01),
+  iterate_over_realization(g1_A1_sv_0.01_results_all, "g1", 1, 0.01),
+  iterate_over_realization(g2_A1_sv_0.01_results_all, "g2", 1, 0.01),
+  iterate_over_realization(g3_A1_sv_0.01_results_all, "g3", 1, 0.01),
   
-  iterate_over_realization(g1_A1_sv_0.1_results, "g1", 1, 0.1),
-  iterate_over_realization(g2_A1_sv_0.1_results, "g2", 1, 0.1),
-  iterate_over_realization(g3_A1_sv_0.1_results, "g3", 1, 0.1),
+  iterate_over_realization(g1_A1_sv_0.1_results_all, "g1", 1, 0.1),
+  iterate_over_realization(g2_A1_sv_0.1_results_all, "g2", 1, 0.1),
+  iterate_over_realization(g3_A1_sv_0.1_results_all, "g3", 1, 0.1),
   
-  iterate_over_realization(g1_A1_sv_1_results, "g1", 1, 1),
-  iterate_over_realization(g2_A1_sv_1_results, "g2", 1, 1),
-  iterate_over_realization(g3_A1_sv_1_results, "g3", 1, 1)
+  iterate_over_realization(g1_A1_sv_1_results_all, "g1", 1, 1),
+  iterate_over_realization(g2_A1_sv_1_results_all, "g2", 1, 1),
+  iterate_over_realization(g3_A1_sv_1_results_all, "g3", 1, 1)
 )
 
 ## Alpha value plot

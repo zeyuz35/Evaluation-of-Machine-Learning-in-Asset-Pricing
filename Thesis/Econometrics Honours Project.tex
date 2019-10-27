@@ -12,6 +12,7 @@
 \usepackage{amsfonts}
 \usepackage{setspace,graphicx,epstopdf,amsmath}
 \usepackage{marginnote, datetime, url, enumitem, subfigure}
+\usepackage[capposition=top]{floatrow}
 
 %Journal Style
 %JFE looks nice, JF looks awful
@@ -104,7 +105,7 @@
 }
 
 \title{Evaluation of Machine Learning in Empirical Asset Pricing
-\thanks{I acknowledge the support of David Frazier, my supervisor, and Xueyan Zhao and Jun Sung Kim, my honours degree coordinators. I would also like to acknowledge the work of \cite{gu_empirical_2018}, and in particular for their provision of the dataset which they constructed.}
+\thanks{I acknowledge and thank David Frazier, my supervisor, Xueyan Zhao and Jun Sung Kim, my honours degree coordinators, as well as my fellow honours cohort for their support throughout the writing of this thesis. I would also like to acknowledge the work of \cite{gu_empirical_2018}, and in particular for their provision of the dataset which they constructed.}
 }
 \author{Ze Yu Zhong \\
 Supervisor: David Frazier \\ 
@@ -121,7 +122,7 @@ Monash University}
 \maketitle
 
 \begin{abstract}
-We explore the performance of some common machine learning algorithms in empirical asset pricing with regards to prediction performance and causal inference through a simulation study and empirical study, with special focus on how well they deal with the stylized facts and problems in financial returns data. We evaluate prediction performance according to MSE, MAE and out-of-sample R-Squared, and causal inference assessed using a variable importance metric. Across both the simulation and empirical, we find consistent results that contradict those documented in the literature, and conclude that elastic net models perform the best both in terms of prediction performance and causal ability, followed by random forest models. We take particular note that neural networks fail to outperform other machine learning models, and highlight their non-robustness. Almost all machine learning models considered outperformed traditional regression by a large margin, and we show that machine learning methods offers some potential tools for the field of empirical finance. 
+We explore the performance of some common machine learning algorithms in empirical asset pricing with regards to prediction performance and causal inference through a simulation study and empirical study, with special focus on how well they deal with the stylized facts and problems in financial returns data. We evaluate prediction performance according to MSE, MAE and out-of-sample R-Squared, and factor significance assessed using a variable importance metric. Across both the simulation and empirical, we find consistent results that contradict those documented in the literature, and conclude that elastic net models perform the best both in terms of prediction performance and causal ability, followed by random forest models. We take particular note that neural networks fail to outperform other machine learning models, and highlight their non-robustness. Almost all machine learning models considered outperformed traditional regression by a large margin, and we show that machine learning methods offers some potential tools for the field of empirical finance. 
 \end{abstract}
 
 \newpage
@@ -136,15 +137,15 @@ We explore the performance of some common machine learning algorithms in empiric
 
 \subsection{Topic}
 
-This thesis aims to evaluate the application of machine learning algorithms in empirical asset pricing. While there has been significant recent interest in applying machine learning to the problem of predicting asset returns, there is little literature that focuses on how well these algorithms are at capturing true underlying variables in determining stock returns. 12 different simulated datasets ranging from linear to highly non-linear data generating processes incorporating observed phenomena of cross sectional correlation, persistence, and stochastic volatility, in addition to real world data will be used to assess the performance of linear models, elastic net models, random forests and neural networks. Model performance will be assessed according to their predictive performance, measured by Mean Absolute Error, Mean Squared Error, and Predictive $R^2$, and their causal inference ability, measured by a variable importance metric.
+This thesis aims to evaluate the application of machine learning algorithms in empirical asset pricing. While there has been significant recent interest in applying machine learning to the problem of predicting asset returns, there is little literature that focuses on how well these methods perform in terms of prediction and variable importance influence when applied to datasets which exhibit the characteristics, or ``stylized facts" of empirical returns. Two studies were conducted to explore this: simulation study consisting of  simulated datasets ranging from linear to highly non-linear data generating processes incorporating observed phenomena and of cross sectional correlation, persistence, and stochastic volatility, and an empirical study using real world data. We focus our study on four popular and representative machine learning models: linear models, elastic net models, random forests and neural networks. Model performance is assessed according to their predictive performance, measured by Mean Absolute Error, Mean Squared Error, and Predictive $R^2$, and their ability at conducting factor significance, as measured by a variable importance metric.
 
 \subsection{Background Literature and Motivations}
 
-Empirical finance can be broadly classified into two main goals: improving the prediction of future excess returns, and understanding the underlying causal relationship among factors that drive excess returns. These two goals are noted to be very challenging for traditional regression methods, and this is largely due to the challenges present in the variables that affect financial data, also known as ``factors." 
+Empirical finance can be broadly classified into two main fields: improving the prediction of future excess returns, and understanding the underlying relationship\footnote{We avoid using the terminology of ``causal" relationship because of the difficulty in defining causality in the context of time series, though note the sporadic use of this term in the literature (see \cite{lee_causal_1992} and \cite{hameed_time-varying_1997}).} among factors that drive excess returns. These two goals are noted to be very challenging for traditional regression methods, and this is largely due to the challenges present in the variables that affect financial data, also known as ``factors." 
 
 We define ``factors" with the more contemporary definition as suggested by \cite{harvey__2016}: a collection of regressors to be used in pricing excess returns that can be used to proxy for unknown underlying risk factors due to their correlation with cross sectional returns. \footnote{Most notably, their definition rejects the more strict view that risk factors should be variables that have unpredictable variation through time, and that they should be able explain cross sectional return patterns.} \cite{harvey__2016} further group factors into the two broad categories of ``common" and individual firm ``characteristics." ``Common" factors under this definition can be viewed as proxies for sources of risk constant across all firms, such as macroeconomic variables. Examples of this include the Fama-French factors, which are excess returns on portfolios of assets sorted by certain characteristics to proxy for them. 
 
-Because of this less strict definition factors are often noted for exhibiting properties which make them highly unsuitable for inclusion in traditional regression, (\cite{harvey__2016}). Factors have been empirically observed to have high persistence, high cross-sectional correlation (multicollinearity), non-stationarity or low time series variation due to being pre-known or suffering from a lower sampling frequency. The consequences of including such regressors into traditional regression models are well documented. The resulting coefficient estimates and t-statistics can be biased, directly leading to incorrect statistical inference. Additionally, the variances for the coefficient estimates can be very high, resulting in imprecise coefficient estimates. This will result in any out of sample predictions, which are a direct function of these imprecise coefficients, also imprecise, particularly when the multicollinearity between variables changes over time.
+Because of this less strict definition factors are often noted for exhibiting properties which make them highly unsuitable for inclusion in traditional regression, (\cite{harvey__2016}). Factors have been empirically observed to have high persistence, high cross-sectional correlation (multicollinearity), non-stationarity or low time series variation due to being pre-known or suffering from a lower sampling frequency. The consequences of including such regressors into traditional regression models are well documented. The resulting coefficient estimates and t-statistics can be biased, directly leading to incorrect statistical inference. Additionally, the variances for the coefficient estimates can be very high, resulting in imprecise coefficient estimates. Any subsequent out of sample predictions from these models, which are a direct function of these imprecise coefficients, also imprecise, particularly when the multicollinearity between variables changes over time, resulting in poor prediction performance.
 
 Several real world examples of this behaviour have been documented in the literature, and perhaps the most infamous examples are the dividend ratio factors. Dividend ratio factors were initially very popular in the 1990s due to its inclusion in regression improving in sample performance. However, later literature such as \cite{goetzmann_testing_1993} and \cite{ang_stock_2006} note the persistence present in dividend ratio factors. This means that movements in dividend ratios are dominated by movements in price and therefore dividend ratios are correlated with lagged dependent variables on the right hand side of the regression equation. This violates the assumptions of exogeneous regressors (independent from the error term) required for traditional regression models (ordinary least squares) to be unbiased, resulting in t-statistics which are biased upwards and increase with time horizon due to autocorrelated errors. Importantly, \cite{goetzmann_testing_1993} show that corrections to t-statistics using the Generalized Method of Moments and Newey-West standard errors also appear to be biased upwards, making them unreliable. 
 
@@ -162,7 +163,7 @@ It does not help that many factors are cross-sectionally correlated, meaning tha
 
 More recently, machine learning methods have been used within the literature and appear to be well suited for use in empirical financial data, particularly as a means to manage the recent factor explosion within the literature. Machine learning requires less strict assumptions on the functional forms of returns, offers explicit ``regularization" methods aimed to guard against over-fitting, and methods which emphasize variable selection and dimensional reduction techniques. All of these properties make machine learning potentially well suited to producing more robust models that outperform traditional regression.
 
-The financial literature already has some applications of machine learning methods to assist with both returns prediction and causal inference. For example, \cite{kozak_shrinking_2017}, \cite{rapach_forecasting_2013} and \cite{freyberger_dissecting_2017} apply shrinkage and selection methods from machine learning to assist with the problem of factor selection.
+The financial literature already has some applications of machine learning methods to assist with both returns prediction and factor significance analysis. For example, \cite{kozak_shrinking_2017}, \cite{rapach_forecasting_2013} and \cite{freyberger_dissecting_2017} apply shrinkage and selection methods from machine learning to assist with the problem of factor selection.
 
 Most recently, there is literature that suggests machine learning methods can result in vastly better prediction prediction performance (\cite{gu_empirical_2018}, \cite{hsu_finding_2014} and \cite{feng_deep_2018}) in terms of out of sample predictive $R^2$. \cite{gu_empirical_2018} attribute this to machine learning's ability to evaluate and consider non-linear complexities among factors that cannot be feasibly achieved using traditional techniques. 
 
@@ -170,11 +171,11 @@ However, there is little work done on how machine learning actually recognises a
 
 This is particularly problematic, given that the machine learning literature has documented that machine learning methods can struggle with many of the characteristics observed within financial data. Several methods such as penalized regression and tree based models assume some form of conditional independence between each observation, a feature that is expressly violated by state dependent data such as empirical returns. Neural networks in particular, have been extensively noted to be extremely difficult to train and struggle with capturing long term memory effects in state dependent data, (\cite{bengio_learning_1994}). Furthermore, many of the more complex machine learning models are still noted to be prone to overfitting, and as such mostly see applications in contexts with extremely large amounts of data, which may not be available with empirical returns data due to the limited time frame in which relevant data is available. 
 
-This is in addition to some of the methodology issues observed within the sparse literature on the topic. \cite{feng_deep_2018} use cross validation as part of their model building procedure, destroying the temporal aspect of returns data, in addition to only using a handful of factors. \cite{gu_empirical_2018} produce models using a training sample which ends in the 1970s to ultimately produce forecasts for the most recent 30 years. 
+This is in addition to some of the methodology issues observed within the literature on the topic. \cite{feng_deep_2018} use cross validation as part of their model building procedure, destroying the temporal aspect of returns data, in addition to only using a handful of factors. \cite{gu_empirical_2018} produce models using a training sample which ends in the 1970s to ultimately produce forecasts for the most recent 30 years. 
 
-Given the sparse literature on the topic, the methodology issues with aforementioned literature, and the noted difficulties with applying machine learning to data such as empirical returns, it stands to reason then, that more research should be done into the application of machine learning methods to empirical data. Specifically, the prediction and causal inference ability of machine learning regards to datasets exhibiting characteristics such as mullticollinearity, regressor persistence, stochastic volatility, high dimensionality, low signal to noise ratio and potentially low number of observations as is the case with financial data should be explored.
+Given the sparse literature on the topic, the methodology issues with aforementioned literature, and the noted difficulties with applying machine learning to data such as empirical returns, it stands to reason then, that more research should be done into the application of machine learning methods to empirical data. Specifically, the prediction performance and factor significance capabilities of machine learning with regards to datasets exhibiting characteristics such as mullticollinearity, regressor persistence, stochastic volatility, high dimensionality, low signal to noise ratio and potentially low number of observations as is the case with financial data should be explored.
 
-This paper is the first to systematically document how machine learning algorithms perform in the context of empirical returns data. We explore this through a simulation study and an empirical study. The simulation study explicitly explores how different aspects of financial data such as persistence in regressors, cross sectional correlation and different complexities of data generating process can affect machine learning's ability in terms of both prediction performance, and casual inference. These results are then validated against an empirical dataset, filtered to be more recent and representative of recent returns. These two studies together offer a clearer glimpse into how machine learning algorithms deal with the challenges present in financial data, and crucially, we find that the results from both studies mostly consistent, suggesting a robust set of  results.
+This paper is the first to systematically document how machine learning algorithms perform in the context of empirical returns data. We explore this through a simulation study and an empirical study. The simulation study explicitly explores how different aspects of financial data such as persistence in regressors, cross sectional correlation and different complexities of data generating process can affect machine learning's ability in terms of both prediction performance, and casual inference. These results are then validated against an empirical dataset, filtered to be more recent and representative of recent returns. These two studies together offer a clearer glimpse into how machine learning algorithms deal with the challenges present in financial data, and crucially, we find that the results from both studies mostly consistent, suggesting a robust set of results.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -194,7 +195,7 @@ where
 	E(r_{i, t+1} | \mathcal{F}_t) = g^*(z_{i,t})
 \end{equation}
 
-with stocks indexed as $i = 1, \dots, N$ and time domain by $t = 1, \dots, T$. The model approximation using the $P$ dimensional predictor set $z_{i,t}$ is represented by $g^*(z_{i,t})$. We allow $g^*(z_{i,t})$ to be a flexible function of the predictor set $z_{i,t}$, and most notably, not depend on $i$ or $t$ directly. This means that we do not re-estimate a model for each time period, or independently estimate a model for each stock. Note that $g^*(z_{i,t})$ only contains information in time $t$ for individual stock $i$, meaning that while the model and its parameters will be estimated using $\mathcal{F}_t$ for stock $i$, predictions for $r_{i, t+1}$ will only use information at time $t$ as an input, analogous to using variables lagged by one period. 
+with stocks indexed by $i = 1, \dots, N$ and time indexed by $t = 1, \dots, T$. The model approximation using the $P$ dimensional predictor set $z_{i,t}$ is represented by $g^*(z_{i,t})$. We allow $g^*(z_{i,t})$ to be a flexible function of the predictor set $z_{i,t}$, and most notably, not depend on $i$ or $t$ directly. This means that we do not re-estimate a model for each time period, or independently estimate a model for each stock. Note that $g^*(z_{i,t})$ only contains information in time $t$ for individual stock $i$, meaning that while the model and its parameters will be estimated using $\mathcal{F}_t$ for stock $i$, predictions for $r_{i, t+1}$ will only use information at time $t$ as an input, analogous to using variables lagged by one period. 
 
 All machine learning methods are designed to approximate the empirical model $g^*(z_{i,t})$ defined in equation (2). We define the baseline set of stock-level covariates \( z_{i,t} \) as:
 
@@ -320,10 +321,10 @@ For this study, only recursive binary trees (the most common and easy to impleme
 
 where $|C|$ denotes the number of observations in set C (partition). Given $C$, it is clear that the optimal choice for minimising the loss function when it is mean squared error is simply $\theta = \frac{1}{|C|} \sum_{z_{io,t}\in C}^{ }r_{i,t+1}$ i.e. the average of the partition, and the median of the partition when the loss function is mean absolute error.
 
-Trees, grown to a deep enough level, are highly unbiased and flexible, as each partition can potentially predict a single, or low number of observations. The trade-off is their high variance and instability. Thus, an ensemble method called "Random Forest" was proposed by \cite{breiman_random_2001} to regularize trees by combining many different trees into a single prediction.
+Trees, grown to a deep enough level, are highly unbiased and flexible, as each partition can potentially predict a single, or low number of observations. The trade-off is their high variance and instability. Thus, an ensemble method called ``Random Forest" was proposed by \cite{breiman_random_2001} to regularize trees by combining many different trees into a single prediction.
 
 \subsubsection{Random Forests}
-Random Forests are an extension of regression trees that attempt to address some of their problems, proposed by \cite{breiman_random_2001}. A random forest algorithm creates $B$ different bootstrap samples from the training dataset, fits an overfit (and hence low bias) regression tree to each dataset using only a random subset $m$ size from all available predictors (also known as dropout), and then averages their forecasts as the final output. The dropout procedure in particular ensures that trees will be unable to use the same predictors when considering splits, lowering the correlation between each tree and thus further reducing the variance across the ensemble model. Thus, the ensemble consisting of only overfit (and hence low bias) which have low uncorrelation is a low bias, yet stable model. Specific details of the random forest algorithm are detailed in the appendix.
+Random Forests are an extension of regression trees that attempt to address some of their problems, proposed by \cite{breiman_random_2001}. A random forest algorithm creates $B$ different bootstrap samples from the training dataset, fits an overfit (and hence low bias) regression tree to each dataset using only a random subset $m$ size from all available predictors (also known as dropout), and then averages their forecasts as the final output. The dropout procedure in particular ensures that trees will be unable to use the same predictors when considering splits, lowering the correlation between each tree and thus further reducing the variance across the ensemble model. Thus, the ensemble consisting of only overfit (and hence low bias) which have low correlation is a model which tends to exhibit low bias, yet high stability. Specific details of the random forest algorithm are detailed in the appendix.
 
 \subsubsection{Neural Networks}
 
@@ -436,7 +437,7 @@ was considered, but observed to suffer tremendously from the "dying-ReLU problem
 
 Predictive performance for individual excess stock returns were assessed using popular loss metrics in the literature: Mean Absolute Error (MAE), Mean Squared Error (MSE) and an out-of-sample R-squared metric.
 
-MSE is noted to be traditionally very popular within both the machine learning and econometrics literature. However, there is also some literature which argues against the use of MSE (and all square error measures) due to its innaccuracy and potential biasedness in time series settings, and advocates for the use of MAE instead. There is no consensus on an ``ideal" loss metric, and for this reason we produce both of them. These loss metrics also have a one-to-one correspondence to the loss functions considered for fitting the models (see \ref{loss_function} for definitions of MSE and MAE).
+MSE is noted to be traditionally very popular within both the machine learning and econometrics literature. However, there is also some literature which argues against the use of MSE (and all square error measures) due to its inaccuracy and potential biasedness in time series settings, and advocates for the use of MAE instead. There is no consensus on an ``ideal" loss metric, and for this reason we produce both of them. These loss metrics also have a one-to-one correspondence to the loss functions considered for fitting the models (see \ref{loss_function} for definitions of MSE and MAE).
 
 An out of sample $R^2$ metric was also reported, as is popular in the empirical finance literature. Due to the lack of consensus as to how this metric is defined, we provide our formulation: 
 
@@ -453,7 +454,7 @@ Importantly, we see that the choice of loss metrics chosen does not affect the o
 
 \paragraph{Variable Importance}
 
-To explore the causal inference capabilities of machine learning, we define a simple variable importance metric that is able to be consistently applied to all machine learning models. The importance of each predictor $j$ is denoted as $VI_j$, and is defined as the reduction in predictive R-Squared from setting all values of predictor $j$ to 0, while holding the remaining model estimates fixed, mirroring the procedure of \cite{gu_empirical_2018}. These were then normalized to sum to 1 within each model as a way to assess the relative importance of each predictor for each model. 
+To explore the capabilities of machine learning in identifying true underlying covariates, we define a simple variable importance metric that is able to be consistently applied to all machine learning models. The importance of each predictor $j$ is denoted as $VI_j$, and is defined as the reduction in predictive R-Squared from setting all values of predictor $j$ to 0, while holding the remaining model estimates fixed, mirroring the procedure of \cite{gu_empirical_2018}. These were then normalized to sum to 1 within each model as a way to assess the relative importance of each predictor for each model. 
 
 As $VI_j$ can sometimes be negative, or in some cases be 0 across most of the factors, $VI_j$ positively shifted by the magnitude of the smallest $VI_j$ plus a minor offset $o$, then dividing all $VI_j$ by the total to alleviate numerical issues\footnote{This mechanism was chosen because the other popular normalization mechanism ``softmax" was observed to be unable to preserve the distances between each original $VI_j$, making discernment between each $VI_j$ difficult.}:
 
@@ -468,7 +469,7 @@ VI_{j, norm} = \frac{VI_j + \operatorname{min}(VI_j) + o}
 
 \subsection{Simulation Design}
 
-We begin with the simulation study as a way to explore how machine learning performs with specific regards to the characteristics present in financial data. By specifying a simulation design with the desired characteristics, a controlled and well understood environment is available for explicitly testing the predictive performance and causal analysis abilities of the machine learning models considered. In particular, a simulation design which incorporated the following characteristics of financial data was needed:
+We begin with the simulation study as a way to explore how machine learning performs with specific regards to the characteristics present in financial data. By specifying a simulation design with the desired characteristics, a controlled and well understood environment is available for explicitly testing the predictive performance and factor selection capabilities of the machine learning models considered. In particular, a simulation design which incorporated the following characteristics of financial data was needed:
 
 \begin{itemize}
 \item Low signal to noise ratio
@@ -578,9 +579,9 @@ We consider three different functions for $g(z_{i, t})$:
 
 where $x_{t}'[3,]$ denotes the third element of the $x_{t}'$ vector.
 
-$g_1 \left(z_{i, t}\right)$ allows the characteristics to enter the return equation linearly, and $g_2 \left(z_{i, t}\right)$ allows the characteristics to enter the return equation interactively and non-linearly. The true underlying causal regressors for these specifications are $\left(c_{i 1, t}, c_{i 2, t}, c_{i 3, t} \times x_{t}'[3,]\right)$.These two specifications correspond to the simulation design used by \cite{gu_empirical_2018}. 
+$g_1 \left(z_{i, t}\right)$ allows the characteristics to enter the return equation linearly, and $g_2 \left(z_{i, t}\right)$ allows the characteristics to enter the return equation interactively and non-linearly. The true underlying regressors for these specifications are $\left(c_{i 1, t}, c_{i 2, t}, c_{i 3, t} \times x_{t}'[3,]\right)$.These two specifications correspond to the simulation design used by \cite{gu_empirical_2018}. 
 
-$g_3 \left(z_{i, t}\right)$ allows the characteristics to enter in a complex and non-linear fashion. The true underlying causal regressors for this specification are $\left(c_{i 1, t}, c_{i 2, t}, c_{i 3, t} \right)$. 
+$g_3 \left(z_{i, t}\right)$ allows the characteristics to enter in a complex and non-linear fashion. The true underlying regressors for this specification are $\left(c_{i 1, t}, c_{i 2, t}, c_{i 3, t} \right)$. 
 
 It should be noted however, that because $g_2 \left(z_{i, t}\right)$ has a large part of its signal entering through a $\operatorname{sgn}$ function, this should make it the most difficult to estimate given the regressors and resulting returns process.
 
@@ -644,84 +645,50 @@ Machine learning models fitted with respect to minimizing MAE (quantile loss) ge
 
 \begin{figure}[!htb]
 	\begin{center}
-		\includegraphics[max size = {\textwidth}{0.5\textheight}]{simulation_test_mae_pre_all.pdf}
-		\includegraphics[max size = {\textwidth}{0.5\textheight}]{simulation_test_mse_pre_all.pdf}
-		\caption{Simulation Test Loss Metrics, only including best performing Neural Networks}
-	\end{center}
-\end{figure}
-
-%% Figure out what graphs to show here
-
-\begin{figure}[!htb]
-	\begin{center}
-		\includegraphics[max size = {\textwidth}{0.5\textheight}]{simulation_test_mae_pre.pdf}
-		\caption{Simulation Test MAE, only including best performing Neural Networks}
+		\includegraphics[max size = {\textwidth}{0.4\textheight}]{simulation_test_mae_pre_all.pdf}
+		\caption{Simulation Test MAE}
+		\floatfoot{Note: faceted by the different data generating processes at the top, and the degree of cross sectional correlation on the right. The y axis represents the MAE on the test set, and the x axis denotes the model (LM = Linear Model, ELN = Elastic Net, RF = Random Forest, NNX = Neural Network with X hidden layers), as well as the loss function it was fitted with respect to. The better performing loss function is bolded for emphasis. Note that only Neural Network 5, the of the neural networks, was shown here.}
+		\label{fig:simulation_loss_metrics}
 	\end{center}
 \end{figure}
 
 \begin{figure}[!htb]
 	\begin{center}
-		\includegraphics[max size = {\textwidth}{0.5\textheight}]{simulation_test_mse_pre.pdf}
-		\caption{Simulation Test MSE, only including best performing Neural Networks}
+		\includegraphics[max size = {\textwidth}{0.4\textheight}]{simulation_test_mse_pre_all.pdf}
 	\end{center}
+	\caption{Simulation Test MSE, see Figure \ref{fig:simulation_loss_metrics} for naming conventions}
 \end{figure}
 
 \begin{figure}[!htb]
 	\begin{center}
-		\includegraphics[max size = {\textwidth}{0.5\textheight}]{simulation_test_rsquare_pre.pdf}
-		\caption{Simulation Test OOS R Squared, only including best performing Neural Networks}
+		\includegraphics[max size = {\textwidth}{0.4\textheight}]{simulation_test_rsquare_pre_all.pdf}
 	\end{center}
+	\caption{Simulation Test MSE, see Figure \ref{fig:simulation_loss_metrics} for naming conventions}
 \end{figure}
 
-\rhs{this point is important, emphasize a bit more}
-
-Across all specifications with a stochastic volatility component, we observe a decrease in prediction performance as the sample size increased according to the expanding window approach implemented. This is likely due a larger sample having a higher chance to experiences external shocks due to the stochastic volatility process, and thus a higher chance to experience large outliers in the training sample, leading to worse prediction performance. 
+Across all specifications with a stochastic volatility component, we observe a decrease in prediction performance as the sample size increased according to the expanding window approach implemented. This is likely due a larger sample having a higher chance to experiences external shocks due to the stochastic volatility process, and thus a higher chance to experience large outliers in the training sample, leading to worse prediction performance. This indicates that machine learning performs poorly when the training data supplied contains more large outliers, and is still sensitive to such outliers even with the use of regularization and robust loss functions.
 
 Focusing on the neural networks, we clearly see that they do not outperform any of the other machine learning models, even when the underlying data generating process is non-linear. This directly contradicts the result which \cite{gu_empirical_2018} find, even when considering the design with no cross sectional correlation and stochastic volatility (top row in graphs), which corresponds to their exact specification but with a multivariate macroeconomic series. We also find consistent evidence that deeper architectures provide better prediction performance, another result which contradicts \cite{gu_empirical_2018}'s conclusions that shallow learning may be better.
 
-\begin{figure}[!htb]
-	\begin{center}
-		\includegraphics[max size = {\textwidth}{0.5\textheight}]{simulation_test_rsquare_small_nn.pdf}
-		\caption{Simulation Test OOS R-Squared for Neural Networks optimized w.r.t. MAE}
-	\end{center}
-\end{figure}
-
 %% Causal Performance
 
-Focusing on the causal inference capabilities of different models by looking at variable importance metrics however reveals a more interesting comparison between models. We can clearly observe that the elastic net outperforms all other models consistently in terms of assigning the correct relative importance to the true causal regressors \footnote{($c_1.\text{constant}$, $c_2.\text{constant}$ and $c_3.x_3$ for $g1$ and $g_2$ specifications, and $c_1.\text{constant}$, $c_2.\text{constant}$ and $c_3.\text{constant}$ for $g_3$)}, even in settings with very high cross sectional correlation. 
+Focusing on the factor selection capabilities of different models by looking at variable importance metrics however reveals a more interesting comparison between models. We can clearly observe that the elastic net outperforms all other models consistently in terms of assigning the correct relative importance to the true underlying regressors \footnote{($c_1.\text{constant}$, $c_2.\text{constant}$ and $c_3.x_3$ for $g1$ and $g_2$ specifications, and $c_1.\text{constant}$, $c_2.\text{constant}$ and $c_3.\text{constant}$ for $g_3$)}, even in settings with very high cross sectional correlation. 
 
-%% Variable Importance Plots
+In terms of finding the correct underlying regressors, we find that the penalized linear models perform the best at identifying the true data generating regressors, and that this appears to be mostly robust regardless of the amount of cross sectional correlation in the factor set. The penalized linear models are not perfect and their ability to correctly identify underlying regressors worsens as the data generating process becomes more non-linear. On these more difficult specifications, the penalized linear models are generally very conservative, sometimes only identifying a single covariate as important. This is most apparent on the $g_2$ specification. Occasionally, the elastic nets identified the incorrect covariates completely, though the relative importance assigned to them was small. 
+
+The random forests and to a lesser extent the neural networks also correctly identified the correct underlying regressors, but struggled with adequately discerning relative importance among correlated regressors. This was became more apparent as the degree of cross sectional correlation increased (see decreasing relative importance of true underlying regressors in Figures \ref{fig:rf_sim_vi} and \ref{fig:nn_sim_vi} in Appendix). In the case of the random forests, this is to be expected, likely due to how the random forest algorithms work. The random forest algorithm is an ensemble of tree models, with each tree model only having access to a subset of all available predictors. If this subset does not include the true data generating predictor, then that particular tree will likely select the predictors which have the highest correlation with the true data generating predictor instead. Thus, the resulting ensemble model is likely to believe that cross sectionally correlated predictors are important, relative to the true underlying regressor. Due to the complexity of the neural networks, there does not exist a similar intuitive explanation for their factor selection ability.
+
 \begin{landscape}
-\begin{figure}[!htb]
-	\begin{center}
-		\includegraphics[max size = {20cm}{20cm}]{simulation_ave_vi_plot.pdf}
-		\caption{Simulation Variable Importance Plots}
-	\end{center}
-\end{figure}
+	\begin{figure}[!htb]
+		\begin{center}
+			\includegraphics[max size = {23cm}{23cm}]{simulation_ave_vi_plot.pdf}
+			\caption{Simulation Variable Importance averaged across all test samples}
+			\floatfoot{Note: faceted by data generating specification at the top, and degree of cross-sectional correlation on the right. Model is on the y axis and follows the naming convention in Figure \ref{fig:simulation_loss_metrics}. Factor is on the x axis, and only contains the top 30 important factors, as measured by average importance across all samples and models. Note that the four true underlying factors are bolded.}
+		\end{center}
+	\end{figure}
 \end{landscape}
 
-
-In terms of finding the correct underlying causal regressors, we find that the penalized linear models perform the best at identifying the true data generating regressors, and that this appears to be mostly robust regardless of the amount of cross sectional correlation in the factor set. The penalized linear models are not perfect and their ability to correctly identify causal regressors worsens as the data generating process becomes more non-linear. On these more difficult specifications, the penalized linear models are generally very conservative, sometimes only identifying a single covariate as important. This is most apparent on the $g_2$ specification. Occasionally, the elastic nets identified the incorrect covariates completely, though the relative importance assigned to them was small. 
-
-The random forests and to a lesser extent the neural networks also correctly identified the correct causal regressors, but struggled with adequately discerning relative importance among correlated regressors. This was became more apparent as the degree of cross sectional correlation increased (see decreasing relative importance of true causal regressors in Figures \ref{rf_sim_vi} and \ref{nn_sim_vi}). In the case of the random forests, this is to be expected, likely due to how the random forest algorithms work. The random forest algorithm is an ensemble of tree models, with each tree model only having access to a subset of all available predictors. If this subset does not include the true data generating predictor, then that particular tree will likely select the predictors which have the highest correlation with the true data generating predictor instead. Thus, the resulting ensemble model is likely to believe that cross sectionally correlated predictors are important, relative to the true causal regressor. Due to the complexity of the neural networks, there does not exist a similar intuitive explanation for their causal inference ability.
-
-\begin{figure}
-	\label{rf_sim_vi}
-	\begin{center}
-		\includegraphics[max size = {\textwidth}{0.5\textheight}]{simulation_ave_vi_plot_pre_rf.pdf}
-		\caption{Simulation Variable Importance Plots for Random Forests}
-	\end{center}
-\end{figure}
-
-\begin{figure}
-	\label{nn_sim_vi}
-	\begin{center}
-		\includegraphics[max size = {\textwidth}{0.5\textheight}]{simulation_ave_vi_plot_pre_nn.pdf}
-		\caption{Simulation Variable Importance Plots for Neural Networks}
-	\end{center}
-\end{figure}
-
-The linear models, unsurprisingly, struggled with causal analysis with respect to both increasing cross sectional correlation and increasing non-linearities. This highlights the non-robustness and ineffectiveness of using traditional linear regression as documented by the literature; linear models were consistently observed to identify non-causal regressors as important, especially as the degree of cross sectional correlation increased. Considering that the graphs represent the averaged variable importance metrics over different simulation realisations which each have random patterns of cross sectional correlation, this means that on a single simulation realization, the performance of linear models is significantly worse.
+The linear models, unsurprisingly, struggled with factor significance analysis with respect to both increasing cross sectional correlation and increasing non-linearities. This highlights the non-robustness and ineffectiveness of using traditional linear regression as documented by the literature; linear models were consistently observed to identify irrelevant regressors as important, especially as the degree of cross sectional correlation increased. Considering that the graphs represent the averaged variable importance metrics over different simulation realisations which each have random patterns of cross sectional correlation, this means that on a single simulation realization, the performance of linear models is significantly worse.
 
 %% Brief other notes that are not too important
 
@@ -733,17 +700,13 @@ Of particular note are the instability of the machine learning models' hyperpara
 
 \section{Empirical Study}
 
-We conduct an empirical study to validate and check the robustness of the results observed in the simulation study. Though our simulation study was aimed at capturing the main characteristics of empirical data, the underlying data generating process for empirical returns is unknown this thus as a robustness check as to how machine learning performs on real world data, which can be significantly more complex and noisy than simulated contexts. This also acts as a final validation against what has been reported in the literature.
+We conduct an empirical study as a final way to corroborate the findings of the properties of machine learning models which we observed in the simulation study. Though our simulation study was aimed at capturing the main features of observed data, the underlying data generating process for empirical returns is unknown. This study thus acts as a robustness check as to how machine learning performs on real world data, which can be significantly more complex and noisy than simulated contexts. Our two studies together can be thought of a repeated sampling exercise in exploring how machine learning methods perform on datasets which feature the ``stylized facts" of empirical returns. This empirical study also acts as a final validation against what has been reported in the literature.
 
-Importantly, we find that our results from the simulation study are largely corroborated for empirical returns data.
+Importantly, we find that our findings from the simulation study are largely corroborated for empirical returns data.
 
 \subsection{Data}
 
-\rhs{reorganise such that it's get returns data, then find the factor set for it. Not actually what we did, but flows better}
-
-% Description of original dataset
-% mention how these variables are already adjusted for lags
-We mimic the data procedure of \cite{gu_empirical_2018}. This means that we obtain the dataset provided by Gu on his website. This dataset sample begins in March 1957 (the start date of the S\&P 500) and ends in December 2016, totalling 60 years. It contains 94 stock level characteristics: 61 updated annually, 13 updated quarterly and 20 updated monthly, in addition to 74 industry dummies corresponding the the first two digits of the Standard Industrial Classification (SIC) codes. It is noted that this dataset contains all securities traded, including those with a CRSP share code other than 10 or 11 and thus includes instruments such as REITs and mutual funds, and those with a share price of less than \$5.
+We begin by considering monthly total individual equity returns from CRSP for all firms listed in the NYSE, AMEX and NASDAQ, starting from 1957 (starting date of the S\&P 500) and ending in December 2016, totalling 60 years. To build individual factors, we construct a factor set based on the cross section of returns literature. This data was sourced from and is the same data used in \cite{gu_empirical_2018}. Like our initial returns sample, it begins in March 1957 and ends in December 2016, totalling 60 years. It contains 94 stock level characteristics: 61 updated annually, 13 updated quarterly and 20 updated monthly, in addition to 74 industry dummies corresponding the the first two digits of the Standard Industrial Classification (SIC) codes. It is noted that this dataset so far contains all securities traded, including those with a CRSP share code other than 10 or 11 and thus includes instruments such as REITs and mutual funds, and those with a share price of less than \$5.
 
 % Begin Cleaning
 
@@ -763,6 +726,7 @@ We then follow \cite{gu_empirical_2018} and construct eight macroeconomic factor
 
 \begin{table}
 	\caption{Macroeconomic Factors, (\cite{welch_comprehensive_2008})}
+	\label{macro_factors}
 	\begin{center}
 		\begin{tabular}{lccc} \hline
 			No. & Acronym & Macroeconomic Factor \\ \hline
@@ -795,7 +759,7 @@ The dataset was not normalized for all methods, as only penalized regression and
 
 The final dataset spanned from 1993 Q3 to 2016 Q4 with 202, 066 individual observations.
 
-We mimic the procedure used in the simulation study. For the sample splitting produce, the dataset was split such that the training and validation sets were split such that the training set was approximately 1.5 times the length of the validation set, in order to predict a test set that is one year in length.
+We mimic the procedure used in the simulation study. For the sample splitting procedure, the dataset was split such that the training and validation sets were split such that the training set was approximately 1.5 times the length of the validation set, in order to predict a test set that is one year in length.
 
 \begin{figure}[!htb]
 	\begin{center}
@@ -838,29 +802,37 @@ We mimic the procedure used in the simulation study. For the sample splitting pr
 
 In general, the empirical results are in remarkable agreement with the those obtained in the simulation study. In particular, we similarly see that the penalized linear models generally performing the best, with the random forest models offering slightly worse performance, occasionally outperforming penalized linear models. Machine learning models fitted with respect to median quantile loss were similarly observed to typically offer improvements across all machine learning models across all loss metrics. 
 
-\rhs{structure is a little weird here regarding neural networks}
-
 % Prediction Accuracy
 
 In terms of prediction accuracy, we can see that in general the results of the simulation study were repeated: the elastic net models perform the best, followed by the random forests, then the neural networks, and finally the linear models. We note that the differences between each model using the MSE and MAE loss metrics are much more pronounced on empirical data. We similarly see that machine learning models perform better when fitted with respect to quantile loss instead of MSE. 
 
 \begin{figure}[!htb]
 	\begin{center}
-		\includegraphics[max size = {\textwidth}{0.5\textheight}]{empirical_test_mse}
+		\includegraphics[max size = {\textwidth}{0.35\textheight}]{empirical_test_mse}
 	\end{center}
-	\caption{Empirical Test MSE Averaged Across All Samples}
-\end{figure}
-
-\begin{figure}[!htb]
-	\begin{center}
-		\includegraphics[max size = {\textwidth}{0.5\textheight}]{empirical_test_mae}
-	\end{center}
-	\caption{Empirical Test MAE Averaged Across All Samples}
+	\caption{Empirical Test MSE}
+	\floatfoot{Note: Test MSE on y axis, with model on x axis, following naming convention in Figure \ref{fig:simulation_loss_metrics}}
 \end{figure}
 
 Focusing on the neural networks specifically, their non-robustness is amplified on the empirical dataset, with some neural networks in some samples even performing worse than linear models. This was observed to be somewhat more common on neural networks fitted with respect to MSE, suggesting that they are indeed very sensitive to outliers in training data. We similarly observe some evidence that deeper neural networks perform better, though this result is less apparent to the lower robustness on empirical data.
 
 Interestingly, we do not observe worsening performance as the training sample increases as we did in the simulation study. This suggests that the simulation design may have been too volatile when compared to the specific empirical time periods examined.
+
+\begin{figure}[!htb]
+	\begin{center}
+		\includegraphics[max size = {\textwidth}{0.35\textheight}]{empirical_test_mae}
+	\end{center}
+	\caption{Empirical Test MAE}
+	\floatfoot{Note: Test MAE on y axis, with model on x axis, following naming convention in Figure \ref{fig:simulation_loss_metrics}}
+\end{figure}
+
+\begin{figure}[!htb]
+	\begin{center}
+		\includegraphics[max size = {\textwidth}{0.35\textheight}]{empirical_test_rsquare}
+	\end{center}
+	\caption{Empirical Test Predictive R-Squared}
+	\floatfoot{Note: Test Predictive R-Squared on y axis, with model on x axis, following naming convention in Figure \ref{fig:simulation_loss_metrics}}
+\end{figure}
 
 %% Causal Inference
 
@@ -868,20 +840,22 @@ As the data generating process for empirical returns is unknown, the variable im
 
 \begin{figure}[!htb]
 	\begin{center}
-		\includegraphics[max size = {\textwidth}{0.5\textheight}]{empirical_sample_all_vi_ind}
+		\includegraphics[max size = {\textwidth}{0.35\textheight}]{empirical_sample_all_vi_ind}
 		\caption{Empirical Individual Factor Importance, averaged across all training samples}
+		\floatfoot{Individual factors shown on x axis, with most important variables bolded (see Table \ref{ind_factors} in Appendix for definitions)}
 	\end{center}
 \end{figure}
-
-If we focus on the two top performing models of elastic net and random forest, we see that they consistently pick out the 1 month and 6 month momentum factors out of the individual characteristics as important, and the book-to-market and default yield spread factors out of the macroeconomic factors are important. In general though, the variable importance metrics are less consistent for the random forests, and it should be noted in particular that the random forest tends to determine factors highly correlated with momentum as important, such as change in moment, dollar trading volume and return volatility. Looking at the macroeconomic factors, penalized linear models tend to identify the average book to market ratio and the default spread as the most important macroeconomic factors. On the macroeconomic factor set, the random forests were inconsistent with the elastic nets, and tended to assign very similar variable importance metrics to most macroeconomic factors.
 
 \begin{figure}[!htb]
 	\label{empirical_macro_facet}
 	\begin{center}
-		\includegraphics[max size = {\textwidth}{0.5\textheight}]{empirical_sample_all_vi_macro_facet}
+		\includegraphics[max size = {\textwidth}{0.35\textheight}]{empirical_sample_all_vi_macro_facet}
 		\caption{Empirical Macroeconomic Factor Importance, faceted by training sample}
+		\floatfoot{Macroeconomic Factors shown on x axis (see Table \ref{macro_factors} for definitions)}
 	\end{center}
 \end{figure}
+
+If we focus on the two top performing models of elastic net and random forest, we see that they consistently pick out the 1 month and 6 month momentum factors out of the individual characteristics as important, and the book-to-market and default yield spread factors out of the macroeconomic factors are important. In general though, the variable importance metrics are less consistent for the random forests, and it should be noted in particular that the random forest tends to determine factors highly correlated with momentum as important, such as change in moment, dollar trading volume and return volatility. Looking at the macroeconomic factors, penalized linear models tend to identify the average book to market ratio and the default spread as the most important macroeconomic factors. On the macroeconomic factor set, the random forests were inconsistent with the elastic nets, and tended to assign very similar variable importance metrics to most macroeconomic factors.
 
 The neural networks tended to believe that the market value factor was the most important among the individual factors, a result not repeated by any of the other models considered. Within the macroeconomic factors, the neural networks identified and the dividend-price ratio and earnings-price ratio as the most important among the macroeconomic factors, though these results were highly non-robust across different architectures, loss functions and training samples.
 
@@ -901,7 +875,7 @@ Our findings demonstrate that the field of machine learning may offer certain to
 
 Importantly, we find that the feed-forward neural network architectures considered by \cite{gu_empirical_2018} fail in the context of stock return prediction, at both prediction performance and variable importance analysis. This result is consistent across a variety of simulated datasets, as well as empirical data. We also find weak evidence that deeper neural networks with more hidden layers perform better, though this result, like the performance of neural networks in general, is non-robust.
 
-Lastly, we find that the top performing models - the penalized linear models and random forests, tend to agree and correctly identify the correct causal regressors in simulated contexts, as well as agree on the same subset of factors which are important in empirical contexts. We find that of all the most considered, the penalized linear models are the most consistent at identifying true causal regressors through the simulation study. We find that in the empirical setting, among the individual factors the individual 1 and 6 month momentum factors are the most powerful predictors of stock returns, according to the penalized linear models and random forests. 
+Lastly, we find that the top performing models - the penalized linear models and random forests, tend to agree and correctly identify the correct underlying regressors in simulated contexts, as well as agree on the same subset of factors which are important in empirical contexts. We find that of all the most considered, the penalized linear models are the most consistent at identifying true underlying regressors through the simulation study. We find that in the empirical setting, among the individual factors the individual 1 and 6 month momentum factors are the most powerful predictors of stock returns, according to the penalized linear models and random forests. 
 
 Across all models except for linear models, we find that minimizing quantile loss yields better prediction performance.
 
@@ -1178,28 +1152,44 @@ The overall findings of this paper differ from the sparse literature on machine 
 	\caption{Simulation Train R Squared}
 \end{figure}
 
+\begin{figure}[!htb]
+	\begin{center}
+		\includegraphics[max size = {\textwidth}{0.5\textheight}]{simulation_ave_vi_plot_pre_rf.pdf}
+		\caption{Simulation Variable Importance Plots for Random Forests}
+	\end{center}
+	\label{fig:rf_sim_vi}
+\end{figure}
+
+\begin{figure}[!htb]
+	\begin{center}
+		\includegraphics[max size = {\textwidth}{0.5\textheight}]{simulation_ave_vi_plot_pre_nn.pdf}
+		\caption{Simulation Variable Importance Plots for Neural Networks}
+	\end{center}
+	\label{fig:nn_sim_vi}
+\end{figure}
+
 %% Hyperparameters
 
 % Penalized Linear Models
 \begin{figure}[!htb]
-	\includegraphics[max size = {\textwidth}{0.5\textheight}]{eln_alpha_plot.pdf}
+	\includegraphics[max size = {\textwidth}{0.4\textheight}]{eln_alpha_plot.pdf}
 	\caption{Optimal Alpha Values Across Training Samples for Elastic Net, each colour representing a different simulation realisation}
 \end{figure}
 
 \begin{figure}[!htb]
-	\includegraphics[max size = {\textwidth}{0.5\textheight}]{eln_lambda_plot.pdf}
+	\includegraphics[max size = {\textwidth}{0.4\textheight}]{eln_lambda_plot.pdf}
 	\caption{Optimal Lambda Values Across Training Samples for Elastic Net, each colour representing a different simulation realisation}
 \end{figure}
 
 % Random Forests
 
 \begin{figure}[!htb]
-	\includegraphics[max size = {\textwidth}{0.5\textheight}]{rf_mtry_plot.pdf}
+	\includegraphics[max size = {\textwidth}{0.4\textheight}]{rf_mtry_plot.pdf}
 	\caption{Optimal mtry Values Across Training Samples for Random Forest, each colour representing a different simulation realisation}
 \end{figure}
 
 \begin{figure}[!htb]
-	\includegraphics[max size = {\textwidth}{0.5\textheight}]{rf_nodesize_plot.pdf}
+	\includegraphics[max size = {\textwidth}{0.4\textheight}]{rf_nodesize_plot.pdf}
 	\caption{Optimal nodesize Values Across Training Samples for Random Forest, each colour representing a different simulation realisation}
 \end{figure}
 
@@ -1222,11 +1212,15 @@ The overall findings of this paper differ from the sparse literature on machine 
 	\caption{Empirical Data Individual Factor Variable Importance for Sample 3}
 \end{figure}
 
-\label{computation}
-
 \newpage
 
 \subsection{Computational Details}
+
+All computational code is available from:
+
+\url{https://github.com/Meron35/Evaluation-of-Machine-Learning-in-Asset-Pricing}
+ 
+This is a comprehensive repository and contains code for all aspects of this thesis, including simulation code, model fitting, exporting of results, plotting of results, as well as instructions on how to construct and clean the empirical dataset used.  
 
 \subsubsection{Linear Models}
 
@@ -1258,7 +1252,7 @@ Nueral Networks were fit using the \textbf{keras} package, using the \textbf{ten
 
 Due to computational limitations, a systematic grid search or random search approach for hyperparameters was not feasible. Instead, common hyperparameters that are usually grid searched were tuned manually. 
 
-\begin{table}
+\begin{table}[!htb]
 	\begin{tabular}{|lll|}
 		\hline
 		Hyperparameter & Options Considered & Optimal Choice \\ \hline
@@ -1278,7 +1272,7 @@ For full details of the Batch Normalization Algorithm see \cite{ioffe_batch_2015
 
 We present the algorithm implemented for early stopping of training. Note that this corresponds to \textit{restore\_best\_weights = TRUE} in \textbf{keras}'s implementation.
 
-\begin{algorithm}
+\begin{algorithm}[!htb]
 	\SetAlgoLined
 	Initialize $j = 0$, $\epsilon = \infty$ and select the patience parameter $p$ (max iterations)\
 	
