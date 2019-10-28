@@ -1,4 +1,4 @@
-\begin{thebibliography}{98}
+\begin{thebibliography}{99}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
 
 \bibitem[{Abarbanell and Bushee(1998)}]{abarbanell_abnormal_1998}
@@ -288,6 +288,10 @@ Jiang, G., Lee, C.~M., Zhang, Y., 2005. Information uncertainty and expected
 \bibitem[{Kama(2009)}]{kama_market_2009}
 Kama, I., 2009. On the market reaction to revenue and earnings surprises.
   Journal of Business Finance \& Accounting 36, 31--50.
+
+\bibitem[{Kennedy(2003)}]{kennedy_guide_2003}
+Kennedy, P., 2003. A {Guide} to {Econometrics} - {Peter} {Kennedy} - {Google}
+  {Books}.
 
 \bibitem[{Keskar et~al.(2016)Keskar, Mudigere, Nocedal, Smelyanskiy, and
   Tang}]{keskar_large-batch_2016}

@@ -21,18 +21,22 @@
 \BOOKMARK [3][-]{subsubsection.3.1.4}{Simulating Return Series}{subsection.3.1}% 21
 \BOOKMARK [3][-]{subsubsection.3.1.5}{Sample Splitting}{subsection.3.1}% 22
 \BOOKMARK [2][-]{subsection.3.2}{Simulation Study Results}{section.3}% 23
-\BOOKMARK [1][-]{section.4}{Empirical Study}{}% 24
-\BOOKMARK [2][-]{subsection.4.1}{Data}{section.4}% 25
-\BOOKMARK [2][-]{subsection.4.2}{Empirical Data Results}{section.4}% 26
-\BOOKMARK [1][-]{section.5}{Conclusion}{}% 27
-\BOOKMARK [1][-]{section.6}{Appendix}{}% 28
-\BOOKMARK [2][-]{subsection.6.1}{Data}{section.6}% 29
-\BOOKMARK [2][-]{subsection.6.2}{Additional Results}{section.6}% 30
-\BOOKMARK [3][-]{subsubsection.6.2.1}{Simulation Study}{subsection.6.2}% 31
-\BOOKMARK [3][-]{subsubsection.6.2.2}{Empirical Study}{subsection.6.2}% 32
-\BOOKMARK [2][-]{subsection.6.3}{Computational Details}{section.6}% 33
-\BOOKMARK [3][-]{subsubsection.6.3.1}{Linear Models}{subsection.6.3}% 34
-\BOOKMARK [3][-]{subsubsection.6.3.2}{Penalized Linear}{subsection.6.3}% 35
-\BOOKMARK [3][-]{subsubsection.6.3.3}{Classification and Regression Trees and Random Forests}{subsection.6.3}% 36
-\BOOKMARK [3][-]{subsubsection.6.3.4}{Neural Networks}{subsection.6.3}% 37
-\BOOKMARK [3][-]{subsubsection.6.3.5}{Tuning of Simulated Datasets}{subsection.6.3}% 38
+\BOOKMARK [3][-]{subsubsection.3.2.1}{Prediction Performance}{subsection.3.2}% 24
+\BOOKMARK [3][-]{subsubsection.3.2.2}{Factor Importance}{subsection.3.2}% 25
+\BOOKMARK [1][-]{section.4}{Empirical Study}{}% 26
+\BOOKMARK [2][-]{subsection.4.1}{Data}{section.4}% 27
+\BOOKMARK [2][-]{subsection.4.2}{Empirical Data Results}{section.4}% 28
+\BOOKMARK [3][-]{subsubsection.4.2.1}{Prediction Accuracy}{subsection.4.2}% 29
+\BOOKMARK [3][-]{subsubsection.4.2.2}{Factor Importance}{subsection.4.2}% 30
+\BOOKMARK [1][-]{section.5}{Conclusion}{}% 31
+\BOOKMARK [1][-]{section.6}{Appendix}{}% 32
+\BOOKMARK [2][-]{subsection.6.1}{Data}{section.6}% 33
+\BOOKMARK [2][-]{subsection.6.2}{Additional Results}{section.6}% 34
+\BOOKMARK [3][-]{subsubsection.6.2.1}{Simulation Study}{subsection.6.2}% 35
+\BOOKMARK [3][-]{subsubsection.6.2.2}{Empirical Study}{subsection.6.2}% 36
+\BOOKMARK [2][-]{subsection.6.3}{Computational Details}{section.6}% 37
+\BOOKMARK [3][-]{subsubsection.6.3.1}{Linear Models}{subsection.6.3}% 38
+\BOOKMARK [3][-]{subsubsection.6.3.2}{Penalized Linear}{subsection.6.3}% 39
+\BOOKMARK [3][-]{subsubsection.6.3.3}{Classification and Regression Trees and Random Forests}{subsection.6.3}% 40
+\BOOKMARK [3][-]{subsubsection.6.3.4}{Neural Networks}{subsection.6.3}% 41
+\BOOKMARK [3][-]{subsubsection.6.3.5}{Tuning of Simulated Datasets}{subsection.6.3}% 42

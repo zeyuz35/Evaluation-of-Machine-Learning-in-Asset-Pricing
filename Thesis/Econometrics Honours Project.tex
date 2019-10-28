@@ -13,6 +13,7 @@
 \usepackage{setspace,graphicx,epstopdf,amsmath}
 \usepackage{marginnote, datetime, url, enumitem, subfigure}
 \usepackage[capposition=top]{floatrow}
+\usepackage{placeins}
 
 %Journal Style
 %JFE looks nice, JF looks awful
@@ -273,7 +274,7 @@ Linear models can capture non-linearities only if the predictor set \(z^*_{i, t}
 
 \subsubsection{Penalized Linear Models}
 
-Penalized linear models attempt to improve upon linear models through regularization, and are particularly well suited to addressing problems of multicollinearity, which can commonly occur in models with a large number of regressors. They achieve this by lowering the variance of their estimates (thus increasing efficiency) in exchange for introducing a tolerable amount of bias. This can be viewed as the model mechanically decreasing its in sample performance, in hopes that the model will overfit less, particularly to noise in the dataset, thus correctly preserving its fit to true underlying regressors.
+Penalized linear models attempt to improve upon linear models through regularization, and are particularly well suited to addressing problems of multicollinearity, which can commonly occur in models with a large number of regressors. They achieve this by lowering the variance of their estimates (thus increasing efficiency) in exchange for introducing a tolerable amount of bias. This can be viewed as the model mechanically decreasing its in sample performance, in hopes that the model will overfit less, particularly to noise in the dataset, thus correctly preserving its fit to true underlying regressors. Penalized regression has been noted in the literature to be particularly well posed to multicollinearity problems, (\cite{kennedy_guide_2003}).
 
 Penalized linear models have the same underlying statistical model as simple linear models, but differ in their addition of a new penalty term in the loss function:
 
@@ -283,7 +284,7 @@ Penalized linear models have the same underlying statistical model as simple lin
 	\underset{\text{Penalty Term}}{\underbrace{\phi(\theta;.)}}
 \end{equation}
 
-Several choices exist for the choice of penalty function \( \phi(\theta;.) \). We restrict our scope to the popular "elastic net" penalty \citep{zou_regularization_2005}:
+Several choices exist for the choice of penalty function \( \phi(\theta;.) \). We restrict our scope to the popular "elastic net"\footnote{We will henceforth use the terms penalized linear models and elastic net models interchangeably} penalty \citep{zou_regularization_2005}:
 
 \begin{equation}
 	\phi(\theta;\lambda,\rho) = 
@@ -299,7 +300,7 @@ The $\rho = 0$ case corresponds to the popular LASSO and uses absolute ($l_1$) p
 
 For \(0 < \rho < 1\), the elastic net aims to produce parsimonious models through both shrinkage and selection by combining the properties of LASSO and ridge regression.
 
-The hyperparameters $\lambda$ and $\rho$ are both tuned using the validation sample (see \ref{computation}). 
+The hyperparameters $\lambda$ and $\rho$ are both tuned using the validation sample (see Section \ref{eln_comp} in Appendix). 
 
 \subsubsection{Classification and Regression Trees}
 
@@ -637,32 +638,29 @@ Other schemes in the forecasting literature such as using an ``inner" rolling wi
 
 Overall, in the simulation study we observe that in general elastic nets are the best performing model, followed closely by random forests, then neural networks. All machine learning models were unaffected by cross sectional correlation in terms of prediction performance, and had better performance when fitted with respect to quantile loss, in stark contrast to linear models. The random forest only outperformed the elastic nets on highly non-linear specifications. The neural network models were not observed to outperform any of the machine learning models. We note that most of these results contradict the sparse literature, and in particular, the results reported by \cite{gu_empirical_2018}, even on their proposed simulation design.
 
-%% Prediction Peformance
+\subsubsection{Prediction Performance}
 
 Looking at the prediction performance of different models, we find that in general, penalized linear models performed the best, followed extremely closely by random forests and then neural networks, which all outperform the baseline linear models. Most importantly, we observes that for machine learning models, cross sectional correlation does not seem to affect prediction performance by much. This is in stark contrast to the linear models, whose prediction performance is severely affected by both non-linearities, and increasing cross sectional correlation. This result is consistent across all loss metrics, and is most obvious when looking at the out-of-sample R-squared metrics.
 
 Machine learning models fitted with respect to minimizing MAE (quantile loss) generally perform better, even when evaluated against MSE loss metrics. This is not a surprising result, especially considering the stochastic error design which introduces significant shocks to the returns process, leading to large outliers which the mean squared error metric is more sensitive to. Though the actual difference between the loss metrics between the penalized linear models, random forests and neural networks are very small, when considering the consistency of the results across numerous Monte Carlo simulations, the differences in prediction performance, though small, is robust and significant.
 
 \begin{figure}[!htb]
-	\begin{center}
-		\includegraphics[max size = {\textwidth}{0.4\textheight}]{simulation_test_mae_pre_all.pdf}
+	\centering
+		\includegraphics[max size = {\textwidth}{0.5\textheight}]{simulation_test_mae_pre_all.pdf}
 		\caption{Simulation Test MAE}
 		\floatfoot{Note: faceted by the different data generating processes at the top, and the degree of cross sectional correlation on the right. The y axis represents the MAE on the test set, and the x axis denotes the model (LM = Linear Model, ELN = Elastic Net, RF = Random Forest, NNX = Neural Network with X hidden layers), as well as the loss function it was fitted with respect to. The better performing loss function is bolded for emphasis. Note that only Neural Network 5, the of the neural networks, was shown here.}
 		\label{fig:simulation_loss_metrics}
-	\end{center}
 \end{figure}
 
 \begin{figure}[!htb]
-	\begin{center}
-		\includegraphics[max size = {\textwidth}{0.4\textheight}]{simulation_test_mse_pre_all.pdf}
-	\end{center}
+	\centering
+		\includegraphics[max size = {\textwidth}{0.5\textheight}]{simulation_test_mse_pre_all.pdf}
 	\caption{Simulation Test MSE, see Figure \ref{fig:simulation_loss_metrics} for naming conventions}
 \end{figure}
 
 \begin{figure}[!htb]
-	\begin{center}
-		\includegraphics[max size = {\textwidth}{0.4\textheight}]{simulation_test_rsquare_pre_all.pdf}
-	\end{center}
+	\centering
+		\includegraphics[max size = {\textwidth}{0.5\textheight}]{simulation_test_rsquare_pre_all.pdf}
 	\caption{Simulation Test MSE, see Figure \ref{fig:simulation_loss_metrics} for naming conventions}
 \end{figure}
 
@@ -670,7 +668,7 @@ Across all specifications with a stochastic volatility component, we observe a d
 
 Focusing on the neural networks, we clearly see that they do not outperform any of the other machine learning models, even when the underlying data generating process is non-linear. This directly contradicts the result which \cite{gu_empirical_2018} find, even when considering the design with no cross sectional correlation and stochastic volatility (top row in graphs), which corresponds to their exact specification but with a multivariate macroeconomic series. We also find consistent evidence that deeper architectures provide better prediction performance, another result which contradicts \cite{gu_empirical_2018}'s conclusions that shallow learning may be better.
 
-%% Causal Performance
+\subsubsection{Factor Importance}
 
 Focusing on the factor selection capabilities of different models by looking at variable importance metrics however reveals a more interesting comparison between models. We can clearly observe that the elastic net outperforms all other models consistently in terms of assigning the correct relative importance to the true underlying regressors \footnote{($c_1.\text{constant}$, $c_2.\text{constant}$ and $c_3.x_3$ for $g1$ and $g_2$ specifications, and $c_1.\text{constant}$, $c_2.\text{constant}$ and $c_3.\text{constant}$ for $g_3$)}, even in settings with very high cross sectional correlation. 
 
@@ -692,6 +690,8 @@ The linear models, unsurprisingly, struggled with factor significance analysis w
 
 %% Brief other notes that are not too important
 
+The overall high performance of the elastic net models may be somewhat surprising given its relative simplicity compared to other machine learning models. However, when recalling that elastic net models are the only machine learning models which are specifically noted to perform well on datasets with high degrees of multicollinearity, the result is perhaps less surprising. Indeed, random forest and neural network models are only noted to be better at capturing non-linear relationships in independent and identically distributed data, a property which we observe on the non-linear specification, and only for the random forests.
+
 Of particular note are the instability of the machine learning models' hyperparameters across different training samples. For the elastic nets, the optimal value for $\alpha$ is generally 1 (corresponding to LASSO and thus a sparse representation), but it was not uncommon to observe $\alpha$ values swinging between values close to 0 (corresponding to ridge regression, and thus a dense representation) to 1 as the training sample moved forwards in time. As the penalized linear models consistently performed the best and still remained able to correctly identify the true covariates this is not a large issue, but it should be noted that this can lead to interpretation issues. For the random forests, it was similarly observed that the optimal value for $mtry$ (the number of variables subsetted) and $nodesize$ was highly non-robust. Again, given that the final prediction performance was consistent this is not a large issue, but can lead to some interpretation issues.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -706,7 +706,7 @@ Importantly, we find that our findings from the simulation study are largely cor
 
 \subsection{Data}
 
-We begin by considering monthly total individual equity returns from CRSP for all firms listed in the NYSE, AMEX and NASDAQ, starting from 1957 (starting date of the S\&P 500) and ending in December 2016, totalling 60 years. To build individual factors, we construct a factor set based on the cross section of returns literature. This data was sourced from and is the same data used in \cite{gu_empirical_2018}. Like our initial returns sample, it begins in March 1957 and ends in December 2016, totalling 60 years. It contains 94 stock level characteristics: 61 updated annually, 13 updated quarterly and 20 updated monthly, in addition to 74 industry dummies corresponding the the first two digits of the Standard Industrial Classification (SIC) codes. It is noted that this dataset so far contains all securities traded, including those with a CRSP share code other than 10 or 11 and thus includes instruments such as REITs and mutual funds, and those with a share price of less than \$5.
+We begin by obtaining monthly individual price data from CRSP for all firms listed in the NYSE, AMEX and NASDAQ, starting from 1957 (starting date of the S\&P 500) and ending in December 2016, totalling 60 years. To build individual factors, we construct a factor set based on the cross section of returns literature. This data was sourced from and is the same data used in \cite{gu_empirical_2018}. Like our initial returns sample, it begins in March 1957 and ends in December 2016, totalling 60 years. It contains 94 stock level characteristics: 61 updated annually, 13 updated quarterly and 20 updated monthly, in addition to 74 industry dummies corresponding the the first two digits of the Standard Industrial Classification (SIC) codes. It is noted that this dataset so far contains all securities traded, including those with a CRSP share code other than 10 or 11 and thus includes instruments such as REITs and mutual funds, and those with a share price of less than \$5.
 
 % Begin Cleaning
 
@@ -748,7 +748,7 @@ The two sets of factors were then combined to form a baseline set of covariates,
 z_{i,t} = (1, x_t)' \otimes c_{i, t}
 \end{equation}
 
-where $c_{i,t}$ is a $P_c$ matrix of characteristics for each stock $i$, and $(1, x_t)'$ is a $P_x \times 1$ vector of macroeconomic predictors. $z_{i,t}$ is therefore a $P_x P_c$ vector of features for predicting individual stock returns and includes interactions between stock level characteristics and macroeconomic variables. The total number of covariates in this baseline set is $61 \times (8 + 1) = 549$\footnote{As the individual and macroeconomic factors can have similar names, individual and macroeconomic factors were prefixed with ind\_ and macro\_ respectively.}.
+where $c_{i,t}$ is a $P_c$ matrix of characteristics for each stock $i$, and $(1, x_t)'$ is a $P_x \times 1$ vector of macroeconomic predictors, , and $\otimes$ represents the Kronecker product. $z_{i,t}$ is therefore a $P_x P_c$ vector of features for predicting individual stock returns and includes interactions between stock level characteristics and macroeconomic variables. The total number of covariates in this baseline set is $61 \times (8 + 1) = 549$\footnote{As the individual and macroeconomic factors can have similar names, individual and macroeconomic factors were prefixed with ind\_ and macro\_ respectively.}.
  
 % Splitting Scheme
 % Similar splitting scheme to simulation study used
@@ -796,63 +796,62 @@ We mimic the procedure used in the simulation study. For the sample splitting pr
 	\label{emp_sample_split_diag}
 \end{figure}
 
+\newpage
+
 \subsection{Empirical Data Results}
 
 % Overall Results
 
 In general, the empirical results are in remarkable agreement with the those obtained in the simulation study. In particular, we similarly see that the penalized linear models generally performing the best, with the random forest models offering slightly worse performance, occasionally outperforming penalized linear models. Machine learning models fitted with respect to median quantile loss were similarly observed to typically offer improvements across all machine learning models across all loss metrics. 
 
-% Prediction Accuracy
+\subsubsection{Prediction Accuracy}
 
-In terms of prediction accuracy, we can see that in general the results of the simulation study were repeated: the elastic net models perform the best, followed by the random forests, then the neural networks, and finally the linear models. We note that the differences between each model using the MSE and MAE loss metrics are much more pronounced on empirical data. We similarly see that machine learning models perform better when fitted with respect to quantile loss instead of MSE. 
+In terms of prediction accuracy, we can see that in general the results of the simulation study were repeated: the elastic net models perform the best, followed by the random forests, then the neural networks, and finally the linear models. We note that the differences between each model using the MSE and MAE loss metrics are much more pronounced on empirical data. Even so, the predictive performance between the elastic net models and the quantile random forests is not particularly large, and we observe the quantile random forests outperforming the elastic nets in the first data sample. We similarly see that machine learning models perform better when fitted with respect to quantile loss instead of MSE. Most notably, we start to see the neural network models performing poorly on the empirical data, a direct contradiction to what has been reported in the literature.
 
 \begin{figure}[!htb]
-	\begin{center}
-		\includegraphics[max size = {\textwidth}{0.35\textheight}]{empirical_test_mse}
-	\end{center}
+	\centering
+		\includegraphics[max size = {\textwidth}{0.4\textheight}]{empirical_test_mse_pre_all}
 	\caption{Empirical Test MSE}
 	\floatfoot{Note: Test MSE on y axis, with model on x axis, following naming convention in Figure \ref{fig:simulation_loss_metrics}}
 \end{figure}
 
-Focusing on the neural networks specifically, their non-robustness is amplified on the empirical dataset, with some neural networks in some samples even performing worse than linear models. This was observed to be somewhat more common on neural networks fitted with respect to MSE, suggesting that they are indeed very sensitive to outliers in training data. We similarly observe some evidence that deeper neural networks perform better, though this result is less apparent to the lower robustness on empirical data.
-
-Interestingly, we do not observe worsening performance as the training sample increases as we did in the simulation study. This suggests that the simulation design may have been too volatile when compared to the specific empirical time periods examined.
-
 \begin{figure}[!htb]
-	\begin{center}
-		\includegraphics[max size = {\textwidth}{0.35\textheight}]{empirical_test_mae}
-	\end{center}
+	\centering
+	\includegraphics[max size = {\textwidth}{0.4\textheight}]{empirical_test_mae_pre_all}
 	\caption{Empirical Test MAE}
 	\floatfoot{Note: Test MAE on y axis, with model on x axis, following naming convention in Figure \ref{fig:simulation_loss_metrics}}
 \end{figure}
 
 \begin{figure}[!htb]
-	\begin{center}
-		\includegraphics[max size = {\textwidth}{0.35\textheight}]{empirical_test_rsquare}
-	\end{center}
+	\centering
+	\includegraphics[max size = {\textwidth}{0.4\textheight}]{empirical_test_rsquare_pre_all}
 	\caption{Empirical Test Predictive R-Squared}
 	\floatfoot{Note: Test Predictive R-Squared on y axis, with model on x axis, following naming convention in Figure \ref{fig:simulation_loss_metrics}}
 \end{figure}
 
-%% Causal Inference
+Focusing on the neural networks specifically, their non-robustness is amplified on the empirical dataset, with some neural networks in some samples even performing worse than linear models. This was observed to be somewhat more common on neural networks fitted with respect to MSE, suggesting that they are indeed very sensitive to outliers in training data. We similarly observe some evidence that deeper neural networks perform better, though this result is less apparent due to the lower robustness on empirical data (see \ref{empirical_study_appendix} in Appendix for results).
+
+Interestingly, we do not observe worsening performance as the training sample increases as we did in the simulation study. This suggests that the simulation design may have been too volatile when compared to the specific empirical time periods examined.
+
+\FloatBarrier
+
+\subsubsection{Factor Importance}
 
 As the data generating process for empirical returns is unknown, the variable importance results cannot be directly compared with those of the simulation study. Even so, we see similar results: the elastic net and random forest models tend to agree on the same subset of predictors, but the random forest struggles to discern between highly correlated regressors. Similar to the prediction performance results, neural networks perform poorly.
 
 \begin{figure}[!htb]
-	\begin{center}
+	\centering
 		\includegraphics[max size = {\textwidth}{0.35\textheight}]{empirical_sample_all_vi_ind}
 		\caption{Empirical Individual Factor Importance, averaged across all training samples}
 		\floatfoot{Individual factors shown on x axis, with most important variables bolded (see Table \ref{ind_factors} in Appendix for definitions)}
-	\end{center}
 \end{figure}
 
 \begin{figure}[!htb]
 	\label{empirical_macro_facet}
-	\begin{center}
+	\centering
 		\includegraphics[max size = {\textwidth}{0.35\textheight}]{empirical_sample_all_vi_macro_facet}
 		\caption{Empirical Macroeconomic Factor Importance, faceted by training sample}
 		\floatfoot{Macroeconomic Factors shown on x axis (see Table \ref{macro_factors} for definitions)}
-	\end{center}
 \end{figure}
 
 If we focus on the two top performing models of elastic net and random forest, we see that they consistently pick out the 1 month and 6 month momentum factors out of the individual characteristics as important, and the book-to-market and default yield spread factors out of the macroeconomic factors are important. In general though, the variable importance metrics are less consistent for the random forests, and it should be noted in particular that the random forest tends to determine factors highly correlated with momentum as important, such as change in moment, dollar trading volume and return volatility. Looking at the macroeconomic factors, penalized linear models tend to identify the average book to market ratio and the default spread as the most important macroeconomic factors. On the macroeconomic factor set, the random forests were inconsistent with the elastic nets, and tended to assign very similar variable importance metrics to most macroeconomic factors.
@@ -863,11 +862,7 @@ Interestingly, we find that the linear models assign the controversial dividend 
 
 The overall results again contradict the results of \cite{gu_empirical_2018}, who conclude that all of the machine methods agree on the same subset of important factors. Indeed, we only see consistency in variable importance between the elastic nets and random forests on the individual factors only - all other variable importance metrics were either inconsistent between different models, or non-robust.
 
-%% Other Notes
-
 All models considered typically preferred sparse parameterizations. That is, most if not all of the individual factors had little to no importance across all models.\footnote{Note that because the variable importance here was not evaluated explicitly for each pairwise interaction term, some of the individual factors appear as slightly important. This is because setting an individual factor to zero also sets some of the macroeconomic pairwise terms to zero, increasing its apparent importance.}
-
-\newpage
 
 \section{Conclusion}
 
@@ -1153,18 +1148,16 @@ The overall findings of this paper differ from the sparse literature on machine 
 \end{figure}
 
 \begin{figure}[!htb]
-	\begin{center}
+	\centering
 		\includegraphics[max size = {\textwidth}{0.5\textheight}]{simulation_ave_vi_plot_pre_rf.pdf}
 		\caption{Simulation Variable Importance Plots for Random Forests}
-	\end{center}
 	\label{fig:rf_sim_vi}
 \end{figure}
 
 \begin{figure}[!htb]
-	\begin{center}
+	\centering
 		\includegraphics[max size = {\textwidth}{0.5\textheight}]{simulation_ave_vi_plot_pre_nn.pdf}
 		\caption{Simulation Variable Importance Plots for Neural Networks}
-	\end{center}
 	\label{fig:nn_sim_vi}
 \end{figure}
 
@@ -1172,30 +1165,47 @@ The overall findings of this paper differ from the sparse literature on machine 
 
 % Penalized Linear Models
 \begin{figure}[!htb]
-	\includegraphics[max size = {\textwidth}{0.4\textheight}]{eln_alpha_plot.pdf}
+	\includegraphics[max size = {\textwidth}{0.5\textheight}]{eln_alpha_plot.pdf}
 	\caption{Optimal Alpha Values Across Training Samples for Elastic Net, each colour representing a different simulation realisation}
 \end{figure}
 
 \begin{figure}[!htb]
-	\includegraphics[max size = {\textwidth}{0.4\textheight}]{eln_lambda_plot.pdf}
+	\includegraphics[max size = {\textwidth}{0.5\textheight}]{eln_lambda_plot.pdf}
 	\caption{Optimal Lambda Values Across Training Samples for Elastic Net, each colour representing a different simulation realisation}
 \end{figure}
 
 % Random Forests
 
 \begin{figure}[!htb]
-	\includegraphics[max size = {\textwidth}{0.4\textheight}]{rf_mtry_plot.pdf}
+	\includegraphics[max size = {\textwidth}{0.5\textheight}]{rf_mtry_plot.pdf}
 	\caption{Optimal mtry Values Across Training Samples for Random Forest, each colour representing a different simulation realisation}
 \end{figure}
 
 \begin{figure}[!htb]
-	\includegraphics[max size = {\textwidth}{0.4\textheight}]{rf_nodesize_plot.pdf}
+	\includegraphics[max size = {\textwidth}{0.5\textheight}]{rf_nodesize_plot.pdf}
 	\caption{Optimal nodesize Values Across Training Samples for Random Forest, each colour representing a different simulation realisation}
 \end{figure}
 
+\FloatBarrier
 \newpage
 
 \subsubsection{Empirical Study}
+\label{empirical_study_appendix}
+
+\begin{figure}[!htb]
+	\includegraphics[max size = {\textwidth}{0.5\textheight}]{empirical_test_mse.pdf}
+	\caption{Empirical Test MSE averaged across all samples}
+\end{figure}
+
+\begin{figure}[!htb]
+	\includegraphics[max size = {\textwidth}{0.5\textheight}]{empirical_test_mae.pdf}
+	\caption{Empirical Test MAE averaged across all samples}
+\end{figure}
+
+\begin{figure}[!htb]
+	\includegraphics[max size = {\textwidth}{0.5\textheight}]{empirical_test_rsquare.pdf}
+	\caption{Empirical Test Predictive R-Squared averaged across all samples}
+\end{figure}
 
 \begin{figure}[!htb]
 	\includegraphics[max size = {\textwidth}{0.5\textheight}]{empirical_sample_1_vi_ind.pdf}
@@ -1212,6 +1222,7 @@ The overall findings of this paper differ from the sparse literature on machine 
 	\caption{Empirical Data Individual Factor Variable Importance for Sample 3}
 \end{figure}
 
+\FloatBarrier
 \newpage
 
 \subsection{Computational Details}
@@ -1229,6 +1240,7 @@ Ordinary Least Squares (OLS) used for fitting with respect to MSE. This is avail
 The \textbf{quantreg} package which implements quantile linear regression used for fitting linear models with respect to mean absolute error (noting that minimizing 0.5 quantile loss is equivalent to minimizing mae).
 
 \subsubsection{Penalized Linear}
+\label{eln_comp}
 
 The package \textbf{hqreg} was used to fit penalized regression models with respect to MSE and MAE.
 
@@ -1315,7 +1327,7 @@ A cross sectional regression for the risk premia is then run across assets of av
 where the $\beta_i'$ are the estimated coefficients from each time series regressions run previously. The corresponding R squared for this regression is the cross sectional R squared.
 
 The true R squared is a measure of signal to noise ratio i.e. how much of the returns data is due to 
-This is simply calculated by running a pooled ordinary least squares regression on the entire panel, using the underlying g() as the "predictions.' The resulting R squared value is therefore a measure of how much of the panel can be explained by the g() term exclusive of any noise or error terms.
+This is simply calculated by running a pooled ordinary least squares regression on the entire panel, using the underlying g() as the "predictions.' The resulting R squared value is therefore a measure of how much of the panel can be explained by the $g()$ term exclusive of any noise or error terms.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%BIBLIOGRAPHY
