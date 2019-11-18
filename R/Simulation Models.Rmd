@@ -23,6 +23,11 @@ library(randomForestSRC)
 library(hqreg)
 library(caret)
 
+## Vector arima/garch packages
+
+library(rmgarch)
+library(marima)
+
 #Parallel Computing
 library(foreach)
 library(doFuture)
@@ -76,10 +81,13 @@ panel_formula <- function(panel){
 ```
 
 ```{r, eval = FALSE}
+g1_A1_nosv_0 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Simulated_dataset/g1_A1_nosv_0.RDS")
 
-pooled_panel <- g1_A1_sv_1[[1]]$panel
+pooled_panel <- g1_A1_nosv_0[[1]]$panel
 
-pooled_panel <- gu_et_al_g1[[1]]$panel
+g1_A1_sv_0.1 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Simulated_dataset/g1_A1_sv_0.1.RDS")
+
+pooled_panel <- g1_A1_sv_0.1[[1]]$panel
 
 f <- panel_formula(pooled_panel)
 ```
@@ -1264,5 +1272,55 @@ NNet_5_mae_stats[[1]]$variable_importance %>%
 # Neural Networks WRT MAE are not good for highly non-linear specifications
 # Very unstable out of sample r squared values
 ```
+
+```{r}
+## FFORMA constituent models
+
+## univariate approaches
+
+pooled_panel %>%
+  filter(stock == "stock_1") %>%
+  select(rt) %>%
+  Acf()
+
+pooled_panel %>%
+  filter(stock == "stock_1") %>%
+  select(rt) %>%
+  auto.arima()
+
+# rugarch
+
+ugarch_spec <- ugarchspec(variance.model = list(model = "gjrGARCH",
+                                                         garchOrder = c(1, 1), 
+                                                         submodel = NULL, 
+                                                         external.regressors = NULL, 
+                                                         variance.targeting = FALSE), 
+                          mean.model     = list(armaOrder = c(0, 0), 
+                                                include.mean = TRUE,
+                                                external.regressors = NULL, 
+                                                start.pars = list(), 
+                                                fixed.pars = list()),
+                          distribution.model = "std")
+
+AR1_GARCH_1_1_t_model <- ugarchfit(spec = ugarch_spec, 
+                                   data = pooled_panel %>%
+                                     filter(stock == "stock_1") %>%
+                                     select(rt), 
+                                   solver.control = list(trace=0))
+show(AR1_GARCH_1_1_t_model)
+
+## mgarch models
+
+dcc_spec <- dccspec(uspec = multispec(replicate(2, ugarch_spec)),
+                    VAR = FALSE, robust = FALSE, lag = 1, 
+                    external.regressors = NULL,
+                    dccOrder = c(1, 1), model = c("DCC"),
+                    distribution = c("mvt")
+)
+
+dcc_filter <- dccfilter(dcc_spec, data = )
+
+```
+
 
 
