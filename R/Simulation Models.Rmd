@@ -1274,6 +1274,72 @@ NNet_5_mae_stats[[1]]$variable_importance %>%
 ```
 
 ```{r}
+## RNN and LSTM Neural Network Models
+
+# Prepare the data into a format which RNNs and LSTM models from keras recognise and can work with
+# We want a multipl einput (factor set), multiple output (multiple stocks) structure
+# Annoyingly, this means we have to convert our dataset from tidy to array format
+
+# Keras needs the X (input) to be an array of (sample no, time steps, no. of features) dimensions
+# In our case, this corresponds to (length of training set, 1 as we are using 1 lag, 400 factors)
+
+# Keras needs the Y output to be an array of (sample no, number of outputs per sample)
+# In our case, this corresponds to (length of training set, no. of stocks/cross sectional units)
+
+# Set the training length to be the entire smaple for now
+train_length <- 180
+
+X_array <- array(data = 0, dim = c(train_length, 1, 80000))
+
+Y_array <- array(data = 0, dim = c(train_length, 200))
+
+for(t in 1:train_length) {
+  X_array[t, 1, ] <- pooled_panel %>%
+  filter(time == t+1) %>%
+  dplyr::select(-rt, -time, -stock) %>%
+  as.matrix() %>%
+  as.vector()
+}
+
+for(t in 1:train_length) {
+  Y_array[t, ] <- pooled_panel %>%
+    filter(time == t+1) %>%
+    dplyr::select(rt) %>%
+    as.matrix() %>%
+    as.vector()
+}
+
+## Start building the model
+
+l1_penalty <- 0.01
+
+lstm_model <- keras_model_sequential() %>%
+  layer_lstm(units = 128, input_shape = c(1, dim(X_array)[3])) %>%
+  layer_activation("tanh") %>%
+  layer_activity_regularization(l1 = l1_penalty) %>%
+  layer_batch_normalization() %>%
+  
+  layer_dense(units = 128) %>%
+  layer_activation("tanh") %>%
+  layer_activity_regularization(l1 = l1_penalty) %>%
+  layer_batch_normalization() %>%
+  
+  layer_dense(units = 200) %>%
+  layer_activation("linear")
+
+lstm_model %>% compile(loss = "mse",
+                       optimizer = optimizer_adam(lr = 0.001, beta_1 = 0.9, beta_2 = 0.999),
+                       metrics = list("mae", "mse"))
+
+lstm_model %>% summary()
+
+lstm_model %>% fit(X_array, Y_array, epochs = 50,
+                   batch_size = 32, shuffle = FALSE, verbose = 1)
+  
+```
+
+
+```{r}
 ## FFORMA constituent models
 
 ## univariate approaches
