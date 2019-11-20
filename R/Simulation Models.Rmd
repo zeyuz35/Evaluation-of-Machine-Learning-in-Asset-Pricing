@@ -26,6 +26,8 @@ library(tsfeatures)
 
 ## Vector arima/garch packages
 
+library(xts)
+library(tsne)
 library(rmgarch)
 library(marima)
 
@@ -1347,40 +1349,35 @@ lstm_model %>% fit(X_array, Y_array, epochs = 50,
 
 ## FFORMA constituent models
 
+## FFORMA requires a univariate model to be explicitly estimated for each individual time series
+## This is not possible given the number of factors we have
+## Solution: apply some dimensional reduction technique, such as t-SNE, and then apply univariate time series models such as ARIMA/GARCH
 ## univariate approaches
 
-pooled_panel %>%
-  filter(stock == "stock_1") %>%
-  select(rt) %>%
-  Acf()
+stock_1 <- pooled_panel %>%
+  filter(stock == "stock_1")
 
-pooled_panel %>%
-  filter(stock == "stock_1") %>%
-  select(rt) %>%
-  auto.arima()
+## Attempting to apply PCA for dimensional reduction
+# PCA fails miserably, requiring over 60 components to explain 90% of the data
 
-stock_1
+stock_1_pca <- prcomp(stock_1[, -(1:3)], center = TRUE, scale. = TRUE)
+summary(stock_1_pca)
+screeplot(stock_1_pca)
 
-pooled_panel %>%
-  filter(stock == "stock_1") %>%
-  xts()
+pooled_panel_pca <- prcomp(pooled_panel[, -(1:3)], center = TRUE, scale. = TRUE)
+summary(pooled_panel_pca)
+screeplot(pooled_panel_pca)
 
-# Using all available factors for a single garch fit is not possible - no. of factors > no. of observations
-stock_1_xts <- as.xts(stock_1[,-(1:3)], order.by = as.Date(stock_1$time))
-# Trimming down the number of factors makes it so that convergence is possible, but the fit is awful
-# This model itself is also very very difficult to fit, often running into convergence issues, or taking a very long time
-stock_1_xts <- as.xts(stock_1[,4:103], order.by = as.Date(stock_1$time))
+## Use this with ugarch models
 
-
-# rugarch
-ugarch_spec <- ugarchspec(variance.model = list(model = "gjrGARCH",
+ugarch_spec <- ugarchspec(variance.model = list(model = "sGARCH",
                                                          garchOrder = c(1, 1), 
                                                          submodel = NULL, 
-                                                         external.regressors = NULL, 
+                                                         external.regressors = stock_1_xts[, -1], 
                                                          variance.targeting = FALSE), 
                           mean.model     = list(armaOrder = c(0, 0), 
                                                 include.mean = TRUE,
-                                                external.regressors = NULL),
+                                                external.regressors = stock_1_xts[, -1]),
                           distribution.model = "std")
 
 AR1_GARCH_1_1_t_model <- ugarchfit(spec = ugarch_spec, 
@@ -1388,14 +1385,40 @@ AR1_GARCH_1_1_t_model <- ugarchfit(spec = ugarch_spec,
                                    solver.control = list(trace=0))
 show(AR1_GARCH_1_1_t_model)
 
-# Does suggest that adding in a large number of factors helps
-# AIC of -6.041317 for external regressor model
-# AIC of -2.5589 for no external regressor model
 
-## Just pretending that constituent models are working for now, moving on to calculating the FFORMA features
+```
 
-## FFORMA Features
+```{r}
+## Messing around with TSNE
+#######
 
+## Running tsne on each individual time series in the panel just for fun
+## Analysis seems to reveal that tsne results are quite sensitive to perplexity parameters
+## T-SNE was also originally designed for visualization of high dimensional data, and is not really suitable for use in feature extraction unfortunately
+
+stock_id <- unique(pooled_panel$stock)
+
+stock_series_tsne <- foreach(i = (1:(length(stock_id)/40)), .combine = "rbind") %dopar% {
+  stock_series <- pooled_panel %>%
+    filter(stock == stock_id[i])
+  
+  # Apply tsne
+  stock_series_tsne <- tsne(stock_series[, -(1:3)], perplexity = 100)
+  
+  stock_series_tsne <- cbind(stock = stock_id[i], stock_series_tsne)
+  
+  stock_series_tsne
+}
+
+stock_series_tsne <- as.data.frame(stock_series_tsne)
+
+stock_series_tsne %>%
+  mutate(V2 = (V2 - mean(V2))/sd(V2)) %>%
+  mutate(V3 = (V3 - mean(V3))/sd(V3)) %>%
+  mutate(stock = as.factor(stock)) %>%
+  ggplot() +
+  geom_point(aes(x = V2, y = V3, colour = stock)) +
+  theme(legend.position = "none")
 ```
 
 ```{r}
