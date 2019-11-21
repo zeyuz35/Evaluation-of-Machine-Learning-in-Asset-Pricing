@@ -26,6 +26,7 @@ library(tsfeatures)
 
 ## Vector arima/garch packages
 
+library(kernlab)
 library(xts)
 library(tsne)
 library(rmgarch)
@@ -617,6 +618,7 @@ ELN_fit_stats <- function(alpha_grid, nlamb, timeSlices, pooled_panel, loss_func
                                                      validation_MAE = 0, validation_MSE = 0, validation_RMSE = 0, validation_RSquare = 0, 
                                                      test_MAE = 0, test_MSE = 0, test_RMSE = 0, test_RSquare = 0),
                              #Other useful things
+                             forecasts = 0,
                              forecast_resids = 0,
                              model = 0,
                              hyperparameters = 0,
@@ -651,6 +653,9 @@ ELN_fit_stats <- function(alpha_grid, nlamb, timeSlices, pooled_panel, loss_func
     ELN_stats[[set]]$loss_stats$test_MSE <- mse(test_y, test_predict)
     ELN_stats[[set]]$loss_stats$test_RMSE <- rmse(test_y, test_predict)
     ELN_stats[[set]]$loss_stats$test_RSquare <- (1 - sse(test_y, test_predict) / sum((test_y - mean(test_y))^2))
+    
+    #Forecasts
+    ELN_stats[[set]]$forecasts <- test_predict
     
     #Forecast residuals
     ELN_stats[[set]]$forecast_resids <- eln_ave_forecast_resids(eln_model = model, test, 
@@ -1357,35 +1362,84 @@ lstm_model %>% fit(X_array, Y_array, epochs = 50,
 stock_1 <- pooled_panel %>%
   filter(stock == "stock_1")
 
-## Attempting to apply PCA for dimensional reduction
-# PCA fails miserably, requiring over 60 components to explain 90% of the data
+stock_1_train <- stock_1 %>%
+  filter(time %in% timeSlices[[1]]$train)
+stock_1_validation <- stock_1 %>%
+  filter(time %in% timeSlices[[1]]$validation)
+stock_1_test <- stock_1 %>%
+  filter(time %in% timeSlices[[1]]$test)
 
-stock_1_pca <- prcomp(stock_1[, -(1:3)], center = TRUE, scale. = TRUE)
+## Calculate principal components first
+# Use tol = 0 to eliminate essentially constant components. CHosen because this is a somewhat systematic way of choosing principal components
+stock_1_train_pca <- prcomp(stock_1_train[, -(1:3)], center = TRUE, scale. = TRUE, tol = 0.5)
+summary(stock_1_train_pca)
+
+train_x <- predict(stock_1_train_pca, newdata = stock_1_train[, -(1:3)])
+train_x <- as.xts(train_x, order.by = as.Date(stock_1_train$time))
+
+validation_x <- predict(stock_1_train_pca, newdata = stock_1_validation[, -(1:3)])
+validation_x <- as.xts(validation_x, order.by = as.Date(stock_1_validation$time))
+
+test_x <- predict(stock_1_train_pca, newdata = stock_1_test[, -(1:3)])
+test_x <- as.xts(test_x, order.by = as.Date(stock_1_test$time))
+
+stock_1_pca <- prcomp(stock_1[, -(1:3)], center = TRUE, scale. = TRUE, tol = 0.5)
 summary(stock_1_pca)
-screeplot(stock_1_pca)
 
-pooled_panel_pca <- prcomp(pooled_panel[, -(1:3)], center = TRUE, scale. = TRUE)
-summary(pooled_panel_pca)
-screeplot(pooled_panel_pca)
+stock_1_x <- predict(stock_1_pca, newdata = stock_1[, -(1:3)])
 
-## Use this with ugarch models
+stock_1_true_x <- as.xts(stock_1[, (4:6)], order.by = as.Date(stock_1$time))
+
+## Use these with ugarch models
 
 ugarch_spec <- ugarchspec(variance.model = list(model = "sGARCH",
                                                          garchOrder = c(1, 1), 
                                                          submodel = NULL, 
-                                                         external.regressors = stock_1_xts[, -1], 
+                                                         external.regressors = stock_1_x, 
                                                          variance.targeting = FALSE), 
                           mean.model     = list(armaOrder = c(0, 0), 
                                                 include.mean = TRUE,
-                                                external.regressors = stock_1_xts[, -1]),
+                                                external.regressors = NULL),
                           distribution.model = "std")
 
-AR1_GARCH_1_1_t_model <- ugarchfit(spec = ugarch_spec, 
-                                   data = stock_1$rt, 
-                                   solver.control = list(trace=0))
-show(AR1_GARCH_1_1_t_model)
+rolling_forecasts <- ugarchroll(ugarch_spec, data = xts(stock_1$rt, order.by = as.Date(stock_1$time)), 
+                                n.ahead = 1, n.start = 144, 
+                                refit.every = 12, refit.window = "recursive")
 
+plot(rolling_forecasts, which = 3)
 
+as.data.frame(rolling_forecasts)$Mu
+
+mae(actual = stock_1_test$rt, 
+    as.data.frame(rolling_forecasts)$Mu)
+
+pooled_panel %>%
+  filter(time %in% timeSlices[[1]]$test | time %in% timeSlices[[2]]$test | time %in% timeSlices[[3]]$test) %>%
+  filter(stock == "stock_1") %>%
+  mutate(forecasts = as.data.frame(rolling_forecasts)$Mu) %>%
+  select(time, stock, rt, forecasts) %>%
+  gather("type", "value", -stock, -time) %>%
+  ggplot() +
+  geom_line(aes(x = time, y = value, colour = type))
+
+ELN_stats_mse <- ELN_fit_stats(alpha_grid, nlamb = 100, timeSlices, pooled_panel, loss_function = "mse")
+
+pooled_panel %>%
+  filter(time %in% timeSlices[[1]]$test | time %in% timeSlices[[2]]$test | time %in% timeSlices[[3]]$test) %>%
+  mutate(forecasts = rbind(ELN_stats_mse[[1]]$forecasts, ELN_stats_mse[[2]]$forecasts, ELN_stats_mse[[3]]$forecasts)) %>%
+  select(time, stock, rt, forecasts) %>%
+  filter(stock == "stock_1") %>%
+  gather("type", "value", -stock, -time) %>%
+  ggplot() +
+  geom_line(aes(x = time, y = value, colour = type))
+
+mae(actual = stock_1_test$rt, 
+    rbind(ELN_stats_mse[[1]]$forecasts, ELN_stats_mse[[2]]$forecasts, ELN_stats_mse[[3]]$forecasts))
+
+mae(actual = stock_1_test$rt, 
+    0)
+
+ELN_stats_mse[[1]]$forecasts
 ```
 
 ```{r}
@@ -1529,15 +1583,13 @@ tsfeatures(stock_1$rt,
                         "crossing_points",
                         "entropy",
                         "flat_spots",
-                                         "heterogeneity_tsfeat_workaround",
-                                         "holt_parameters",
+                        "holt_parameters",
                                          "hurst",
                                          "lumpiness",
                                          "nonlinearity",
                                          "pacf_features",
                                          "stl_features",
                                          "stability",
-                                         "hw_parameters_tsfeat_workaround",
                                          "unitroot_kpss",
                                          "unitroot_pp"))
 ```
