@@ -1443,6 +1443,162 @@ ELN_stats_mse[[1]]$forecasts
 ```
 
 ```{r}
+## FFORMA implementation, pretending that each stock return series is an individual time series with no external regressors
+
+# Get univariate time series training sample from cross section
+
+stock_id <- unique(pooled_panel$stock)
+
+univariate_time_series <- pooled_panel %>%
+  filter(stock == stock_id[1]) %>%
+  filter(time %in% timeSlices[[1]]$train | time %in% timeSlices[[1]]$validation) %>%
+  select(rt) %>%
+  ts()
+
+univariate_time_series_test <- pooled_panel %>%
+  filter(stock == stock_id[1]) %>%
+  filter(time %in% timeSlices[[1]]$test) %>%
+  select(rt) %>%
+  ts()
+
+## Calculating set of features
+
+fforma_features <- function(time_series) {
+  cbind(
+    # Series length
+    length = length(time_series),
+    # nperiods, seasonal_period, trend, seasonality, linearity, curvature, spikiness e_acr1 and e_acf10
+    tsfeatures(time_series, features = "stl_features"),
+    # Stability
+    tsfeatures(time_series, features = "stability"),
+    # Lumpiness
+    tsfeatures(time_series, features = "lumpiness"),
+    # Hurst
+    tsfeatures(time_series, features = "hurst"),
+    # Nonlinearity
+    tsfeatures(time_series, features = "nonlinearity"),
+    # Holt alpha and beta
+    tsfeatures(time_series, features = "holt_parameters"),
+    # HW alpha and beta, only applies for seasonal time series
+    #tsfeatures(time_series, features = "hw_parameters"),
+    # Unitroot statistics
+    tsfeatures(time_series, features = c("unitroot_kpss", "unitroot_pp")),
+    # ACF features
+    tsfeatures(time_series, features = "acf_features"),
+    # PACF features
+    tsfeatures(time_series, features = "pacf_features"),
+    # Crossing point
+    tsfeatures(time_series, features = "crossing_points"),
+    # flat_spots
+    tsfeatures(time_series, features = "flat_spots"),
+    # arch_lm
+    tsfeatures(time_series, features = "arch_stat"),
+    # Heterogeneity
+    tsfeatures(time_series, features = "heterogeneity")
+  )
+}
+
+# Test, works perfectly
+fforma_features(univariate_time_series)
+```
+
+```{r}
+### Constituent models, and their corresponding losses over the test set
+## Note that we can specify any loss function we want
+## Going ahead with mse for now
+
+# Naive
+naive_model <- naive(univariate_time_series, h = 12)
+mse(as.vector(univariate_time_series_test), predict(naive_model)$mean)
+
+# Random walk with drift
+random_walk_model <- rwf(univariate_time_series, h = 12, drift = TRUE)
+mse(as.vector(univariate_time_series_test), predict(random_walk_model)$mean)
+
+# Seasonal Naive, this ends up being the same as naive
+seasonal_naive_model <- snaive(univariate_time_series, h = 12)
+mse(as.vector(univariate_time_series_test), predict(seasonal_naive_model)$mean)
+
+# Theta Method
+theta_model <- thetaf(univariate_time_series, h = 12)
+mse(as.vector(univariate_time_series_test), predict(theta_model)$mean)
+
+## Auto arima
+auto_arima_model <- auto.arima(univariate_time_series)
+mse(as.vector(univariate_time_series_test), forecast(auto_arima_model, h = 12)$mean)
+
+# Auto ETS
+auto_ets_model <- ets(univariate_time_series)
+mse(as.vector(univariate_time_series_test), forecast(auto_ets_model, h = 12)$mean)
+
+# TBATS
+tbats_model <- tbats(univariate_time_series)
+mse(as.vector(univariate_time_series_test), forecast(tbats_model, h = 12)$mean)
+
+# STLM-AR, does not work because our data is not seasonal
+#stlm_ar_model <- stlm(univariate_time_series, modelfunction = "ar")
+
+# Neural Network time series forecasts
+nnetar_model <- nnetar(univariate_time_series)
+mse(as.vector(univariate_time_series_test), forecast(nnetar_model, h = 12)$mean)
+
+## Other constituent models that may perform well
+
+# Naive model with 0 forecasts
+naive0_model <- rep(0, 12)
+mse(as.vector(univariate_time_series_test), naive0_model)
+
+# ARMA 1, 1 with GARCH 1, 1 gaussian errors
+ugarch_spec <- ugarchspec(variance.model = list(model = "sGARCH",
+                                                  garchOrder = c(1, 1), 
+                                                  submodel = NULL, 
+                                                  external.regressors = NULL, 
+                                                  variance.targeting = FALSE), 
+                            mean.model     = list(armaOrder = c(1, 1), 
+                                                  include.mean = TRUE,
+                                                  external.regressors = NULL),
+                            distribution.model = "norm")
+
+ugarch_spec_fit <- ugarchfit(ugarch_spec, data = univariate_time_series, out.sample = 12)
+ugarch_forecast <- ugarchforecast(ugarch_spec_t_fit, n.ahead = 12, n.roll = 12)
+fitted(ugarch_forecast)[1, ]
+plot(ugarch_forecast, which = 2)
+
+# ARMA 1, 1 with GARCH 1, 1 student t errors
+ugarch_spec_t <- ugarchspec(variance.model = list(model = "sGARCH",
+                                                  garchOrder = c(1, 1), 
+                                                  submodel = NULL, 
+                                                  external.regressors = NULL, 
+                                                  variance.targeting = FALSE), 
+                            mean.model     = list(armaOrder = c(1, 1), 
+                                                  include.mean = TRUE,
+                                                  external.regressors = NULL),
+                            distribution.model = "std")
+
+ugarch_spec_t_fit <- ugarchfit(ugarch_spec_t, data = univariate_time_series, out.sample = 12)
+ugarch_t_forecast <- ugarchforecast(ugarch_spec_t_fit, n.ahead = 12, n.roll = 12)
+fitted(ugarch_t_forecast)[1, ]
+plot(ugarch_t_forecast, which = 2)
+
+# Need param data - a matrix of the input features data (tsfeatures), one observation (time series) per row
+# need param errors, a matrix of with the forecast errors, each row being a vector of the rrors of the forecasting methods
+# Need param labels - a numeric vector from 0 to nclass - 1 with the target labels for classification
+```
+
+```{r}
+## Training of meta learning using features and errors
+
+fforma_param <- list(max_depth=4, eta=0.019*6, nthread = 2, silent=0,
+                     objective=combi_softmax_square,
+                     num_class=nrow(dataset[[1]]$ff),
+                     subsample=0.9,
+                     colsample_bytree=0.6)
+
+```
+
+
+
+```{r}
 ## Messing around with TSNE
 #######
 
@@ -1473,125 +1629,6 @@ stock_series_tsne %>%
   ggplot() +
   geom_point(aes(x = V2, y = V3, colour = stock)) +
   theme(legend.position = "none")
-```
-
-```{r}
-## THA_features function from Meta4learning dev package
-THA_features <-
-  function(dataset, n.cores=1) {
-    list_process_fun <- lapply
-    cl = -1
-    require(tsfeatures)
-    if (n.cores > 1) {
-      cl <- parallel::makeCluster(n.cores)
-      #parallel::clusterExport(cl, varlist="dataset", envir=environment())
-      parallel::clusterExport(cl, varlist=ls(), envir=environment())
-      parallel::clusterExport(cl, varlist=ls(envir=environment(THA_features)),
-                              envir = environment(THA_features))
-      parallel::clusterCall(cl, function() library(tsfeatures)) #required to find functions within tsfeatures
-      list_process_fun <- function(my_list, ...) {
-        parallel::parLapplyLB(cl, my_list, ...)
-      }
-    }
-
-    dataset_feat <- list_process_fun(dataset,
-                               function (serdat) {
-                                 tryCatch({
-                                   #additional features from Talagala, Hyndman, Athanasopoulos 2018
-                                   featrow <-
-                                     tsfeatures::tsfeatures(
-                                       serdat,
-                                       features = c(
-                                         "acf_features",
-                                         "arch_stat",
-                                         "crossing_points",
-                                         "entropy",
-                                         "flat_spots",
-                                         "heterogeneity_tsfeat_workaround",
-                                         "holt_parameters",
-                                         "hurst",
-                                         "lumpiness",
-                                         "nonlinearity",
-                                         "pacf_features",
-                                         "stl_features",
-                                         "stability",
-                                         "hw_parameters_tsfeat_workaround",
-                                         "unitroot_kpss",
-                                         "unitroot_pp"
-                                       )
-                                     )
-
-
-                                   #additional features
-                                   series_length <- length(serdat$x)
-
-                                   featrow <- tibble::add_column(
-                                     featrow,
-                                     "series_length" = series_length)
-
-                                   featrow[is.na(featrow)] <-
-                                     0 #SET NAs TO 0 ?
-
-
-                                   #adding dummy variables for non seasonal series
-                                   #that are not output by tsfeatures
-                                    if (length(featrow) == 37) {
-                                      featrow <- tibble::add_column(featrow, "seas_acf1" = 0, .before = 7)
-                                      featrow <- tibble::add_column(featrow, "seas_pacf" =
-                                                                     0, .before = 24)
-                                      featrow = tibble::add_column(
-                                        featrow,
-                                      "seasonal_strength" = 0,
-                                      "peak" = 0,
-                                      "trough" = 0,
-                                      .before=33)
-                                    }
-                                    serdat$features <- featrow
-                                    serdat
-                                 }, error = function(e) {
-                                   print(e)
-                                   return(e)
-                                 })
-                               })
-
-    if (n.cores > 1) {
-      parallel::stopCluster(cl)
-    }
-
-    dataset_feat
-  }
-
-heterogeneity_tsfeat_workaround <- function(x) {
-  output <- c(arch_acf =0, garch_acf=0, arch_r2=0, garch_r2=0)
-  try( output <- tsfeatures::heterogeneity(x) )
-  output
-}
-
-hw_parameters_tsfeat_workaround <- function(x) {
-  hw_fit <- NULL
-  hw_fit$par <- c(NA, NA, NA)
-  try(hw_fit <- forecast::ets(x, model=c("AAA")), silent=TRUE)
-  names(hw_fit$par) <- c("hw_alpha", "hw_beta" , "hw_gamma")
-  hw_fit$par[1:3]
-}
-```
-
-```{r}
-tsfeatures(stock_1$rt,
-           features = c("acf_features",
-                        "arch_stat",
-                        "crossing_points",
-                        "entropy",
-                        "flat_spots",
-                        "holt_parameters",
-                                         "hurst",
-                                         "lumpiness",
-                                         "nonlinearity",
-                                         "pacf_features",
-                                         "stl_features",
-                                         "stability",
-                                         "unitroot_kpss",
-                                         "unitroot_pp"))
 ```
 
 ```{r}
