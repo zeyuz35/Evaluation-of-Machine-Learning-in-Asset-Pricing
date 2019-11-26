@@ -1545,8 +1545,9 @@ mse(as.vector(univariate_time_series_test), forecast(nnetar_model, h = 12)$mean)
 ## Other constituent models that may perform well
 
 # Naive model with 0 forecasts
-naive0_model <- rep(0, 12)
-mse(as.vector(univariate_time_series_test), naive0_model)
+# Neat idea, but practically speaking ends up being the sam eas auto arima's 0, 0, 0 model most of the time
+# naive0_model <- rep(0, 12)
+# mse(as.vector(univariate_time_series_test), naive0_model)
 
 # ARMA 1, 1 with GARCH 1, 1 gaussian errors
 ugarch_spec <- ugarchspec(variance.model = list(model = "sGARCH",
@@ -1560,7 +1561,7 @@ ugarch_spec <- ugarchspec(variance.model = list(model = "sGARCH",
                             distribution.model = "norm")
 
 ugarch_spec_fit <- ugarchfit(ugarch_spec, data = univariate_time_series, out.sample = 12)
-ugarch_forecast <- ugarchforecast(ugarch_spec_t_fit, n.ahead = 12, n.roll = 12)
+ugarch_forecast <- ugarchforecast(ugarch_spec_fit, n.ahead = 12, n.roll = 11)
 fitted(ugarch_forecast)[1, ]
 plot(ugarch_forecast, which = 2)
 
@@ -1576,17 +1577,215 @@ ugarch_spec_t <- ugarchspec(variance.model = list(model = "sGARCH",
                             distribution.model = "std")
 
 ugarch_spec_t_fit <- ugarchfit(ugarch_spec_t, data = univariate_time_series, out.sample = 12)
-ugarch_t_forecast <- ugarchforecast(ugarch_spec_t_fit, n.ahead = 12, n.roll = 12)
+ugarch_t_forecast <- ugarchforecast(ugarch_spec_t_fit, n.ahead = 12, n.roll = 11)
 fitted(ugarch_t_forecast)[1, ]
 plot(ugarch_t_forecast, which = 2)
 
-# Need param data - a matrix of the input features data (tsfeatures), one observation (time series) per row
-# need param errors, a matrix of with the forecast errors, each row being a vector of the rrors of the forecasting methods
-# Need param labels - a numeric vector from 0 to nclass - 1 with the target labels for classification
+## Stochastic volatility model
+
+stochvol_model <- svlsample(univariate_time_series, draws = 10000, burnin = 1000, designmatrix = "ar1", 
+                            priormu = c(0, 100), priorphi = c(5, 1.5), priorsigma = 1,
+                            priorrho = c(4, 4), priorbeta = c(0, 10000), thinpara = 1,
+                            thinlatent = 1, thintime = NULL, keeptime = "all", quiet = FALSE)
+
+mse(stock_1_test$rt, apply(X = predict(stochvol_model, steps = 12)$y, MARGIN = 2, FUN = mean))
+
+####################
+## Getting the data into the right format for use with xgboost and its custom loss function
+## FFORMA requires a list with the entries:
+# Data - a matrix with the features extracted via tsfeatures, one series per row
+# Errors - a matrix of the errors (losses) produced by the forecasting methods, one series per row
+# Labels - a numeric vector from 0 to nclass -1, representing the method with the lowest forecast error
+
+### Data matrix
+# Just use fforma_features function from before, easy
+data <- foreach(i = 1:length(unique(pooled_panel$stock)), .combine = "rbind") %dopar% {
+  stock_id <- unique(pooled_panel$stock)
+
+  univariate_time_series <- pooled_panel %>%
+    filter(stock == stock_id[i]) %>%
+    filter(time %in% timeSlices[[1]]$train | time %in% timeSlices[[1]]$validation) %>%
+    select(rt) %>%
+    ts()
+  
+  univariate_time_series_test <- pooled_panel %>%
+    filter(stock == stock_id[i]) %>%
+    filter(time %in% timeSlices[[1]]$test) %>%
+    select(rt) %>%
+    ts()
+  
+  fforma_features(univariate_time_series)
+}
+
+### Errors
+# This is trickier
+errors <- data.frame(naive = mse(as.vector(univariate_time_series_test), predict(naive_model)$mean),
+                     
+                     random_walk = mse(as.vector(univariate_time_series_test), predict(random_walk_model)$mean), 
+                     
+                     theta = mse(as.vector(univariate_time_series_test), predict(theta_model)$mean),
+                     
+                     auto_arima = mse(as.vector(univariate_time_series_test), 
+                                      forecast(auto_arima_model, h = 12)$mean),
+                     
+                     ets = mse(as.vector(univariate_time_series_test), forecast(auto_ets_model, h = 12)$mean),
+                     
+                     tbats = mse(as.vector(univariate_time_series_test), forecast(tbats_model, h = 12)$mean),
+                     
+                     nnetar = mse(as.vector(univariate_time_series_test), forecast(nnetar_model, h = 12)$mean),
+                     
+                     garch_11 = mse(as.vector(univariate_time_series_test), fitted(ugarch_forecast)[1, ]),
+                     
+                     garch_11_t = mse(as.vector(univariate_time_series_test), fitted(ugarch_t_forecast)[1, ]),
+                     
+                     stochvol = mse(as.vector(univariate_time_series_test), 
+                                    apply(X = predict(stochvol_model, steps = 12)$y, MARGIN = 2, FUN = mean)))
+
+### Labels
+# Easy, but requires the setup of the error matrix earlier
+labels <- data.frame(label = which.min(errors))
+
+errors <- foreach(i = 1:length(unique(pooled_panel$stock)), .combine = "rbind") %dopar% {
+  ## Filter Data first
+  stock_id <- unique(pooled_panel$stock)
+
+  univariate_time_series <- pooled_panel %>%
+    filter(stock == stock_id[i]) %>%
+    filter(time %in% timeSlices[[1]]$train | time %in% timeSlices[[1]]$validation) %>%
+    select(rt) %>%
+    ts()
+
+  univariate_time_series_test <- pooled_panel %>%
+    filter(stock == stock_id[i]) %>%
+    filter(time %in% timeSlices[[1]]$test) %>%
+    select(rt) %>%
+    ts()
+  
+  ## Estimation of consituent models
+  
+  # Naive
+  naive_model <- naive(univariate_time_series, h = 12)
+  
+  # Random walk with drift
+  random_walk_model <- rwf(univariate_time_series, h = 12, drift = TRUE)
+  
+  # Seasonal Naive, this ends up being the same as naive
+  seasonal_naive_model <- snaive(univariate_time_series, h = 12)
+  
+  # Theta Method
+  theta_model <- thetaf(univariate_time_series, h = 12)
+  
+  ## Auto arima
+  auto_arima_model <- auto.arima(univariate_time_series)
+  
+  # Auto ETS
+  auto_ets_model <- ets(univariate_time_series)
+  
+  # TBATS
+  tbats_model <- tbats(univariate_time_series)
+  
+  # Neural Network time series forecasts
+  nnetar_model <- nnetar(univariate_time_series)
+  
+  # Naive model that forecasts 0
+  # Neat idea, but practically speaking ends up being the sam eas auto arima's 0, 0, 0 model most of the time
+  # naive0_model <- rep(0, 12)
+  # mse(as.vector(univariate_time_series_test), naive0_model)
+  
+  # ARMA 1, 1 with GARCH 1, 1 gaussian errors
+  ugarch_spec <- ugarchspec(variance.model = list(model = "sGARCH",
+                                                    garchOrder = c(1, 1), 
+                                                    submodel = NULL, 
+                                                    external.regressors = NULL, 
+                                                    variance.targeting = FALSE), 
+                              mean.model     = list(armaOrder = c(1, 1), 
+                                                    include.mean = TRUE,
+                                                    external.regressors = NULL),
+                              distribution.model = "norm")
+  
+  ugarch_spec_fit <- ugarchfit(ugarch_spec, data = univariate_time_series, out.sample = 12,
+                               solver = "hybrid")
+  ugarch_forecast <- ugarchforecast(ugarch_spec_fit, n.ahead = 12, n.roll = 11)
+  
+  ## Stochastic volatility model
+  ## Theoretically the most correctly specified model, but very computatioally intensive, and may be infeasible
+  ## Takes ~ 14 seconds to estimate
+  
+  #stochvol_model <- svlsample(univariate_time_series, draws = 10000, burnin = 1000, designmatrix = "ar1", 
+                              #priormu = c(0, 100), priorphi = c(5, 1.5), priorsigma = 1,
+                              #priorrho = c(4, 4), priorbeta = c(0, 10000), thinpara = 1,
+                              #thinlatent = 1, thintime = NULL, keeptime = "all", quiet = TRUE)
+  
+  ## Put errors into a single row
+  errors <- data.frame(naive = mse(as.vector(univariate_time_series_test), predict(naive_model)$mean),
+                     
+                       random_walk = mse(as.vector(univariate_time_series_test), predict(random_walk_model)$mean), 
+                       
+                       theta = mse(as.vector(univariate_time_series_test), predict(theta_model)$mean),
+                       
+                       auto_arima = mse(as.vector(univariate_time_series_test), 
+                                        forecast(auto_arima_model, h = 12)$mean),
+                       
+                       ets = mse(as.vector(univariate_time_series_test), forecast(auto_ets_model, h = 12)$mean),
+                       
+                       tbats = mse(as.vector(univariate_time_series_test), forecast(tbats_model, h = 12)$mean),
+                       
+                       nnetar = mse(as.vector(univariate_time_series_test), forecast(nnetar_model, h = 12)$mean),
+                       
+                       garch_11 = mse(as.vector(univariate_time_series_test), fitted(ugarch_forecast)[1, ]))
+                       
+                       #stochvol = mse(as.vector(univariate_time_series_test), 
+                                      #apply(X = predict(stochvol_model, steps = 12)$y, MARGIN = 2, FUN = mean)))
+  
+  errors
+}
+
+## Create labels
+# Look like there's a healthy mix of optimal forecasting methods, yay
+
+labels <- foreach(i = 1:nrow(errors), .combine = "rbind") %dopar% {
+  data.frame(label = which.min(errors[i, ]))
+}
+
+## Create final list with everything needed in FFORMA
+## Looks pretty good
+train_list <- list(
+  data = data,
+  errors = errors,
+  labels = labels
+)
 ```
 
 ```{r}
 ## Training of meta learning using features and errors
+
+## Need to supply custom loss function
+## This is because the vanilla softmax loss function does not take into account of the actual errors associated with each forecasting method
+# A vanilla softmax xgboost model will simply to try to use the features to identify the best performing model, not accounting for how similarly performing the models may be
+
+softmax_transform <- function(x) {
+  exp(x) / sum(exp(x))
+}
+
+error_softmax_obj <- function(preds, dtrain) {
+  labels <- xgboost::getinfo(dtrain, "label")
+  errors <- attr(dtrain, "errors")
+
+  preds <- exp(preds)
+  sp <- rowSums(preds)
+  preds <- preds / replicate(ncol(preds), sp)
+  rowsumerrors <- replicate( ncol(preds), rowSums(preds * errors))
+
+  grad <- preds*(errors - rowsumerrors)
+  hess <- errors*preds*(1.0-preds) - grad*preds
+  #hess <- grad*(1.0 - 2.0*preds)
+  #hess <- pmax(hess, 1e-16)
+  #the true hessian should be grad*(1.0 - 2.0*preds) but it produces numerical problems
+  #what we use here is a upper bound
+
+  #print(mean(rowSums(preds*errors)))
+  return(list(grad = t(grad), hess = t(hess)))
+}
 
 fforma_param <- list(max_depth=4, eta=0.019*6, nthread = 2, silent=0,
                      objective=combi_softmax_square,
