@@ -127,26 +127,62 @@ datashare <- datashare_RAW_join %>%
   # Convert time to yearqtr format
   # yearqtr stores data as year + 0/4 for q1, 1/4 for q2, etc
   mutate(time = as.yearqtr(time - 2/12)) %>%
-  dplyr::select(-RET)
+  dplyr::select(-RET) %>%
+  # Filter to contain more recent data
+  filter(time >= 1993.25)
 
-## Generate quarterly returns
-## This approach keeps companies that were were unlisted and relisted
-## Sensible, because companies can be bought out and floated again, etc.
-## Not likely to make a huge difference, but actual quarterly returns are computed, instead of log quarterly returns
-## This is because stock prices can in some cases have rather large movements over a quarter
 time_df <- data.frame(time = unique(datashare$time)) %>%
   mutate(time = as.numeric(time))
 
-datashare <- foreach(i = (1:length(unique(datashare$stock))), .combine = rbind) %dopar% {
+#####################################
+## Generate quarterly returns
+#####################################
+## This approach drops all companies which do not have comlete stock price history
+## This is because many methods require there to be an uniterreupted time series, e.g. GARCH
+## Other approaches such as imputation, etc are less sensible due to the unpredictability of the data
+## Has obvious drawbacks of introducing lots of survivorship, but what can you do
+
+## Other drawbacks that are important
+## Because the original dataset goes back to when the stock exchange was founded, the dataset needs to be filtered by time first
+## Otherwise, you will inadventerdently filter out so that only stocks that have been listed on the exchange since the begginning are included
+## The old apparoch kept ~ 20000 unique stocks
+## This approach keeps a highly variable number of stocks, depending on when you filter the data from
+## Going with a filter of >= 1993.5 gives us 195 unique stocks, just going with this for now for feasibility
+
+datashare <- foreach(i = (1:length(unique(datashare$stock))), .combine = "rbind") %dopar% {
   datashare_stock <- datashare %>%
     mutate(time = as.numeric(time)) %>%
     filter(stock == unique(datashare$stock)[i]) %>%
     full_join(time_df, by = "time") %>%
     arrange(time) %>%
-    mutate(rt = (PRC - lag(PRC))/lag(PRC)) %>%
-    drop_na(rt)
+    mutate(rt = (PRC - lag(PRC))/lag(PRC))
+  # Method to remove any incomplete univarriate series
+  if(sum(is.na(datashare_stock$PRC)) > 0) {
+    datashare_stock <- NULL
+  }
   datashare_stock
 }
+
+length(unique(datashare$stock))
+
+#####################################
+## OLD, deprecated, NOT RUN
+#####################################
+## Generate quarterly returns
+## This approach keeps companies that were were unlisted and relisted
+## Sensible, because companies can be bought out and floated again, etc.
+## Not likely to make a huge difference, but actual quarterly returns are computed, instead of log quarterly returns
+## This is because stock prices can in some cases have rather large movements over a quarter
+# datashare <- foreach(i = (1:length(unique(datashare$stock))), .combine = rbind) %dopar% {
+#   datashare_stock <- datashare %>%
+#     mutate(time = as.numeric(time)) %>%
+#     filter(stock == unique(datashare$stock)[i]) %>%
+#     full_join(time_df, by = "time") %>%
+#     arrange(time) %>%
+#     mutate(rt = (PRC - lag(PRC))/lag(PRC)) %>%
+#     drop_na(rt)
+#   datashare_stock
+# }
 
 # Reorder (again)
 datashare <- datashare %>%
@@ -278,17 +314,20 @@ cross_section_normalize <- function(dataset) {
     dataset_cross_section_x <- dataset_cross_section %>%
       dplyr::select(-time, -stock, -rt)
     
-    dataset_cross_section_x_norm <- data.frame(
-      data = (2/(nrow(dataset_cross_section_x)*ncol(dataset_cross_section_x) + 1)) * 
-        matrix(rank(data.frame(dataset_cross_section_x)),
-               ncol = ncol(dataset_cross_section_x),
-               nrow = nrow(dataset_cross_section_x)
-               ) -
-        matrix(data = 1, 
-               ncol = ncol(dataset_cross_section_x), 
-               nrow = nrow(dataset_cross_section_x)
-               )
-      )
+    # dataset_cross_section_x_norm <- data.frame(
+    #   data = (2/(nrow(dataset_cross_section_x)*ncol(dataset_cross_section_x) + 1)) * 
+    #     matrix(rank(data.frame(dataset_cross_section_x)),
+    #            ncol = ncol(dataset_cross_section_x),
+    #            nrow = nrow(dataset_cross_section_x)
+    #            ) -
+    #     matrix(data = 1, 
+    #            ncol = ncol(dataset_cross_section_x), 
+    #            nrow = nrow(dataset_cross_section_x)
+    #            )
+    #   )
+    
+    dataset_cross_section_x_norm <- scale(dataset_cross_section_x, center = FALSE, 
+                                          scale = colSums(dataset_cross_section_x))
     
     colnames(dataset_cross_section_x_norm) <- colnames(dataset_cross_section_x)
     
@@ -299,8 +338,8 @@ cross_section_normalize <- function(dataset) {
 
 # This function is working
 # Some immediate problems: columns which were on a very large scale (such a company value mvel1) are still very large (ranging from 0.96 - 1 in value)
-# datashare_normalized <- cross_section_normalize(datashare_imputed) %>%
-#   mutate(time = as.yearqtr(time))
+datashare_normalized <- cross_section_normalize(datashare_imputed) %>%
+  mutate(time = as.yearqtr(time))
 
 ```
 
@@ -380,7 +419,7 @@ write.csv(individual_factor_names, file = "individual_factor_names.csv")
 ```
 
 ```{r generate_final_dataset}
-
+## This section builds in the macro dataset and egnerates the interaction terms
 interaction_terms <- rep(list(0), length(macro_factor_names))
 
 for (i in 1:length(macro_factor_names)) {
@@ -389,7 +428,7 @@ for (i in 1:length(macro_factor_names)) {
 
 interaction_formula <- as.formula(c("~ ", paste(interaction_terms, collapse = "+")))
 
-datashare_combined <- full_join(macro_predictors, datashare_imputed, by = "time") %>%
+datashare_combined <- full_join(macro_predictors, datashare_normalized, by = "time") %>%
   # Create Excess Returns
   mutate(rt = rt - macro_Rfree) %>%
   select(-macro_Rfree) %>%
@@ -411,8 +450,25 @@ final_dataset <- data.frame(stock = datashare_combined$stock,
 
 rm(final_dataset_x)
 
-#write.csv(final_dataset, file = "final_dataset.csv")
+saveRDS(final_dataset, file = "final_dataset.rds")
 ```
+
+```{r}
+## This section builds a version of the final dataset which does NOT have any interaction terms
+## This was mainly done to reduce dimensionality
+
+datashare_combined <- full_join(macro_predictors, datashare_normalized, by = "time") %>%
+  # Create Excess Returns
+  mutate(rt = rt - macro_Rfree) %>%
+  select(-macro_Rfree) %>%
+  # Reorder
+  select(time, stock, rt, macro_constant, 
+         macro_bm, macro_dfy, macro_dp, macro_ep, macro_ntis, macro_svar, macro_tbl, macro_tms,
+         everything())
+
+saveRDS(datashare_combined, file = "final_dataset_no_interaction.rds")
+```
+
 
 ```{r}
 # Double Check

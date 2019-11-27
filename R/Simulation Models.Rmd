@@ -31,6 +31,7 @@ library(xts)
 library(tsne)
 library(rmgarch)
 library(marima)
+library(xgboost)
 
 #Parallel Computing
 library(foreach)
@@ -1371,8 +1372,9 @@ stock_1_test <- stock_1 %>%
 
 ## Calculate principal components first
 # Use tol = 0 to eliminate essentially constant components. CHosen because this is a somewhat systematic way of choosing principal components
-stock_1_train_pca <- prcomp(stock_1_train[, -(1:3)], center = TRUE, scale. = TRUE, tol = 0.5)
+stock_1_train_pca <- prcomp(stock_1_train[, -(1:3)], center = TRUE, scale. = TRUE, tol = 0)
 summary(stock_1_train_pca)
+plot(stock_1_train_pca)
 
 train_x <- predict(stock_1_train_pca, newdata = stock_1_train[, -(1:3)])
 train_x <- as.xts(train_x, order.by = as.Date(stock_1_train$time))
@@ -1794,8 +1796,6 @@ fforma_param <- list(max_depth=4, eta=0.019*6, nthread = 2, silent=0,
                      colsample_bytree=0.6)
 
 ```
-
-
 
 ```{r}
 ## Messing around with TSNE
