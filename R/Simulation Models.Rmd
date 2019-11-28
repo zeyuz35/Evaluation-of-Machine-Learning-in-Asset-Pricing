@@ -1713,10 +1713,10 @@ errors <- foreach(i = 1:length(unique(pooled_panel$stock)), .combine = "rbind") 
   ## Theoretically the most correctly specified model, but very computatioally intensive, and may be infeasible
   ## Takes ~ 14 seconds to estimate
   
-  #stochvol_model <- svlsample(univariate_time_series, draws = 10000, burnin = 1000, designmatrix = "ar1", 
-                              #priormu = c(0, 100), priorphi = c(5, 1.5), priorsigma = 1,
-                              #priorrho = c(4, 4), priorbeta = c(0, 10000), thinpara = 1,
-                              #thinlatent = 1, thintime = NULL, keeptime = "all", quiet = TRUE)
+  stochvol_model <- svlsample(univariate_time_series, draws = 10000, burnin = 1000, designmatrix = "ar1", 
+                              priormu = c(0, 100), priorphi = c(5, 1.5), priorsigma = 1,
+                              priorrho = c(4, 4), priorbeta = c(0, 10000), thinpara = 1,
+                              thinlatent = 1, thintime = NULL, keeptime = "all", quiet = TRUE)
   
   ## Put errors into a single row
   errors <- data.frame(naive = mse(as.vector(univariate_time_series_test), predict(naive_model)$mean),
@@ -1734,10 +1734,10 @@ errors <- foreach(i = 1:length(unique(pooled_panel$stock)), .combine = "rbind") 
                        
                        nnetar = mse(as.vector(univariate_time_series_test), forecast(nnetar_model, h = 12)$mean),
                        
-                       garch_11 = mse(as.vector(univariate_time_series_test), fitted(ugarch_forecast)[1, ]))
+                       garch_11 = mse(as.vector(univariate_time_series_test), fitted(ugarch_forecast)[1, ]),
                        
-                       #stochvol = mse(as.vector(univariate_time_series_test), 
-                                      #apply(X = predict(stochvol_model, steps = 12)$y, MARGIN = 2, FUN = mean)))
+                       stochvol = mse(as.vector(univariate_time_series_test), 
+                                      apply(X = predict(stochvol_model, steps = 12)$y, MARGIN = 2, FUN = mean)))
   
   errors
 }
@@ -1746,7 +1746,7 @@ errors <- foreach(i = 1:length(unique(pooled_panel$stock)), .combine = "rbind") 
 # Look like there's a healthy mix of optimal forecasting methods, yay
 
 labels <- foreach(i = 1:nrow(errors), .combine = "rbind") %dopar% {
-  data.frame(label = which.min(errors[i, ]))
+  data.frame(label = which.min(errors[i, ]) - 1)
 }
 
 ## Create final list with everything needed in FFORMA
@@ -1776,7 +1776,7 @@ error_softmax_obj <- function(preds, dtrain) {
   preds <- exp(preds)
   sp <- rowSums(preds)
   preds <- preds / replicate(ncol(preds), sp)
-  rowsumerrors <- replicate( ncol(preds), rowSums(preds * errors))
+  rowsumerrors <- replicate(ncol(preds), rowSums(preds * errors))
 
   grad <- preds*(errors - rowsumerrors)
   hess <- errors*preds*(1.0-preds) - grad*preds
@@ -1789,12 +1789,29 @@ error_softmax_obj <- function(preds, dtrain) {
   return(list(grad = t(grad), hess = t(hess)))
 }
 
-fforma_param <- list(max_depth=4, eta=0.019*6, nthread = 2, silent=0,
-                     objective=combi_softmax_square,
-                     num_class=nrow(dataset[[1]]$ff),
-                     subsample=0.9,
-                     colsample_bytree=0.6)
+#########################################
 
+param <- list(booster = "gbtree",
+              max_depth = 6, eta = 0.3, nthread = 12,
+                  num_class = ncol(errors),
+              objective = error_softmax_obj,
+                  subsample = 1,
+                  colsample_bytree = 1)
+
+dtrain <- xgb.DMatrix(data = as.matrix(train_list$data), 
+                      label = train_list$labels[, 1])
+  
+attr(dtrain, "errors") <- train_list$errors
+  
+bst <- xgboost::xgb.train(param, dtrain, 94,
+                          verbose = 1)
+bst
+pred <- predict(bst, newdata = xgboost::xgb.DMatrix(as.matrix(train_list$data)), outputmargin = TRUE, reshape=TRUE)
+pred <- t(apply(pred, 1, softmax_transform))
+pred
+
+xgb.importance(model = bst)
+xgb.ggplot.importance(bst)
 ```
 
 ```{r}
