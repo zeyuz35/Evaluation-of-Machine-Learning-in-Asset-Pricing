@@ -1775,8 +1775,12 @@ error_softmax_obj <- function(preds, dtrain) {
 
   preds <- exp(preds)
   sp <- rowSums(preds)
-  preds <- preds / replicate(ncol(preds), sp)
-  rowsumerrors <- replicate(ncol(preds), rowSums(preds * errors))
+  
+  for (n in 1:nrow(preds)) {
+    preds[n] <- preds/sp[n]
+  }
+  
+  rowsumerrors <- rowSums(preds * errors)
 
   grad <- preds*(errors - rowsumerrors)
   hess <- errors*preds*(1.0-preds) - grad*preds
