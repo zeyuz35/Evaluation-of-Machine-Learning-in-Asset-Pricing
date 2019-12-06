@@ -261,7 +261,7 @@ empirical_results_df %>%
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired")
 ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_test_mae_pre_all.pdf",
-       width = 7 * a4_aspect_ratio, height = 7, units = "cm")
+       width = 15 * a4_aspect_ratio, height = 15, units = "cm")
 
 # Test Rsquare
 empirical_results_df %>%
@@ -277,7 +277,7 @@ empirical_results_df %>%
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired")
 ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_test_rsquare_pre_all.pdf",
-       width = 7 * a4_aspect_ratio, height = 7, units = "cm")
+       width = 15 * a4_aspect_ratio, height = 15, units = "cm")
 
 # Test MSE
 empirical_results_df %>%
@@ -293,7 +293,7 @@ empirical_results_df %>%
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired")
 ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_test_mse_pre_all.pdf",
-       width = 7 * a4_aspect_ratio, height = 7, units = "cm")
+       width = 15 * a4_aspect_ratio, height = 15, units = "cm")
 
 ## Actual Plots
 

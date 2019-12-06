@@ -1619,34 +1619,6 @@ data <- foreach(i = 1:length(unique(pooled_panel$stock)), .combine = "rbind") %d
   fforma_features(univariate_time_series)
 }
 
-### Errors
-# This is trickier
-errors <- data.frame(naive = mse(as.vector(univariate_time_series_test), predict(naive_model)$mean),
-                     
-                     random_walk = mse(as.vector(univariate_time_series_test), predict(random_walk_model)$mean), 
-                     
-                     theta = mse(as.vector(univariate_time_series_test), predict(theta_model)$mean),
-                     
-                     auto_arima = mse(as.vector(univariate_time_series_test), 
-                                      forecast(auto_arima_model, h = 12)$mean),
-                     
-                     ets = mse(as.vector(univariate_time_series_test), forecast(auto_ets_model, h = 12)$mean),
-                     
-                     tbats = mse(as.vector(univariate_time_series_test), forecast(tbats_model, h = 12)$mean),
-                     
-                     nnetar = mse(as.vector(univariate_time_series_test), forecast(nnetar_model, h = 12)$mean),
-                     
-                     garch_11 = mse(as.vector(univariate_time_series_test), fitted(ugarch_forecast)[1, ]),
-                     
-                     garch_11_t = mse(as.vector(univariate_time_series_test), fitted(ugarch_t_forecast)[1, ]),
-                     
-                     stochvol = mse(as.vector(univariate_time_series_test), 
-                                    apply(X = predict(stochvol_model, steps = 12)$y, MARGIN = 2, FUN = mean)))
-
-### Labels
-# Easy, but requires the setup of the error matrix earlier
-labels <- data.frame(label = which.min(errors))
-
 errors <- foreach(i = 1:length(unique(pooled_panel$stock)), .combine = "rbind") %dopar% {
   ## Filter Data first
   stock_id <- unique(pooled_panel$stock)
@@ -1713,10 +1685,10 @@ errors <- foreach(i = 1:length(unique(pooled_panel$stock)), .combine = "rbind") 
   ## Theoretically the most correctly specified model, but very computatioally intensive, and may be infeasible
   ## Takes ~ 14 seconds to estimate
   
-  stochvol_model <- svlsample(univariate_time_series, draws = 10000, burnin = 1000, designmatrix = "ar1", 
-                              priormu = c(0, 100), priorphi = c(5, 1.5), priorsigma = 1,
-                              priorrho = c(4, 4), priorbeta = c(0, 10000), thinpara = 1,
-                              thinlatent = 1, thintime = NULL, keeptime = "all", quiet = TRUE)
+  #stochvol_model <- svlsample(univariate_time_series, draws = 10000, burnin = 1000, designmatrix = "ar1", 
+                              #priormu = c(0, 100), priorphi = c(5, 1.5), priorsigma = 1,
+                              #priorrho = c(4, 4), priorbeta = c(0, 10000), thinpara = 1,
+                              #thinlatent = 1, thintime = NULL, keeptime = "all", quiet = TRUE)
   
   ## Put errors into a single row
   errors <- data.frame(naive = mse(as.vector(univariate_time_series_test), predict(naive_model)$mean),
@@ -1734,10 +1706,10 @@ errors <- foreach(i = 1:length(unique(pooled_panel$stock)), .combine = "rbind") 
                        
                        nnetar = mse(as.vector(univariate_time_series_test), forecast(nnetar_model, h = 12)$mean),
                        
-                       garch_11 = mse(as.vector(univariate_time_series_test), fitted(ugarch_forecast)[1, ]),
+                       garch_11 = mse(as.vector(univariate_time_series_test), fitted(ugarch_forecast)[1, ]))
                        
-                       stochvol = mse(as.vector(univariate_time_series_test), 
-                                      apply(X = predict(stochvol_model, steps = 12)$y, MARGIN = 2, FUN = mean)))
+                       #stochvol = mse(as.vector(univariate_time_series_test), 
+                                      #apply(X = predict(stochvol_model, steps = 12)$y, MARGIN = 2, FUN = mean)))
   
   errors
 }
@@ -1772,15 +1744,32 @@ softmax_transform <- function(x) {
 error_softmax_obj <- function(preds, dtrain) {
   labels <- xgboost::getinfo(dtrain, "label")
   errors <- attr(dtrain, "errors")
-
-  preds <- exp(preds)
-  sp <- rowSums(preds)
   
   for (n in 1:nrow(preds)) {
-    preds[n] <- preds/sp[n]
+    preds[n, ] <- softmax_transform(preds[n, ])
   }
   
   rowsumerrors <- rowSums(preds * errors)
+
+  grad <- preds*(errors - rowsumerrors)
+  hess <- errors*preds*(1.0 - preds) - grad*preds
+  #hess <- grad*(1.0 - 2.0*preds)
+  #hess <- pmax(hess, 1e-16)
+  #the true hessian should be grad*(1.0 - 2.0*preds) but it produces numerical problems
+  #what we use here is a upper bound
+
+  #print(mean(rowSums(preds*errors)))
+  return(list(grad = t(grad), hess = t(hess)))
+}
+
+error_softmax_obj <- function(preds, dtrain) {
+  labels <- xgboost::getinfo(dtrain, "label")
+  errors <- attr(dtrain, "errors")
+
+  preds <- exp(preds)
+  sp <- rowSums(preds)
+  preds <- preds / replicate(ncol(preds), sp)
+  rowsumerrors <- replicate(ncol(preds), rowSums(preds * errors))
 
   grad <- preds*(errors - rowsumerrors)
   hess <- errors*preds*(1.0-preds) - grad*preds
@@ -1817,6 +1806,29 @@ pred
 xgb.importance(model = bst)
 xgb.ggplot.importance(bst)
 ```
+
+```{r}
+## Newdata needs to be the feature matrix, one row per series
+predict_selection_ensemble <- function(model, newdata) {
+  pred <- stats::predict(model, newdata, outputmargin = TRUE, reshape=TRUE)
+  pred <- t(apply( pred, 1, softmax_transform))
+  pred
+}
+
+ensemble_forecast <- function(predictions, dataset, clamp_zero=TRUE) {
+  for (i in 1:length(dataset)) {
+    weighted_ff <- as.vector(t(predictions[i,]) %*% dataset[[i]]$ff)
+    if (clamp_zero) {
+      weighted_ff[weighted_ff < 0] <- 0
+    }
+    dataset[[i]]$y_hat <- weighted_ff
+  }
+  dataset
+}
+
+
+```
+
 
 ```{r}
 ## Messing around with TSNE
