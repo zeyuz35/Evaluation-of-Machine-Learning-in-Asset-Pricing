@@ -1318,17 +1318,26 @@ for(t in 1:train_length) {
     as.vector()
 }
 
+X_array_train <- X_array[(timeSlices[[1]]$train - 1), , ,drop = F]
+X_array_validation <- X_array[(timeSlices[[1]]$validation - 1), , ,drop = F]
+X_array_test <- X_array[(timeSlices[[1]]$test - 1), , ,drop = F]
+
+Y_array_train <- Y_array[(timeSlices[[1]]$train - 1), ]
+Y_array_validation <- Y_array[(timeSlices[[1]]$validation - 1), ]
+Y_array_test <- Y_array[(timeSlices[[1]]$test - 1), ]
+
 ## Start building the model
 
-l1_penalty <- 0.01
+l1_penalty <- 0.001
 
 lstm_model <- keras_model_sequential() %>%
-  layer_lstm(units = 128, input_shape = c(1, dim(X_array)[3])) %>%
+  layer_lstm(units = 4, input_shape = c(1, dim(X_array_train)[3]),
+             return_sequences = TRUE) %>%
   layer_activation("tanh") %>%
   layer_activity_regularization(l1 = l1_penalty) %>%
   layer_batch_normalization() %>%
   
-  layer_dense(units = 128) %>%
+  layer_lstm(units = 2) %>%
   layer_activation("tanh") %>%
   layer_activity_regularization(l1 = l1_penalty) %>%
   layer_batch_normalization() %>%
@@ -1342,9 +1351,17 @@ lstm_model %>% compile(loss = "mse",
 
 lstm_model %>% summary()
 
-lstm_model %>% fit(X_array, Y_array, epochs = 50,
-                   batch_size = 32, shuffle = FALSE, verbose = 1)
-  
+lstm_model_fit <- lstm_model %>% 
+  fit(X_array_train, Y_array_train, epochs = 500,
+      validation_data = list(X_array_validation, Y_array_validation), 
+      batch_size = 32, shuffle = FALSE, verbose = 1)
+
+lstm_predictions <- lstm_model %>% predict(X_array_test) %>%
+  as.vector()
+
+mse(Y_array_test %>% as.vector(), lstm_predictions)
+mae(Y_array_test %>% as.vector(), lstm_predictions)
+R2(lstm_predictions, Y_array_test %>% as.vector(), form = "traditional")
 ```
 
 
