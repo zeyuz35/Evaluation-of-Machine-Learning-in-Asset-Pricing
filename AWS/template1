@@ -10,7 +10,7 @@ Mappings:
     us-east-2:
       HostAmi: ami-25615740
     us-west-2:
-      HostAmi: ami-010a96c958f9ee5cf
+      HostAmi: ami-d874e0a0
     eu-west-1:
       HostAmi: ami-3bfab942
 
@@ -87,16 +87,17 @@ Resources:
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash -xe
-          sudo apt upgrade
-          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
-          sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran35/'
-          sudo apt install r-base
+          sudo yum update -y
+          curl -O https://cdn.rstudio.com/r/debian-9/pkgs/r-3.6.2_1_amd64.deb
+          sudo gdebi r-3.6.2_1_amd64.deb
+          sudo ln -s /opt/R/3.6.2/bin/R /usr/local/bin/R
+          sudo ln -s /opt/R/3.6.2/bin/Rscript /usr/local/bin/Rscript
           sudo pip install sagemaker boto3
-          sudo R -e "install.packages(c('reticulate', 'curl', 'tidyverse'), repos = 'http://cran.rstudio.com')"
+          sudo R -e "install.packages(c('reticulate', 'readr', 'curl', 'ggplot2', 'dplyr', 'stringr'), repos = 'http://cran.rstudio.com')"
           sudo adduser rstudio
           sudo sh -c "echo rstudio | passwd rstudio --stdin"
-          wget https://download2.rstudio.org/rstudio-server-rhel-1.2.5033-x86_64.rpm
-          sudo apt install -y rstudio-server-rhel-1.2.5033-x86_64.rpm
+          wget https://download2.rstudio.org/rstudio-server-rhel-1.1.456-x86_64.rpm
+          sudo yum install -y rstudio-server-rhel-1.1.456-x86_64.rpm
           sudo -u rstudio mkdir /home/rstudio/.aws
           region=`curl http://169.254.169.254/latest/dynamic/instance-identity/document|grep region|awk -F\" '{print $4}'`
           sudo -u rstudio echo "[default]" > /home/rstudio/.aws/config
@@ -164,4 +165,4 @@ Resources:
 Outputs:
   RStudio:
     Description: RStudio SSH command
-    Value: !Sub "ssh -L 8787:localhost:8787 -i ${KeyName}.pem ubuntu@${Instance.PublicDnsName}"
+    Value: !Sub "ssh -L 8787:localhost:8787 -i ${KeyName}.pem ec2-user@${Instance.PublicDnsName}"
