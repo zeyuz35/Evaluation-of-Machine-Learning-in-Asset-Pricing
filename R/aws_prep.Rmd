@@ -1,0 +1,61 @@
+---
+title: "aws_prep"
+author: "Ze Yu Zhong"
+date: "19 June 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+################
+##Load Libraries
+################
+
+library(speedglm)
+library(tidyverse)
+library(keras)
+library(ggplot2)
+library(forecast)
+library(rlist)
+library(Metrics)
+library(tensorflow)
+library(quantreg)
+library(randomForestSRC)
+library(hqreg)
+library(caret)
+library(tsfeatures)
+library(jsonlite)
+
+## Vector arima/garch packages
+
+library(kernlab)
+library(xts)
+library(tsne)
+library(rmgarch)
+library(marima)
+library(jsonlite)
+
+#Parallel Computing
+library(foreach)
+library(doFuture)
+#Registering
+registerDoFuture()
+plan(multisession)
+```
+
+```{r}
+pooled_panel <- readRDS("pooled_panel.rds")
+```
+
+```{r}
+## Testing out streaming in json files, from exmaple sagemaker output
+## This is confirmed to be working, just need to figure out how to get pooled_panel into the right format
+## Note that fromJSON does not work, unless you add in [ and ] to the start and end of the JSOn file respectively
+json_test <- stream_in(file("train_new_features.json"))
+
+toJSON(json_test)
+```
+
+```{r}
+## 
+```
+
