@@ -26,9 +26,7 @@ library(tsfeatures)
 
 ## Vector arima/garch packages
 
-library(kernlab)
 library(xts)
-library(tsne)
 library(rmgarch)
 library(marima)
 library(xgboost)

@@ -1,0 +1,93 @@
+---
+title: "json"
+author: "Ze Yu Zhong"
+date: "23/12/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+library(jsonlite)
+library(foreach)
+```
+
+
+```{r, eval = FALSE}
+## Tesing out format of json data when imported
+dummy_data <- file("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/dummy_data.json") %>%
+  stream_in()
+
+dummy_data$start
+dummy_data$target
+dummy_data$dynamic_feat
+## Dynamic features are similarly 1 list for each observation, each list containing a matrix of features
+## Annoyingly, each row is a separate time series
+
+## Double checking that it can be exported identically
+dummy_data %>%
+  stream_out(file("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/dummy_data_out.json"))
+```
+
+```{r}
+stock_id <- pooled_panel$stock %>%
+  unique()
+
+pooled_panel_json <- data.frame(start = c(1:200), target = c(1:200), dynamic_feat = c(1:200))
+
+for (i in 1:200) {
+  pooled_panel_filter <- pooled_panel %>%
+    filter(stock == stock_id[i])
+  
+  pooled_panel_json$target[i] <- list(pooled_panel_filter$rt)
+  
+  pooled_panel_filter_feature <- pooled_panel_filter %>%
+    select(-time, -rt, -stock) %>%
+    unname() %>%
+    as.matrix() %>%
+    # Transpose it to get the right format of one feature series per row
+    t()
+  
+  pooled_panel_json[i, ]$dynamic_feat <- pooled_panel_filter_feature %>% list()
+}
+
+## Function that takes data frame in tidy format, and outputs a dataframe 
+## that is ready to be exported to JSON for use with sagemaker deepar
+
+tidy_to_json <- function(data) {
+  stock_id <- data$stock %>%
+    unique()
+  
+  # Number of cross sectional units
+  cross_units <- length(stock_id)
+  
+  ## JUst setting the beginning time to something arbitrary for now, change if needed
+  pooled_panel_json <- data.frame(start = rep("2000-01-01 00:00:00", cross_units), 
+                                  target = c(1:cross_units), 
+                                  dynamic_feat = c(1:cross_units))
+  
+  for (i in 1:cross_units) {
+    pooled_panel_filter <- data %>%
+      filter(stock == stock_id[i])
+    
+    pooled_panel_json$target[i] <- list(pooled_panel_filter$rt)
+    
+    pooled_panel_filter_feature <- pooled_panel_filter %>%
+      select(-time, -rt, -stock) %>%
+      unname() %>%
+      as.matrix() %>%
+      # Transpose it to get the right format of one feature series per row
+      t()
+    
+    pooled_panel_json[i, ]$dynamic_feat <- pooled_panel_filter_feature %>% list()
+  }
+  
+  pooled_panel_json
+}
+
+pooled_panel_json <- pooled_panel %>% tidy_to_json()
+
+pooled_panel_json %>%
+  stream_out(file("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/pooled_panel.json"))
+```
