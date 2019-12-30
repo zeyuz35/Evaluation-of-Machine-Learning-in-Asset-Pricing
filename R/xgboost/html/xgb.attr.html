@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Accessors for serializable attributes of a model.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for xgb.attr {xgboost}"><tr><td>xgb.attr {xgboost}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Accessors for serializable attributes of a model.</h2>
+
+<h3>Description</h3>
+
+<p>These methods allow to manipulate the key-value attribute strings of an xgboost model.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+xgb.attr(object, name)
+
+xgb.attr(object, name) &lt;- value
+
+xgb.attributes(object)
+
+xgb.attributes(object) &lt;- value
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p>Object of class <code>xgb.Booster</code> or <code>xgb.Booster.handle</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>name</code></td>
+<td>
+<p>a non-empty character string specifying which attribute is to be accessed.</p>
+</td></tr>
+<tr valign="top"><td><code>value</code></td>
+<td>
+<p>a value of an attribute for <code>xgb.attr&lt;-</code>; for <code>xgb.attributes&lt;-</code>
+it's a list (or an object coercible to a list) with the names of attributes to set
+and the elements corresponding to attribute values.
+Non-character values are converted to character.
+When attribute value is not a scalar, only the first index is used.
+Use <code>NULL</code> to remove an attribute.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The primary purpose of xgboost model attributes is to store some meta-data about the model.
+Note that they are a separate concept from the object attributes in R.
+Specifically, they refer to key-value strings that can be attached to an xgboost model,
+stored together with the model's binary representation, and accessed later
+(from R or any other interface).
+In contrast, any R-attribute assigned to an R-object of <code>xgb.Booster</code> class
+would not be saved by <code>xgb.save</code> because an xgboost model is an external memory object
+and its serialization is handled externally.
+Also, setting an attribute that has the same name as one of xgboost's parameters wouldn't
+change the value of that parameter for a model.
+Use <code><a href="xgb.parameters.html">xgb.parameters&lt;-</a></code> to set or change model parameters.
+</p>
+<p>The attribute setters would usually work more efficiently for <code>xgb.Booster.handle</code>
+than for <code>xgb.Booster</code>, since only just a handle (pointer) would need to be copied.
+That would only matter if attributes need to be set many times.
+Note, however, that when feeding a handle of an <code>xgb.Booster</code> object to the attribute setters,
+the raw model cache of an <code>xgb.Booster</code> object would not be automatically updated,
+and it would be user's responsibility to call <code>xgb.save.raw</code> to update it.
+</p>
+<p>The <code>xgb.attributes&lt;-</code> setter either updates the existing or adds one or several attributes,
+but it doesn't delete the other existing attributes.
+</p>
+
+
+<h3>Value</h3>
+
+<p><code>xgb.attr</code> returns either a string value of an attribute
+or <code>NULL</code> if an attribute wasn't stored in a model.
+</p>
+<p><code>xgb.attributes</code> returns a list of all attribute stored in a model
+or <code>NULL</code> if a model has no stored attributes.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(agaricus.train, package='xgboost')
+train &lt;- agaricus.train
+
+bst &lt;- xgboost(data = train$data, label = train$label, max_depth = 2,
+               eta = 1, nthread = 2, nrounds = 2, objective = "binary:logistic")
+
+xgb.attr(bst, "my_attribute") &lt;- "my attribute value"
+print(xgb.attr(bst, "my_attribute"))
+xgb.attributes(bst) &lt;- list(a = 123, b = "abc")
+
+xgb.save(bst, 'xgb.model')
+bst1 &lt;- xgb.load('xgb.model')
+if (file.exists('xgb.model')) file.remove('xgb.model')
+print(xgb.attr(bst1, "my_attribute"))
+print(xgb.attributes(bst1))
+
+# deletion:
+xgb.attr(bst1, "my_attribute") &lt;- NULL
+print(xgb.attributes(bst1))
+xgb.attributes(bst1) &lt;- list(a = NULL, b = NULL)
+print(xgb.attributes(bst1))
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>xgboost</em> version 1.0.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

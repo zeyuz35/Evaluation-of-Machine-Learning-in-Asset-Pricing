@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Callback closure for collecting the model coefficients...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for cb.gblinear.history {xgboost}"><tr><td>cb.gblinear.history {xgboost}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Callback closure for collecting the model coefficients history of a gblinear booster
+during its training.</h2>
+
+<h3>Description</h3>
+
+<p>Callback closure for collecting the model coefficients history of a gblinear booster
+during its training.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+cb.gblinear.history(sparse = FALSE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>sparse</code></td>
+<td>
+<p>when set to FALSE/TURE, a dense/sparse matrix is used to store the result.
+Sparse format is useful when one expects only a subset of coefficients to be non-zero,
+when using the &quot;thrifty&quot; feature selector with fairly small number of top features
+selected per iteration.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>To keep things fast and simple, gblinear booster does not internally store the history of linear
+model coefficients at each boosting iteration. This callback provides a workaround for storing
+the coefficients' path, by extracting them after each training iteration.
+</p>
+<p>Callback function expects the following values to be set in its calling frame:
+<code>bst</code> (or <code>bst_folds</code>).
+</p>
+
+
+<h3>Value</h3>
+
+<p>Results are stored in the <code>coefs</code> element of the closure.
+The <code><a href="xgb.gblinear.history.html">xgb.gblinear.history</a></code> convenience function provides an easy way to access it.
+With <code>xgb.train</code>, it is either a dense of a sparse matrix.
+While with <code>xgb.cv</code>, it is a list (an element per each fold) of such matrices.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="callbacks.html">callbacks</a></code>, <code><a href="xgb.gblinear.history.html">xgb.gblinear.history</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+#### Binary classification:
+#
+# In the iris dataset, it is hard to linearly separate Versicolor class from the rest
+# without considering the 2nd order interactions:
+require(magrittr)
+x &lt;- model.matrix(Species ~ .^2, iris)[,-1]
+colnames(x)
+dtrain &lt;- xgb.DMatrix(scale(x), label = 1*(iris$Species == "versicolor"))
+param &lt;- list(booster = "gblinear", objective = "reg:logistic", eval_metric = "auc",
+              lambda = 0.0003, alpha = 0.0003, nthread = 2)
+# For 'shotgun', which is a default linear updater, using high eta values may result in
+# unstable behaviour in some datasets. With this simple dataset, however, the high learning
+# rate does not break the convergence, but allows us to illustrate the typical pattern of
+# "stochastic explosion" behaviour of this lock-free algorithm at early boosting iterations.
+bst &lt;- xgb.train(param, dtrain, list(tr=dtrain), nrounds = 200, eta = 1.,
+                 callbacks = list(cb.gblinear.history()))
+# Extract the coefficients' path and plot them vs boosting iteration number:
+coef_path &lt;- xgb.gblinear.history(bst)
+matplot(coef_path, type = 'l')
+
+# With the deterministic coordinate descent updater, it is safer to use higher learning rates.
+# Will try the classical componentwise boosting which selects a single best feature per round:
+bst &lt;- xgb.train(param, dtrain, list(tr=dtrain), nrounds = 200, eta = 0.8,
+                 updater = 'coord_descent', feature_selector = 'thrifty', top_k = 1,
+                 callbacks = list(cb.gblinear.history()))
+xgb.gblinear.history(bst) %&gt;% matplot(type = 'l')
+#  Componentwise boosting is known to have similar effect to Lasso regularization.
+# Try experimenting with various values of top_k, eta, nrounds,
+# as well as different feature_selectors.
+
+# For xgb.cv:
+bst &lt;- xgb.cv(param, dtrain, nfold = 5, nrounds = 100, eta = 0.8,
+             callbacks = list(cb.gblinear.history()))
+# coefficients in the CV fold #3
+xgb.gblinear.history(bst)[[3]] %&gt;% matplot(type = 'l')
+
+
+#### Multiclass classification:
+#
+dtrain &lt;- xgb.DMatrix(scale(x), label = as.numeric(iris$Species) - 1)
+param &lt;- list(booster = "gblinear", objective = "multi:softprob", num_class = 3,
+              lambda = 0.0003, alpha = 0.0003, nthread = 2)
+# For the default linear updater 'shotgun' it sometimes is helpful
+# to use smaller eta to reduce instability
+bst &lt;- xgb.train(param, dtrain, list(tr=dtrain), nrounds = 70, eta = 0.5,
+                 callbacks = list(cb.gblinear.history()))
+# Will plot the coefficient paths separately for each class:
+xgb.gblinear.history(bst, class_index = 0) %&gt;% matplot(type = 'l')
+xgb.gblinear.history(bst, class_index = 1) %&gt;% matplot(type = 'l')
+xgb.gblinear.history(bst, class_index = 2) %&gt;% matplot(type = 'l')
+
+# CV:
+bst &lt;- xgb.cv(param, dtrain, nfold = 5, nrounds = 70, eta = 0.5,
+              callbacks = list(cb.gblinear.history(FALSE)))
+# 1st forld of 1st class
+xgb.gblinear.history(bst, class_index = 0)[[1]] %&gt;% matplot(type = 'l')
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>xgboost</em> version 1.0.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

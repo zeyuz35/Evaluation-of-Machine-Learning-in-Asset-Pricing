@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Plot a boosted tree model</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for xgb.plot.tree {xgboost}"><tr><td>xgb.plot.tree {xgboost}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Plot a boosted tree model</h2>
+
+<h3>Description</h3>
+
+<p>Read a tree model text dump and plot the model.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+xgb.plot.tree(feature_names = NULL, model = NULL, trees = NULL,
+  plot_width = NULL, plot_height = NULL, render = TRUE,
+  show_node_id = FALSE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>feature_names</code></td>
+<td>
+<p>names of each feature as a <code>character</code> vector.</p>
+</td></tr>
+<tr valign="top"><td><code>model</code></td>
+<td>
+<p>produced by the <code>xgb.train</code> function.</p>
+</td></tr>
+<tr valign="top"><td><code>trees</code></td>
+<td>
+<p>an integer vector of tree indices that should be visualized.
+If set to <code>NULL</code>, all trees of the model are included.
+IMPORTANT: the tree index in xgboost model is zero-based
+(e.g., use <code>trees = 0:2</code> for the first 3 trees in a model).</p>
+</td></tr>
+<tr valign="top"><td><code>plot_width</code></td>
+<td>
+<p>the width of the diagram in pixels.</p>
+</td></tr>
+<tr valign="top"><td><code>plot_height</code></td>
+<td>
+<p>the height of the diagram in pixels.</p>
+</td></tr>
+<tr valign="top"><td><code>render</code></td>
+<td>
+<p>a logical flag for whether the graph should be rendered (see Value).</p>
+</td></tr>
+<tr valign="top"><td><code>show_node_id</code></td>
+<td>
+<p>a logical flag for whether to show node id's in the graph.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>currently not used.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The content of each node is organised that way:
+</p>
+
+<ul>
+<li><p> Feature name.
+</p>
+</li>
+<li> <p><code>Cover</code>: The sum of second order gradient of training data classified to the leaf.
+If it is square loss, this simply corresponds to the number of instances seen by a split
+or collected by a leaf during training.
+The deeper in the tree a node is, the lower this metric will be.
+</p>
+</li>
+<li> <p><code>Gain</code> (for split nodes): the information gain metric of a split
+(corresponds to the importance of the node in the model).
+</p>
+</li>
+<li> <p><code>Value</code> (for leafs): the margin value that the leaf may contribute to prediction.
+</p>
+</li></ul>
+ 
+<p>The tree root nodes also indicate the Tree index (0-based).
+</p>
+<p>The &quot;Yes&quot; branches are marked by the &quot;&lt; split_value&quot; label.
+The branches that also used for missing values are marked as bold
+(as in &quot;carrying extra capacity&quot;).
+</p>
+<p>This function uses <a href="http://www.graphviz.org/">GraphViz</a> as a backend of DiagrammeR.
+</p>
+
+
+<h3>Value</h3>
+
+<p>When <code>render = TRUE</code>:
+returns a rendered graph object which is an <code>htmlwidget</code> of class <code>grViz</code>.
+Similar to ggplot objects, it needs to be printed to see it when not running from command line.
+</p>
+<p>When <code>render = FALSE</code>:
+silently returns a graph object which is of DiagrammeR's class <code>dgr_graph</code>.
+This could be useful if one wants to modify some of the graph attributes
+before rendering the graph with <code><a href="../../DiagrammeR/html/render_graph.html">render_graph</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(agaricus.train, package='xgboost')
+
+bst &lt;- xgboost(data = agaricus.train$data, label = agaricus.train$label, max_depth = 3,
+               eta = 1, nthread = 2, nrounds = 2,objective = "binary:logistic")
+# plot all the trees
+xgb.plot.tree(model = bst)
+# plot only the first tree and display the node ID:
+xgb.plot.tree(model = bst, trees = 0, show_node_id = TRUE)
+
+## Not run: 
+# Below is an example of how to save this plot to a file. 
+# Note that for `export_graph` to work, the DiagrammeRsvg and rsvg packages must also be installed.
+library(DiagrammeR)
+gr &lt;- xgb.plot.tree(model=bst, trees=0:1, render=FALSE)
+export_graph(gr, 'tree.pdf', width=1500, height=1900)
+export_graph(gr, 'tree.png', width=1500, height=1900)
+
+## End(Not run)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>xgboost</em> version 1.0.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

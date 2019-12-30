@@ -1,0 +1,245 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Predict method for eXtreme Gradient Boosting model</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for predict.xgb.Booster {xgboost}"><tr><td>predict.xgb.Booster {xgboost}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Predict method for eXtreme Gradient Boosting model</h2>
+
+<h3>Description</h3>
+
+<p>Predicted values based on either xgboost model or model handle object.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'xgb.Booster'
+predict(object, newdata, missing = NA,
+  outputmargin = FALSE, ntreelimit = NULL, predleaf = FALSE,
+  predcontrib = FALSE, approxcontrib = FALSE, predinteraction = FALSE,
+  reshape = FALSE, ...)
+
+## S3 method for class 'xgb.Booster.handle'
+predict(object, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p>Object of class <code>xgb.Booster</code> or <code>xgb.Booster.handle</code></p>
+</td></tr>
+<tr valign="top"><td><code>newdata</code></td>
+<td>
+<p>takes <code>matrix</code>, <code>dgCMatrix</code>, local data file or <code>xgb.DMatrix</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>missing</code></td>
+<td>
+<p>Missing is only used when input is dense matrix. Pick a float value that represents
+missing values in data (e.g., sometimes 0 or some other extreme value is used).</p>
+</td></tr>
+<tr valign="top"><td><code>outputmargin</code></td>
+<td>
+<p>whether the prediction should be returned in the for of original untransformed
+sum of predictions from boosting iterations' results. E.g., setting <code>outputmargin=TRUE</code> for
+logistic regression would result in predictions for log-odds instead of probabilities.</p>
+</td></tr>
+<tr valign="top"><td><code>ntreelimit</code></td>
+<td>
+<p>limit the number of model's trees or boosting iterations used in prediction (see Details).
+It will use all the trees by default (<code>NULL</code> value).</p>
+</td></tr>
+<tr valign="top"><td><code>predleaf</code></td>
+<td>
+<p>whether predict leaf index.</p>
+</td></tr>
+<tr valign="top"><td><code>predcontrib</code></td>
+<td>
+<p>whether to return feature contributions to individual predictions (see Details).</p>
+</td></tr>
+<tr valign="top"><td><code>approxcontrib</code></td>
+<td>
+<p>whether to use a fast approximation for feature contributions (see Details).</p>
+</td></tr>
+<tr valign="top"><td><code>predinteraction</code></td>
+<td>
+<p>whether to return contributions of feature interactions to individual predictions (see Details).</p>
+</td></tr>
+<tr valign="top"><td><code>reshape</code></td>
+<td>
+<p>whether to reshape the vector of predictions to a matrix form when there are several
+prediction outputs per case. This option has no effect when either of predleaf, predcontrib,
+or predinteraction flags is TRUE.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>Parameters passed to <code>predict.xgb.Booster</code></p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Note that <code>ntreelimit</code> is not necessarily equal to the number of boosting iterations
+and it is not necessarily equal to the number of trees in a model.
+E.g., in a random forest-like model, <code>ntreelimit</code> would limit the number of trees.
+But for multiclass classification, while there are multiple trees per iteration,
+<code>ntreelimit</code> limits the number of boosting iterations.
+</p>
+<p>Also note that <code>ntreelimit</code> would currently do nothing for predictions from gblinear,
+since gblinear doesn't keep its boosting history.
+</p>
+<p>One possible practical applications of the <code>predleaf</code> option is to use the model
+as a generator of new features which capture non-linearity and interactions,
+e.g., as implemented in <code><a href="xgb.create.features.html">xgb.create.features</a></code>.
+</p>
+<p>Setting <code>predcontrib = TRUE</code> allows to calculate contributions of each feature to
+individual predictions. For &quot;gblinear&quot; booster, feature contributions are simply linear terms
+(feature_beta * feature_value). For &quot;gbtree&quot; booster, feature contributions are SHAP
+values (Lundberg 2017) that sum to the difference between the expected output
+of the model and the current prediction (where the hessian weights are used to compute the expectations).
+Setting <code>approxcontrib = TRUE</code> approximates these values following the idea explained
+in <a href="http://blog.datadive.net/interpreting-random-forests/">http://blog.datadive.net/interpreting-random-forests/</a>.
+</p>
+<p>With <code>predinteraction = TRUE</code>, SHAP values of contributions of interaction of each pair of features
+are computed. Note that this operation might be rather expensive in terms of compute and memory.
+Since it quadratically depends on the number of features, it is recommended to perform selection
+of the most important features first. See below about the format of the returned results.
+</p>
+
+
+<h3>Value</h3>
+
+<p>For regression or binary classification, it returns a vector of length <code>nrows(newdata)</code>.
+For multiclass classification, either a <code>num_class * nrows(newdata)</code> vector or
+a <code>(nrows(newdata), num_class)</code> dimension matrix is returned, depending on
+the <code>reshape</code> value.
+</p>
+<p>When <code>predleaf = TRUE</code>, the output is a matrix object with the
+number of columns corresponding to the number of trees.
+</p>
+<p>When <code>predcontrib = TRUE</code> and it is not a multiclass setting, the output is a matrix object with
+<code>num_features + 1</code> columns. The last &quot;+ 1&quot; column in a matrix corresponds to bias.
+For a multiclass case, a list of <code>num_class</code> elements is returned, where each element is
+such a matrix. The contribution values are on the scale of untransformed margin
+(e.g., for binary classification would mean that the contributions are log-odds deviations from bias).
+</p>
+<p>When <code>predinteraction = TRUE</code> and it is not a multiclass setting, the output is a 3d array with
+dimensions <code>c(nrow, num_features + 1, num_features + 1)</code>. The off-diagonal (in the last two dimensions)
+elements represent different features interaction contributions. The array is symmetric WRT the last
+two dimensions. The &quot;+ 1&quot; columns corresponds to bias. Summing this array along the last dimension should
+produce practically the same result as predict with <code>predcontrib = TRUE</code>.
+For a multiclass case, a list of <code>num_class</code> elements is returned, where each element is
+such an array.
+</p>
+
+
+<h3>References</h3>
+
+<p>Scott M. Lundberg, Su-In Lee, &quot;A Unified Approach to Interpreting Model Predictions&quot;, NIPS Proceedings 2017, <a href="https://arxiv.org/abs/1705.07874">https://arxiv.org/abs/1705.07874</a>
+</p>
+<p>Scott M. Lundberg, Su-In Lee, &quot;Consistent feature attribution for tree ensembles&quot;, <a href="https://arxiv.org/abs/1706.06060">https://arxiv.org/abs/1706.06060</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="xgb.train.html">xgb.train</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+## binary classification:
+
+data(agaricus.train, package='xgboost')
+data(agaricus.test, package='xgboost')
+train &lt;- agaricus.train
+test &lt;- agaricus.test
+
+bst &lt;- xgboost(data = train$data, label = train$label, max_depth = 2,
+               eta = 0.5, nthread = 2, nrounds = 5, objective = "binary:logistic")
+# use all trees by default
+pred &lt;- predict(bst, test$data)
+# use only the 1st tree
+pred1 &lt;- predict(bst, test$data, ntreelimit = 1)
+
+# Predicting tree leafs:
+# the result is an nsamples X ntrees matrix
+pred_leaf &lt;- predict(bst, test$data, predleaf = TRUE)
+str(pred_leaf)
+
+# Predicting feature contributions to predictions:
+# the result is an nsamples X (nfeatures + 1) matrix
+pred_contr &lt;- predict(bst, test$data, predcontrib = TRUE)
+str(pred_contr)
+# verify that contributions' sums are equal to log-odds of predictions (up to float precision):
+summary(rowSums(pred_contr) - qlogis(pred))
+# for the 1st record, let's inspect its features that had non-zero contribution to prediction:
+contr1 &lt;- pred_contr[1,]
+contr1 &lt;- contr1[-length(contr1)]    # drop BIAS
+contr1 &lt;- contr1[contr1 != 0]        # drop non-contributing features
+contr1 &lt;- contr1[order(abs(contr1))] # order by contribution magnitude
+old_mar &lt;- par("mar")
+par(mar = old_mar + c(0,7,0,0))
+barplot(contr1, horiz = TRUE, las = 2, xlab = "contribution to prediction in log-odds")
+par(mar = old_mar)
+
+
+## multiclass classification in iris dataset:
+
+lb &lt;- as.numeric(iris$Species) - 1
+num_class &lt;- 3
+set.seed(11)
+bst &lt;- xgboost(data = as.matrix(iris[, -5]), label = lb,
+               max_depth = 4, eta = 0.5, nthread = 2, nrounds = 10, subsample = 0.5,
+               objective = "multi:softprob", num_class = num_class)
+# predict for softmax returns num_class probability numbers per case:
+pred &lt;- predict(bst, as.matrix(iris[, -5]))
+str(pred)
+# reshape it to a num_class-columns matrix
+pred &lt;- matrix(pred, ncol=num_class, byrow=TRUE)
+# convert the probabilities to softmax labels
+pred_labels &lt;- max.col(pred) - 1
+# the following should result in the same error as seen in the last iteration
+sum(pred_labels != lb)/length(lb)
+
+# compare that to the predictions from softmax:
+set.seed(11)
+bst &lt;- xgboost(data = as.matrix(iris[, -5]), label = lb,
+               max_depth = 4, eta = 0.5, nthread = 2, nrounds = 10, subsample = 0.5,
+               objective = "multi:softmax", num_class = num_class)
+pred &lt;- predict(bst, as.matrix(iris[, -5]))
+str(pred)
+all.equal(pred, pred_labels)
+# prediction from using only 5 iterations should result
+# in the same error as seen in iteration 5:
+pred5 &lt;- predict(bst, as.matrix(iris[, -5]), ntreelimit=5)
+sum(pred5 != lb)/length(lb)
+
+
+## random forest-like model of 25 trees for binary classification:
+
+set.seed(11)
+bst &lt;- xgboost(data = train$data, label = train$label, max_depth = 5,
+               nthread = 2, nrounds = 1, objective = "binary:logistic",
+               num_parallel_tree = 25, subsample = 0.6, colsample_bytree = 0.1)
+# Inspect the prediction error vs number of trees:
+lb &lt;- test$label
+dtest &lt;- xgb.DMatrix(test$data, label=lb)
+err &lt;- sapply(1:25, function(n) {
+  pred &lt;- predict(bst, dtest, ntreelimit=n)
+  sum((pred &gt; 0.5) != lb)/length(lb)
+})
+plot(err, type='l', ylim=c(0,0.1), xlab='#trees')
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>xgboost</em> version 1.0.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

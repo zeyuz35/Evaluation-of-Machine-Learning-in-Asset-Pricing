@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Print xgb.cv result</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for print.xgb.cv.synchronous {xgboost}"><tr><td>print.xgb.cv.synchronous {xgboost}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Print xgb.cv result</h2>
+
+<h3>Description</h3>
+
+<p>Prints formatted results of <code>xgb.cv</code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'xgb.cv.synchronous'
+print(x, verbose = FALSE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>an <code>xgb.cv.synchronous</code> object</p>
+</td></tr>
+<tr valign="top"><td><code>verbose</code></td>
+<td>
+<p>whether to print detailed data</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>passed to <code>data.table.print</code></p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>When not verbose, it would only print the evaluation results,
+including the best iteration (when available).
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(agaricus.train, package='xgboost')
+train &lt;- agaricus.train
+cv &lt;- xgb.cv(data = train$data, label = train$label, nfold = 5, max_depth = 2,
+               eta = 1, nthread = 2, nrounds = 2, objective = "binary:logistic")
+print(cv)
+print(cv, verbose=TRUE)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>xgboost</em> version 1.0.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

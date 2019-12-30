@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Create new features from a previously learned model</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for xgb.create.features {xgboost}"><tr><td>xgb.create.features {xgboost}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Create new features from a previously learned model</h2>
+
+<h3>Description</h3>
+
+<p>May improve the learning by adding new features to the training data based on the decision trees from a previously learned model.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+xgb.create.features(model, data, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>model</code></td>
+<td>
+<p>decision tree boosting model learned on the original data</p>
+</td></tr>
+<tr valign="top"><td><code>data</code></td>
+<td>
+<p>original data (usually provided as a <code>dgCMatrix</code> matrix)</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>currently not used</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This is the function inspired from the paragraph 3.1 of the paper:
+</p>
+<p><strong>Practical Lessons from Predicting Clicks on Ads at Facebook</strong>
+</p>
+<p><em>(Xinran He, Junfeng Pan, Ou Jin, Tianbing Xu, Bo Liu, Tao Xu, Yan, xin Shi, Antoine Atallah, Ralf Herbrich, Stuart Bowers, 
+Joaquin Quinonero Candela)</em>
+</p>
+<p>International Workshop on Data Mining for Online Advertising (ADKDD) - August 24, 2014
+</p>
+<p><a href="https://research.fb.com/publications/practical-lessons-from-predicting-clicks-on-ads-at-facebook/">https://research.fb.com/publications/practical-lessons-from-predicting-clicks-on-ads-at-facebook/</a>.
+</p>
+<p>Extract explaining the method:
+</p>
+<p>&quot;We found that boosted decision trees are a powerful and very
+convenient way to implement non-linear and tuple transformations
+of the kind we just described. We treat each individual
+tree as a categorical feature that takes as value the
+index of the leaf an instance ends up falling in. We use 
+1-of-K coding of this type of features. 
+</p>
+<p>For example, consider the boosted tree model in Figure 1 with 2 subtrees, 
+where the first subtree has 3 leafs and the second 2 leafs. If an
+instance ends up in leaf 2 in the first subtree and leaf 1 in
+second subtree, the overall input to the linear classifier will
+be the binary vector <code>[0, 1, 0, 1, 0]</code>, where the first 3 entries
+correspond to the leaves of the first subtree and last 2 to
+those of the second subtree.
+</p>
+<p>[...]
+</p>
+<p>We can understand boosted decision tree
+based transformation as a supervised feature encoding that
+converts a real-valued vector into a compact binary-valued
+vector. A traversal from root node to a leaf node represents
+a rule on certain features.&quot;
+</p>
+
+
+<h3>Value</h3>
+
+<p><code>dgCMatrix</code> matrix including both the original data and the new features.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(agaricus.train, package='xgboost')
+data(agaricus.test, package='xgboost')
+dtrain &lt;- xgb.DMatrix(data = agaricus.train$data, label = agaricus.train$label)
+dtest &lt;- xgb.DMatrix(data = agaricus.test$data, label = agaricus.test$label)
+
+param &lt;- list(max_depth=2, eta=1, silent=1, objective='binary:logistic')
+nrounds = 4
+
+bst = xgb.train(params = param, data = dtrain, nrounds = nrounds, nthread = 2)
+
+# Model accuracy without new features
+accuracy.before &lt;- sum((predict(bst, agaricus.test$data) &gt;= 0.5) == agaricus.test$label) /
+                   length(agaricus.test$label)
+
+# Convert previous features to one hot encoding
+new.features.train &lt;- xgb.create.features(model = bst, agaricus.train$data)
+new.features.test &lt;- xgb.create.features(model = bst, agaricus.test$data)
+
+# learning with new features
+new.dtrain &lt;- xgb.DMatrix(data = new.features.train, label = agaricus.train$label)
+new.dtest &lt;- xgb.DMatrix(data = new.features.test, label = agaricus.test$label)
+watchlist &lt;- list(train = new.dtrain)
+bst &lt;- xgb.train(params = param, data = new.dtrain, nrounds = nrounds, nthread = 2)
+
+# Model accuracy with new features
+accuracy.after &lt;- sum((predict(bst, new.dtest) &gt;= 0.5) == agaricus.test$label) /
+                  length(agaricus.test$label)
+
+# Here the accuracy was already good and is now perfect.
+cat(paste("The accuracy was", accuracy.before, "before adding leaf features and it is now",
+          accuracy.after, "!\n"))
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>xgboost</em> version 1.0.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

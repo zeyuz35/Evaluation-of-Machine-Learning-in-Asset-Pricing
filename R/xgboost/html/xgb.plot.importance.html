@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Plot feature importance as a bar graph</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for xgb.ggplot.importance {xgboost}"><tr><td>xgb.ggplot.importance {xgboost}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Plot feature importance as a bar graph</h2>
+
+<h3>Description</h3>
+
+<p>Represents previously calculated feature importance as a bar graph.
+<code>xgb.plot.importance</code> uses base R graphics, while <code>xgb.ggplot.importance</code> uses the ggplot backend.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+xgb.ggplot.importance(importance_matrix = NULL, top_n = NULL,
+  measure = NULL, rel_to_first = FALSE, n_clusters = c(1:10), ...)
+
+xgb.plot.importance(importance_matrix = NULL, top_n = NULL,
+  measure = NULL, rel_to_first = FALSE, left_margin = 10, cex = NULL,
+  plot = TRUE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>importance_matrix</code></td>
+<td>
+<p>a <code>data.table</code> returned by <code><a href="xgb.importance.html">xgb.importance</a></code>.</p>
+</td></tr>
+<tr valign="top"><td><code>top_n</code></td>
+<td>
+<p>maximal number of top features to include into the plot.</p>
+</td></tr>
+<tr valign="top"><td><code>measure</code></td>
+<td>
+<p>the name of importance measure to plot.
+When <code>NULL</code>, 'Gain' would be used for trees and 'Weight' would be used for gblinear.</p>
+</td></tr>
+<tr valign="top"><td><code>rel_to_first</code></td>
+<td>
+<p>whether importance values should be represented as relative to the highest ranked feature.
+See Details.</p>
+</td></tr>
+<tr valign="top"><td><code>n_clusters</code></td>
+<td>
+<p>(ggplot only) a <code>numeric</code> vector containing the min and the max range
+of the possible number of clusters of bars.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>other parameters passed to <code>barplot</code> (except horiz, border, cex.names, names.arg, and las).</p>
+</td></tr>
+<tr valign="top"><td><code>left_margin</code></td>
+<td>
+<p>(base R barplot) allows to adjust the left margin size to fit feature names.
+When it is NULL, the existing <code>par('mar')</code> is used.</p>
+</td></tr>
+<tr valign="top"><td><code>cex</code></td>
+<td>
+<p>(base R barplot) passed as <code>cex.names</code> parameter to <code>barplot</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>plot</code></td>
+<td>
+<p>(base R barplot) whether a barplot should be produced.
+If FALSE, only a data.table is returned.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The graph represents each feature as a horizontal bar of length proportional to the importance of a feature.
+Features are shown ranked in a decreasing importance order.
+It works for importances from both <code>gblinear</code> and <code>gbtree</code> models.
+</p>
+<p>When <code>rel_to_first = FALSE</code>, the values would be plotted as they were in <code>importance_matrix</code>.
+For gbtree model, that would mean being normalized to the total of 1
+(&quot;what is feature's importance contribution relative to the whole model?&quot;).
+For linear models, <code>rel_to_first = FALSE</code> would show actual values of the coefficients.
+Setting <code>rel_to_first = TRUE</code> allows to see the picture from the perspective of
+&quot;what is feature's importance contribution relative to the most important feature?&quot;
+</p>
+<p>The ggplot-backend method also performs 1-D clustering of the importance values,
+with bar colors corresponding to different clusters that have somewhat similar importance values.
+</p>
+
+
+<h3>Value</h3>
+
+<p>The <code>xgb.plot.importance</code> function creates a <code>barplot</code> (when <code>plot=TRUE</code>)
+and silently returns a processed data.table with <code>n_top</code> features sorted by importance.
+</p>
+<p>The <code>xgb.ggplot.importance</code> function returns a ggplot graph which could be customized afterwards.
+E.g., to change the title of the graph, add <code>+ ggtitle("A GRAPH NAME")</code> to the result.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="../../graphics/html/barplot.html">barplot</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(agaricus.train)
+
+bst &lt;- xgboost(data = agaricus.train$data, label = agaricus.train$label, max_depth = 3,
+               eta = 1, nthread = 2, nrounds = 2, objective = "binary:logistic")
+
+importance_matrix &lt;- xgb.importance(colnames(agaricus.train$data), model = bst)
+
+xgb.plot.importance(importance_matrix, rel_to_first = TRUE, xlab = "Relative importance")
+
+(gg &lt;- xgb.ggplot.importance(importance_matrix, measure = "Frequency", rel_to_first = TRUE))
+gg + ggplot2::ylab("Frequency")
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>xgboost</em> version 1.0.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

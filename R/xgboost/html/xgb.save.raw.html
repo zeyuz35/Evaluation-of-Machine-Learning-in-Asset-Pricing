@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Save xgboost model to R's raw vector, user can call xgb.load...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for xgb.save.raw {xgboost}"><tr><td>xgb.save.raw {xgboost}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Save xgboost model to R's raw vector,
+user can call xgb.load to load the model back from raw vector</h2>
+
+<h3>Description</h3>
+
+<p>Save xgboost model from xgboost or xgb.train
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+xgb.save.raw(model)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>model</code></td>
+<td>
+<p>the model object.</p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(agaricus.train, package='xgboost')
+data(agaricus.test, package='xgboost')
+train &lt;- agaricus.train
+test &lt;- agaricus.test
+bst &lt;- xgboost(data = train$data, label = train$label, max_depth = 2, 
+               eta = 1, nthread = 2, nrounds = 2,objective = "binary:logistic")
+raw &lt;- xgb.save.raw(bst)
+bst &lt;- xgb.load(raw)
+pred &lt;- predict(bst, test$data)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>xgboost</em> version 1.0.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

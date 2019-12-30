@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Get a new DMatrix containing the specified rows of original...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for slice {xgboost}"><tr><td>slice {xgboost}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Get a new DMatrix containing the specified rows of
+original xgb.DMatrix object</h2>
+
+<h3>Description</h3>
+
+<p>Get a new DMatrix containing the specified rows of
+original xgb.DMatrix object
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+slice(object, ...)
+
+## S3 method for class 'xgb.DMatrix'
+slice(object, idxset, ...)
+
+## S3 method for class 'xgb.DMatrix'
+object[idxset, colset = NULL]
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p>Object of class &quot;xgb.DMatrix&quot;</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>other parameters (currently not used)</p>
+</td></tr>
+<tr valign="top"><td><code>idxset</code></td>
+<td>
+<p>a integer vector of indices of rows needed</p>
+</td></tr>
+<tr valign="top"><td><code>colset</code></td>
+<td>
+<p>currently not used (columns subsetting is not available)</p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(agaricus.train, package='xgboost')
+train &lt;- agaricus.train
+dtrain &lt;- xgb.DMatrix(train$data, label=train$label)
+
+dsub &lt;- slice(dtrain, 1:42)
+labels1 &lt;- getinfo(dsub, 'label')
+dsub &lt;- dtrain[1:42, ]
+labels2 &lt;- getinfo(dsub, 'label')
+all.equal(labels1, labels2)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>xgboost</em> version 1.0.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Callback closure for logging the evaluation history</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for cb.evaluation.log {xgboost}"><tr><td>cb.evaluation.log {xgboost}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Callback closure for logging the evaluation history</h2>
+
+<h3>Description</h3>
+
+<p>Callback closure for logging the evaluation history
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+cb.evaluation.log()
+</pre>
+
+
+<h3>Details</h3>
+
+<p>This callback function appends the current iteration evaluation results <code>bst_evaluation</code>
+available in the calling parent frame to the <code>evaluation_log</code> list in a calling frame.
+</p>
+<p>The finalizer callback (called with <code>finalize = TURE</code> in the end) converts
+the <code>evaluation_log</code> list into a final data.table.
+</p>
+<p>The iteration evaluation result <code>bst_evaluation</code> must be a named numeric vector.
+</p>
+<p>Note: in the column names of the final data.table, the dash '-' character is replaced with
+the underscore '_' in order to make the column names more like regular R identifiers.
+</p>
+<p>Callback function expects the following values to be set in its calling frame:
+<code>evaluation_log</code>,
+<code>bst_evaluation</code>,
+<code>iteration</code>.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="callbacks.html">callbacks</a></code>
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>xgboost</em> version 1.0.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

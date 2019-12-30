@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Dump an xgboost model in text format.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for xgb.dump {xgboost}"><tr><td>xgb.dump {xgboost}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Dump an xgboost model in text format.</h2>
+
+<h3>Description</h3>
+
+<p>Dump an xgboost model in text format.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+xgb.dump(model, fname = NULL, fmap = "", with_stats = FALSE,
+  dump_format = c("text", "json"), ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>model</code></td>
+<td>
+<p>the model object.</p>
+</td></tr>
+<tr valign="top"><td><code>fname</code></td>
+<td>
+<p>the name of the text file where to save the model text dump. 
+If not provided or set to <code>NULL</code>, the model is returned as a <code>character</code> vector.</p>
+</td></tr>
+<tr valign="top"><td><code>fmap</code></td>
+<td>
+<p>feature map file representing feature types.
+Detailed description could be found at 
+<a href="https://github.com/dmlc/xgboost/wiki/Binary-Classification#dump-model">https://github.com/dmlc/xgboost/wiki/Binary-Classification#dump-model</a>.
+See demo/ for walkthrough example in R, and
+<a href="https://github.com/dmlc/xgboost/blob/master/demo/data/featmap.txt">https://github.com/dmlc/xgboost/blob/master/demo/data/featmap.txt</a> 
+for example Format.</p>
+</td></tr>
+<tr valign="top"><td><code>with_stats</code></td>
+<td>
+<p>whether to dump some additional statistics about the splits.
+When this option is on, the model dump contains two additional values:
+gain is the approximate loss function gain we get in each split;
+cover is the sum of second order gradient in each node.</p>
+</td></tr>
+<tr valign="top"><td><code>dump_format</code></td>
+<td>
+<p>either 'text' or 'json' format could be specified.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>currently not used</p>
+</td></tr>
+</table>
+
+
+<h3>Value</h3>
+
+<p>If fname is not provided or set to <code>NULL</code> the function will return the model
+as a <code>character</code> vector. Otherwise it will return <code>TRUE</code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(agaricus.train, package='xgboost')
+data(agaricus.test, package='xgboost')
+train &lt;- agaricus.train
+test &lt;- agaricus.test
+bst &lt;- xgboost(data = train$data, label = train$label, max_depth = 2, 
+               eta = 1, nthread = 2, nrounds = 2, objective = "binary:logistic")
+# save the model in file 'xgb.model.dump'
+dump_path = file.path(tempdir(), 'model.dump')
+xgb.dump(bst, dump_path, with_stats = TRUE)
+
+# print the model without saving it to a file
+print(xgb.dump(bst, with_stats = TRUE))
+
+# print in JSON format:
+cat(xgb.dump(bst, with_stats = TRUE, dump_format='json'))
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>xgboost</em> version 1.0.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

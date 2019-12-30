@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Restore missing parts of an incomplete xgb.Booster object.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for xgb.Booster.complete {xgboost}"><tr><td>xgb.Booster.complete {xgboost}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Restore missing parts of an incomplete xgb.Booster object.</h2>
+
+<h3>Description</h3>
+
+<p>It attempts to complete an <code>xgb.Booster</code> object by restoring either its missing
+raw model memory dump (when it has no <code>raw</code> data but its <code>xgb.Booster.handle</code> is valid)
+or its missing internal handle (when its <code>xgb.Booster.handle</code> is not valid
+but it has a raw Booster memory dump).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+xgb.Booster.complete(object, saveraw = TRUE)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p>object of class <code>xgb.Booster</code></p>
+</td></tr>
+<tr valign="top"><td><code>saveraw</code></td>
+<td>
+<p>a flag indicating whether to append <code>raw</code> Booster memory dump data
+when it doesn't already exist.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>While this method is primarily for internal use, it might be useful in some practical situations.
+</p>
+<p>E.g., when an <code>xgb.Booster</code> model is saved as an R object and then is loaded as an R object,
+its handle (pointer) to an internal xgboost model would be invalid. The majority of xgboost methods
+should still work for such a model object since those methods would be using
+<code>xgb.Booster.complete</code> internally. However, one might find it to be more efficient to call the
+<code>xgb.Booster.complete</code> function explicitly once after loading a model as an R-object.
+That would prevent further repeated implicit reconstruction of an internal booster model.
+</p>
+
+
+<h3>Value</h3>
+
+<p>An object of <code>xgb.Booster</code> class.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+
+data(agaricus.train, package='xgboost')
+bst &lt;- xgboost(data = agaricus.train$data, label = agaricus.train$label, max_depth = 2,
+               eta = 1, nthread = 2, nrounds = 2, objective = "binary:logistic")
+saveRDS(bst, "xgb.model.rds")
+
+bst1 &lt;- readRDS("xgb.model.rds")
+if (file.exists("xgb.model.rds")) file.remove("xgb.model.rds")
+# the handle is invalid:
+print(bst1$handle)
+
+bst1 &lt;- xgb.Booster.complete(bst1)
+# now the handle points to a valid internal booster model:
+print(bst1$handle)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>xgboost</em> version 1.0.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

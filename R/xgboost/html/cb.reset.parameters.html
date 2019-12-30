@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Callback closure for resetting the booster's parameters at...</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for cb.reset.parameters {xgboost}"><tr><td>cb.reset.parameters {xgboost}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Callback closure for resetting the booster's parameters at each iteration.</h2>
+
+<h3>Description</h3>
+
+<p>Callback closure for resetting the booster's parameters at each iteration.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+cb.reset.parameters(new_params)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>new_params</code></td>
+<td>
+<p>a list where each element corresponds to a parameter that needs to be reset.
+Each element's value must be either a vector of values of length <code>nrounds</code>
+to be set at each iteration,
+or a function of two parameters <code>learning_rates(iteration, nrounds)</code>
+which returns a new parameter value by using the current iteration number
+and the total number of boosting rounds.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This is a &quot;pre-iteration&quot; callback function used to reset booster's parameters
+at the beginning of each iteration.
+</p>
+<p>Note that when training is resumed from some previous model, and a function is used to
+reset a parameter value, the <code>nrounds</code> argument in this function would be the
+the number of boosting rounds in the current training.
+</p>
+<p>Callback function expects the following values to be set in its calling frame:
+<code>bst</code> or <code>bst_folds</code>,
+<code>iteration</code>,
+<code>begin_iteration</code>,
+<code>end_iteration</code>.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="callbacks.html">callbacks</a></code>
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>xgboost</em> version 1.0.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

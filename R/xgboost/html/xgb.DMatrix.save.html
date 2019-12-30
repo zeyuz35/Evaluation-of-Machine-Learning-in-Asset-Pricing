@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Save xgb.DMatrix object to binary file</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for xgb.DMatrix.save {xgboost}"><tr><td>xgb.DMatrix.save {xgboost}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Save xgb.DMatrix object to binary file</h2>
+
+<h3>Description</h3>
+
+<p>Save xgb.DMatrix object to binary file
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+xgb.DMatrix.save(dmatrix, fname)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>dmatrix</code></td>
+<td>
+<p>the <code>xgb.DMatrix</code> object</p>
+</td></tr>
+<tr valign="top"><td><code>fname</code></td>
+<td>
+<p>the name of the file to write.</p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(agaricus.train, package='xgboost')
+train &lt;- agaricus.train
+dtrain &lt;- xgb.DMatrix(train$data, label=train$label)
+xgb.DMatrix.save(dtrain, 'xgb.DMatrix.data')
+dtrain &lt;- xgb.DMatrix('xgb.DMatrix.data')
+if (file.exists('xgb.DMatrix.data')) file.remove('xgb.DMatrix.data')
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>xgboost</em> version 1.0.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

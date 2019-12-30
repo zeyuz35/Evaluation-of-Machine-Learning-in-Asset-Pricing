@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Accessors for model parameters.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for xgb.parameters&amp;lt;- {xgboost}"><tr><td>xgb.parameters&lt;- {xgboost}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Accessors for model parameters.</h2>
+
+<h3>Description</h3>
+
+<p>Only the setter for xgboost parameters is currently implemented.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+xgb.parameters(object) &lt;- value
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p>Object of class <code>xgb.Booster</code> or <code>xgb.Booster.handle</code>.</p>
+</td></tr>
+<tr valign="top"><td><code>value</code></td>
+<td>
+<p>a list (or an object coercible to a list) with the names of parameters to set
+and the elements corresponding to parameter values.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Note that the setter would usually work more efficiently for <code>xgb.Booster.handle</code>
+than for <code>xgb.Booster</code>, since only just a handle would need to be copied.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(agaricus.train, package='xgboost')
+train &lt;- agaricus.train
+
+bst &lt;- xgboost(data = train$data, label = train$label, max_depth = 2,
+               eta = 1, nthread = 2, nrounds = 2, objective = "binary:logistic")
+
+xgb.parameters(bst) &lt;- list(eta = 0.1)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>xgboost</em> version 1.0.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

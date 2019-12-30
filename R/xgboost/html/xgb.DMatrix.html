@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Construct xgb.DMatrix object</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for xgb.DMatrix {xgboost}"><tr><td>xgb.DMatrix {xgboost}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Construct xgb.DMatrix object</h2>
+
+<h3>Description</h3>
+
+<p>Construct xgb.DMatrix object from either a dense matrix, a sparse matrix, or a local file.
+Supported input file formats are either a libsvm text file or a binary file that was created previously by
+<code><a href="xgb.DMatrix.save.html">xgb.DMatrix.save</a></code>).
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+xgb.DMatrix(data, info = list(), missing = NA, silent = FALSE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>data</code></td>
+<td>
+<p>a <code>matrix</code> object (either numeric or integer), a <code>dgCMatrix</code> object, or a character
+string representing a filename.</p>
+</td></tr>
+<tr valign="top"><td><code>info</code></td>
+<td>
+<p>a named list of additional information to store in the <code>xgb.DMatrix</code> object.
+See <code><a href="setinfo.html">setinfo</a></code> for the specific allowed kinds of</p>
+</td></tr>
+<tr valign="top"><td><code>missing</code></td>
+<td>
+<p>a float value to represents missing values in data (used only when input is a dense matrix).
+It is useful when a 0 or some other extreme value represents missing values in data.</p>
+</td></tr>
+<tr valign="top"><td><code>silent</code></td>
+<td>
+<p>whether to suppress printing an informational message after loading from a file.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>the <code>info</code> data could be passed directly as parameters, without creating an <code>info</code> list.</p>
+</td></tr>
+</table>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(agaricus.train, package='xgboost')
+train &lt;- agaricus.train
+dtrain &lt;- xgb.DMatrix(train$data, label=train$label)
+xgb.DMatrix.save(dtrain, 'xgb.DMatrix.data')
+dtrain &lt;- xgb.DMatrix('xgb.DMatrix.data')
+if (file.exists('xgb.DMatrix.data')) file.remove('xgb.DMatrix.data')
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>xgboost</em> version 1.0.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

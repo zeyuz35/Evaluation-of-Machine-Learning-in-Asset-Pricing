@@ -29,6 +29,13 @@ library(tsfeatures)
 library(xts)
 library(rmgarch)
 library(marima)
+
+## SPecial xgboost instructions
+
+# CLone my forked version of xgboost with multiclass fix
+# setwd('C:/Users/Zeyu Zhong/Documents/GitHub/xgboost/R-package')
+# install.packages('.', repos = NULL, type="source")
+
 library(xgboost)
 
 #Parallel Computing
@@ -1600,12 +1607,12 @@ plot(ugarch_t_forecast, which = 2)
 
 ## Stochastic volatility model
 
-stochvol_model <- svlsample(univariate_time_series, draws = 10000, burnin = 1000, designmatrix = "ar1", 
-                            priormu = c(0, 100), priorphi = c(5, 1.5), priorsigma = 1,
-                            priorrho = c(4, 4), priorbeta = c(0, 10000), thinpara = 1,
-                            thinlatent = 1, thintime = NULL, keeptime = "all", quiet = FALSE)
-
-mse(stock_1_test$rt, apply(X = predict(stochvol_model, steps = 12)$y, MARGIN = 2, FUN = mean))
+# stochvol_model <- svlsample(univariate_time_series, draws = 10000, burnin = 1000, designmatrix = "ar1", 
+#                             priormu = c(0, 100), priorphi = c(5, 1.5), priorsigma = 1,
+#                             priorrho = c(4, 4), priorbeta = c(0, 10000), thinpara = 1,
+#                             thinlatent = 1, thintime = NULL, keeptime = "all", quiet = FALSE)
+# 
+# mse(stock_1_test$rt, apply(X = predict(stochvol_model, steps = 12)$y, MARGIN = 2, FUN = mean))
 
 ####################
 ## Getting the data into the right format for use with xgboost and its custom loss function
@@ -1759,27 +1766,6 @@ softmax_transform <- function(x) {
 error_softmax_obj <- function(preds, dtrain) {
   labels <- xgboost::getinfo(dtrain, "label")
   errors <- attr(dtrain, "errors")
-  
-  for (n in 1:nrow(preds)) {
-    preds[n, ] <- softmax_transform(preds[n, ])
-  }
-  
-  rowsumerrors <- rowSums(preds * errors)
-
-  grad <- preds*(errors - rowsumerrors)
-  hess <- errors*preds*(1.0 - preds) - grad*preds
-  #hess <- grad*(1.0 - 2.0*preds)
-  #hess <- pmax(hess, 1e-16)
-  #the true hessian should be grad*(1.0 - 2.0*preds) but it produces numerical problems
-  #what we use here is a upper bound
-
-  #print(mean(rowSums(preds*errors)))
-  return(list(grad = t(grad), hess = t(hess)))
-}
-
-error_softmax_obj <- function(preds, dtrain) {
-  labels <- xgboost::getinfo(dtrain, "label")
-  errors <- attr(dtrain, "errors")
 
   preds <- exp(preds)
   sp <- rowSums(preds)
@@ -1811,7 +1797,7 @@ dtrain <- xgb.DMatrix(data = as.matrix(train_list$data),
   
 attr(dtrain, "errors") <- train_list$errors
   
-bst <- xgboost::xgb.train(param, dtrain, 94,
+bst <- xgboost::xgb.train(params = param, data = dtrain, nrounds = 94,
                           verbose = 1)
 bst
 pred <- predict(bst, newdata = xgboost::xgb.DMatrix(as.matrix(train_list$data)), outputmargin = TRUE, reshape=TRUE)

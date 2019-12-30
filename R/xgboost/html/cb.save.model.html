@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Callback closure for saving a model file.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for cb.save.model {xgboost}"><tr><td>cb.save.model {xgboost}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Callback closure for saving a model file.</h2>
+
+<h3>Description</h3>
+
+<p>Callback closure for saving a model file.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+cb.save.model(save_period = 0, save_name = "xgboost.model")
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>save_period</code></td>
+<td>
+<p>save the model to disk after every
+<code>save_period</code> iterations; 0 means save the model at the end.</p>
+</td></tr>
+<tr valign="top"><td><code>save_name</code></td>
+<td>
+<p>the name or path for the saved model file.
+It can contain a <code><a href="../../base/html/sprintf.html">sprintf</a></code> formatting specifier
+to include the integer iteration number in the file name.
+E.g., with <code>save_name</code> = 'xgboost_
+the file saved at iteration 50 would be named &quot;xgboost_0050.model&quot;.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This callback function allows to save an xgb-model file, either periodically after each <code>save_period</code>'s or at the end.
+</p>
+<p>Callback function expects the following values to be set in its calling frame:
+<code>bst</code>,
+<code>iteration</code>,
+<code>begin_iteration</code>,
+<code>end_iteration</code>.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="callbacks.html">callbacks</a></code>
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>xgboost</em> version 1.0.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

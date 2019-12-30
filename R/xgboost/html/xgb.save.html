@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Save xgboost model to binary file</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for xgb.save {xgboost}"><tr><td>xgb.save {xgboost}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Save xgboost model to binary file</h2>
+
+<h3>Description</h3>
+
+<p>Save xgboost model to a file in binary format.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+xgb.save(model, fname)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>model</code></td>
+<td>
+<p>model object of <code>xgb.Booster</code> class.</p>
+</td></tr>
+<tr valign="top"><td><code>fname</code></td>
+<td>
+<p>name of the file to write.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>This methods allows to save a model in an xgboost-internal binary format which is universal 
+among the various xgboost interfaces. In R, the saved model file could be read-in later
+using either the <code><a href="xgb.load.html">xgb.load</a></code> function or the <code>xgb_model</code> parameter 
+of <code><a href="xgb.train.html">xgb.train</a></code>.
+</p>
+<p>Note: a model can also be saved as an R-object (e.g., by using <code><a href="../../base/html/readRDS.html">readRDS</a></code> 
+or <code><a href="../../base/html/save.html">save</a></code>). However, it would then only be compatible with R, and 
+corresponding R-methods would need to be used to load it.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="xgb.load.html">xgb.load</a></code>, <code><a href="xgb.Booster.complete.html">xgb.Booster.complete</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(agaricus.train, package='xgboost')
+data(agaricus.test, package='xgboost')
+train &lt;- agaricus.train
+test &lt;- agaricus.test
+bst &lt;- xgboost(data = train$data, label = train$label, max_depth = 2, 
+               eta = 1, nthread = 2, nrounds = 2,objective = "binary:logistic")
+xgb.save(bst, 'xgb.model')
+bst &lt;- xgb.load('xgb.model')
+if (file.exists('xgb.model')) file.remove('xgb.model')
+pred &lt;- predict(bst, test$data)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>xgboost</em> version 1.0.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

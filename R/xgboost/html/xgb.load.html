@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Load xgboost model from binary file</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for xgb.load {xgboost}"><tr><td>xgb.load {xgboost}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Load xgboost model from binary file</h2>
+
+<h3>Description</h3>
+
+<p>Load xgboost model from the binary model file.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+xgb.load(modelfile)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>modelfile</code></td>
+<td>
+<p>the name of the binary input file.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The input file is expected to contain a model saved in an xgboost-internal binary format
+using either <code><a href="xgb.save.html">xgb.save</a></code> or <code><a href="cb.save.model.html">cb.save.model</a></code> in R, or using some 
+appropriate methods from other xgboost interfaces. E.g., a model trained in Python and 
+saved from there in xgboost format, could be loaded from R.
+</p>
+<p>Note: a model saved as an R-object, has to be loaded using corresponding R-methods,
+not <code>xgb.load</code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>An object of <code>xgb.Booster</code> class.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="xgb.save.html">xgb.save</a></code>, <code><a href="xgb.Booster.complete.html">xgb.Booster.complete</a></code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(agaricus.train, package='xgboost')
+data(agaricus.test, package='xgboost')
+train &lt;- agaricus.train
+test &lt;- agaricus.test
+bst &lt;- xgboost(data = train$data, label = train$label, max_depth = 2, 
+               eta = 1, nthread = 2, nrounds = 2,objective = "binary:logistic")
+xgb.save(bst, 'xgb.model')
+bst &lt;- xgb.load('xgb.model')
+if (file.exists('xgb.model')) file.remove('xgb.model')
+pred &lt;- predict(bst, test$data)
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>xgboost</em> version 1.0.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

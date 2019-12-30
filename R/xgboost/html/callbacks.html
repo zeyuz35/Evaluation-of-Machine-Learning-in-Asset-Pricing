@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Callback closures for booster training.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for callbacks {xgboost}"><tr><td>callbacks {xgboost}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Callback closures for booster training.</h2>
+
+<h3>Description</h3>
+
+<p>These are used to perform various service tasks either during boosting iterations or at the end.
+This approach helps to modularize many of such tasks without bloating the main training methods,
+and it offers .
+</p>
+
+
+<h3>Details</h3>
+
+<p>By default, a callback function is run after each boosting iteration.
+An R-attribute <code>is_pre_iteration</code> could be set for a callback to define a pre-iteration function.
+</p>
+<p>When a callback function has <code>finalize</code> parameter, its finalizer part will also be run after
+the boosting is completed.
+</p>
+<p>WARNING: side-effects!!! Be aware that these callback functions access and modify things in
+the environment from which they are called from, which is a fairly uncommon thing to do in R.
+</p>
+<p>To write a custom callback closure, make sure you first understand the main concepts about R environments.
+Check either R documentation on <code><a href="../../base/html/environment.html">environment</a></code> or the
+<a href="http://adv-r.had.co.nz/Environments.html">Environments chapter</a> from the &quot;Advanced R&quot;
+book by Hadley Wickham. Further, the best option is to read the code of some of the existing callbacks -
+choose ones that do something similar to what you want to achieve. Also, you would need to get familiar
+with the objects available inside of the <code>xgb.train</code> and <code>xgb.cv</code> internal environments.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="cb.print.evaluation.html">cb.print.evaluation</a></code>,
+<code><a href="cb.evaluation.log.html">cb.evaluation.log</a></code>,
+<code><a href="cb.reset.parameters.html">cb.reset.parameters</a></code>,
+<code><a href="cb.early.stop.html">cb.early.stop</a></code>,
+<code><a href="cb.save.model.html">cb.save.model</a></code>,
+<code><a href="cb.cv.predict.html">cb.cv.predict</a></code>,
+<code><a href="xgb.train.html">xgb.train</a></code>,
+<code><a href="xgb.cv.html">xgb.cv</a></code>
+</p>
+
+<hr /><div style="text-align: center;">[Package <em>xgboost</em> version 1.0.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

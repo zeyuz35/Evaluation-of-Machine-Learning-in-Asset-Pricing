@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Get information of an xgb.DMatrix object</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for getinfo {xgboost}"><tr><td>getinfo {xgboost}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Get information of an xgb.DMatrix object</h2>
+
+<h3>Description</h3>
+
+<p>Get information of an xgb.DMatrix object
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+getinfo(object, ...)
+
+## S3 method for class 'xgb.DMatrix'
+getinfo(object, name, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>object</code></td>
+<td>
+<p>Object of class <code>xgb.DMatrix</code></p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>other parameters</p>
+</td></tr>
+<tr valign="top"><td><code>name</code></td>
+<td>
+<p>the name of the information field to get (see details)</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The <code>name</code> field can be one of the following:
+</p>
+
+<ul>
+<li> <p><code>label</code>: label Xgboost learn from ;
+</p>
+</li>
+<li> <p><code>weight</code>: to do a weight rescale ;
+</p>
+</li>
+<li> <p><code>base_margin</code>: base margin is the base prediction Xgboost will boost from ;
+</p>
+</li>
+<li> <p><code>nrow</code>: number of rows of the <code>xgb.DMatrix</code>.
+</p>
+</li></ul>
+
+<p><code>group</code> can be setup by <code>setinfo</code> but can't be retrieved by <code>getinfo</code>.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(agaricus.train, package='xgboost')
+train &lt;- agaricus.train
+dtrain &lt;- xgb.DMatrix(train$data, label=train$label)
+
+labels &lt;- getinfo(dtrain, 'label')
+setinfo(dtrain, 'label', 1-labels)
+
+labels2 &lt;- getinfo(dtrain, 'label')
+stopifnot(all(labels2 == 1-labels))
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>xgboost</em> version 1.0.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

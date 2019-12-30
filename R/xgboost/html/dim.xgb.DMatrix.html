@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Dimensions of xgb.DMatrix</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for dim.xgb.DMatrix {xgboost}"><tr><td>dim.xgb.DMatrix {xgboost}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Dimensions of xgb.DMatrix</h2>
+
+<h3>Description</h3>
+
+<p>Returns a vector of numbers of rows and of columns in an <code>xgb.DMatrix</code>.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+## S3 method for class 'xgb.DMatrix'
+dim(x)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>x</code></td>
+<td>
+<p>Object of class <code>xgb.DMatrix</code></p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>Note: since <code>nrow</code> and <code>ncol</code> internally use <code>dim</code>, they can also
+be directly used with an <code>xgb.DMatrix</code> object.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(agaricus.train, package='xgboost')
+train &lt;- agaricus.train
+dtrain &lt;- xgb.DMatrix(train$data, label=train$label)
+
+stopifnot(nrow(dtrain) == nrow(train$data))
+stopifnot(ncol(dtrain) == ncol(train$data))
+stopifnot(all(dim(dtrain) == dim(train$data)))
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>xgboost</em> version 1.0.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>

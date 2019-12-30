@@ -1,0 +1,259 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>R: Cross Validation</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body>
+
+<table width="100%" summary="page for xgb.cv {xgboost}"><tr><td>xgb.cv {xgboost}</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Cross Validation</h2>
+
+<h3>Description</h3>
+
+<p>The cross validation function of xgboost
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+xgb.cv(params = list(), data, nrounds, nfold, label = NULL, missing = NA,
+  prediction = FALSE, showsd = TRUE, metrics = list(), obj = NULL,
+  feval = NULL, stratified = TRUE, folds = NULL, verbose = TRUE,
+  print_every_n = 1L, early_stopping_rounds = NULL, maximize = NULL,
+  callbacks = list(), ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>params</code></td>
+<td>
+<p>the list of parameters. Commonly used ones are:
+</p>
+
+<ul>
+<li> <p><code>objective</code> objective function, common ones are
+</p>
+
+<ul>
+<li> <p><code>reg:squarederror</code> Regression with squared loss
+</p>
+</li>
+<li> <p><code>binary:logistic</code> logistic regression for classification
+</p>
+</li></ul>
+
+</li>
+<li> <p><code>eta</code> step size of each boosting step
+</p>
+</li>
+<li> <p><code>max_depth</code> maximum depth of the tree
+</p>
+</li>
+<li> <p><code>nthread</code> number of thread used in training, if not set, all threads are used
+</p>
+</li></ul>
+
+<p>See <code><a href="xgb.train.html">xgb.train</a></code> for further details.
+See also demo/ for walkthrough example in R.</p>
+</td></tr>
+<tr valign="top"><td><code>data</code></td>
+<td>
+<p>takes an <code>xgb.DMatrix</code>, <code>matrix</code>, or <code>dgCMatrix</code> as the input.</p>
+</td></tr>
+<tr valign="top"><td><code>nrounds</code></td>
+<td>
+<p>the max number of iterations</p>
+</td></tr>
+<tr valign="top"><td><code>nfold</code></td>
+<td>
+<p>the original dataset is randomly partitioned into <code>nfold</code> equal size subsamples.</p>
+</td></tr>
+<tr valign="top"><td><code>label</code></td>
+<td>
+<p>vector of response values. Should be provided only when data is an R-matrix.</p>
+</td></tr>
+<tr valign="top"><td><code>missing</code></td>
+<td>
+<p>is only used when input is a dense matrix. By default is set to NA, which means
+that NA values should be considered as 'missing' by the algorithm.
+Sometimes, 0 or other extreme value might be used to represent missing values.</p>
+</td></tr>
+<tr valign="top"><td><code>prediction</code></td>
+<td>
+<p>A logical value indicating whether to return the test fold predictions
+from each CV model. This parameter engages the <code><a href="cb.cv.predict.html">cb.cv.predict</a></code> callback.</p>
+</td></tr>
+<tr valign="top"><td><code>showsd</code></td>
+<td>
+<p><code>boolean</code>, whether to show standard deviation of cross validation</p>
+</td></tr>
+<tr valign="top"><td><code>metrics, </code></td>
+<td>
+<p>list of evaluation metrics to be used in cross validation,
+when it is not specified, the evaluation metric is chosen according to objective function.
+Possible options are:
+</p>
+
+<ul>
+<li> <p><code>error</code> binary classification error rate
+</p>
+</li>
+<li> <p><code>rmse</code> Rooted mean square error
+</p>
+</li>
+<li> <p><code>logloss</code> negative log-likelihood function
+</p>
+</li>
+<li> <p><code>auc</code> Area under curve
+</p>
+</li>
+<li> <p><code>aucpr</code> Area under PR curve
+</p>
+</li>
+<li> <p><code>merror</code> Exact matching error, used to evaluate multi-class classification
+</p>
+</li></ul>
+</td></tr>
+<tr valign="top"><td><code>obj</code></td>
+<td>
+<p>customized objective function. Returns gradient and second order
+gradient with given prediction and dtrain.</p>
+</td></tr>
+<tr valign="top"><td><code>feval</code></td>
+<td>
+<p>customized evaluation function. Returns
+<code>list(metric='metric-name', value='metric-value')</code> with given
+prediction and dtrain.</p>
+</td></tr>
+<tr valign="top"><td><code>stratified</code></td>
+<td>
+<p>a <code>boolean</code> indicating whether sampling of folds should be stratified
+by the values of outcome labels.</p>
+</td></tr>
+<tr valign="top"><td><code>folds</code></td>
+<td>
+<p><code>list</code> provides a possibility to use a list of pre-defined CV folds
+(each element must be a vector of test fold's indices). When folds are supplied,
+the <code>nfold</code> and <code>stratified</code> parameters are ignored.</p>
+</td></tr>
+<tr valign="top"><td><code>verbose</code></td>
+<td>
+<p><code>boolean</code>, print the statistics during the process</p>
+</td></tr>
+<tr valign="top"><td><code>print_every_n</code></td>
+<td>
+<p>Print each n-th iteration evaluation messages when <code>verbose&gt;0</code>.
+Default is 1 which means all messages are printed. This parameter is passed to the
+<code><a href="cb.print.evaluation.html">cb.print.evaluation</a></code> callback.</p>
+</td></tr>
+<tr valign="top"><td><code>early_stopping_rounds</code></td>
+<td>
+<p>If <code>NULL</code>, the early stopping function is not triggered.
+If set to an integer <code>k</code>, training with a validation set will stop if the performance
+doesn't improve for <code>k</code> rounds.
+Setting this parameter engages the <code><a href="cb.early.stop.html">cb.early.stop</a></code> callback.</p>
+</td></tr>
+<tr valign="top"><td><code>maximize</code></td>
+<td>
+<p>If <code>feval</code> and <code>early_stopping_rounds</code> are set,
+then this parameter must be set as well.
+When it is <code>TRUE</code>, it means the larger the evaluation score the better.
+This parameter is passed to the <code><a href="cb.early.stop.html">cb.early.stop</a></code> callback.</p>
+</td></tr>
+<tr valign="top"><td><code>callbacks</code></td>
+<td>
+<p>a list of callback functions to perform various task during boosting.
+See <code><a href="callbacks.html">callbacks</a></code>. Some of the callbacks are automatically created depending on the
+parameters' values. User can provide either existing or their own callback methods in order
+to customize the training process.</p>
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+<p>other parameters to pass to <code>params</code>.</p>
+</td></tr>
+</table>
+
+
+<h3>Details</h3>
+
+<p>The original sample is randomly partitioned into <code>nfold</code> equal size subsamples.
+</p>
+<p>Of the <code>nfold</code> subsamples, a single subsample is retained as the validation data for testing the model, and the remaining <code>nfold - 1</code> subsamples are used as training data.
+</p>
+<p>The cross-validation process is then repeated <code>nrounds</code> times, with each of the <code>nfold</code> subsamples used exactly once as the validation data.
+</p>
+<p>All observations are used for both training and validation.
+</p>
+<p>Adapted from <a href="http://en.wikipedia.org/wiki/Cross-validation_%28statistics%29#k-fold_cross-validation">http://en.wikipedia.org/wiki/Cross-validation_%28statistics%29#k-fold_cross-validation</a>
+</p>
+
+
+<h3>Value</h3>
+
+<p>An object of class <code>xgb.cv.synchronous</code> with the following elements:
+</p>
+
+<ul>
+<li> <p><code>call</code> a function call.
+</p>
+</li>
+<li> <p><code>params</code> parameters that were passed to the xgboost library. Note that it does not
+capture parameters changed by the <code><a href="cb.reset.parameters.html">cb.reset.parameters</a></code> callback.
+</p>
+</li>
+<li> <p><code>callbacks</code> callback functions that were either automatically assigned or
+explicitly passed.
+</p>
+</li>
+<li> <p><code>evaluation_log</code> evaluation history stored as a <code>data.table</code> with the
+first column corresponding to iteration number and the rest corresponding to the
+CV-based evaluation means and standard deviations for the training and test CV-sets.
+It is created by the <code><a href="cb.evaluation.log.html">cb.evaluation.log</a></code> callback.
+</p>
+</li>
+<li> <p><code>niter</code> number of boosting iterations.
+</p>
+</li>
+<li> <p><code>nfeatures</code> number of features in training data.
+</p>
+</li>
+<li> <p><code>folds</code> the list of CV folds' indices - either those passed through the <code>folds</code>
+parameter or randomly generated.
+</p>
+</li>
+<li> <p><code>best_iteration</code> iteration number with the best evaluation metric value
+(only available with early stopping).
+</p>
+</li>
+<li> <p><code>best_ntreelimit</code> the <code>ntreelimit</code> value corresponding to the best iteration,
+which could further be used in <code>predict</code> method
+(only available with early stopping).
+</p>
+</li>
+<li> <p><code>pred</code> CV prediction values available when <code>prediction</code> is set.
+It is either vector or matrix (see <code><a href="cb.cv.predict.html">cb.cv.predict</a></code>).
+</p>
+</li>
+<li> <p><code>models</code> a liost of the CV folds' models. It is only available with the explicit
+setting of the <code>cb.cv.predict(save_models = TRUE)</code> callback.
+</p>
+</li></ul>
+
+
+
+<h3>Examples</h3>
+
+<pre>
+data(agaricus.train, package='xgboost')
+dtrain &lt;- xgb.DMatrix(agaricus.train$data, label = agaricus.train$label)
+cv &lt;- xgb.cv(data = dtrain, nrounds = 3, nthread = 2, nfold = 5, metrics = list("rmse","auc"),
+                  max_depth = 3, eta = 1, objective = "binary:logistic")
+print(cv)
+print(cv, verbose=TRUE)
+
+</pre>
+
+<hr /><div style="text-align: center;">[Package <em>xgboost</em> version 1.0.0.1 <a href="00Index.html">Index</a>]</div>
+</body></html>
