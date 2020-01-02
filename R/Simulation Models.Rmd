@@ -1885,7 +1885,10 @@ train_list <- list(
   labels = labels
 )
 
-## Function that returns a 
+## Function that returns a dataset list, each element containing:
+# Data - a matrix with the features extracted via tsfeatures, one series per row
+# Errors - a matrix of the errors (losses) produced by the forecasting methods, one series per row
+# Labels - a numeric vector from 0 to nclass -1, representing the method with the lowest forecast error
 ```
 
 ```{r}
@@ -1945,6 +1948,41 @@ xgb.ggplot.importance(bst)
 ```
 
 ```{r}
+##
+summary_performance <- function(predictions, dataset) {
+  labels <- sapply(dataset, function(lentry) which.min(lentry$errors) - 1)
+  max_predictions <- apply(predictions, 1, which.max) - 1
+  class_error <- 1 - mean(max_predictions == labels)
+  n_methods <- length(dataset[[1]]$errors)
+  
+  for (i in 1:length(dataset)) {
+      weighted_ff <- t(predictions[i,]) %*% dataset[[i]]$ff
+      naive_combi_ff <- colMeans(dataset[[i]]$ff)
+      selected_ff <- dataset[[i]]$ff[max_predictions[i]+1,]
+      oracle_ff <- dataset[[i]]$ff[labels[i]+1,]
+      dataset[[i]]$ff <- rbind(dataset[[i]]$ff,
+                               weighted_ff,
+                               naive_combi_ff,
+                               selected_ff,
+                               oracle_ff)
+    }
+
+    dataset <- calc_errors(dataset)
+    all_errors <- sapply(dataset, function (lentry) {
+      lentry$errors})
+
+    all_errors <- rowMeans(all_errors)
+    weighted_error <- all_errors[n_methods + 1]
+    naive_weight_error  <- all_errors[n_methods + 2]
+    selected_error  <- all_errors[n_methods + 3]
+    oracle_error <-  all_errors[n_methods + 4]
+    single_error <- min(all_errors[1:n_methods])
+    average_error <- mean(all_errors[1:n_methods])
+
+  list(selected_error = selected_error,
+       weighted_error = weighted_error)
+}
+
 ## Newdata needs to be the feature matrix, one row per series
 predict_selection_ensemble <- function(model, newdata) {
   pred <- stats::predict(model, newdata, outputmargin = TRUE, reshape=TRUE)
