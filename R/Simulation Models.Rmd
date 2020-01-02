@@ -27,8 +27,6 @@ library(tsfeatures)
 ## Vector arima/garch packages
 
 library(xts)
-library(rmgarch)
-library(marima)
 
 ## SPecial xgboost instructions
 
@@ -1300,73 +1298,199 @@ NNet_5_mae_stats[[1]]$variable_importance %>%
 # Keras needs the Y output to be an array of (sample no, number of outputs per sample)
 # In our case, this corresponds to (length of training set, no. of stocks/cross sectional units)
 
-# Set the training length to be the entire smaple for now
-train_length <- 180
+# Observations when fitting:
+# LSTM parameter count is very explosive, usually having an LSTM unit with 8 units approaches GPU memory limit of 2GB already
+# Stacking LSTM units doesn't seem to help too much
+# Adding more vanilla layers also doesn't seem to help much
+# Predictions seem to be well behaved compared to MLPs
+# tanh seems to be better than ReLU, though as least ReLU works here
+# Fitting wrt to MAE seems to be better
+# Batch size seems to be best at around 32 or 64
 
-X_array <- array(data = 0, dim = c(train_length, 1, 80000))
+## Variable Importance function for LSTM
 
-Y_array <- array(data = 0, dim = c(train_length, 200))
+LSTM_variable_importance <- function(X_array_test, test_x, lstm_model) {
 
-for(t in 1:train_length) {
-  X_array[t, 1, ] <- pooled_panel %>%
-  filter(time == t+1) %>%
-  dplyr::select(-rt, -time, -stock) %>%
-  as.matrix() %>%
-  as.vector()
+  variable_importance_df <- foreach(i = (1:400), .combine = "rbind", .packages = c("keras", "tensorflow", "reticulate")) %do% {
+    index <- seq(1, 400, by = 1) + (i - 1)*400
+    
+    X_array_test_zero <- X_array_test
+    X_array_test_zero[t, 1, i] <- 0
+
+    original_R2 <- R2(predict(lstm_model, X_array_test), Y_array_test %>% as.vector(), form = "traditional")
+
+    new_R2 <- R2(predict(lstm_model, X_array_test_zero), Y_array_test %>% as.vector(), form = "traditional")
+
+    variable_importance <- data.frame(variable = colnames(test_x)[i], importance = (original_R2 - new_R2))
+
+    variable_importance
+  }
+variable_importance_df
 }
 
-for(t in 1:train_length) {
-  Y_array[t, ] <- pooled_panel %>%
-    filter(time == t+1) %>%
-    dplyr::select(rt) %>%
-    as.matrix() %>%
-    as.vector()
+## Function to fit LSTM Model
+
+LSTM_fit_stats <- function(pooled_panel, timeSlices, loss_function, batch_size, patience) {
+  ## Initialize
+  LSTM_stats <- rep(list(0), 3)
+  
+  ## Loop over different timeslices
+  for (set in 1:3) {
+    ## Important things
+    
+    LSTM_stats[[set]] <- list(loss_stats = data.frame(train_MAE = 0, train_MSE = 0, train_RMSE = 0, train_RSquare = 0, 
+                                                      validation_MAE = 0, validation_MSE = 0, validation_RMSE = 0, validation_RSquare = 0, 
+                                                      test_MAE = 0, test_MSE = 0, test_RMSE = 0, test_RSquare = 0),
+                              #Other useful things
+                              # Keep forecasts here in for nnet objects to make sure they aren't doing something stupid
+                              forecasts = 0,
+                              forecast_resids = 0,
+                              model = 0,
+                              variable_importance = 0)
+    
+    ## Train, validation, test
+    
+    ## Scale Data first
+    
+    train <- pooled_panel %>%
+      filter(time %in% timeSlices[[set]]$train)
+    validation <- pooled_panel %>%
+      filter(time %in% timeSlices[[set]]$validation)
+    test<- pooled_panel %>%
+      filter(time %in% timeSlices[[set]]$test)
+      
+    train_x <- train[4:ncol(train)]
+    train_x <- scale(train_x)
+    col_means_train <- attr(train_x, "scaled:center") 
+    col_stddevs_train <- attr(train_x, "scaled:scale")
+    train_y <- train$rt
+    
+    validation_x <- validation[4:ncol(validation)]
+    validation_x <- scale(validation_x, center = col_means_train, scale = col_stddevs_train)
+    validation_y <- validation$rt
+      
+    test_x <- test[4:ncol(test)]
+    test_x <- scale(test_x, center = col_means_train, scale = col_stddevs_train)
+    test_y <- test$rt
+    
+    pooled_panel <- rbind(
+      cbind(rt = train_y, time = train$time, train_x),
+      cbind(rt = validation_y, time = validation$time, validation_x),
+      cbind(rt = test_y, time = test$time, test_x)
+    )
+    
+    ## Change this to array format for use with LSTMs
+    
+    length <- max(timeSlices[[set]]$test) - 1
+    X_array <- array(data = 0, dim = c(length, 1, 80000))
+  
+    Y_array <- array(data = 0, dim = c(length, 200))
+    
+    for(t in 1:length) {
+      X_array[t, 1, ] <- pooled_panel %>%
+      filter(time == t+1) %>%
+      dplyr::select(-rt, -time) %>%
+      as.matrix() %>%
+      as.vector()
+    }
+    
+    for(t in 1:length) {
+      Y_array[t, ] <- pooled_panel %>%
+        filter(time == t+1) %>%
+        dplyr::select(rt) %>%
+        as.matrix() %>%
+        as.vector()
+    }
+    
+    X_array_train <- X_array[(timeSlices[[set]]$train - 1), , , drop = F]
+    X_array_validation <- X_array[(timeSlices[[set]]$validation - 1), , , drop = F]
+    X_array_test <- X_array[(timeSlices[[set]]$test - 1), , , drop = F]
+    
+    Y_array_train <- Y_array[(timeSlices[[set]]$train - 1), ]
+    Y_array_validation <- Y_array[(timeSlices[[set]]$validation - 1), ]
+    Y_array_test <- Y_array[(timeSlices[[set]]$test - 1), ]
+    
+    ## Early stopping Callback
+    
+    early_stop <- callback_early_stopping(monitor = "val_loss", patience = patience, restore_best_weights = TRUE)
+    
+    print_dot_callback <- callback_lambda(
+      on_epoch_end = function(epoch, logs) {
+        if (epoch %% 50 == 0) cat("\n")
+        cat(".")
+      }
+    ) 
+    
+    ## Fit the LSTM Model
+    
+    l1_penalty <- 0.001
+
+    lstm_model <- keras_model_sequential() %>%
+      layer_lstm(units = 4, input_shape = c(1, dim(X_array_train)[3]),
+                 return_sequences = TRUE) %>%
+      layer_activation("tanh") %>%
+      layer_activity_regularization(l1 = l1_penalty) %>%
+      layer_batch_normalization() %>%
+      
+      layer_dense(units = 200) %>%
+      layer_activation("linear")
+    
+    lstm_model %>% compile(loss = "mse",
+                           optimizer = optimizer_adam(lr = 0.001, beta_1 = 0.9, beta_2 = 0.999),
+                           metrics = list("mae", "mse"))
+    
+    lstm_model_fit <- lstm_model %>% 
+      fit(X_array_train, Y_array_train, epochs = 500,
+          validation_data = list(X_array_validation, Y_array_validation), 
+          batch_size = 32, shuffle = FALSE, verbose = 0,
+          callbacks = list(early_stop, print_dot_callback))
+    
+    lstm_predictions <- lstm_model %>% predict(X_array_test) %>%
+      as.vector()
+    
+    ## Save stuff to list object
+    
+    #Train
+    train_predict <- lstm_model %>% predict(X_array_train) %>%
+      as.vector()
+    
+    LSTM_stats[[set]]$loss_stats$train_MAE <- mae(Y_array_train %>% as.vector(), train_predict)
+    LSTM_stats[[set]]$loss_stats$train_MSE <- mse(Y_array_train %>% as.vector(), train_predict)
+    LSTM_stats[[set]]$loss_stats$train_RMSE <- rmse(Y_array_train %>% as.vector(), )
+    LSTM_stats[[set]]$loss_stats$train_RSquare <- R2(train_predict, Y_array_train %>% as.vector(), form = "traditional")
+          
+    #Validation
+    validation_predict <- lstm_model %>% predict(X_array_validation) %>%
+      as.vector()
+    
+    LSTM_stats[[set]]$loss_stats$validation_MAE <- mae(Y_array_validation %>% as.vector(), validation_predict)
+    LSTM_stats[[set]]$loss_stats$validation_MSE <- mse(Y_array_validation %>% as.vector(), validation_predict)
+    LSTM_stats[[set]]$loss_stats$validation_RMSE <- rmse(Y_array_validation %>% as.vector(), validation_predict)
+    LSTM_stats[[set]]$loss_stats$validation_RSquare <- R2(validation_predict, Y_array_validation %>% as.vector(), form = "traditional")
+      
+    #Test
+    test_predict <- lstm_model %>% predict(X_array_test) %>%
+      as.vector()
+    
+    LSTM_stats[[set]]$loss_stats$test_MAE <- mae(Y_array_test %>% as.vector(), test_predict)
+    LSTM_stats[[set]]$loss_stats$test_MSE <- mse(Y_array_test %>% as.vector(), test_predict)
+    LSTM_stats[[set]]$loss_stats$test_RMSE <- rmse(Y_array_test %>% as.vector(), test_predict)
+    LSTM_stats[[set]]$loss_stats$test_RSquare <- R2(test_predict, Y_array_test %>% as.vector(), form = "traditional")
+        
+    #Forecasts
+    LSTM_stats[[set]]$forecasts <- test_predict
+      
+    #Forecast residuals
+    LSTM_stats[[set]]$forecast_resids <- nnet_ave_forecast_resids(nnet_model = neural_network, test = test)
+    
+    #Variable Importance
+    LSTM_stats[[set]]$variable_importance <- LSTM_variable_importance(X_array_test, test_x, lstm_model)
+    
+  }
+  #Clear Kera Session
+  k_clear_session()
+  LSTM_stats
 }
-
-X_array_train <- X_array[(timeSlices[[1]]$train - 1), , ,drop = F]
-X_array_validation <- X_array[(timeSlices[[1]]$validation - 1), , ,drop = F]
-X_array_test <- X_array[(timeSlices[[1]]$test - 1), , ,drop = F]
-
-Y_array_train <- Y_array[(timeSlices[[1]]$train - 1), ]
-Y_array_validation <- Y_array[(timeSlices[[1]]$validation - 1), ]
-Y_array_test <- Y_array[(timeSlices[[1]]$test - 1), ]
-
-## Start building the model
-
-l1_penalty <- 0.001
-
-lstm_model <- keras_model_sequential() %>%
-  layer_lstm(units = 4, input_shape = c(1, dim(X_array_train)[3]),
-             return_sequences = TRUE) %>%
-  layer_activation("tanh") %>%
-  layer_activity_regularization(l1 = l1_penalty) %>%
-  layer_batch_normalization() %>%
-  
-  layer_lstm(units = 2) %>%
-  layer_activation("tanh") %>%
-  layer_activity_regularization(l1 = l1_penalty) %>%
-  layer_batch_normalization() %>%
-  
-  layer_dense(units = 200) %>%
-  layer_activation("linear")
-
-lstm_model %>% compile(loss = "mse",
-                       optimizer = optimizer_adam(lr = 0.001, beta_1 = 0.9, beta_2 = 0.999),
-                       metrics = list("mae", "mse"))
-
-lstm_model %>% summary()
-
-lstm_model_fit <- lstm_model %>% 
-  fit(X_array_train, Y_array_train, epochs = 500,
-      validation_data = list(X_array_validation, Y_array_validation), 
-      batch_size = 32, shuffle = FALSE, verbose = 1)
-
-lstm_predictions <- lstm_model %>% predict(X_array_test) %>%
-  as.vector()
-
-mse(Y_array_test %>% as.vector(), lstm_predictions)
-mae(Y_array_test %>% as.vector(), lstm_predictions)
-R2(lstm_predictions, Y_array_test %>% as.vector(), form = "traditional")
 ```
 
 
@@ -1467,7 +1591,11 @@ ELN_stats_mse[[1]]$forecasts
 ```
 
 ```{r}
-## FFORMA implementation, pretending that each stock return series is an individual time series with no external regressors
+#################################################################################################################
+## FFORMA implementation, pretending that each stock return series is an individual time series
+## External regressors are only avialable through dimensional reduction techniques
+## Not ideal at all, but the only practical way to implement this
+#################################################################################################################
 
 # Get univariate time series training sample from cross section
 
@@ -1475,7 +1603,13 @@ stock_id <- unique(pooled_panel$stock)
 
 univariate_time_series <- pooled_panel %>%
   filter(stock == stock_id[1]) %>%
-  filter(time %in% timeSlices[[1]]$train | time %in% timeSlices[[1]]$validation) %>%
+  filter(time %in% timeSlices[[1]]$train) %>%
+  select(rt) %>%
+  ts()
+
+univariate_time_series_validation <- pooled_panel %>%
+  filter(stock == stock_id[1]) %>%
+  filter(time %in% time %in% timeSlices[[1]]$validation) %>%
   select(rt) %>%
   ts()
 
@@ -1750,6 +1884,8 @@ train_list <- list(
   errors = errors,
   labels = labels
 )
+
+## Function that returns a 
 ```
 
 ```{r}
@@ -1829,54 +1965,3 @@ ensemble_forecast <- function(predictions, dataset, clamp_zero=TRUE) {
 
 
 ```
-
-
-```{r}
-## Messing around with TSNE
-#######
-
-## Running tsne on each individual time series in the panel just for fun
-## Analysis seems to reveal that tsne results are quite sensitive to perplexity parameters
-## T-SNE was also originally designed for visualization of high dimensional data, and is not really suitable for use in feature extraction unfortunately
-
-stock_id <- unique(pooled_panel$stock)
-
-stock_series_tsne <- foreach(i = (1:(length(stock_id)/40)), .combine = "rbind") %dopar% {
-  stock_series <- pooled_panel %>%
-    filter(stock == stock_id[i])
-  
-  # Apply tsne
-  stock_series_tsne <- tsne(stock_series[, -(1:3)], perplexity = 100)
-  
-  stock_series_tsne <- cbind(stock = stock_id[i], stock_series_tsne)
-  
-  stock_series_tsne
-}
-
-stock_series_tsne <- as.data.frame(stock_series_tsne)
-
-stock_series_tsne %>%
-  mutate(V2 = (V2 - mean(V2))/sd(V2)) %>%
-  mutate(V3 = (V3 - mean(V3))/sd(V3)) %>%
-  mutate(stock = as.factor(stock)) %>%
-  ggplot() +
-  geom_point(aes(x = V2, y = V3, colour = stock)) +
-  theme(legend.position = "none")
-```
-
-```{r}
-## mgarch models
-
-dcc_spec <- dccspec(uspec = multispec(replicate(2, ugarch_spec)),
-                    VAR = FALSE, robust = FALSE, lag = 1, 
-                    external.regressors = NULL,
-                    dccOrder = c(1, 1), model = c("DCC"),
-                    distribution = c("mvt")
-)
-
-dcc_filter <- dccfilter(dcc_spec, data = )
-
-```
-
-
-
