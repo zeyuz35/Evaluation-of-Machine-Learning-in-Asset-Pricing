@@ -1312,10 +1312,12 @@ NNet_5_mae_stats[[1]]$variable_importance %>%
 LSTM_variable_importance <- function(X_array_test, test_x, lstm_model) {
 
   variable_importance_df <- foreach(i = (1:400), .combine = "rbind", .packages = c("keras", "tensorflow", "reticulate")) %do% {
-    index <- seq(1, 400, by = 1) + (i - 1)*400
+    index <- seq(1, 200, by = 1) + (i - 1)*200
     
     X_array_test_zero <- X_array_test
-    X_array_test_zero[t, 1, i] <- 0
+    for (t in 1:dim(X_array_test)[1]) {
+      X_array_test_zero[t, 1, index] <- 0
+    }
 
     original_R2 <- R2(predict(lstm_model, X_array_test), Y_array_test %>% as.vector(), form = "traditional")
 
@@ -1353,31 +1355,35 @@ LSTM_fit_stats <- function(pooled_panel, timeSlices, loss_function, batch_size, 
     ## Scale Data first
     
     train <- pooled_panel %>%
-      filter(time %in% timeSlices[[set]]$train)
+      dplyr::filter(time %in% timeSlices[[set]]$train)
     validation <- pooled_panel %>%
-      filter(time %in% timeSlices[[set]]$validation)
+      dplyr::filter(time %in% timeSlices[[set]]$validation)
     test<- pooled_panel %>%
-      filter(time %in% timeSlices[[set]]$test)
+      dplyr::filter(time %in% timeSlices[[set]]$test)
       
-    train_x <- train[4:ncol(train)]
+    train_x <- train %>%
+      dplyr::select(-rt, -stock, -time)
     train_x <- scale(train_x)
     col_means_train <- attr(train_x, "scaled:center") 
     col_stddevs_train <- attr(train_x, "scaled:scale")
     train_y <- train$rt
     
-    validation_x <- validation[4:ncol(validation)]
+    validation_x <- validation %>%
+      dplyr::select(-rt, -stock, -time)
     validation_x <- scale(validation_x, center = col_means_train, scale = col_stddevs_train)
     validation_y <- validation$rt
       
-    test_x <- test[4:ncol(test)]
+    test_x <- test %>%
+      dplyr::select(-rt, -stock, -time)
     test_x <- scale(test_x, center = col_means_train, scale = col_stddevs_train)
     test_y <- test$rt
     
-    pooled_panel <- rbind(
+    pooled_panel_trunc <- rbind(
       cbind(rt = train_y, time = train$time, train_x),
       cbind(rt = validation_y, time = validation$time, validation_x),
       cbind(rt = test_y, time = test$time, test_x)
-    )
+    ) %>%
+      data.frame
     
     ## Change this to array format for use with LSTMs
     
@@ -1387,16 +1393,16 @@ LSTM_fit_stats <- function(pooled_panel, timeSlices, loss_function, batch_size, 
     Y_array <- array(data = 0, dim = c(length, 200))
     
     for(t in 1:length) {
-      X_array[t, 1, ] <- pooled_panel %>%
-      filter(time == t+1) %>%
+      X_array[t, 1, ] <- pooled_panel_trunc %>%
+      dplyr::filter(time == t+1) %>%
       dplyr::select(-rt, -time) %>%
       as.matrix() %>%
       as.vector()
     }
     
     for(t in 1:length) {
-      Y_array[t, ] <- pooled_panel %>%
-        filter(time == t+1) %>%
+      Y_array[t, ] <- pooled_panel_trunc %>%
+        dplyr::filter(time == t+1) %>%
         dplyr::select(rt) %>%
         as.matrix() %>%
         as.vector()
@@ -1445,9 +1451,6 @@ LSTM_fit_stats <- function(pooled_panel, timeSlices, loss_function, batch_size, 
           batch_size = 32, shuffle = FALSE, verbose = 0,
           callbacks = list(early_stop, print_dot_callback))
     
-    lstm_predictions <- lstm_model %>% predict(X_array_test) %>%
-      as.vector()
-    
     ## Save stuff to list object
     
     #Train
@@ -1456,7 +1459,7 @@ LSTM_fit_stats <- function(pooled_panel, timeSlices, loss_function, batch_size, 
     
     LSTM_stats[[set]]$loss_stats$train_MAE <- mae(Y_array_train %>% as.vector(), train_predict)
     LSTM_stats[[set]]$loss_stats$train_MSE <- mse(Y_array_train %>% as.vector(), train_predict)
-    LSTM_stats[[set]]$loss_stats$train_RMSE <- rmse(Y_array_train %>% as.vector(), )
+    LSTM_stats[[set]]$loss_stats$train_RMSE <- rmse(Y_array_train %>% as.vector(), train_predict)
     LSTM_stats[[set]]$loss_stats$train_RSquare <- R2(train_predict, Y_array_train %>% as.vector(), form = "traditional")
           
     #Validation
@@ -1479,9 +1482,6 @@ LSTM_fit_stats <- function(pooled_panel, timeSlices, loss_function, batch_size, 
         
     #Forecasts
     LSTM_stats[[set]]$forecasts <- test_predict
-      
-    #Forecast residuals
-    LSTM_stats[[set]]$forecast_resids <- nnet_ave_forecast_resids(nnet_model = neural_network, test = test)
     
     #Variable Importance
     LSTM_stats[[set]]$variable_importance <- LSTM_variable_importance(X_array_test, test_x, lstm_model)
@@ -1491,6 +1491,14 @@ LSTM_fit_stats <- function(pooled_panel, timeSlices, loss_function, batch_size, 
   k_clear_session()
   LSTM_stats
 }
+
+LSTM_stats <- LSTM_fit_stats(pooled_panel, timeSlices, loss_function = "mse", batch_size = 32, patience = 50)
+
+LSTM_stats[[1]]$loss_stats
+LSTM_stats[[2]]$loss_stats
+LSTM_stats[[3]]$loss_stats
+
+LSTM_stats[[1]]$forecasts
 ```
 
 
