@@ -27,6 +27,8 @@ library(tsfeatures)
 ## Vector arima/garch packages
 
 library(xts)
+library(uwot)
+library(rugarch)
 
 ## SPecial xgboost instructions
 
@@ -1597,30 +1599,6 @@ ELN_stats_mse[[1]]$forecasts
 ## Not ideal at all, but the only practical way to implement this
 #################################################################################################################
 
-# Get univariate time series training sample from cross section
-
-stock_id <- unique(pooled_panel$stock)
-
-univariate_time_series <- pooled_panel %>%
-  filter(stock == stock_id[1]) %>%
-  filter(time %in% timeSlices[[1]]$train) %>%
-  select(rt) %>%
-  ts()
-
-univariate_time_series_validation <- pooled_panel %>%
-  filter(stock == stock_id[1]) %>%
-  filter(time %in% time %in% timeSlices[[1]]$validation) %>%
-  select(rt) %>%
-  ts()
-
-univariate_time_series_test <- pooled_panel %>%
-  filter(stock == stock_id[1]) %>%
-  filter(time %in% timeSlices[[1]]$test) %>%
-  select(rt) %>%
-  ts()
-
-## Calculating set of features
-
 fforma_features <- function(time_series) {
   cbind(
     # Series length
@@ -1657,97 +1635,10 @@ fforma_features <- function(time_series) {
 }
 
 # Test, works perfectly
-fforma_features(univariate_time_series)
+fforma_features(time_series)
 ```
 
 ```{r}
-### Constituent models, and their corresponding losses over the test set
-## Note that we can specify any loss function we want
-## Going ahead with mse for now
-
-# Naive
-naive_model <- naive(univariate_time_series, h = 12)
-mse(as.vector(univariate_time_series_test), predict(naive_model)$mean)
-
-# Random walk with drift
-random_walk_model <- rwf(univariate_time_series, h = 12, drift = TRUE)
-mse(as.vector(univariate_time_series_test), predict(random_walk_model)$mean)
-
-# Seasonal Naive, this ends up being the same as naive
-seasonal_naive_model <- snaive(univariate_time_series, h = 12)
-mse(as.vector(univariate_time_series_test), predict(seasonal_naive_model)$mean)
-
-# Theta Method
-theta_model <- thetaf(univariate_time_series, h = 12)
-mse(as.vector(univariate_time_series_test), predict(theta_model)$mean)
-
-## Auto arima
-auto_arima_model <- auto.arima(univariate_time_series)
-mse(as.vector(univariate_time_series_test), forecast(auto_arima_model, h = 12)$mean)
-
-# Auto ETS
-auto_ets_model <- ets(univariate_time_series)
-mse(as.vector(univariate_time_series_test), forecast(auto_ets_model, h = 12)$mean)
-
-# TBATS
-tbats_model <- tbats(univariate_time_series)
-mse(as.vector(univariate_time_series_test), forecast(tbats_model, h = 12)$mean)
-
-# STLM-AR, does not work because our data is not seasonal
-#stlm_ar_model <- stlm(univariate_time_series, modelfunction = "ar")
-
-# Neural Network time series forecasts
-nnetar_model <- nnetar(univariate_time_series)
-mse(as.vector(univariate_time_series_test), forecast(nnetar_model, h = 12)$mean)
-
-## Other constituent models that may perform well
-
-# Naive model with 0 forecasts
-# Neat idea, but practically speaking ends up being the sam eas auto arima's 0, 0, 0 model most of the time
-# naive0_model <- rep(0, 12)
-# mse(as.vector(univariate_time_series_test), naive0_model)
-
-# ARMA 1, 1 with GARCH 1, 1 gaussian errors
-ugarch_spec <- ugarchspec(variance.model = list(model = "sGARCH",
-                                                  garchOrder = c(1, 1), 
-                                                  submodel = NULL, 
-                                                  external.regressors = NULL, 
-                                                  variance.targeting = FALSE), 
-                            mean.model     = list(armaOrder = c(1, 1), 
-                                                  include.mean = TRUE,
-                                                  external.regressors = NULL),
-                            distribution.model = "norm")
-
-ugarch_spec_fit <- ugarchfit(ugarch_spec, data = univariate_time_series, out.sample = 12)
-ugarch_forecast <- ugarchforecast(ugarch_spec_fit, n.ahead = 12, n.roll = 11)
-fitted(ugarch_forecast)[1, ]
-plot(ugarch_forecast, which = 2)
-
-# ARMA 1, 1 with GARCH 1, 1 student t errors
-ugarch_spec_t <- ugarchspec(variance.model = list(model = "sGARCH",
-                                                  garchOrder = c(1, 1), 
-                                                  submodel = NULL, 
-                                                  external.regressors = NULL, 
-                                                  variance.targeting = FALSE), 
-                            mean.model     = list(armaOrder = c(1, 1), 
-                                                  include.mean = TRUE,
-                                                  external.regressors = NULL),
-                            distribution.model = "std")
-
-ugarch_spec_t_fit <- ugarchfit(ugarch_spec_t, data = univariate_time_series, out.sample = 12)
-ugarch_t_forecast <- ugarchforecast(ugarch_spec_t_fit, n.ahead = 12, n.roll = 11)
-fitted(ugarch_t_forecast)[1, ]
-plot(ugarch_t_forecast, which = 2)
-
-## Stochastic volatility model
-
-# stochvol_model <- svlsample(univariate_time_series, draws = 10000, burnin = 1000, designmatrix = "ar1", 
-#                             priormu = c(0, 100), priorphi = c(5, 1.5), priorsigma = 1,
-#                             priorrho = c(4, 4), priorbeta = c(0, 10000), thinpara = 1,
-#                             thinlatent = 1, thintime = NULL, keeptime = "all", quiet = FALSE)
-# 
-# mse(stock_1_test$rt, apply(X = predict(stochvol_model, steps = 12)$y, MARGIN = 2, FUN = mean))
-
 ####################
 ## Getting the data into the right format for use with xgboost and its custom loss function
 ## FFORMA requires a list with the entries:
@@ -1755,120 +1646,283 @@ plot(ugarch_t_forecast, which = 2)
 # Errors - a matrix of the errors (losses) produced by the forecasting methods, one series per row
 # Labels - a numeric vector from 0 to nclass -1, representing the method with the lowest forecast error
 
-### Data matrix
-# Just use fforma_features function from before, easy
-data <- foreach(i = 1:length(unique(pooled_panel$stock)), .combine = "rbind") %dopar% {
-  stock_id <- unique(pooled_panel$stock)
+## Function to return a data matrix with features extracted via tsfeatures, one series per row, given panel data
+# Remeber that this function doesn't do train/validation/split, so you'll have to do these outside of it
+fforma_data_matrix <- function(panel) {
+  data <- foreach(i = 1:length(unique(panel$stock)), .combine = "rbind") %do% {
+  stock_id <- unique(panel$stock)
 
   univariate_time_series <- pooled_panel %>%
     filter(stock == stock_id[i]) %>%
-    filter(time %in% timeSlices[[1]]$train | time %in% timeSlices[[1]]$validation) %>%
-    select(rt) %>%
-    ts()
-  
-  univariate_time_series_test <- pooled_panel %>%
-    filter(stock == stock_id[i]) %>%
-    filter(time %in% timeSlices[[1]]$test) %>%
     select(rt) %>%
     ts()
   
   fforma_features(univariate_time_series)
+  }
+  data
 }
 
-errors <- foreach(i = 1:length(unique(pooled_panel$stock)), .combine = "rbind") %dopar% {
-  ## Filter Data first
-  stock_id <- unique(pooled_panel$stock)
+## Function which fits individual consituent forecasting methods to a panel of time series and
+## returns a list of the forecast errors for validation/test, and forecasts for validation/test
 
-  univariate_time_series <- pooled_panel %>%
-    filter(stock == stock_id[i]) %>%
-    filter(time %in% timeSlices[[1]]$train | time %in% timeSlices[[1]]$validation) %>%
-    select(rt) %>%
-    ts()
+fforma_fit_individual <- function(panel, timeSlices, set) {
+  ## Filter Dataset first
+  pooled_panel_train <- pooled_panel %>%
+    filter(time %in% timeSlices[[set]]$train)
+  
+  pooled_panel_validation <- pooled_panel %>%
+    filter(time %in% timeSlices[[set]]$validation)
+  
+  pooled_panel_test <- pooled_panel %>%
+    filter(time %in% timeSlices[[set]]$test)
+  
+  out.sample_length <- length(timeSlices[[set]]$validation) + length(timeSlices[[set]]$test)
+  valid_index <- 1:length(timeSlices[[set]]$validation)
+  test_index <- (1:out.sample_length)[-valid_index]
+  
+  ## Dimensional Reduction of dataset regressors
+  
+  umap_model <- umap(pooled_panel_train %>% select(-rt, -stock, -time), ret_model = TRUE)
+  
+  pooled_panel_train_umap <- umap_model$embedding
+  
+  pooled_panel_validation_umap <- umap_transform(pooled_panel_validation %>% select(-rt, -stock, -time), model = umap_model)
+  
+  pooled_panel_test_umap <- umap_transform(pooled_panel_test %>% select(-rt, -stock, -time), model = umap_model)
+  
+  ## 
+  dataset_list <- foreach(i = 1:length(unique(pooled_panel$stock))) %dopar% {
+    stock_id <- unique(pooled_panel$stock)
 
-  univariate_time_series_test <- pooled_panel %>%
-    filter(stock == stock_id[i]) %>%
-    filter(time %in% timeSlices[[1]]$test) %>%
-    select(rt) %>%
-    ts()
+    time_series <- pooled_panel_train %>%
+      filter(stock == stock_id[i]) %>%
+      select(rt) %>%
+      ts()
+    
+    time_series_umap <- pooled_panel_train_umap %>%
+      data.frame() %>%
+      mutate(stock = pooled_panel_train$stock) %>%
+      filter(stock == stock_id[i]) %>%
+      select(-stock)
+    
+    time_series_validation <- pooled_panel_validation %>%
+      filter(stock == stock_id[i]) %>%
+      select(rt) %>%
+      ts()
+    
+    time_series_validation_umap <- pooled_panel_validation_umap %>%
+      data.frame() %>%
+      mutate(stock = pooled_panel_validation$stock) %>%
+      filter(stock == stock_id[i]) %>%
+      select(-stock)
   
-  ## Estimation of consituent models
-  
-  # Naive
-  naive_model <- naive(univariate_time_series, h = 12)
-  
-  # Random walk with drift
-  random_walk_model <- rwf(univariate_time_series, h = 12, drift = TRUE)
-  
-  # Seasonal Naive, this ends up being the same as naive
-  seasonal_naive_model <- snaive(univariate_time_series, h = 12)
-  
-  # Theta Method
-  theta_model <- thetaf(univariate_time_series, h = 12)
-  
-  ## Auto arima
-  auto_arima_model <- auto.arima(univariate_time_series)
-  
-  # Auto ETS
-  auto_ets_model <- ets(univariate_time_series)
-  
-  # TBATS
-  tbats_model <- tbats(univariate_time_series)
-  
-  # Neural Network time series forecasts
-  nnetar_model <- nnetar(univariate_time_series)
-  
-  # Naive model that forecasts 0
-  # Neat idea, but practically speaking ends up being the sam eas auto arima's 0, 0, 0 model most of the time
-  # naive0_model <- rep(0, 12)
-  # mse(as.vector(univariate_time_series_test), naive0_model)
-  
-  # ARMA 1, 1 with GARCH 1, 1 gaussian errors
-  ugarch_spec <- ugarchspec(variance.model = list(model = "sGARCH",
-                                                    garchOrder = c(1, 1), 
-                                                    submodel = NULL, 
-                                                    external.regressors = NULL, 
-                                                    variance.targeting = FALSE), 
-                              mean.model     = list(armaOrder = c(1, 1), 
-                                                    include.mean = TRUE,
-                                                    external.regressors = NULL),
-                              distribution.model = "norm")
-  
-  ugarch_spec_fit <- ugarchfit(ugarch_spec, data = univariate_time_series, out.sample = 12,
-                               solver = "hybrid")
-  ugarch_forecast <- ugarchforecast(ugarch_spec_fit, n.ahead = 12, n.roll = 11)
-  
-  ## Stochastic volatility model
-  ## Theoretically the most correctly specified model, but very computatioally intensive, and may be infeasible
-  ## Takes ~ 14 seconds to estimate
-  
-  #stochvol_model <- svlsample(univariate_time_series, draws = 10000, burnin = 1000, designmatrix = "ar1", 
-                              #priormu = c(0, 100), priorphi = c(5, 1.5), priorsigma = 1,
-                              #priorrho = c(4, 4), priorbeta = c(0, 10000), thinpara = 1,
-                              #thinlatent = 1, thintime = NULL, keeptime = "all", quiet = TRUE)
-  
-  ## Put errors into a single row
-  errors <- data.frame(naive = mse(as.vector(univariate_time_series_test), predict(naive_model)$mean),
-                     
-                       random_walk = mse(as.vector(univariate_time_series_test), predict(random_walk_model)$mean), 
-                       
-                       theta = mse(as.vector(univariate_time_series_test), predict(theta_model)$mean),
-                       
-                       auto_arima = mse(as.vector(univariate_time_series_test), 
-                                        forecast(auto_arima_model, h = 12)$mean),
-                       
-                       ets = mse(as.vector(univariate_time_series_test), forecast(auto_ets_model, h = 12)$mean),
-                       
-                       tbats = mse(as.vector(univariate_time_series_test), forecast(tbats_model, h = 12)$mean),
-                       
-                       nnetar = mse(as.vector(univariate_time_series_test), forecast(nnetar_model, h = 12)$mean),
-                       
-                       garch_11 = mse(as.vector(univariate_time_series_test), fitted(ugarch_forecast)[1, ]))
-                       
-                       #stochvol = mse(as.vector(univariate_time_series_test), 
-                                      #apply(X = predict(stochvol_model, steps = 12)$y, MARGIN = 2, FUN = mean)))
-  
-  errors
+    time_series_test <- pooled_panel_test %>%
+      filter(stock == stock_id[i]) %>%
+      select(rt) %>%
+      ts()
+    
+    time_series_test_umap <- pooled_panel_test_umap %>%
+      data.frame() %>%
+      mutate(stock = pooled_panel_test$stock) %>%
+      filter(stock == stock_id[i]) %>%
+      select(-stock)
+    
+    ## Combining all sets, required for rugarch to function correctly
+    time_series_all <- c(time_series, time_series_validation, time_series_test) %>%
+      ts()
+    
+    time_series_umap_all <- rbind(time_series_umap, time_series_validation_umap, time_series_test_umap)
+    
+    ############################################
+    ## Estimate the constituent models first
+    ############################################
+    
+    # Naive
+    naive_model <- naive(time_series, h = out.sample_length)
+    
+    # Random walk with drift
+    random_walk_model <- rwf(time_series, h = out.sample_length, drift = TRUE)
+    
+    # Theta Method
+    theta_model <- thetaf(time_series, h = out.sample_length)
+    
+    ## Auto arima
+    auto_arima_model <- auto.arima(time_series)
+    
+    # Auto ETS
+    auto_ets_model <- ets(time_series)
+    
+    # TBATS
+    tbats_model <- tbats(time_series)
+    
+    # Neural Network time series forecasts
+    nnetar_model <- nnetar(time_series)
+    
+    # ARMA 1, 1 with GARCH 1, 1 ged errors, no external regressors
+    ugarch_spec <- ugarchspec(variance.model = list(model = "sGARCH",
+                                                      garchOrder = c(1, 1), 
+                                                      submodel = NULL, 
+                                                      external.regressors = NULL, 
+                                                      variance.targeting = FALSE), 
+                                mean.model     = list(armaOrder = c(1, 1), 
+                                                      include.mean = TRUE,
+                                                      external.regressors = NULL),
+                                distribution.model = "ged")
+    
+    ugarch_spec_fit <- ugarchfit(ugarch_spec, data = time_series_all, out.sample = out.sample_length,
+                                 solver = "hybrid")
+    ugarch_forecast <- ugarchforecast(ugarch_spec_fit, n.ahead = 1, n.roll = out.sample_length - 1)
+    
+    # ARMA 1, 1 with GARCH 1, 1 ged errors with umap as external regressors
+    ugarch_spec_umap <- ugarchspec(variance.model = list(model = "sGARCH",
+                                                         garchOrder = c(1, 1), 
+                                                         submodel = NULL, 
+                                                         external.regressors = time_series_umap_all, 
+                                                         variance.targeting = FALSE), 
+                                   mean.model     = list(armaOrder = c(1, 1), 
+                                                         include.mean = TRUE,
+                                                         external.regressors = time_series_umap_all),
+                                   distribution.model = "ged")
+    
+    ugarch_spec_fit_umap <- ugarchfit(ugarch_spec, data = time_series_all, out.sample = out.sample_length,
+                                      solver = "hybrid")
+    ugarch_forecast_umap <- ugarchforecast(ugarch_spec_fit, n.ahead = 1, n.roll = out.sample_length - 1,
+                                           external.forecasts = rbind(time_series_validation_umap, time_series_validation_umap) %>% list())
+    
+    ## Use the estimated models to generate actual forecasts for validation and test
+    ## No easy way to organise this, just following original FFORMA structure of a list for each time series
+    ## each containing an ff matrix with F rows and h columns, with F being the number of forecast methods
+    
+    list(
+      validation_forecasts = rbind(
+        predict(naive_model)$mean[valid_index],
+        predict(random_walk_model)$mean[valid_index],
+        predict(theta_model)$mean[valid_index],
+        forecast(auto_arima_model, h = out.sample_length)$mean[valid_index],
+        forecast(tbats_model, h = out.sample_length)$mean[valid_index],
+        forecast(nnetar_model, h = out.sample_length)$mean[valid_index],
+        fitted(ugarch_forecast)[valid_index],
+        fitted(ugarch_forecast_umap)[valid_index]
+      ),
+      
+      validation_error_mse = data.frame(
+        naive = mse(time_series_validation, predict(naive_model)$mean[valid_index]),
+        random_walk = mse(time_series_validation, predict(random_walk_model)$mean[valid_index]),
+        theta = mse(time_series_validation, predict(theta_model)$mean[valid_index]),
+        auto_arima = mse(time_series_validation, forecast(auto_arima_model, h = out.sample_length)$mean[valid_index]),
+        tbats = mse(time_series_validation, forecast(tbats_model, h = out.sample_length)$mean[valid_index]),
+        nnetar = mse(time_series_validation, forecast(nnetar_model, h = out.sample_length)$mean[valid_index]),
+        garch = mse(time_series_validation, fitted(ugarch_forecast)[valid_index]),
+        garch_umap = mse(time_series_validation, fitted(ugarch_forecast_umap)[valid_index])
+      ),
+      
+      validation_error_mae = data.frame(
+        naive = mae(time_series_validation, predict(naive_model)$mean[valid_index]),
+        random_walk = mae(time_series_validation, predict(random_walk_model)$mean[valid_index]),
+        theta = mae(time_series_validation, predict(theta_model)$mean[valid_index]),
+        auto_arima = mae(time_series_validation, forecast(auto_arima_model, h = out.sample_length)$mean[valid_index]),
+        tbats = mae(time_series_validation, forecast(tbats_model, h = out.sample_length)$mean[valid_index]),
+        nnetar = mae(time_series_validation, forecast(nnetar_model, h = out.sample_length)$mean[valid_index]),
+        garch = mae(time_series_validation, fitted(ugarch_forecast)[valid_index]),
+        garch_umap = mae(time_series_validation, fitted(ugarch_forecast_umap)[valid_index])
+      ),
+      
+      validation_error_rsquare = data.frame(
+        naive = R2(predict(naive_model)$mean[valid_index], time_series_validation %>% c(), 
+                   form = "traditional"),
+        random_walk = R2(predict(random_walk_model)$mean[valid_index], time_series_validation %>% c(), 
+                         form = "traditional"),
+        theta = R2(predict(theta_model)$mean[valid_index], time_series_validation %>% c(), 
+                   form = "traditional"),
+        auto_arima = R2(forecast(auto_arima_model, h = out.sample_length)$mean[valid_index], time_series_validation %>% c(), 
+                        form = "traditional"),
+        tbats = R2(forecast(tbats_model, h = out.sample_length)$mean[valid_index], time_series_validation %>% c(), 
+                   form = "traditional"),
+        nnetar = R2(forecast(nnetar_model, h = out.sample_length)$mean[valid_index], time_series_validation %>% c(), 
+                    form = "traditional"),
+        garch = R2(fitted(ugarch_forecast)[valid_index], time_series_validation %>% c(), 
+                   form = "traditional"),
+        garch_umap = R2(fitted(ugarch_forecast_umap)[valid_index], time_series_validation %>% c(), 
+                        form = "traditional")
+      ),
+      
+      test_forecasts = rbind(
+        predict(naive_model)$mean[test_index],
+        predict(random_walk_model)$mean[test_index],
+        predict(theta_model)$mean[test_index],
+        forecast(auto_arima_model, h = out.sample_length)$mean[test_index],
+        forecast(tbats_model, h = out.sample_length)$mean[test_index],
+        forecast(nnetar_model, h = out.sample_length)$mean[test_index],
+        fitted(ugarch_forecast)[test_index],
+        fitted(ugarch_forecast_umap)[test_index]
+      ),
+      
+      test_error_mse = data.frame(
+        naive = mse(time_series_test, predict(naive_model)$mean[test_index]),
+        random_walk = mse(time_series_test, predict(random_walk_model)$mean[test_index]),
+        theta = mse(time_series_test, predict(theta_model)$mean[test_index]),
+        auto_arima = mse(time_series_test, forecast(auto_arima_model, h = out.sample_length)$mean[test_index]),
+        tbats = mse(time_series_test, forecast(tbats_model, h = out.sample_length)$mean[test_index]),
+        nnetar = mse(time_series_test, forecast(nnetar_model, h = out.sample_length)$mean[test_index]),
+        garch = mse(time_series_test, fitted(ugarch_forecast)[test_index]),
+        garch_umap = mse(time_series_test, fitted(ugarch_forecast_umap)[test_index])
+      ),
+      
+      test_error_mae = data.frame(
+        naive = mse(time_series_test, predict(naive_model)$mean[test_index]),
+        random_walk = mse(time_series_test, predict(random_walk_model)$mean[test_index]),
+        theta = mse(time_series_test, predict(theta_model)$mean[test_index]),
+        auto_arima = mse(time_series_test, forecast(auto_arima_model, h = out.sample_length)$mean[test_index]),
+        tbats = mse(time_series_test, forecast(tbats_model, h = out.sample_length)$mean[test_index]),
+        nnetar = mse(time_series_test, forecast(nnetar_model, h = out.sample_length)$mean[test_index]),
+        garch = mse(time_series_test, fitted(ugarch_forecast)[test_index]),
+        garch_umap = mse(time_series_test, fitted(ugarch_forecast_umap)[test_index])
+      ),
+      
+      test_error_rsquare = data.frame(
+        naive = R2(predict(naive_model)$mean[test_index], time_series_test %>% c(), 
+                   form = "traditional"),
+        random_walk = R2(predict(random_walk_model)$mean[test_index], time_series_test %>% c(), 
+                         form = "traditional"),
+        theta = R2(predict(theta_model)$mean[test_index], time_series_test %>% c(), 
+                   form = "traditional"),
+        auto_arima = R2(forecast(auto_arima_model, h = out.sample_length)$mean[test_index], time_series_test %>% c(), 
+                        form = "traditional"),
+        tbats = R2(forecast(tbats_model, h = out.sample_length)$mean[test_index], time_series_test %>% c(), 
+                   form = "traditional"),
+        nnetar = R2(forecast(nnetar_model, h = out.sample_length)$mean[test_index], time_series_test %>% c(), 
+                    form = "traditional"),
+        garch = R2(fitted(ugarch_forecast)[test_index], time_series_test%>% c(), 
+                   form = "traditional"),
+        garch_umap = R2(fitted(ugarch_forecast_umap)[test_index], time_series_test %>% c(), 
+                        form = "traditional")
+      )
+    )
+  }
+  dataset_list
 }
+
+## Testing this function
+## It's working!
+set_1 <- fforma_fit_individual(pooled_panel, timeSlices, set = 1)
+
+set_1[[1]]$validation_error_rsquare
+```
+
+```{r}
+##
+## Function which takes the previously estimated fforma_fit list object, and returns it into a usable format to train the meta-learner
+# Ie outpit a list object with:
+# Data - a matrix with the features extracted via tsfeatures, one series per row
+# Errors - a matrix of the errors (losses) produced by the forecasting methods, one series per row
+# Labels - a numeric vector from 0 to nclass -1, representing the method with the lowest forecast error
+
+# Data Matrix
+
+# Errors matrix
+
+# Labels matrix (using the erros matrix)
+
 
 ## Create labels
 # Look like there's a healthy mix of optimal forecasting methods, yay
@@ -1886,9 +1940,7 @@ train_list <- list(
 )
 
 ## Function that returns a dataset list, each element containing:
-# Data - a matrix with the features extracted via tsfeatures, one series per row
-# Errors - a matrix of the errors (losses) produced by the forecasting methods, one series per row
-# Labels - a numeric vector from 0 to nclass -1, representing the method with the lowest forecast error
+
 ```
 
 ```{r}
