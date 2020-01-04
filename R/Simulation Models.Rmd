@@ -1927,7 +1927,15 @@ set_1[[1]]$validation_error_rsquare
 
 # Data Matrix
 
+data <- foreach(i = 1:series, .combine = "rbind") %do% {
+  data.frame()
+}
+
 # Errors matrix
+
+errors <- foreach(i = 1:series, .combine = "rbind") %do% {
+  fforma_fit[[i]]$validation_error_mse
+}
 
 # Labels matrix (using the erros matrix)
 
@@ -1948,6 +1956,8 @@ train_list <- list(
 )
 
 ## Function that returns a dataset list, each element containing:
+
+list(data, errors, labels)
 
 ```
 
