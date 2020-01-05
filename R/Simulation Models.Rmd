@@ -2047,6 +2047,37 @@ pred
 ## Score - the metrics to be MAXIMIZED
 ## Pred - the actual predictions
 
+bayes_xgb <- function(max_depth, eta, subsample, colsample_bytree, nrounds) {
+  param <- list(max_depth = max_depth, eta = eta, nthread = 12,
+                objective = error_softmax_obj,
+                num_class = ncol(errors),
+                subsample = subsample,
+                colsample_bytree = colsample_bytree)
+  
+  dtrain <- xgb.DMatrix(data = as.matrix(train_list$data), 
+                        label = train_list$labels[, 1])
+  
+  attr(dtrain, "errors") <- train_list$errors
+  
+  bst <- xgboost::xgb.train(params = param, data = dtrain, nrounds = 400, verbose = 1)
+  
+  pred <- predict(bst, newdata = xgboost::xgb.DMatrix(as.matrix(validation_list$data)), 
+                  outputmargin = TRUE, reshape=TRUE)
+  pred <- t(apply(pred, 1, softmax_transform))
+  
+  validation_forecasts <- foreach(i = 1:nrow(pred), .combine = "rbind") %do% {
+    pred[i, ] %*% set_1[[i]]$validation_forecasts
+  }
+  
+  validation_error <- foreach(i = 1:nrow(pred), .combine = "rbind") %do% {
+    t(pred[i, ]) %*% unlist(set_1[[i]]$validation_error_mse)
+  }
+  
+  final_error <- mean(validation_error)
+  
+  list(Score = -final_error, Pred = validation_forecasts)
+}
+
 hyperparameter_search <- function(pooled_panel, timeSlices) {
   
 }
