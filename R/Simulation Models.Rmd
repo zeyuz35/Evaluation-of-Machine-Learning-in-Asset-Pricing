@@ -37,6 +37,9 @@ library(rugarch)
 # setwd('C:/Users/Zeyu Zhong/Documents/GitHub/xgboost/R-package')
 # install.packages('.', repos = NULL, type="source")
 
+# Other alternative
+
+
 library(xgboost)
 
 #Parallel Computing
@@ -75,11 +78,7 @@ customTimeSlices <- function(start, initialWindow, horizon, validation_size, tes
 }
 
 #Create custom time slices
-# These parameters give you the following train/validation/test splits (in terms of years)
-# 6 4 3
-# 7 4 3
-# 8 4 3
-timeSlices <- customTimeSlices(start = 2, initialWindow = 84, horizon = 12, validation_size = 60, test_size = 12, set_no = 3)
+timeSlices <- customTimeSlices(start = 2, initialWindow = 108, horizon = 12, validation_size = 36, test_size = 12, set_no = 3)
 
 #Formula Function, makes it easier for those packages with a formula interface
 
@@ -1504,103 +1503,6 @@ LSTM_stats[[3]]$loss_stats
 LSTM_stats[[1]]$forecasts
 ```
 
-
-```{r}
-#######################################################
-## FFORMA
-#######################################################
-
-## FFORMA constituent models
-
-## FFORMA requires a univariate model to be explicitly estimated for each individual time series
-## This is not possible given the number of factors we have
-## Solution: apply some dimensional reduction technique, such as t-SNE, and then apply univariate time series models such as ARIMA/GARCH
-## univariate approaches
-
-stock_1 <- pooled_panel %>%
-  filter(stock == "stock_1")
-
-stock_1_train <- stock_1 %>%
-  filter(time %in% timeSlices[[1]]$train)
-stock_1_validation <- stock_1 %>%
-  filter(time %in% timeSlices[[1]]$validation)
-stock_1_test <- stock_1 %>%
-  filter(time %in% timeSlices[[1]]$test)
-
-## Calculate principal components first
-# Use tol = 0 to eliminate essentially constant components. CHosen because this is a somewhat systematic way of choosing principal components
-stock_1_train_pca <- prcomp(stock_1_train[, -(1:3)], center = TRUE, scale. = TRUE, tol = 0)
-summary(stock_1_train_pca)
-plot(stock_1_train_pca)
-
-train_x <- predict(stock_1_train_pca, newdata = stock_1_train[, -(1:3)])
-train_x <- as.xts(train_x, order.by = as.Date(stock_1_train$time))
-
-validation_x <- predict(stock_1_train_pca, newdata = stock_1_validation[, -(1:3)])
-validation_x <- as.xts(validation_x, order.by = as.Date(stock_1_validation$time))
-
-test_x <- predict(stock_1_train_pca, newdata = stock_1_test[, -(1:3)])
-test_x <- as.xts(test_x, order.by = as.Date(stock_1_test$time))
-
-stock_1_pca <- prcomp(stock_1[, -(1:3)], center = TRUE, scale. = TRUE, tol = 0.5)
-summary(stock_1_pca)
-
-stock_1_x <- predict(stock_1_pca, newdata = stock_1[, -(1:3)])
-
-stock_1_true_x <- as.xts(stock_1[, (4:6)], order.by = as.Date(stock_1$time))
-
-## Use these with ugarch models
-
-ugarch_spec <- ugarchspec(variance.model = list(model = "sGARCH",
-                                                         garchOrder = c(1, 1), 
-                                                         submodel = NULL, 
-                                                         external.regressors = stock_1_x, 
-                                                         variance.targeting = FALSE), 
-                          mean.model     = list(armaOrder = c(0, 0), 
-                                                include.mean = TRUE,
-                                                external.regressors = NULL),
-                          distribution.model = "std")
-
-rolling_forecasts <- ugarchroll(ugarch_spec, data = xts(stock_1$rt, order.by = as.Date(stock_1$time)), 
-                                n.ahead = 1, n.start = 144, 
-                                refit.every = 12, refit.window = "recursive")
-
-plot(rolling_forecasts, which = 3)
-
-as.data.frame(rolling_forecasts)$Mu
-
-mae(actual = stock_1_test$rt, 
-    as.data.frame(rolling_forecasts)$Mu)
-
-pooled_panel %>%
-  filter(time %in% timeSlices[[1]]$test | time %in% timeSlices[[2]]$test | time %in% timeSlices[[3]]$test) %>%
-  filter(stock == "stock_1") %>%
-  mutate(forecasts = as.data.frame(rolling_forecasts)$Mu) %>%
-  select(time, stock, rt, forecasts) %>%
-  gather("type", "value", -stock, -time) %>%
-  ggplot() +
-  geom_line(aes(x = time, y = value, colour = type))
-
-ELN_stats_mse <- ELN_fit_stats(alpha_grid, nlamb = 100, timeSlices, pooled_panel, loss_function = "mse")
-
-pooled_panel %>%
-  filter(time %in% timeSlices[[1]]$test | time %in% timeSlices[[2]]$test | time %in% timeSlices[[3]]$test) %>%
-  mutate(forecasts = rbind(ELN_stats_mse[[1]]$forecasts, ELN_stats_mse[[2]]$forecasts, ELN_stats_mse[[3]]$forecasts)) %>%
-  select(time, stock, rt, forecasts) %>%
-  filter(stock == "stock_1") %>%
-  gather("type", "value", -stock, -time) %>%
-  ggplot() +
-  geom_line(aes(x = time, y = value, colour = type))
-
-mae(actual = stock_1_test$rt, 
-    rbind(ELN_stats_mse[[1]]$forecasts, ELN_stats_mse[[2]]$forecasts, ELN_stats_mse[[3]]$forecasts))
-
-mae(actual = stock_1_test$rt, 
-    0)
-
-ELN_stats_mse[[1]]$forecasts
-```
-
 ```{r}
 #################################################################################################################
 ## FFORMA implementation, pretending that each stock return series is an individual time series
@@ -1648,7 +1550,9 @@ fforma_features <- function(time_series) {
     tsfeatures(time_series, features = "outlierinclude_mdrmd"),
     tsfeatures(time_series, features = "localsimple_taures"),
     tsfeatures(time_series, features = "walker_propcross"),
-    tsfeatures(time_series, features = c("max_level_shift", "max_var_shift", "max_kl_shift"))
+    tsfeatures(time_series, features = c("max_level_shift", "max_var_shift", "max_kl_shift")),
+    ## Custom Features
+    data.frame(realized_volatility = sum(time_series^2))
   )
 }
 ```
@@ -1761,14 +1665,14 @@ fforma_fit_individual <- function(panel, timeSlices, set) {
     
     # ARMA 1, 1 with GARCH 1, 1 ged errors, no external regressors
     ugarch_spec <- ugarchspec(variance.model = list(model = "sGARCH",
-                                                      garchOrder = c(1, 1), 
+                                                      garchOrder = c(0, 0), 
                                                       submodel = NULL, 
                                                       external.regressors = NULL, 
                                                       variance.targeting = FALSE), 
                                 mean.model     = list(armaOrder = c(1, 1), 
                                                       include.mean = TRUE,
                                                       external.regressors = NULL),
-                                distribution.model = "ged")
+                                distribution.model = "std")
     
     ugarch_spec_fit <- ugarchfit(ugarch_spec, data = time_series_all, out.sample = out.sample_length,
                                  solver = "hybrid")
@@ -1776,14 +1680,14 @@ fforma_fit_individual <- function(panel, timeSlices, set) {
     
     # ARMA 1, 1 with GARCH 1, 1 ged errors with umap as external regressors
     ugarch_spec_umap <- ugarchspec(variance.model = list(model = "sGARCH",
-                                                         garchOrder = c(1, 1), 
+                                                         garchOrder = c(0, 0), 
                                                          submodel = NULL, 
                                                          external.regressors = time_series_umap_all, 
                                                          variance.targeting = FALSE), 
                                    mean.model     = list(armaOrder = c(1, 1), 
                                                          include.mean = TRUE,
                                                          external.regressors = time_series_umap_all),
-                                   distribution.model = "norm")
+                                   distribution.model = "std")
     
     ugarch_spec_fit_umap <- ugarchfit(ugarch_spec, data = time_series_all, out.sample = out.sample_length,
                                       solver = "hybrid")
@@ -1958,9 +1862,9 @@ fforma_labels <- function(errors) {
 ## Create final list with everything needed in FFORMA
 ## Looks pretty good
 
-fforma_data_list <- function(pooled_panel, loss_function) {
+fforma_data_list <- function(pooled_panel, loss_function, fforma_fit) {
   list(data = fforma_data_matrix(pooled_panel),
-       errors = fforma_errors(set_1, loss_function),
+       errors = fforma_errors(fforma_fit, loss_function),
        labels = fforma_labels(errors))
 }
 
@@ -2000,142 +1904,197 @@ error_softmax_obj <- function(preds, dtrain) {
 
   grad <- preds*(errors - rowsumerrors)
   # Upper Bound for Hessian
-  #hess <- errors*preds*(1.0-preds) - grad*preds
+  hess <- errors*preds*(1.0-preds) - grad*preds
   # Correct Hessian
-  hess <- grad*(1.0 - 2.0*preds)
-  hess <- pmax(hess, 1e-16)
+  #hess <- grad*(1.0 - 2.0*preds)
+  #hess <- pmax(hess, 1e-16)
   return(list(grad = t(grad), hess = t(hess)))
 }
 
 #########################################
+## num_class = ncol(errors) for some reason decided not to work
+## Changed to num_class = max(labels) instead, this seems to work
 
-param <- list(booster = "gbtree",
-              max_depth = 6, eta = 0.3, nthread = 12,
-                  num_class = ncol(errors),
-              objective = error_softmax_obj,
-                  subsample = 0.5,
-                  colsample_bytree = 0.1)
 
-dtrain <- xgb.DMatrix(data = as.matrix(train_list$data), 
-                      label = train_list$labels[, 1])
+## IMPORTANT NOTES ON HYPERPARAMETERS
+## YOU MUST SET colsample_bytree = 1 for the tree to grow sufficiently deep enough 
+## so that a constant model isn't estimated
+## Additional penalization via gamma, lambda and alpha seems to give very slightly better validation error,
+## but this often makes the model severely underfit, so set these to 0 as well
+## min_child weight seems to be important for feasibility, but does not seem to have much effect on actual validation error
+## Set this to something low to intentional overfit the tree
+
+## Turning all of the above into an easy fit wrapper function
+
+fforma_fit_stats <- function(pooled_panel, timeSlices) {
+  fforma_fit_stats_list <- rep(list(0), length(timeSlices))
   
-attr(dtrain, "errors") <- train_list$errors
-  
-bst <- xgboost::xgb.train(params = param, data = dtrain, nrounds = 400, verbose = 1)
+  for (set in 1:length(fforma_fit_stats_list)) {
+    fforma_fit_stats_list[[set]] <- list(loss_stats = data.frame(train_MAE = 0, train_MSE = 0, 
+                                                                 train_RMSE = 0, train_RSquare = 0, 
+                                                                 validation_MAE = 0, validation_MSE = 0,
+                                                                 validation_RMSE = 0, validation_RSquare = 0, 
+                                                                 test_MAE = 0, test_MSE = 0, 
+                                                                 test_RMSE = 0, test_RSquare = 0),
+                                         forecasts = 0,
+                                         forecast_resids = 0,
+                                         model = 0,
+                                         variable_importance = 0)
+    
+    ## Fit all the individual models to all the time series first
+    fforma_fit <- fforma_fit_individual(pooled_panel, timeSlices, set)
+    
+    ## Using the fforma_fit object, then create the train, validation and test lists to use with XGBOOST
+    train_list <- pooled_panel %>%
+      filter(time %in% timeSlices[[set]]$train) %>%
+      fforma_data_list(loss_function = "mse", fforma_fit) 
+    
+    validation_list <- pooled_panel %>%
+      filter(time %in% timeSlices[[set]]$validation) %>%
+      fforma_data_list(loss_function = "mse", fforma_fit) 
+    
+    test_list <- pooled_panel %>%
+      filter(time %in% timeSlices[[set]]$test) %>%
+      fforma_data_list(loss_function = "mse", fforma_fit) 
+    #################################################################
+    ## XGBOOST
+    param <- list(booster = "gbtree",
+                  max_depth = 6, eta = 0.3, gamma = 0,
+                  lambda = 0, alpha = 0, nthread = 12,
+                  min_child_weight = 0.01,
+                      num_class = max(labels),
+                  objective = error_softmax_obj,
+                      subsample = 1,
+                      colsample_bytree = 1)
+    ## Prep Data
+    dtrain <- xgb.DMatrix(data = as.matrix(train_list$data), 
+                          label = train_list$labels[, 1])
+    attr(dtrain, "errors") <- train_list$errors
+    
+    ## Fit
+    bst <- xgboost::xgb.train(params = param, data = dtrain, nrounds = 100, verbose = 1)
+    
+    ## 
+    
+    ## Validation Predictions
+    ## Note that this was originally used for the bayesian optimization of parameters
+    ## As we are skipping that due to computational restrictions, this will also be commented out
+    pred <- predict(bst, newdata = xgboost::xgb.DMatrix(as.matrix(validation_list$data)),
+                    outputmargin = TRUE, reshape=TRUE)
+    pred <- t(apply(pred, 1, softmax_transform))
 
-xgb.dump(bst, with_stats = TRUE)
-
-pred <- predict(bst, newdata = xgboost::xgb.DMatrix(as.matrix(validation_list$data)), outputmargin = TRUE, reshape=TRUE)
-pred <- t(apply(pred, 1, softmax_transform))
-
-## Generate final forecasts for a set, given the meta-learner weights
-## i denotes time series no., j denotes method
-
-validation_forecasts <- foreach(i = 1:nrow(pred), .combine = "rbind") %do% {
-  pred[i, ] %*% set_1[[i]]$validation_forecasts
-}
-
-test_forecasts <- foreach(i = 1:nrow(pred), .combine = "rbind") %do% {
-  pred[i, ] %*% set_1[[i]]$test_forecasts
-}
-
-pred
-
-## Set up a Bayesian Optimization for the hyperparameters, using the validation loss for monitoring
-## BayesianOptimization requires:
-## FUN, a function to be optimized which returns a named list containing:
-## Score - the metrics to be MAXIMIZED
-## Pred - the actual predictions
-
-bayes_xgb <- function(max_depth, eta, subsample, colsample_bytree, nrounds) {
-  param <- list(max_depth = max_depth, eta = eta, nthread = 12,
-                objective = error_softmax_obj,
-                num_class = ncol(errors),
-                subsample = subsample,
-                colsample_bytree = colsample_bytree)
-  
-  dtrain <- xgb.DMatrix(data = as.matrix(train_list$data), 
-                        label = train_list$labels[, 1])
-  
-  attr(dtrain, "errors") <- train_list$errors
-  
-  bst <- xgboost::xgb.train(params = param, data = dtrain, nrounds = 400, verbose = 1)
-  
-  pred <- predict(bst, newdata = xgboost::xgb.DMatrix(as.matrix(validation_list$data)), 
-                  outputmargin = TRUE, reshape=TRUE)
-  pred <- t(apply(pred, 1, softmax_transform))
-  
-  validation_forecasts <- foreach(i = 1:nrow(pred), .combine = "rbind") %do% {
-    pred[i, ] %*% set_1[[i]]$validation_forecasts
+    validation_forecasts <- foreach(i = 1:nrow(pred), .combine = "rbind") %do% {
+      pred[i, ] %*% set_1[[i]]$validation_forecasts
+    }
+    
+    validation_forecasts <- validation_forecasts %>% t %>% c
+    
+    ## Test Set Predictions
+    pred <- predict(bst, newdata = xgboost::xgb.DMatrix(as.matrix(test_list$data)), 
+                    outputmargin = TRUE, reshape=TRUE)
+    pred <- t(apply(pred, 1, softmax_transform))
+    test_forecasts <- foreach(i = 1:nrow(pred), .combine = "rbind") %do% {
+      pred[i, ] %*% set_1[[i]]$test_forecasts
+    }
+    
+    test_forecasts <- test_forecasts %>% t %>% c
+    
+    train_y <- pooled_panel %>%
+      dplyr::filter(time %in% timeSlices[[set]]$train) %>%
+      select(rt)
+    
+    validation_y <- pooled_panel %>%
+      dplyr::filter(time %in% timeSlices[[set]]$validation) %>%
+      select(rt)
+    
+    test_y <- pooled_panel %>%
+      dplyr::filter(time %in% timeSlices[[set]]$test) %>%
+      select(rt)
+    
+    ## Note that these forecasting methods don't really have a "training" error, 
+    ## so no in sample stats will be available
+    ## Not a huge issue anyway, as no one cares
+    
+    fforma_fit_stats_list[[set]]$loss_stats$validation_MAE <- mae(validation_y$rt, validation_forecasts)
+    fforma_fit_stats_list[[set]]$loss_stats$validation_MSE <- mse(validation_y$rt, validation_forecasts)
+    fforma_fit_stats_list[[set]]$loss_stats$validation_RMSE <- rmse(validation_y$rt, validation_forecasts)
+    fforma_fit_stats_list[[set]]$loss_stats$validation_RSquare <- R2(validation_forecasts, validation_y$rt, 
+                                                                     form = "traditional")
+    
+    fforma_fit_stats_list[[set]]$loss_stats$test_MAE <- mae(test_y$rt, test_forecasts)
+    fforma_fit_stats_list[[set]]$loss_stats$test_MSE <- mse(test_y$rt, test_forecasts)
+    fforma_fit_stats_list[[set]]$loss_stats$test_RMSE <- rmse(test_y$rt, test_forecasts)
+    fforma_fit_stats_list[[set]]$loss_stats$test_RSquare <- R2(test_forecasts, test_y$rt, 
+                                                               form = "traditional")
+    ## Variable importance skipped for now as its really annoying to implement, 
+    ## and more importantly FFORMA doesn't care too much about external regressors anyway
+    
+    fforma_fit_stats_list[[set]]$forecasts <- test_forecasts %>% as.vector()
+    
+    fforma_fit_stats_list[[set]]$model <- bst
   }
-  
-  validation_error <- foreach(i = 1:nrow(pred), .combine = "rbind") %do% {
-    t(pred[i, ]) %*% unlist(set_1[[i]]$validation_error_mse)
-  }
-  
-  final_error <- mean(validation_error)
-  
-  list(Score = -final_error, Pred = validation_forecasts)
+  fforma_fit_stats_list
 }
 
-hyperparameter_search <- function(pooled_panel, timeSlices) {
-  
-}
+fforma <- fforma_fit_stats(pooled_panel, timeSlices)
+## Checking results
+
+fforma[[1]]$loss_stats
+
+fforma[[2]]$loss_stats
+
+fforma[[3]]$loss_stats
 ```
+
 
 ```{r}
-##
-summary_performance <- function(predictions, dataset) {
-  labels <- sapply(dataset, function(lentry) which.min(lentry$errors) - 1)
-  max_predictions <- apply(predictions, 1, which.max) - 1
-  class_error <- 1 - mean(max_predictions == labels)
-  n_methods <- length(dataset[[1]]$errors)
-  
-  for (i in 1:length(dataset)) {
-      weighted_ff <- t(predictions[i,]) %*% dataset[[i]]$ff
-      naive_combi_ff <- colMeans(dataset[[i]]$ff)
-      selected_ff <- dataset[[i]]$ff[max_predictions[i]+1,]
-      oracle_ff <- dataset[[i]]$ff[labels[i]+1,]
-      dataset[[i]]$ff <- rbind(dataset[[i]]$ff,
-                               weighted_ff,
-                               naive_combi_ff,
-                               selected_ff,
-                               oracle_ff)
-    }
+## Bayesian gridsearch/optimisation
+## Working, but VERY computationally intensive and as such would not scale at all
+## Ran a few times, and just put the "best" hyperparameters directly into the xgboost params already
+## namely, gamma = 0.2, subsample = 1, colsample_bytree = 1, nrounds = 100
+## Commented out
 
-    dataset <- calc_errors(dataset)
-    all_errors <- sapply(dataset, function (lentry) {
-      lentry$errors})
-
-    all_errors <- rowMeans(all_errors)
-    weighted_error <- all_errors[n_methods + 1]
-    naive_weight_error  <- all_errors[n_methods + 2]
-    selected_error  <- all_errors[n_methods + 3]
-    oracle_error <-  all_errors[n_methods + 4]
-    single_error <- min(all_errors[1:n_methods])
-    average_error <- mean(all_errors[1:n_methods])
-
-  list(selected_error = selected_error,
-       weighted_error = weighted_error)
-}
-
-## Newdata needs to be the feature matrix, one row per series
-predict_selection_ensemble <- function(model, newdata) {
-  pred <- stats::predict(model, newdata, outputmargin = TRUE, reshape=TRUE)
-  pred <- t(apply( pred, 1, softmax_transform))
-  pred
-}
-
-ensemble_forecast <- function(predictions, dataset, clamp_zero=TRUE) {
-  for (i in 1:length(dataset)) {
-    weighted_ff <- as.vector(t(predictions[i,]) %*% dataset[[i]]$ff)
-    if (clamp_zero) {
-      weighted_ff[weighted_ff < 0] <- 0
-    }
-    dataset[[i]]$y_hat <- weighted_ff
-  }
-  dataset
-}
-
-
+# bayes_xgb <- function(max_depth, eta, gamma, subsample, colsample_bytree, 
+#                       lambda, alpha, min_child_weight, nrounds) {
+#   param <- list(max_depth = max_depth, eta = eta, 
+#                 gamma = gamma, lambda = lambda, alpha = alpha, min_child_weight = min_child_weight, nthread = 12,
+#                 objective = error_softmax_obj,
+#                 num_class = max(labels),
+#                 subsample = subsample,
+#                 colsample_bytree = colsample_bytree)
+#   
+#   dtrain <- xgb.DMatrix(data = as.matrix(train_list$data), 
+#                         label = train_list$labels[, 1])
+#   
+#   attr(dtrain, "errors") <- train_list$errors
+#   
+#   bst <- xgboost::xgb.train(params = param, data = dtrain, nrounds = 400, verbose = 1)
+#   
+#   pred <- predict(bst, newdata = xgboost::xgb.DMatrix(as.matrix(validation_list$data)), 
+#                   outputmargin = TRUE, reshape=TRUE)
+#   pred <- t(apply(pred, 1, softmax_transform))
+#   
+#   validation_forecasts <- foreach(i = 1:nrow(pred), .combine = "rbind") %do% {
+#     pred[i, ] %*% set_1[[i]]$validation_forecasts
+#   }
+#   
+#   validation_error <- foreach(i = 1:nrow(pred), .combine = "rbind") %do% {
+#     t(pred[i, ]) %*% unlist(set_1[[i]]$validation_error_mse)
+#   }
+#   
+#   final_error <- mean(validation_error)
+#   
+#   list(Score = -final_error, Pred = validation_forecasts)
+# }
+# 
+# prefound_grid <- list(max_depth = 10L, eta = 0.3, gamma = 0, subsample = 0.9, colsample_bytree = 1.0, 
+#                       lambda = 0, alpha = 0, min_child_weight = 0.001, nrounds = 200)
+# 
+# bayes_test <- BayesianOptimization(bayes_xgb, 
+#                                    bounds = list(max_depth = c(6L, 14L), eta = c(0.001, 0.5), gamma = c(0, 1), 
+#                                    subsample = c(0.1, 1.0), colsample_bytree = c(0.8, 1.0),
+#                                    lambda = c(0, 0.5), alpha = c(0, 0.2), min_child_weight = c(0.001, 1),
+#                                    nrounds = c(1L, 250L)),
+#                                    init_grid_dt = prefound_grid, init_points = 5, n_iter = 30)
 ```
+
