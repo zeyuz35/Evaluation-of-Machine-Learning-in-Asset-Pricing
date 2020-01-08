@@ -24,6 +24,10 @@ library(forcats)
 library(xtable)
 library(randomForestSRC)
 
+library(xts)
+library(uwot)
+library(rugarch)
+
 #Parallel Computing
 library(foreach)
 library(doFuture)
@@ -135,6 +139,36 @@ fit_all_models <- function(dataset_list, batch_process_range,
       simulation_results_list[[batch]]$NN5_MSE <- NNet_fit_stats(pooled_panel, timeSlices, 5, "mse", batch_size = batch_size, patience = patience)
       simulation_results_list[[batch]]$NN5_MAE <- NNet_fit_stats(pooled_panel, timeSlices, 5, "mae", batch_size = batch_size, patience = patience)
     }
+  }
+  simulation_results_list
+}
+```
+
+```{r}
+## FFORMA fit all models
+
+fit_all_models_fforma <- function(dataset_list, batch_process_range) {
+  # Initialize List
+  simulation_results_list <- rep(list(0), length(batch_process_range))
+  
+  for (batch in (batch_process_range)) {
+    
+    simulation_results_list[[batch]] <- list(
+      # Panel Statistics
+      Dataset_stats = 0, 
+      # Models
+      FFORMA_MSE = 0, FFORMA_MAE = 0
+    )
+    
+    # Load Dataset
+    pooled_panel <- dataset_list[[batch]]$panel
+    simulation_results_list[[batch]]$Dataset_stats <- dataset_list[[batch]]$statistics
+    simulation_results_list[[batch]]$returns <- pooled_panel$rt
+    
+    timeSlices <- customTimeSlices(start = 2, initialWindow = 84, horizon = 12, validation_size = 60, test_size = 12, set_no = 3)
+    
+    simulation_results_list[[batch]]$FFORMA_MSE <- fforma_fit_stats(pooled_panel, timeSlices, "mse")
+    simulation_results_list[[batch]]$FFORMA_MAE <- fforma_fit_stats(pooled_panel, timeSlices, "mae")
   }
   simulation_results_list
 }
@@ -325,6 +359,39 @@ g2_A1_sv_1_NN_results610 <- fit_all_models(g2_A1_sv_1, batch_process_range, LM =
 saveRDS(g2_A1_sv_1_NN_results610, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_1_NN_results610.rds")
 g3_A1_sv_1_NN_results610 <- fit_all_models(g3_A1_sv_1, batch_process_range, LM = 0, ELN = 0, RF = 0, NNet = 1)
 saveRDS(g3_A1_sv_1_NN_results610, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_1_NN_results610.rds")
+```
+
+```{r}
+## Fitting FFORMA Models
+batch_process_range <- c(1:10)
+
+g1_A1_nosv_0_FFORMA_results <- fit_all_models_fforma(g1_A1_nosv_0, batch_process_range)
+saveRDS(g1_A1_nosv_0_FFORMA_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_nosv_0_FFORMA_results.rds")
+g2_A1_nosv_0_FFORMA_results <- fit_all_models_fforma(g2_A1_nosv_0, batch_process_range)
+saveRDS(g2_A1_nosv_0_FFORMA_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_nosv_0_FFORMA_results.rds")
+g3_A1_nosv_0_FFORMA_results <- fit_all_models_fforma(g3_A1_nosv_0, batch_process_range)
+saveRDS(g3_A1_nosv_0_FFORMA_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_nosv_0_FFORMA_results.rds")
+
+g1_A1_sv_0.01_FFORMA_results <- fit_all_models_fforma(g1_A1_sv_0.01, batch_process_range)
+saveRDS(g1_A1_sv_0.01_FFORMA_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.01_FFORMA_results.rds")
+g2_A1_sv_0.01_FFORMA_results <- fit_all_models_fforma(g2_A1_sv_0.01, batch_process_range)
+saveRDS(g2_A1_sv_0.01_FFORMA_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.01_FFORMA_results.rds")
+g3_A1_sv_0.01_FFORMA_results <- fit_all_models_fforma(g3_A1_sv_0.01, batch_process_range)
+saveRDS(g3_A1_sv_0.01_FFORMA_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.01_FFORMA_results.rds")
+
+g1_A1_sv_0.1_FFORMA_results <- fit_all_models_fforma(g1_A1_sv_0.1, batch_process_range)
+saveRDS(g1_A1_sv_0.1_FFORMA_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.1_FFORMA_results.rds")
+g2_A1_sv_0.1_FFORMA_results <- fit_all_models_fforma(g2_A1_sv_0.1, batch_process_range)
+saveRDS(g2_A1_sv_0.1_FFORMA_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.1_FFORMA_results.rds")
+g3_A1_sv_0.1_FFORMA_results <- fit_all_models_fforma(g3_A1_sv_0.1, batch_process_range)
+saveRDS(g3_A1_sv_0.1_FFORMA_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.1_FFORMA_results.rds")
+
+g1_A1_sv_1_FFORMA_results <- fit_all_models_fforma(g1_A1_sv_1, batch_process_range)
+saveRDS(g1_A1_sv_1_FFORMA_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_1_FFORMA_results.rds")
+g2_A1_sv_1_FFORMA_results <- fit_all_models_fforma(g2_A1_sv_1, batch_process_range)
+saveRDS(g2_A1_sv_1_FFORMA_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_1_FFORMA_results.rds")
+g3_A1_sv_1_FFORMA_results <- fit_all_models_fforma(g3_A1_sv_1, batch_process_range)
+saveRDS(g3_A1_sv_1_FFORMA_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_1_FFORMA_results.rds")
 ```
 
 ```{r load_partial_results}

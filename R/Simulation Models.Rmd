@@ -1806,12 +1806,6 @@ fforma_fit_individual <- function(panel, timeSlices, set) {
   }
   dataset_list
 }
-
-## Testing this function
-## It's working!
-set_1 <- fforma_fit_individual(pooled_panel, timeSlices, set = 1)
-
-set_1[[10]]$validation_error_mae
 ```
 
 ```{r}
@@ -1845,7 +1839,7 @@ fforma_errors <- function(fforma_fit, loss_function) {
     # MSE
     if (loss_function == "mse") {
       fforma_fit[[i]]$validation_error_mse
-    } else if (loff_function == "mae") {
+    } else if (loss_function == "mae") {
       fforma_fit[[i]]$validation_error_mae
     }
   }
@@ -1863,22 +1857,24 @@ fforma_labels <- function(errors) {
 ## Looks pretty good
 
 fforma_data_list <- function(pooled_panel, loss_function, fforma_fit) {
-  list(data = fforma_data_matrix(pooled_panel),
-       errors = fforma_errors(fforma_fit, loss_function),
-       labels = fforma_labels(errors))
+  data <- fforma_data_matrix(pooled_panel)
+  errors <- fforma_errors(fforma_fit, loss_function)
+  labels <- fforma_labels(errors)
+  
+  list(data = data, errors = errors, labels = labels)
 }
 
 train_list <- pooled_panel %>%
   filter(time %in% timeSlices[[1]]$train) %>%
-  fforma_data_list(loss_function = "mse") 
+  fforma_data_list(loss_function = "mse", fforma_fit) 
 
 validation_list <- pooled_panel %>%
   filter(time %in% timeSlices[[1]]$validation) %>%
-  fforma_data_list(loss_function = "mse") 
+  fforma_data_list(loss_function = "mse", fforma_fit) 
 
 test_list <- pooled_panel %>%
   filter(time %in% timeSlices[[1]]$test) %>%
-  fforma_data_list(loss_function = "mse") 
+  fforma_data_list(loss_function = "mse", fforma_fit) 
 
 ```
 
@@ -1926,7 +1922,7 @@ error_softmax_obj <- function(preds, dtrain) {
 
 ## Turning all of the above into an easy fit wrapper function
 
-fforma_fit_stats <- function(pooled_panel, timeSlices) {
+fforma_fit_stats <- function(pooled_panel, timeSlices, loss_function) {
   fforma_fit_stats_list <- rep(list(0), length(timeSlices))
   
   for (set in 1:length(fforma_fit_stats_list)) {
@@ -1947,29 +1943,32 @@ fforma_fit_stats <- function(pooled_panel, timeSlices) {
     ## Using the fforma_fit object, then create the train, validation and test lists to use with XGBOOST
     train_list <- pooled_panel %>%
       filter(time %in% timeSlices[[set]]$train) %>%
-      fforma_data_list(loss_function = "mse", fforma_fit) 
+      fforma_data_list(loss_function, fforma_fit) 
     
     validation_list <- pooled_panel %>%
       filter(time %in% timeSlices[[set]]$validation) %>%
-      fforma_data_list(loss_function = "mse", fforma_fit) 
+      fforma_data_list(loss_function, fforma_fit) 
     
     test_list <- pooled_panel %>%
       filter(time %in% timeSlices[[set]]$test) %>%
-      fforma_data_list(loss_function = "mse", fforma_fit) 
+      fforma_data_list(loss_function, fforma_fit) 
     #################################################################
     ## XGBOOST
+    
+    dtrain <- xgb.DMatrix(data = as.matrix(train_list$data), 
+                          label = train_list$labels[, 1])
+    labels <- train_list$labels[, 1]
+    errors <- train_list$errors
+    attr(dtrain, "errors") <- train_list$errors
+    
     param <- list(booster = "gbtree",
                   max_depth = 6, eta = 0.3, gamma = 0,
                   lambda = 0, alpha = 0, nthread = 12,
                   min_child_weight = 0.01,
-                      num_class = max(labels),
+                      num_class = ncol(errors),
                   objective = error_softmax_obj,
                       subsample = 1,
                       colsample_bytree = 1)
-    ## Prep Data
-    dtrain <- xgb.DMatrix(data = as.matrix(train_list$data), 
-                          label = train_list$labels[, 1])
-    attr(dtrain, "errors") <- train_list$errors
     
     ## Fit
     bst <- xgboost::xgb.train(params = param, data = dtrain, nrounds = 100, verbose = 1)
@@ -1984,7 +1983,7 @@ fforma_fit_stats <- function(pooled_panel, timeSlices) {
     pred <- t(apply(pred, 1, softmax_transform))
 
     validation_forecasts <- foreach(i = 1:nrow(pred), .combine = "rbind") %do% {
-      pred[i, ] %*% set_1[[i]]$validation_forecasts
+      pred[i, ] %*% fforma_fit[[i]]$validation_forecasts
     }
     
     validation_forecasts <- validation_forecasts %>% t %>% c
@@ -1994,22 +1993,22 @@ fforma_fit_stats <- function(pooled_panel, timeSlices) {
                     outputmargin = TRUE, reshape=TRUE)
     pred <- t(apply(pred, 1, softmax_transform))
     test_forecasts <- foreach(i = 1:nrow(pred), .combine = "rbind") %do% {
-      pred[i, ] %*% set_1[[i]]$test_forecasts
+      pred[i, ] %*% fforma_fit[[i]]$test_forecasts
     }
     
     test_forecasts <- test_forecasts %>% t %>% c
     
     train_y <- pooled_panel %>%
       dplyr::filter(time %in% timeSlices[[set]]$train) %>%
-      select(rt)
+      dplyr::select(rt)
     
     validation_y <- pooled_panel %>%
       dplyr::filter(time %in% timeSlices[[set]]$validation) %>%
-      select(rt)
+      dplyr::select(rt)
     
     test_y <- pooled_panel %>%
       dplyr::filter(time %in% timeSlices[[set]]$test) %>%
-      select(rt)
+      dplyr::select(rt)
     
     ## Note that these forecasting methods don't really have a "training" error, 
     ## so no in sample stats will be available
@@ -2031,12 +2030,14 @@ fforma_fit_stats <- function(pooled_panel, timeSlices) {
     
     fforma_fit_stats_list[[set]]$forecasts <- test_forecasts %>% as.vector()
     
+    fforma_fit_stats_list[[set]]$forecast_resids <- (test_y$rt - test_forecasts) %>% as.vector()
+    
     fforma_fit_stats_list[[set]]$model <- bst
   }
   fforma_fit_stats_list
 }
 
-fforma <- fforma_fit_stats(pooled_panel, timeSlices)
+fforma <- fforma_fit_stats(pooled_panel, timeSlices, "mse")
 ## Checking results
 
 fforma[[1]]$loss_stats
