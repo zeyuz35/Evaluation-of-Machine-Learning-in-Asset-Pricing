@@ -57,5 +57,68 @@ toJSON(json_test)
 
 ```{r}
 ## 
+tidy_to_json <- function(data) {
+  stock_id <- data$stock %>%
+    unique()
+  
+  # Number of cross sectional units
+  cross_units <- length(stock_id)
+  
+  ## JUst setting the beginning time to something arbitrary for now, change if needed
+  pooled_panel_json <- data.frame(start = rep("2000-01-01 00:00:00", cross_units), 
+                                  target = c(1:cross_units), 
+                                  dynamic_feat = c(1:cross_units))
+  
+  for (i in 1:cross_units) {
+    pooled_panel_filter <- data %>%
+      filter(stock == stock_id[i])
+    
+    pooled_panel_json$target[i] <- list(pooled_panel_filter$rt)
+    
+    pooled_panel_filter_feature <- pooled_panel_filter %>%
+      select(-time, -rt, -stock) %>%
+      unname() %>%
+      as.matrix() %>%
+      # Transpose it to get the right format of one feature series per row
+      t()
+    
+    pooled_panel_json[i, ]$dynamic_feat <- pooled_panel_filter_feature %>% list()
+  }
+  
+  pooled_panel_json
+}
 ```
 
+
+```{r}
+## JSON manipulation for use with AWS inference format
+
+## Unlike the actual training/validation data, inference format is annoyingly different (again)
+
+## Below is some dummy data, and shows us the format we need for it to work with AWS inference
+
+test <- fromJSON("inference_test.json")
+json %>% 
+  data.frame() %>%
+  stream_out()
+
+# Ie we want a list of 2:
+# instances
+  # start = vector of string of start dates
+  # target = list length = number of time series, each containing a vector of that time series
+  # dynamic feat = list = number of time series, each containing a data frame of the dynamic features (same format as training)
+# configuration
+  # num_samples
+  # output_types
+  # quantiles
+
+
+pooled_panel_json <- pooled_panel %>% tidy_to_json()
+
+list(start = pooled_panel_json$start, 
+     target = pooled_panel_json$target, 
+     dynamic_feat = pooled_panel_json$dynamic_feat)
+
+## Configuration List
+list(num_samples = 10, output_types = c("mean", "quantiles", "samples"), quantiles = c("0.5"))
+```
