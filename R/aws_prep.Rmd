@@ -98,9 +98,7 @@ tidy_to_json <- function(data) {
 ## Below is some dummy data, and shows us the format we need for it to work with AWS inference
 
 test <- fromJSON("inference_test.json")
-json %>% 
-  data.frame() %>%
-  stream_out()
+test %>% toJSON
 
 # Ie we want a list of 2:
 # instances
@@ -115,10 +113,15 @@ json %>%
 
 pooled_panel_json <- pooled_panel %>% tidy_to_json()
 
-list(start = pooled_panel_json$start, 
-     target = pooled_panel_json$target, 
-     dynamic_feat = pooled_panel_json$dynamic_feat)
+inference_json <- list(
+  instances = list(start = pooled_panel_json$start, 
+                   target = pooled_panel_json$target, 
+                   dynamic_feat = pooled_panel_json$dynamic_feat),
+  configuration = list(
+    num_samples = 10, output_types = c("mean", "quantiles", "samples"), quantiles = c("0.5")
+  )
+)
 
-## Configuration List
-list(num_samples = 10, output_types = c("mean", "quantiles", "samples"), quantiles = c("0.5"))
+toJSON(inference_json)
+ 
 ```
