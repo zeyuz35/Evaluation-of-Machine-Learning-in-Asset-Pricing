@@ -144,9 +144,37 @@ fit_all_models <- function(dataset_list, batch_process_range,
 }
 ```
 
-```{r}
-## FFORMA fit all models
+```{r lstm_fit_all_models}
+## LSTM Fit all models
+fit_all_models_lstm <- function(dataset_list, batch_process_range) {
+  # Initialize List
+  simulation_results_list <- rep(list(0), length(batch_process_range))
+  
+  for (batch in (batch_process_range)) {
+    
+    simulation_results_list[[batch]] <- list(
+      # Panel Statistics
+      Dataset_stats = 0, 
+      # Models
+      LSTM_MSE = 0, LSTM_MAE = 0
+    )
+    
+    # Load Dataset
+    pooled_panel <- dataset_list[[batch]]$panel
+    simulation_results_list[[batch]]$Dataset_stats <- dataset_list[[batch]]$statistics
+    simulation_results_list[[batch]]$returns <- pooled_panel$rt
+    
+    timeSlices <- customTimeSlices(start = 2, initialWindow = 84, horizon = 12, validation_size = 60, test_size = 12, set_no = 3)
+    
+    simulation_results_list[[batch]]$LSTM_MSE <- LSTM_fit_stats(pooled_panel, timeSlices, "mse", batch_size = 64, patience = 20)
+    simulation_results_list[[batch]]$LSTM_MAE <- LSTM_fit_stats(pooled_panel, timeSlices, "mae", batch_size = 64, patience = 20)
+  }
+  simulation_results_list
+}
+```
 
+```{r fforma_fit_all_models}
+## FFORMA fit all models
 fit_all_models_fforma <- function(dataset_list, batch_process_range) {
   # Initialize List
   simulation_results_list <- rep(list(0), length(batch_process_range))
@@ -174,7 +202,7 @@ fit_all_models_fforma <- function(dataset_list, batch_process_range) {
 }
 ```
 
-```{r}
+```{r load_simulated_datasets}
 ## Chunk to load in simulated datasets
 g1_A1_nosv_0 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Simulated_dataset/g1_A1_nosv_0.RDS")
 g2_A1_nosv_0 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Simulated_dataset/g2_A1_nosv_0.RDS")
@@ -193,7 +221,7 @@ g2_A1_sv_1 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/
 g3_A1_sv_1 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Simulated_dataset/g3_A1_sv_1.RDS")
 ```
 
-```{r}
+```{r lm_eln_model_fitting}
 batch_process_range <- c(1:10)
 
 # Linear and ELN Models
@@ -297,7 +325,8 @@ g3_A1_sv_1_NN_results <- fit_all_models(g3_A1_sv_1, batch_process_range, LM = 0,
 saveRDS(g3_A1_sv_1_NN_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_1_NN_results.rds")
 ```
 
-```{r}
+```{r mlp_fitting_1_5}
+## MLPs for datasets 1-5
 batch_process_range <- c(1:5)
 
 g1_A1_nosv_0_NN_results15 <- fit_all_models(g1_A1_nosv_0, batch_process_range, LM = 0, ELN = 0, RF = 0, NNet = 1)
@@ -329,7 +358,8 @@ g3_A1_sv_1_NN_results15 <- fit_all_models(g3_A1_sv_1, batch_process_range, LM = 
 saveRDS(g3_A1_sv_1_NN_results15, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_1_NN_results15.rds")
 ```
 
-```{r}
+```{r mlp_fitting_6_10}
+## MLPs for datasets 6-10
 batch_process_range <- c(6:10)
 
 g1_A1_nosv_0_NN_results610 <- fit_all_models(g1_A1_nosv_0, batch_process_range, LM = 0, ELN = 0, RF = 0, NNet = 1)
@@ -361,7 +391,39 @@ g3_A1_sv_1_NN_results610 <- fit_all_models(g3_A1_sv_1, batch_process_range, LM =
 saveRDS(g3_A1_sv_1_NN_results610, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_1_NN_results610.rds")
 ```
 
-```{r}
+```{r fitting_lstm_models}
+batch_process_range <- c(1:10)
+
+g1_A1_nosv_0_LSTM_results <- fit_all_models_lstm(g1_A1_nosv_0, batch_process_range)
+saveRDS(g1_A1_nosv_0_LSTM_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_nosv_0_LSTM_results.rds")
+g2_A1_nosv_0_LSTM_results <- fit_all_models_lstm(g2_A1_nosv_0, batch_process_range)
+saveRDS(g2_A1_nosv_0_LSTM_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_nosv_0_LSTM_results.rds")
+g3_A1_nosv_0_LSTM_results <- fit_all_models_lstm(g3_A1_nosv_0, batch_process_range)
+saveRDS(g3_A1_nosv_0_LSTM_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_nosv_0_LSTM_results.rds")
+
+g1_A1_sv_0.01_LSTM_results <- fit_all_models_lstm(g1_A1_sv_0.01, batch_process_range)
+saveRDS(g1_A1_sv_0.01_LSTM_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.01_LSTM_results.rds")
+g2_A1_sv_0.01_LSTM_results <- fit_all_models_lstm(g2_A1_sv_0.01, batch_process_range)
+saveRDS(g2_A1_sv_0.01_LSTM_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.01_LSTM_results.rds")
+g3_A1_sv_0.01_LSTM_results <- fit_all_models_lstm(g3_A1_sv_0.01, batch_process_range)
+saveRDS(g3_A1_sv_0.01_LSTM_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.01_LSTM_results.rds")
+
+g1_A1_sv_0.1_LSTM_results <- fit_all_models_lstm(g1_A1_sv_0.1, batch_process_range)
+saveRDS(g1_A1_sv_0.1_LSTM_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.1_LSTM_results.rds")
+g2_A1_sv_0.1_LSTM_results <- fit_all_models_lstm(g2_A1_sv_0.1, batch_process_range)
+saveRDS(g2_A1_sv_0.1_LSTM_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.1_LSTM_results.rds")
+g3_A1_sv_0.1_LSTM_results <- fit_all_models_lstm(g3_A1_sv_0.1, batch_process_range)
+saveRDS(g3_A1_sv_0.1_LSTM_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.1_LSTM_results.rds")
+
+g1_A1_sv_1_LSTM_results <- fit_all_models_lstm(g1_A1_sv_1, batch_process_range)
+saveRDS(g1_A1_sv_1_LSTM_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_1_LSTM_results.rds")
+g2_A1_sv_1_LSTM_results <- fit_all_models_lstm(g2_A1_sv_1, batch_process_range)
+saveRDS(g2_A1_sv_1_LSTM_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_1_LSTM_results.rds")
+g3_A1_sv_1_LSTM_results <- fit_all_models_lstm(g3_A1_sv_1, batch_process_range)
+saveRDS(g3_A1_sv_1_LSTM_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_1_LSTM_results.rds")
+```
+
+```{r fitting_fforma_models}
 ## Fitting FFORMA Models
 batch_process_range <- c(1:10)
 
