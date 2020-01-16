@@ -272,6 +272,9 @@ estimator$fit(inputs = data_channels,
 ## Obviously, designed with real use business cases in mind
 ## Downside - quite unintuitive for "normal" usage, and may not work with large number of time series
 ## Implemented anyway, as this is the recommended approach
+## DO NOT USE THIS APPROACH, needlessly slow, complicated and expensive for our purposes
+
+## Commented out
 
 ################
 ## DATA PREP
@@ -285,49 +288,94 @@ estimator$fit(inputs = data_channels,
 ## according to the prediction length argument you specified when building the model
 ## Therefore, provide it with the training + validation set data (assuming this isn't too computationally intensive)
 
-json_to_inference_json <- function(json_df) {
-  inf_json <- list(
-    instances = list(start = pooled_panel_json$start, 
-                     target = pooled_panel_json$target, 
-                     dynamic_feat = pooled_panel_json$dynamic_feat),
-    configuration = list(
-      num_samples = 10, output_types = c("mean", "quantiles", "samples"), quantiles = c("0.5")
-    )
-  )
-}
-
-tidy_to_inf_json <- function(dataframe, start) {
-  dataframe_json <- dataframe %>% tidy_to_json(start = start)
-  
-  dataframe_json %>% json_to_inference_json()
-}
-
-####################################
-## Set up model endpoint object
-####################################
-
-model_endpoint <- estimator$deploy(initial_instance_count = 1L,
-                                   instance_type = 'ml.t2.medium',
-                                   content_type="application/json")
-
-## Wrapper function that takes a tidy_df and 
-
-deepar_predict <- function(tidy_df) {
-  model_endpoint$predict(tidy_df %>% tidy_to_inf_json(start = "2000-01-01 00:00:00"))
-}
-
-##################################################
-## Delete the endpoint afterwards to save $$$
-
-session$delete_endpoint(model_endpoint$endpoint)
+# json_to_inference_json <- function(json_df) {
+#   inf_json <- list(
+#     instances = list(start = pooled_panel_json$start, 
+#                      target = pooled_panel_json$target, 
+#                      dynamic_feat = pooled_panel_json$dynamic_feat),
+#     configuration = list(
+#       num_samples = 10, output_types = c("mean", "quantiles", "samples"), quantiles = c("0.5")
+#     )
+#   )
+# }
+# 
+# tidy_to_inf_json <- function(dataframe, start) {
+#   dataframe_json <- dataframe %>% tidy_to_json(start = start)
+#   
+#   dataframe_json %>% json_to_inference_json()
+# }
+# 
+# ####################################
+# ## Set up model endpoint object
+# ####################################
+# 
+# model_endpoint <- estimator$deploy(initial_instance_count = 1L,
+#                                    instance_type = 'ml.t2.medium',
+#                                    content_type="application/json")
+# 
+# ## Wrapper function that takes a tidy_df and 
+# 
+# deepar_predict <- function(tidy_df) {
+#   model_endpoint$predict(tidy_df %>% tidy_to_inf_json(start = "2000-01-01 00:00:00"))
+# }
+# 
+# ##################################################
+# ## Delete the endpoint afterwards to save $$$
+# 
+# session$delete_endpoint(model_endpoint$endpoint)
 
 ######################################################
 ## BATCH TRANSFORM APPROACH
 ######################################################
 ## Much more analagous to "normal" functions, this "transforms" input data to output data using a trained sagemaker model
 ## Also seems to be much more straightforward and well suited to large number of time series
+## USE THIS APPROACH, much easier and straightforward
 
 ## Specify inference input and output path
+
+## Data Prep
+## Remember that with DeepAR, the dynamic features (external regressors) are assumed to be pre-known
+## Therefore, you need to pass it a dataset containing the original time series, and the dynamic features that extend all the way to the test set
+## Quite annoying to set up
+
+## Function that takes a tidy dataset, timeSlices, and spits out a dataframe that is ready to be converted to JSON format 
+## with the correct length of dynamic features for use in predictions
+
+tidy_to_batch_inf <- function(data, start, timeSlices, set) {
+  stock_id <- data$stock %>%
+    unique()
+  
+  # Number of cross sectional units
+  cross_units <- length(stock_id)
+  
+  ## Just setting the beginning time to something arbitrary for now, change if needed
+  pooled_panel_json <- data.frame(start = rep(start, cross_units), 
+                                  target = c(1:cross_units), 
+                                  dynamic_feat = c(1:cross_units))
+  
+  for (i in 1:cross_units) {
+    pooled_panel_filter <- data %>%
+      filter(stock == stock_id[i])
+      
+    pooled_panel_json$target[i] <- pooled_panel_filter %>%
+      filter(time %in% timeSlices[[set]]$train | time %in% timeSlices[[set]]$validation) %>%
+      dplyr::select(rt) %>%
+      list()
+    
+    pooled_panel_filter_feature <- pooled_panel_filter %>%
+      filter(time %in% timeSlices[[set]]$train | time %in% timeSlices[[set]]$validation | time %in% timeSlices[[set]]$test) %>%
+      dplyr::select(-time, -rt, -stock) %>%
+      unname() %>%
+      as.matrix() %>%
+      # Transpose it to get the right format of one feature series per row
+      t()
+    
+    pooled_panel_json[i, ]$dynamic_feat <- pooled_panel_filter_feature %>% list()
+  }
+  pooled_panel_json
+}
+
+batch_inf_test <- tidy_to_batch_inf(pooled_panel, start = "2000-01-01 00:00:00", timeSlices, 1)
 
 batch_input <- paste0("s3://", s3_bucket, "/batch/input/pooled_panel_inference_in.json")
 batch_output <- paste0("s3://", s3_bucket, "/batch/output/pooled_panel_inference_out.json")
