@@ -1311,7 +1311,7 @@ NNet_5_mae_stats[[1]]$variable_importance %>%
 
 ## Variable Importance function for LSTM
 
-LSTM_variable_importance <- function(X_array_test, test_x, lstm_model) {
+LSTM_variable_importance <- function(X_array_test, Y_array_test, test_x, lstm_model) {
 
   variable_importance_df <- foreach(i = (1:400), .combine = "rbind", .packages = c("keras", "tensorflow", "reticulate")) %do% {
     index <- seq(1, 200, by = 1) + (i - 1)*200
@@ -1441,7 +1441,9 @@ LSTM_fit_stats <- function(pooled_panel, timeSlices, loss_function, batch_size, 
       layer_batch_normalization() %>%
       
       layer_dense(units = 200) %>%
-      layer_activation("linear")
+      layer_activation("linear") %>%
+      
+      layer_flatten()
     
     lstm_model %>% compile(loss = "mse",
                            optimizer = optimizer_adam(lr = 0.001, beta_1 = 0.9, beta_2 = 0.999),
@@ -1486,13 +1488,16 @@ LSTM_fit_stats <- function(pooled_panel, timeSlices, loss_function, batch_size, 
     LSTM_stats[[set]]$forecasts <- test_predict
     
     #Variable Importance
-    LSTM_stats[[set]]$variable_importance <- LSTM_variable_importance(X_array_test, test_x, lstm_model)
+    LSTM_stats[[set]]$variable_importance <- LSTM_variable_importance(X_array_test, Y_array_test, test_x, lstm_model)
     
+    #Clear Kera Session
+    k_clear_session()
   }
-  #Clear Kera Session
-  k_clear_session()
   LSTM_stats
 }
+```
+
+```{r}
 
 LSTM_stats <- LSTM_fit_stats(pooled_panel, timeSlices, loss_function = "mse", batch_size = 32, patience = 50)
 

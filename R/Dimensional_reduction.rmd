@@ -143,10 +143,18 @@ stock_series_tsne %>%
 ## UMAP approach
 ## Not too sure what UMAP is or how it works exactly, apart from it's similar to t-SNE, and also also embed (predict) new data points
 ## Use the uwot package, which includes support for parallel computation of umap
+## Applying UMAP on the entire pooled panel vs just a single univariate series seems to give very similar results, once you filter to a univariate series
+## Suggestion to apply UMAP on entire series first, as this is computationally more efficient
 
 ### Simulated Data
 pooled_panel_umap <- umap(pooled_panel[, -(1:3)],
                           n_threads = 12)
+
+pooled_panel_umap %>%
+  cbind(pooled_panel$stock) %>%
+  data.frame() %>%
+  ggplot() +
+  geom_point(aes(x = X1, y = X2, colour = as.factor(X3)))
 
 plot(pooled_panel_umap)
 

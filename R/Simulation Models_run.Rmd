@@ -391,36 +391,68 @@ g3_A1_sv_1_NN_results610 <- fit_all_models(g3_A1_sv_1, batch_process_range, LM =
 saveRDS(g3_A1_sv_1_NN_results610, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_1_NN_results610.rds")
 ```
 
-```{r fitting_lstm_models}
-batch_process_range <- c(1:10)
+```{r fitting_lstm_models_15}
+batch_process_range <- c(1:5)
 
-g1_A1_nosv_0_LSTM_results <- fit_all_models_lstm(g1_A1_nosv_0, batch_process_range)
-saveRDS(g1_A1_nosv_0_LSTM_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_nosv_0_LSTM_results.rds")
-g2_A1_nosv_0_LSTM_results <- fit_all_models_lstm(g2_A1_nosv_0, batch_process_range)
-saveRDS(g2_A1_nosv_0_LSTM_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_nosv_0_LSTM_results.rds")
-g3_A1_nosv_0_LSTM_results <- fit_all_models_lstm(g3_A1_nosv_0, batch_process_range)
-saveRDS(g3_A1_nosv_0_LSTM_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_nosv_0_LSTM_results.rds")
+g1_A1_nosv_0_LSTM_results_15 <- fit_all_models_lstm(g1_A1_nosv_0, batch_process_range)
+saveRDS(g1_A1_nosv_0_LSTM_results_15, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_nosv_0_LSTM_results_15.rds")
+g2_A1_nosv_0_LSTM_results_15 <- fit_all_models_lstm(g2_A1_nosv_0, batch_process_range)
+saveRDS(g2_A1_nosv_0_LSTM_results_15, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_nosv_0_LSTM_results_15.rds")
+g3_A1_nosv_0_LSTM_results_15 <- fit_all_models_lstm(g3_A1_nosv_0, batch_process_range)
+saveRDS(g3_A1_nosv_0_LSTM_results_15, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_nosv_0_LSTM_results_15.rds")
 
-g1_A1_sv_0.01_LSTM_results <- fit_all_models_lstm(g1_A1_sv_0.01, batch_process_range)
-saveRDS(g1_A1_sv_0.01_LSTM_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.01_LSTM_results.rds")
-g2_A1_sv_0.01_LSTM_results <- fit_all_models_lstm(g2_A1_sv_0.01, batch_process_range)
-saveRDS(g2_A1_sv_0.01_LSTM_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.01_LSTM_results.rds")
-g3_A1_sv_0.01_LSTM_results <- fit_all_models_lstm(g3_A1_sv_0.01, batch_process_range)
-saveRDS(g3_A1_sv_0.01_LSTM_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.01_LSTM_results.rds")
+g1_A1_sv_0.01_LSTM_results_15 <- fit_all_models_lstm(g1_A1_sv_0.01, batch_process_range)
+saveRDS(g1_A1_sv_0.01_LSTM_results_15, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.01_LSTM_results_15.rds")
+g2_A1_sv_0.01_LSTM_results_15 <- fit_all_models_lstm(g2_A1_sv_0.01, batch_process_range)
+saveRDS(g2_A1_sv_0.01_LSTM_results_15, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.01_LSTM_results_15.rds")
+g3_A1_sv_0.01_LSTM_results_15 <- fit_all_models_lstm(g3_A1_sv_0.01, batch_process_range)
+saveRDS(g3_A1_sv_0.01_LSTM_results_15, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.01_LSTM_results_15.rds")
 
-g1_A1_sv_0.1_LSTM_results <- fit_all_models_lstm(g1_A1_sv_0.1, batch_process_range)
-saveRDS(g1_A1_sv_0.1_LSTM_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.1_LSTM_results.rds")
-g2_A1_sv_0.1_LSTM_results <- fit_all_models_lstm(g2_A1_sv_0.1, batch_process_range)
-saveRDS(g2_A1_sv_0.1_LSTM_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.1_LSTM_results.rds")
-g3_A1_sv_0.1_LSTM_results <- fit_all_models_lstm(g3_A1_sv_0.1, batch_process_range)
-saveRDS(g3_A1_sv_0.1_LSTM_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.1_LSTM_results.rds")
+g1_A1_sv_0.1_LSTM_results_15 <- fit_all_models_lstm(g1_A1_sv_0.1, batch_process_range)
+saveRDS(g1_A1_sv_0.1_LSTM_results_15, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.1_LSTM_results_15.rds")
+g2_A1_sv_0.1_LSTM_results_15 <- fit_all_models_lstm(g2_A1_sv_0.1, batch_process_range)
+saveRDS(g2_A1_sv_0.1_LSTM_results_15, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.1_LSTM_results_15.rds")
+g3_A1_sv_0.1_LSTM_results_15 <- fit_all_models_lstm(g3_A1_sv_0.1, batch_process_range)
+saveRDS(g3_A1_sv_0.1_LSTM_results_15, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.1_LSTM_results_15.rds")
 
-g1_A1_sv_1_LSTM_results <- fit_all_models_lstm(g1_A1_sv_1, batch_process_range)
-saveRDS(g1_A1_sv_1_LSTM_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_1_LSTM_results.rds")
-g2_A1_sv_1_LSTM_results <- fit_all_models_lstm(g2_A1_sv_1, batch_process_range)
-saveRDS(g2_A1_sv_1_LSTM_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_1_LSTM_results.rds")
-g3_A1_sv_1_LSTM_results <- fit_all_models_lstm(g3_A1_sv_1, batch_process_range)
-saveRDS(g3_A1_sv_1_LSTM_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_1_LSTM_results.rds")
+g1_A1_sv_1_LSTM_results_15 <- fit_all_models_lstm(g1_A1_sv_1, batch_process_range)
+saveRDS(g1_A1_sv_1_LSTM_results_15, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_1_LSTM_results_15.rds")
+g2_A1_sv_1_LSTM_results_15 <- fit_all_models_lstm(g2_A1_sv_1, batch_process_range)
+saveRDS(g2_A1_sv_1_LSTM_results_15, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_1_LSTM_results_15.rds")
+g3_A1_sv_1_LSTM_results_15 <- fit_all_models_lstm(g3_A1_sv_1, batch_process_range)
+saveRDS(g3_A1_sv_1_LSTM_results_15, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_1_LSTM_results_15.rds")
+```
+
+```{r fitting_lstm_models_610}
+batch_process_range <- c(6:10)
+
+g1_A1_nosv_0_LSTM_results_610 <- fit_all_models_lstm(g1_A1_nosv_0, batch_process_range)
+saveRDS(g1_A1_nosv_0_LSTM_results_610, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_nosv_0_LSTM_results_610.rds")
+g2_A1_nosv_0_LSTM_results_610 <- fit_all_models_lstm(g2_A1_nosv_0, batch_process_range)
+saveRDS(g2_A1_nosv_0_LSTM_results_610, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_nosv_0_LSTM_results_610.rds")
+g3_A1_nosv_0_LSTM_results_610 <- fit_all_models_lstm(g3_A1_nosv_0, batch_process_range)
+saveRDS(g3_A1_nosv_0_LSTM_results_610, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_nosv_0_LSTM_results_610.rds")
+
+g1_A1_sv_0.01_LSTM_results_610 <- fit_all_models_lstm(g1_A1_sv_0.01, batch_process_range)
+saveRDS(g1_A1_sv_0.01_LSTM_results_610, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.01_LSTM_results_610.rds")
+g2_A1_sv_0.01_LSTM_results_610 <- fit_all_models_lstm(g2_A1_sv_0.01, batch_process_range)
+saveRDS(g2_A1_sv_0.01_LSTM_results_610, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.01_LSTM_results_610.rds")
+g3_A1_sv_0.01_LSTM_results_610 <- fit_all_models_lstm(g3_A1_sv_0.01, batch_process_range)
+saveRDS(g3_A1_sv_0.01_LSTM_results_610, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.01_LSTM_results_610.rds")
+
+g1_A1_sv_0.1_LSTM_results_610 <- fit_all_models_lstm(g1_A1_sv_0.1, batch_process_range)
+saveRDS(g1_A1_sv_0.1_LSTM_results_610, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.1_LSTM_results_610.rds")
+g2_A1_sv_0.1_LSTM_results_610 <- fit_all_models_lstm(g2_A1_sv_0.1, batch_process_range)
+saveRDS(g2_A1_sv_0.1_LSTM_results_610, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.1_LSTM_results_610.rds")
+g3_A1_sv_0.1_LSTM_results_610 <- fit_all_models_lstm(g3_A1_sv_0.1, batch_process_range)
+saveRDS(g3_A1_sv_0.1_LSTM_results_610, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.1_LSTM_results_610.rds")
+
+g1_A1_sv_1_LSTM_results_610 <- fit_all_models_lstm(g1_A1_sv_1, batch_process_range)
+saveRDS(g1_A1_sv_1_LSTM_results_610, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_1_LSTM_results_610.rds")
+g2_A1_sv_1_LSTM_results_610 <- fit_all_models_lstm(g2_A1_sv_1, batch_process_range)
+saveRDS(g2_A1_sv_1_LSTM_results_610, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_1_LSTM_results_610.rds")
+g3_A1_sv_1_LSTM_results_610 <- fit_all_models_lstm(g3_A1_sv_1, batch_process_range)
+saveRDS(g3_A1_sv_1_LSTM_results_610, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_1_LSTM_results_610.rds")
 ```
 
 ```{r fitting_fforma_models}
