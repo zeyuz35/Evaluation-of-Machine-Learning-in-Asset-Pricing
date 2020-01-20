@@ -61,8 +61,13 @@
 ########################################################################################################
 # ACTUAL CODE START
 ########################################################################################################
+library(tidyverse)
+library(jsonlite)
+library(Metrics)
+library(caret)
 
-library("reticulate")
+library(reticulate)
+
 ## Force reticulate to use the right version of anaconda and thus sagemaker modules
 use_condaenv("/home/ubuntu/anaconda3", required = TRUE)
 sagemaker <- import('sagemaker')
@@ -74,32 +79,46 @@ session <- sagemaker$Session()
 
 role_arn <- session$expand_role('sagemaker-service-role')
 
+#######################################
+## Get the image required for deepar ##
+#######################################
+
+region <- session$boto_region_name
+
+image_name = sagemaker$amazon$amazon_estimator$get_image_uri(region, "forecasting-deepar", "latest")
+
 # S3
 # This creates an S3 bucket with a default name
 # You could also specify your own S3 bucket, but this may be a bit easier
 s3_bucket <- session$default_bucket()
-s3_prefix <- "simulation_deepar"
-
-## Alow SageMaker to access the S3 bucket
-
-library(tidyverse)
 
 ## S3 ##
 
 s3_data_path <- paste0("s3://", s3_bucket, "/data/")
 s3_output_path <- paste0("s3://", s3_bucket, "/output/")
 
+customTimeSlices <- function(start, initialWindow, horizon, validation_size, test_size, set_no) {
+  
+  time_slice <- list(train = 0, validation = 0, test = 0)
+  time_slices <- rep(list(time_slice), set_no)
+  
+  for (t in 1:set_no) {
+    time_slice$train <- c(start:(initialWindow + (t-1) * horizon + 1))
+    time_slice$validation <- c((initialWindow + (t-1) * horizon + 2):((initialWindow + (t-1) * horizon) + validation_size + 1))
+    time_slice$test <- c((initialWindow + (t-1) * horizon) + validation_size + 2):((initialWindow + (t-1) * horizon) + validation_size + test_size + 1)
+    time_slices[[t]] <- time_slice
+  }
+  time_slices
+}
+
+#Create custom time slices
+timeSlices <- customTimeSlices(start = 2, initialWindow = 108, horizon = 12, validation_size = 36, test_size = 12, set_no = 3)
+
 ## Check if we can read in data
 ## This works
 ## Arguments are:
 ## path = R working directory path, s3_bucket, key_prefix = S3 bucket path
 ## Note that you can have key_prefix just specify a data folder and it'll download the entire folder
-
-session$download_data("data", s3_bucket, key_prefix = "data/pooled_panel.rds")
-
-session$download_data("data", s3_bucket, key_prefix = "data/pooled_panel.json")
-
-pooled_panel <- readRDS("data/pooled_panel.rds")
 
 ###
 ## Convert this to a JSON format which sagemaker can understand
@@ -118,9 +137,6 @@ pooled_panel <- readRDS("data/pooled_panel.rds")
 ## DeepAR can also support missing data in the target series (y variable), but not the dyanmic features
 ## This makes it a little strange to work with for our dataset
 
-###########################################################################
-library(jsonlite)
-###########################################################################
 ## Function that takes data frame in tidy format, and outputs a dataframe 
 ## that is ready to be exported to JSON for use with sagemaker deepar
 
@@ -155,77 +171,29 @@ tidy_to_json <- function(data, start) {
 }
 
 pooled_panel_train <- pooled_panel %>%
-  filter(time <= 168) %>%
-  tidy_to_json(start = "2000-01-01 00:00:00")
+  filter(time %in% timeSlices[[1]]$train) %>%
+  tidy_to_json(start = "2000-01-01")
 
-pooled_panel_test <- pooled_panel %>%
-  filter(time > 168) %>%
-  tidy_to_json(start = "2014-01-01 00:00:00")
+pooled_panel_validation <- pooled_panel %>%
+  filter(time %in% timeSlices[[1]]$validation) %>%
+  tidy_to_json(start = as.Date("2000-01-01") %m+% years(9))
 
 pooled_panel_train %>%
   stream_out(file("./data/pooled_panel_train.json"))
 
-pooled_panel_test %>%
-  stream_out(file("./data/pooled_panel_test.json"))
+pooled_panel_validation %>%
+  stream_out(file("./data/pooled_panel_validation.json"))
 
 ## Upload to S3, note that this function uploads the entire directory you specify
 
 session$upload_data("data", s3_bucket, key_prefix = "data")
 
-#######################################
-## Get the image required for deepar ##
-#######################################
-
-region <- session$boto_region_name
-
-image_name = sagemaker$amazon$amazon_estimator$get_image_uri(region, "forecasting-deepar", "latest")
-
 #####################
 ## Train a Model
 #####################
 
-# Define an estimator
-
-estimator <- sagemaker$estimator$Estimator(
-  sagemaker_session = session,
-  image_name = image_name,
-  role = role_arn,
-  train_instance_count = 1L,
-  train_instance_type = 'ml.c4.xlarge',
-  base_job_name = 'simulation_deepar',
-  output_path = s3_output_path
-)
-
 # Lags are used in the model building procedure anyway, so context_length doesn't have to be very large
 # Amazon recommends to just set this equal to prediction length
-context_length <- 12L
-prediction_length <- 12L
-freq <- "1M"
-  
-estimator$set_hyperparameters(
-  time_freq = "1M",
-  context_length = context_length,
-  prediction_length = prediction_length,
-  num_cells = 40L,
-  num_layers = 4L,
-  likelihood = "student-T",
-  epochs = 80L,
-  mini_batch_size = 128L,
-  learning_rate = "0.0001",
-  dropout_rate = 0.15,
-  early_stopping_patience = 20L,
-  num_dynamic_feat = "auto",
-  test_quantiles = array(0.5)
-)
-
-s3_train_input <- "s3://sagemaker-us-west-2-438078873022/data/pooled_panel_train.json"
-s3_valid_input <- "s3://sagemaker-us-west-2-438078873022/data/pooled_panel_test.json"
-
-data_channels <- list('train' = s3_train_input, 'test' = s3_valid_input)
-
-job_name <- paste('sagemaker-simulation-deepar', format(Sys.time(), '%H-%M-%S'), sep = '-')
-estimator$fit(inputs = data_channels,
-              job_name = job_name)
 
 ############################################################################
 ## HYPERPARAMETER TUNING
@@ -272,9 +240,6 @@ estimator$fit(inputs = data_channels,
 ## Obviously, designed with real use business cases in mind
 ## Downside - quite unintuitive for "normal" usage, and may not work with large number of time series
 ## Implemented anyway, as this is the recommended approach
-## DO NOT USE THIS APPROACH, needlessly slow, complicated and expensive for our purposes
-
-## Commented out
 
 ################
 ## DATA PREP
@@ -294,7 +259,7 @@ estimator$fit(inputs = data_channels,
 #                      target = pooled_panel_json$target, 
 #                      dynamic_feat = pooled_panel_json$dynamic_feat),
 #     configuration = list(
-#       num_samples = 10, output_types = c("mean", "quantiles", "samples"), quantiles = c("0.5")
+#       num_samples = 10, output_types = c("mean"), quantiles = c("0.1", "0.5", "0.9")
 #     )
 #   )
 # }
@@ -329,17 +294,13 @@ estimator$fit(inputs = data_channels,
 ######################################################
 ## Much more analagous to "normal" functions, this "transforms" input data to output data using a trained sagemaker model
 ## Also seems to be much more straightforward and well suited to large number of time series
-## USE THIS APPROACH, much easier and straightforward
 
 ## Specify inference input and output path
 
-## Data Prep
-## Remember that with DeepAR, the dynamic features (external regressors) are assumed to be pre-known
-## Therefore, you need to pass it a dataset containing the original time series, and the dynamic features that extend all the way to the test set
-## Quite annoying to set up
+batch_input <- paste0("s3://", s3_bucket, "/batch/input/batch-inf-test.json")
+batch_output <- paste0("s3://", s3_bucket, "/batch/output")
 
-## Function that takes a tidy dataset, timeSlices, and spits out a dataframe that is ready to be converted to JSON format 
-## with the correct length of dynamic features for use in predictions
+## Prep Inference Data (training + validation data)
 
 tidy_to_batch_inf <- function(data, start, timeSlices, set) {
   stock_id <- data$stock %>%
@@ -356,11 +317,11 @@ tidy_to_batch_inf <- function(data, start, timeSlices, set) {
   for (i in 1:cross_units) {
     pooled_panel_filter <- data %>%
       filter(stock == stock_id[i])
-      
-    pooled_panel_json$target[i] <- pooled_panel_filter %>%
-      filter(time %in% timeSlices[[set]]$train | time %in% timeSlices[[set]]$validation) %>%
-      dplyr::select(rt) %>%
-      list()
+    
+    pooled_panel_filter_rt <- pooled_panel_filter %>%
+      filter(time %in% timeSlices[[set]]$train | time %in% timeSlices[[set]]$validation)
+    
+    pooled_panel_json$target[i] <- list(pooled_panel_filter_rt$rt)
     
     pooled_panel_filter_feature <- pooled_panel_filter %>%
       filter(time %in% timeSlices[[set]]$train | time %in% timeSlices[[set]]$validation | time %in% timeSlices[[set]]$test) %>%
@@ -370,20 +331,267 @@ tidy_to_batch_inf <- function(data, start, timeSlices, set) {
       # Transpose it to get the right format of one feature series per row
       t()
     
-    pooled_panel_json[i, ]$dynamic_feat <- pooled_panel_filter_feature %>% list()
+    pooled_panel_json[i, ]$dynamic_feat <- list(pooled_panel_filter_feature)
   }
   pooled_panel_json
 }
 
-batch_inf_test <- tidy_to_batch_inf(pooled_panel, start = "2000-01-01 00:00:00", timeSlices, 1)
+######################################################################
+### deepar_fit_stats function
+######################################################################
 
-batch_input <- paste0("s3://", s3_bucket, "/batch/input/pooled_panel_inference_in.json")
-batch_output <- paste0("s3://", s3_bucket, "/batch/output/pooled_panel_inference_out.json")
+deepar_fit_stats <- function(pooled_panel, timeSlices) {
+  ## Initialize
+  DEEPAR_stats <- rep(list(0), 3)
+  
+  ## Loop over different timeSlices
+  for (set in 1:3) {
+    ## Important Things
+    DEEPAR_stats[[set]] <- list(loss_stats = data.frame(train_MAE = 0, train_MSE = 0, train_RMSE = 0, train_Rsquare = 0,
+                                                        validation_MAE = 0, validation_MSE = 0, validation_RMSE = 0, validation_Rsquare = 0,
+                                                        test_MAE = 0, test_MSE = 0, test_RMSE = 0, test_Rsquare = 0),
+                                forecasts = 0,
+                                forecast_resids = 0,
+                                variable_importance = 0)
+    
+    ## Train and validation sets in JSON format
+    pooled_panel_train <- pooled_panel %>%
+      filter(time %in% timeSlices[[set]]$train) %>%
+      tidy_to_json(start = "2000-01-01")
+    
+    pooled_panel_validation <- pooled_panel %>%
+      filter(time %in% timeSlices[[set]]$validation) %>%
+      tidy_to_json(start = as.Date("2000-01-01") %m+% years(8 + set))
+    
+    pooled_panel_test <- pooled_panel %>%
+      filter(time %in% timeSlices[[set]]$test) %>%
+      tidy_to_json(start = as.Date("2000-01-01") %m+% years(14 + set))
+    
+    pooled_panel_train %>%
+      stream_out(file("./data/pooled_panel_train.json"))
+    
+    pooled_panel_validation %>%
+      stream_out(file("./data/pooled_panel_validation.json"))
+    
+    ## Upload to S3, note that this function uploads the entire directory you specify
+    
+    session$upload_data("data", s3_bucket, key_prefix = "data")
+    
+    #########################################################################################
+    # Define an estimator
+    
+    estimator <- sagemaker$estimator$Estimator(
+      sagemaker_session = session,
+      image_name = image_name,
+      role = role_arn,
+      train_instance_count = 1L,
+      train_instance_type = 'ml.c4.xlarge',
+      base_job_name = 'simulation-deepar',
+      output_path = s3_output_path
+    )
+    
+    ## Fit a model using DeepAR
+    
+    context_length <- 12L
+    prediction_length <- 12L
+    freq <- "1M"
+    
+    estimator$set_hyperparameters(
+      time_freq = "1M",
+      context_length = context_length,
+      prediction_length = prediction_length,
+      num_cells = 40L,
+      num_layers = 4L,
+      likelihood = "student-T",
+      epochs = 80L,
+      mini_batch_size = 128L,
+      learning_rate = "0.0001",
+      dropout_rate = 0.15,
+      early_stopping_patience = 20L,
+      num_dynamic_feat = "auto",
+      test_quantiles = array(0.5)
+    )
+    
+    s3_train_input <- "s3://sagemaker-us-west-2-438078873022/data/pooled_panel_train.json"
+    s3_valid_input <- "s3://sagemaker-us-west-2-438078873022/data/pooled_panel_validation.json"
+    
+    data_channels <- list('train' = s3_train_input, 'test' = s3_valid_input)
+    
+    job_name <- paste('sagemaker-simulation-deepar', format(Sys.time(), '%H-%M-%S'), sep = '-')
+    estimator$fit(inputs = data_channels,
+                  job_name = job_name)
+    
+    ####################################
+    ## Batch Inference #################
+    ####################################
+    
+    ## Data Prep
+    
+    batch_inf_test <- tidy_to_batch_inf(pooled_panel, start = "2000-01-01 00:00:00", timeSlices, set)
+    
+    batch_inf_test %>% 
+      stream_out(file("./batch/batch-inf-test.json"))
+    
+    ## Upload to S3, note that this function uploads the entire directory you specify
+    
+    session$upload_data("batch", s3_bucket, key_prefix = "batch/input")
+    
+    ## Call Transform Job
+    
+    config <- list(DEEPAR_INFERENCE_CONFIG = "{ \"num_samples\": 100, \"output_types\": [\"mean\"] }")
+    
+    transformer <- estimator$transformer(instance_count = 1L, instance_type='ml.c4.xlarge', output_path = batch_output,
+                                         strategy = "SingleRecord",
+                                         env = config, assemble_with = "Line")
+    
+    transformer$transform(data = batch_input, data_type = "S3Prefix", split_type = 'Line')
+    
+    ## Download Predictions and store into a vector
+    session$download_data("batch", s3_bucket, key_prefix = "batch/output/batch-inf-test.json.out")
+    
+    predictions <- stream_in(file("./batch/batch-inf-test.json.out"))
+    
+    forecasts <- predictions %>% unnest(cols = c(mean))
+    
+    ## Actual Test rt
+    test_rt <- pooled_panel_test %>% 
+      select(target) %>% 
+      unnest(cols = c(target))
+    
+    ## Train Stats (doesn't really exist for DeepAR)
+    
+    ## Validation (similarly doesn't exist for DeepAR)
+    
+    ## Test (the main sauce)
+    DEEPAR_stats[[set]]$test_MAE <- mae(test_rt, forecasts)
+    DEEPAR_stats[[set]]$test_MSE <- mse(test_rt, forecasts)
+    DEEPAR_stats[[set]]$test_RMSE <- rmse(test_rt, forecasts)
+    DEEPAR_stats[[set]]$test_RSquare <- R2(forecasts, test_rt, form = "traditional")
+  }
+  DEEPAR_stats
+}
 
-transformer = model.transformer(instance_count=1, instance_type='ml.m4.xlarge', output_path = batch_output)
+#########################
+## DeepAR_fit_all
+#########################
 
-transformer.transform(data=batch_input, data_type='S3Prefix', content_type='text/csv', split_type='Line')
+fit_all_models_deepar <- function(dataset_list, batch_process_range) {
+  # Initialize List
+  simulation_results_list <- rep(list(0), length(batch_process_range))
+  
+  for (batch in (batch_process_range)) {
+    
+    simulation_results_list[[batch]] <- list(
+      # Panel Statistics
+      Dataset_stats = 0, 
+      # Models
+      DEEPAR_MSE = 0
+    )
+    
+    # Load Dataset
+    pooled_panel <- dataset_list[[batch]]$panel
+    simulation_results_list[[batch]]$Dataset_stats <- dataset_list[[batch]]$statistics
+    simulation_results_list[[batch]]$returns <- pooled_panel$rt
+    
+    timeSlices <- customTimeSlices(start = 2, initialWindow = 84, horizon = 12, validation_size = 60, test_size = 12, set_no = 3)
+    
+    simulation_results_list[[batch]]$LSTM_MSE <- deepar_fit_stats(pooled_panel, timeSlices)
+    simulation_results_list[[batch]]$LSTM_MAE <- deepar_fit_stats(pooled_panel, timeSlices)
+  }
+  simulation_results_list
+}
 
-transformer.wait()
+## Get the data in the following way to save memory/space
+## Download dataset to data directory from S3
+## Read it in
+## Delete it from EBS volume to save space
+## Fit the models
+## Remove the dataset to save memory
 
+batch_process_range <- c(1:10)
 
+############################################################################################
+
+session$download_data("data", s3_bucket, key_prefix = "data/g1_A1_nosv_0.rds")
+g1_A1_nosv_0 <- readRDS("./data/g1_A1_nosv_0.rds")
+file.remove("./data/g1_A1_nosv_0.rds")
+g1_A1_nosv_0_DeepAR_results <- fit_all_moedls_deepar(g1_A1_nosv_0, batch_process_range)
+saveRDS(g1_A1_nosv_0_DeepAR_results, file = "./Model_results/g1_A1_nosv_0_DeepAR_results")
+rm(g1_A1_nosv_0)
+
+session$download_data("data", s3_bucket, key_prefix = "data/g2_A1_nosv_0.rds")
+g2_A1_nosv_0 <- readRDS("./data/g2_A1_nosv_0.rds")
+file.remove("./data/g2_A1_nosv_0.rds")
+g2_A1_nosv_0_DeepAR_results <- fit_all_moedls_deepar(g2_A1_nosv_0, batch_process_range)
+saveRDS(g2_A1_nosv_0_DeepAR_results, file = "./Model_results/g2_A1_nosv_0_DeepAR_results")
+rm(g2_A1_nosv_0)
+
+session$download_data("data", s3_bucket, key_prefix = "data/g3_A1_nosv_0.rds")
+g3_A1_nosv_0 <- readRDS("./data/g3_A1_nosv_0.rds")
+file.remove("./data/g3_A1_nosv_0.rds")
+g3_A1_nosv_0_DeepAR_results <- fit_all_moedls_deepar(g3_A1_nosv_0, batch_process_range)
+saveRDS(g3_A1_nosv_0_DeepAR_results, file = "./Model_results/g3_A1_nosv_0_DeepAR_results")
+rm(g3_A1_nosv_0)
+############################################################################################
+session$download_data("data", s3_bucket, key_prefix = "data/g1_A1_sv_0.01.rds")
+g1_A1_sv_0.01 <- readRDS("./data/g1_A1_sv_0.01.rds")
+file.remove("./data/g1_A1_sv_0.01.rds")
+g1_A1_sv_0.01_DeepAR_results <- fit_all_moedls_deepar(g1_A1_sv_0.01, batch_process_range)
+saveRDS(g1_A1_sv_0.01_DeepAR_results, file = "./Model_results/g1_A1_sv_0.01_DeepAR_results")
+rm(g1_A1_sv_0.01)
+
+session$download_data("data", s3_bucket, key_prefix = "data/g2_A1_sv_0.01.rds")
+g2_A1_sv_0.01 <- readRDS("./data/g2_A1_sv_0.01.rds")
+file.remove("./data/g2_A1_sv_0.01.rds")
+g2_A1_sv_0.01_DeepAR_results <- fit_all_moedls_deepar(g2_A1_sv_0.01, batch_process_range)
+saveRDS(g2_A1_sv_0.01_DeepAR_results, file = "./Model_results/g2_A1_sv_0.01_DeepAR_results")
+rm(g2_A1_sv_0.01)
+
+session$download_data("data", s3_bucket, key_prefix = "data/g3_A1_sv_0.01.rds")
+g3_A1_sv_0.01 <- readRDS("./data/g3_A1_sv_0.01.rds")
+file.remove("./data/g3_A1_sv_0.01.rds")
+g3_A1_sv_0.01_DeepAR_results <- fit_all_moedls_deepar(g3_A1_sv_0.01, batch_process_range)
+saveRDS(g3_A1_sv_0.01_DeepAR_results, file = "./Model_results/g3_A1_sv_0.01_DeepAR_results")
+rm(g3_A1_sv_0.01)
+############################################################################################
+session$download_data("data", s3_bucket, key_prefix = "data/g1_A1_sv_0.1.rds")
+g1_A1_sv_0.1 <- readRDS("./data/g1_A1_sv_0.1.rds")
+file.remove("./data/g1_A1_sv_0.1.rds")
+g1_A1_sv_0.1_DeepAR_results <- fit_all_moedls_deepar(g1_A1_sv_0.1, batch_process_range)
+saveRDS(g1_A1_sv_0.1_DeepAR_results, file = "./Model_results/g1_A1_sv_0.1_DeepAR_results")
+rm(g1_A1_sv_0.1)
+
+session$download_data("data", s3_bucket, key_prefix = "data/g2_A1_sv_0.1.rds")
+g2_A1_sv_0.1 <- readRDS("./data/g2_A1_sv_0.1.rds")
+file.remove("./data/g2_A1_sv_0.1.rds")
+g2_A1_sv_0.1_DeepAR_results <- fit_all_moedls_deepar(g2_A1_sv_0.1, batch_process_range)
+saveRDS(g2_A1_sv_0.1_DeepAR_results, file = "./Model_results/g2_A1_sv_0.1_DeepAR_results")
+rm(g2_A1_sv_0.1)
+
+session$download_data("data", s3_bucket, key_prefix = "data/g3_A1_sv_0.1.rds")
+g3_A1_sv_0.1 <- readRDS("./data/g3_A1_sv_0.1.rds")
+file.remove("./data/g3_A1_sv_0.1.rds")
+g3_A1_sv_0.1_DeepAR_results <- fit_all_moedls_deepar(g3_A1_sv_0.1, batch_process_range)
+saveRDS(g3_A1_sv_0.1_DeepAR_results, file = "./Model_results/g3_A1_sv_0.1_DeepAR_results")
+rm(g3_A1_sv_0.1)
+#############################################################################################
+session$download_data("data", s3_bucket, key_prefix = "data/g1_A1_sv_1.rds")
+g1_A1_sv_1 <- readRDS("./data/g1_A1_sv_1.rds")
+file.remove("./data/g1_A1_sv_1.rds")
+g1_A1_sv_1_DeepAR_results <- fit_all_moedls_deepar(g1_A1_sv_1, batch_process_range)
+saveRDS(g1_A1_sv_1_DeepAR_results, file = "./Model_results/g1_A1_sv_1_DeepAR_results")
+rm(g1_A1_sv_1)
+
+session$download_data("data", s3_bucket, key_prefix = "data/g2_A1_sv_1.rds")
+g2_A1_sv_1 <- readRDS("./data/g2_A1_sv_1.rds")
+file.remove("./data/g2_A1_sv_1.rds")
+g2_A1_sv_1_DeepAR_results <- fit_all_moedls_deepar(g2_A1_sv_1, batch_process_range)
+saveRDS(g2_A1_sv_1_DeepAR_results, file = "./Model_results/g2_A1_sv_1_DeepAR_results")
+rm(g2_A1_sv_1)
+
+session$download_data("data", s3_bucket, key_prefix = "data/g3_A1_sv_1.rds")
+g3_A1_sv_1 <- readRDS("./data/g3_A1_sv_1.rds")
+file.remove("./data/g3_A1_sv_1.rds")
+g3_A1_sv_1_DeepAR_results <- fit_all_moedls_deepar(g3_A1_sv_1, batch_process_range)
+saveRDS(g3_A1_sv_1_DeepAR_results, file = "./Model_results/g3_A1_sv_1_DeepAR_results")
+rm(g3_A1_sv_1)
