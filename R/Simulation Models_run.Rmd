@@ -564,6 +564,38 @@ g3_A1_sv_1_NN_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-
 #################################################################
 ## LSTM Results
 #################################################################
+g1_A1_nosv_0_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_nosv_0_LSTM_results_15.RDS")
+g2_A1_nosv_0_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_nosv_0_LSTM_results_15.RDS")
+g3_A1_nosv_0_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_nosv_0_LSTM_results_15.RDS")
+
+g1_A1_sv_0.01_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.01_LSTM_results_15.RDS")
+g2_A1_sv_0.01_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.01_LSTM_results_15.RDS")
+g3_A1_sv_0.01_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.01_LSTM_results_15.RDS")
+
+g1_A1_sv_0.1_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.1_LSTM_results_15.RDS")
+g2_A1_sv_0.1_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.1_LSTM_results_15.RDS")
+g3_A1_sv_0.1_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.1_LSTM_results_15.RDS")
+
+g1_A1_sv_1_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_1_LSTM_results_15.RDS")
+g2_A1_sv_1_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_1_LSTM_results_15.RDS")
+g3_A1_sv_1_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_1_LSTM_results_15.RDS")
+#################################################################
+## These are pending atm
+g1_A1_nosv_0_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_nosv_0_LSTM_results_610.RDS")
+g2_A1_nosv_0_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_nosv_0_LSTM_results_610.RDS")
+g3_A1_nosv_0_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_nosv_0_LSTM_results_610.RDS")
+
+g1_A1_sv_0.01_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.01_LSTM_results_610.RDS")
+g2_A1_sv_0.01_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.01_LSTM_results_610.RDS")
+g3_A1_sv_0.01_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.01_LSTM_results_610.RDS")
+
+g1_A1_sv_0.1_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.1_LSTM_results_610.RDS")
+g2_A1_sv_0.1_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.1_LSTM_results_610.RDS")
+g3_A1_sv_0.1_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.1_LSTM_results_610.RDS")
+
+g1_A1_sv_1_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_1_LSTM_results_610.RDS")
+g2_A1_sv_1_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_1_LSTM_results_610.RDS")
+g3_A1_sv_1_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_1_LSTM_results_610.RDS")
 
 #################################################################
 ## FFORMA
@@ -663,6 +695,21 @@ combine_NN_results_list <- function(normal_list, nn15_list, nn610_list) {
 
 ## Combining LSTM Results
 
+combine_LSTM_results_list <- function(normal_list, lstm15_list, lstm_610_list) {
+  for (i in 1:5) {
+    normal_list[[i]]$LSTM_MSE <- lstm15_list[[i]]$LSTM_MSE
+    normal_list[[i]]$LSTM_MAE <- lstm15_list[[i]]$LSTM_MAE
+  }
+  
+  ## Coment 6-10 for now
+  
+  # for (i in 6:10) {
+  #   normal_list[[i]]$LSTM_MSE <- lstm610_list[[i]]$LSTM_MSE
+  #   normal_list[[i]]$LSTM_MAE <- lstm610_list[[i]]$LSTM_MAE
+  # }
+  normal_list
+}
+
 
 ## Combining FFORMA Results
 combine_FFORMA_results_list <- function(normal_list, fforma_list) {
@@ -687,57 +734,76 @@ combine_FFORMA_results_list <- function(normal_list, fforma_list) {
 
 ## Combining DeepAR Results
 
+combine_DeepAR_results_list <- function(normal_list, deepar_list) {
+  for(i in 1:10) {
+    normal_list[[i]]$DeepAR <- deepar_list[[i]]$DeepAR_MSE
+  }
+  normal_list
+}
+
 ## nosv_0
 g1_A1_nosv_0_results_all <- g1_A1_nosv_0_results %>% 
   combine_RF_results_list(g1_A1_nosv_0_RF_results) %>%
   combine_NN_results_list(g1_A1_nosv_0_NN_results15, g1_A1_nosv_0_NN_results610) %>%
+  combine_LSTM_results_list(g1_A1_nosv_0_LSTM_results_15, 0) %>%
   combine_FFORMA_results_list(g1_A1_nosv_0_FFORMA_results)
 g2_A1_nosv_0_results_all <- g2_A1_nosv_0_results %>% 
   combine_RF_results_list(g2_A1_nosv_0_RF_results) %>%
   combine_NN_results_list(g2_A1_nosv_0_NN_results15, g2_A1_nosv_0_NN_results610) %>%
+  combine_LSTM_results_list(g2_A1_nosv_0_LSTM_results_15, 0) %>%
   combine_FFORMA_results_list(g2_A1_nosv_0_FFORMA_results)
 g3_A1_nosv_0_results_all <- g3_A1_nosv_0_results %>% 
   combine_RF_results_list(g3_A1_nosv_0_RF_results) %>%
   combine_NN_results_list(g3_A1_nosv_0_NN_results15, g3_A1_nosv_0_NN_results610) %>%
+  combine_LSTM_results_list(g3_A1_nosv_0_LSTM_results_15, 0) %>%
   combine_FFORMA_results_list(g3_A1_nosv_0_FFORMA_results)
 ## sv_0.01
 g1_A1_sv_0.01_results_all <- g1_A1_sv_0.01_results %>% 
   combine_RF_results_list(g1_A1_sv_0.01_RF_results) %>%
-  combine_NN_results_list(g1_A1_sv_0.01_NN_results15, g1_A1_sv_0.01_NN_results610)%>%
+  combine_NN_results_list(g1_A1_sv_0.01_NN_results15, g1_A1_sv_0.01_NN_results610) %>%
+  combine_LSTM_results_list(g1_A1_sv_0.01_LSTM_results_15, 0) %>%
   combine_FFORMA_results_list(g1_A1_sv_0.01_FFORMA_results)
 g2_A1_sv_0.01_results_all <- g2_A1_sv_0.01_results %>% 
   combine_RF_results_list(g2_A1_sv_0.01_RF_results) %>%
-  combine_NN_results_list(g2_A1_sv_0.01_NN_results15, g2_A1_sv_0.01_NN_results610)%>%
+  combine_NN_results_list(g2_A1_sv_0.01_NN_results15, g2_A1_sv_0.01_NN_results610) %>%
+  combine_LSTM_results_list(g2_A1_sv_0.01_LSTM_results_15, 0) %>%
   combine_FFORMA_results_list(g2_A1_sv_0.01_FFORMA_results)
 g3_A1_sv_0.01_results_all <- g3_A1_sv_0.01_results %>% 
   combine_RF_results_list(g3_A1_sv_0.01_RF_results) %>%
-  combine_NN_results_list(g3_A1_sv_0.01_NN_results15, g3_A1_sv_0.01_NN_results610)%>%
+  combine_NN_results_list(g3_A1_sv_0.01_NN_results15, g3_A1_sv_0.01_NN_results610) %>%
+  combine_LSTM_results_list(g3_A1_sv_0.01_LSTM_results_15, 0) %>%
   combine_FFORMA_results_list(g3_A1_sv_0.01_FFORMA_results)
 ## sv_0.1
 g1_A1_sv_0.1_results_all <- g1_A1_sv_0.1_results %>% 
   combine_RF_results_list(g1_A1_sv_0.1_RF_results) %>%
-  combine_NN_results_list(g1_A1_sv_0.1_NN_results15, g1_A1_sv_0.1_NN_results610)%>%
+  combine_NN_results_list(g1_A1_sv_0.1_NN_results15, g1_A1_sv_0.1_NN_results610) %>%
+  combine_LSTM_results_list(g1_A1_sv_0.1_LSTM_results_15, 0) %>%
   combine_FFORMA_results_list(g1_A1_sv_0.1_FFORMA_results)
 g2_A1_sv_0.1_results_all <- g2_A1_sv_0.1_results %>% 
   combine_RF_results_list(g2_A1_sv_0.1_RF_results) %>%
-  combine_NN_results_list(g2_A1_sv_0.1_NN_results15, g2_A1_sv_0.1_NN_results610)%>%
+  combine_NN_results_list(g2_A1_sv_0.1_NN_results15, g2_A1_sv_0.1_NN_results610) %>%
+  combine_LSTM_results_list(g2_A1_sv_0.1_LSTM_results_15, 0) %>%
   combine_FFORMA_results_list(g2_A1_sv_0.1_FFORMA_results)
 g3_A1_sv_0.1_results_all <- g3_A1_sv_0.1_results %>% 
   combine_RF_results_list(g3_A1_sv_0.1_RF_results) %>%
-  combine_NN_results_list(g3_A1_sv_0.1_NN_results15, g3_A1_sv_0.1_NN_results610)%>%
+  combine_NN_results_list(g3_A1_sv_0.1_NN_results15, g3_A1_sv_0.1_NN_results610) %>%
+  combine_LSTM_results_list(g3_A1_sv_0.1_LSTM_results_15, 0) %>%
   combine_FFORMA_results_list(g3_A1_sv_0.1_FFORMA_results)
 ## sv_1
 g1_A1_sv_1_results_all <- g1_A1_sv_1_results %>% 
   combine_RF_results_list(g1_A1_sv_1_RF_results) %>%
   combine_NN_results_list(g1_A1_sv_1_NN_results15, g1_A1_sv_1_NN_results610)%>%
+  combine_LSTM_results_list(g1_A1_sv_1_LSTM_results_15, 0) %>%
   combine_FFORMA_results_list(g1_A1_sv_1_FFORMA_results)
 g2_A1_sv_1_results_all <- g2_A1_sv_1_results %>% 
   combine_RF_results_list(g2_A1_sv_1_RF_results) %>%
   combine_NN_results_list(g2_A1_sv_1_NN_results15, g2_A1_sv_1_NN_results610)%>%
+  combine_LSTM_results_list(g2_A1_sv_1_LSTM_results_15, 0) %>%
   combine_FFORMA_results_list(g2_A1_sv_1_FFORMA_results)
 g3_A1_sv_1_results_all <- g3_A1_sv_1_results %>% 
   combine_RF_results_list(g3_A1_sv_1_RF_results) %>%
   combine_NN_results_list(g3_A1_sv_1_NN_results15, g3_A1_sv_1_NN_results610)%>%
+  combine_LSTM_results_list(g3_A1_sv_1_LSTM_results_15, 0) %>%
   combine_FFORMA_results_list(g3_A1_sv_1_FFORMA_results)
 
 saveRDS(g1_A1_nosv_0_results_all, file =
@@ -797,19 +863,13 @@ gen_tidy_loss_df <- function(simulation_results_list, realization_no, dgp_spec, 
     rbind(
       cbind(model = "LM_MSE", sample = sample, simulation_results_list[[realization_no]]$LM_MSE[[sample]]$loss_stats),
       cbind(model = "LM_MAE", sample = sample, simulation_results_list[[realization_no]]$LM_MAE[[sample]]$loss_stats),
-      
       ################################################################################################
-      
       cbind(model = "ELN_MSE", sample = sample, simulation_results_list[[realization_no]]$ELN_MSE[[sample]]$loss_stats),
       cbind(model = "ELN_MAE", sample = sample, simulation_results_list[[realization_no]]$ELN_MAE[[sample]]$loss_stats),
-      
       ################################################################################################
-      
       cbind(model = "RF_MSE", sample = sample, simulation_results_list[[realization_no]]$RF_MSE[[sample]]$loss_stats),
       cbind(model = "RF_MAE", sample = sample, simulation_results_list[[realization_no]]$RF_MAE[[sample]]$loss_stats),
-      
       ################################################################################################
-      
       cbind(model = "NN1_MSE", sample = sample, simulation_results_list[[realization_no]]$NN1_MSE[[sample]]$loss_stats),
       cbind(model = "NN1_MAE", sample = sample, simulation_results_list[[realization_no]]$NN1_MAE[[sample]]$loss_stats),
 
@@ -824,9 +884,10 @@ gen_tidy_loss_df <- function(simulation_results_list, realization_no, dgp_spec, 
 
       cbind(model = "NN5_MSE", sample = sample, simulation_results_list[[realization_no]]$NN5_MSE[[sample]]$loss_stats),
       cbind(model = "NN5_MAE", sample = sample, simulation_results_list[[realization_no]]$NN5_MAE[[sample]]$loss_stats),
-      
       #################################################################################################
-      
+      cbind(model = "LSTM_MSE", sample = sample, simulation_results_list[[realization_no]]$LSTM_MSE[[sample]]$loss_stats),
+      cbind(model = "LSTM_MAE", sample = sample, simulation_results_list[[realization_no]]$LSTM_MAE[[sample]]$loss_stats),
+      #################################################################################################
       cbind(model = "FFORMA_MSE", sample = sample, simulation_results_list[[realization_no]]$FFORMA_MSE[[sample]]$loss_stats),
       cbind(model = "FFORMA_MAE", sample = sample, simulation_results_list[[realization_no]]$FFORMA_MAE[[sample]]$loss_stats)
     )
@@ -837,7 +898,7 @@ gen_tidy_loss_df <- function(simulation_results_list, realization_no, dgp_spec, 
 # Function to iterate over all realizations
 
 all_realize_loss_df <- function(simulation_results_list, dgp_spec, SV, cross_corr) {
-  foreach(realization_no = (1:10), .combine = "rbind") %do% {
+  foreach(realization_no = (1:5), .combine = "rbind") %do% {
     gen_tidy_loss_df(simulation_results_list, realization_no, dgp_spec, SV, cross_corr)
   }
 }
@@ -1024,10 +1085,6 @@ labels[[16]] <- bquote(bold(.(labels[[16]])))
 all_loss_df_averaged %>%
   ungroup() %>%
   mutate(sample = as.factor(sample)) %>%
-  filter(model == "LM_MAE" | model == "LM_MSE" 
-         | model == "ELN_MAE" | model == "ELN_MSE"
-         | model == "RF_MAE" | model == "RF_MSE"
-         | model == "NN5_MAE" | model == "NN5_MSE") %>%
   ggplot() +
   geom_bar(aes(x = model, y = test_MAE, fill = sample), stat = "identity", position = position_dodge()) +
   scale_x_discrete(label = labels, breaks = breaks) +
@@ -1035,24 +1092,33 @@ all_loss_df_averaged %>%
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired") +
   facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_mae_pre_all.pdf",
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_mae.pdf",
        width = 15 * a4_aspect_ratio, height = 15, units = "cm")
 
 all_loss_df_averaged %>%
   ungroup() %>%
   mutate(sample = as.factor(sample)) %>%
-  filter(model == "LM_MAE" | model == "LM_MSE" 
-         | model == "ELN_MAE" | model == "ELN_MSE"
-         | model == "RF_MAE" | model == "RF_MSE"
-         | model == "NN5_MAE" | model == "NN5_MSE") %>%
   ggplot() +
-  geom_bar(aes(x = model, y = test_MSE, fill = sample), stat = "identity", position = position_dodge()) +
+  geom_bar(aes(x = model, y = test_RMSE, fill = sample), stat = "identity", position = position_dodge()) +
   scale_x_discrete(label = labels, breaks = breaks) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   scale_fill_brewer(palette = "Paired") +
   facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_mse_pre_all.pdf",
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_rmse.pdf",
+       width = 15 * a4_aspect_ratio, height = 15, units = "cm")
+
+all_loss_df_averaged %>%
+  ungroup() %>%
+  mutate(sample = as.factor(sample)) %>%
+  ggplot() +
+  geom_bar(aes(x = model, y = test_RSquare, fill = sample), stat = "identity", position = position_dodge()) +
+  scale_x_discrete(label = labels, breaks = breaks) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  scale_fill_brewer(palette = "Paired") +
+  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
+ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_rsquare.pdf",
        width = 15 * a4_aspect_ratio, height = 15, units = "cm")
 
 ###########################
