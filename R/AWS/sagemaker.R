@@ -65,6 +65,14 @@ library(tidyverse)
 library(jsonlite)
 library(Metrics)
 library(caret)
+library(lubridate)
+
+## Multicore Setup
+library(foreach)
+library(doFuture)
+#Registering
+registerDoFuture()
+plan(multisession)
 
 library(reticulate)
 
@@ -74,6 +82,7 @@ sagemaker <- import('sagemaker')
 boto3 <- import("boto3")
 
 boto3$Session()$region_name
+s3 <- boto3$client("s3")
 
 session <- sagemaker$Session()
 
@@ -152,20 +161,24 @@ tidy_to_json <- function(data, start) {
                                   target = c(1:cross_units), 
                                   dynamic_feat = c(1:cross_units))
   
-  for (i in 1:cross_units) {
+  pooled_panel_json <- foreach(i = 1:cross_units, .combine = "rbind") %dopar% {
+    df <- data.frame(start = 0, target = 0, dynamic_feat = 0)
     pooled_panel_filter <- data %>%
       filter(stock == stock_id[i])
-    
-    pooled_panel_json$target[i] <- list(pooled_panel_filter$rt)
+    pooled_panel_filter_rt <- pooled_panel_filter$rt %>% list()
     
     pooled_panel_filter_feature <- pooled_panel_filter %>%
       select(-time, -rt, -stock) %>%
       unname() %>%
       as.matrix() %>%
       # Transpose it to get the right format of one feature series per row
-      t()
+      t() %>%
+      list()
+    df$start <- start
+    df$target <- pooled_panel_filter_rt
+    df$dynamic_feat <- pooled_panel_filter_feature
     
-    pooled_panel_json[i, ]$dynamic_feat <- pooled_panel_filter_feature %>% list()
+    df
   }
   pooled_panel_json
 }
@@ -375,7 +388,8 @@ deepar_fit_stats <- function(pooled_panel, timeSlices) {
     
     ## Upload to S3, note that this function uploads the entire directory you specify
     
-    session$upload_data("data", s3_bucket, key_prefix = "data")
+    s3$upload_file("./data/pooled_panel_train.json", s3_bucket, "data/pooled_panel_train.json")
+    s3$upload_file("./data/pooled_panel_validation.json", s3_bucket, "data/pooled_panel_validation.json")
     
     #########################################################################################
     # Define an estimator
@@ -385,7 +399,7 @@ deepar_fit_stats <- function(pooled_panel, timeSlices) {
       image_name = image_name,
       role = role_arn,
       train_instance_count = 1L,
-      train_instance_type = 'ml.c4.xlarge',
+      train_instance_type = 'ml.c4.2xlarge',
       base_job_name = 'simulation-deepar',
       output_path = s3_output_path
     )
@@ -425,6 +439,9 @@ deepar_fit_stats <- function(pooled_panel, timeSlices) {
     ## Batch Inference #################
     ####################################
     
+    batch_input <- paste0("s3://", s3_bucket, "/batch/input/batch-inf-test.json")
+    batch_output <- paste0("s3://", s3_bucket, "/batch/output")
+    
     ## Data Prep
     
     batch_inf_test <- tidy_to_batch_inf(pooled_panel, start = "2000-01-01 00:00:00", timeSlices, set)
@@ -434,7 +451,7 @@ deepar_fit_stats <- function(pooled_panel, timeSlices) {
     
     ## Upload to S3, note that this function uploads the entire directory you specify
     
-    session$upload_data("batch", s3_bucket, key_prefix = "batch/input")
+    s3$upload_file("./batch/batch-inf-test.json", s3_bucket, "batch/input/batch-inf-test.json")
     
     ## Call Transform Job
     
@@ -447,11 +464,13 @@ deepar_fit_stats <- function(pooled_panel, timeSlices) {
     transformer$transform(data = batch_input, data_type = "S3Prefix", split_type = 'Line')
     
     ## Download Predictions and store into a vector
-    session$download_data("batch", s3_bucket, key_prefix = "batch/output/batch-inf-test.json.out")
+    s3$download_file(s3_bucket, "batch/output/batch-inf-test.json.out", "./batch/batch-inf-test.json.out")
     
     predictions <- stream_in(file("./batch/batch-inf-test.json.out"))
     
     forecasts <- predictions %>% unnest(cols = c(mean))
+    
+    DEEPAR_stats[[set]]$forecasts <- forecasts
     
     ## Actual Test rt
     test_rt <- pooled_panel_test %>% 
@@ -463,10 +482,10 @@ deepar_fit_stats <- function(pooled_panel, timeSlices) {
     ## Validation (similarly doesn't exist for DeepAR)
     
     ## Test (the main sauce)
-    DEEPAR_stats[[set]]$test_MAE <- mae(test_rt, forecasts)
-    DEEPAR_stats[[set]]$test_MSE <- mse(test_rt, forecasts)
-    DEEPAR_stats[[set]]$test_RMSE <- rmse(test_rt, forecasts)
-    DEEPAR_stats[[set]]$test_RSquare <- R2(forecasts, test_rt, form = "traditional")
+    DEEPAR_stats[[set]]$loss_stats$test_MAE <- mae(test_rt, forecasts)
+    DEEPAR_stats[[set]]$loss_stats$test_MSE <- mse(test_rt, forecasts)
+    DEEPAR_stats[[set]]$loss_stats$test_RMSE <- rmse(test_rt, forecasts)
+    DEEPAR_stats[[set]]$loss_stats$test_RSquare <- R2(forecasts, test_rt, form = "traditional")
   }
   DEEPAR_stats
 }
@@ -495,8 +514,7 @@ fit_all_models_deepar <- function(dataset_list, batch_process_range) {
     
     timeSlices <- customTimeSlices(start = 2, initialWindow = 84, horizon = 12, validation_size = 60, test_size = 12, set_no = 3)
     
-    simulation_results_list[[batch]]$LSTM_MSE <- deepar_fit_stats(pooled_panel, timeSlices)
-    simulation_results_list[[batch]]$LSTM_MAE <- deepar_fit_stats(pooled_panel, timeSlices)
+    simulation_results_list[[batch]]$DDEPAR_MSE <- deepar_fit_stats(pooled_panel, timeSlices)
   }
   simulation_results_list
 }
@@ -508,90 +526,89 @@ fit_all_models_deepar <- function(dataset_list, batch_process_range) {
 ## Fit the models
 ## Remove the dataset to save memory
 
-batch_process_range <- c(1:10)
+batch_process_range <- c(1:5)
 
 ############################################################################################
-
-session$download_data("data", s3_bucket, key_prefix = "data/g1_A1_nosv_0.rds")
+s3$download_file(s3_bucket, "data/g1_A1_nosv_0.rds", "./data/g1_A1_nosv_0.rds")
 g1_A1_nosv_0 <- readRDS("./data/g1_A1_nosv_0.rds")
 file.remove("./data/g1_A1_nosv_0.rds")
-g1_A1_nosv_0_DeepAR_results <- fit_all_moedls_deepar(g1_A1_nosv_0, batch_process_range)
+g1_A1_nosv_0_DeepAR_results <- fit_all_models_deepar(g1_A1_nosv_0, batch_process_range)
 saveRDS(g1_A1_nosv_0_DeepAR_results, file = "./Model_results/g1_A1_nosv_0_DeepAR_results")
 rm(g1_A1_nosv_0)
 
-session$download_data("data", s3_bucket, key_prefix = "data/g2_A1_nosv_0.rds")
+s3$download_file(s3_bucket, "data/g2_A1_nosv_0.rds", "./data/g2_A1_nosv_0.rds")
 g2_A1_nosv_0 <- readRDS("./data/g2_A1_nosv_0.rds")
 file.remove("./data/g2_A1_nosv_0.rds")
-g2_A1_nosv_0_DeepAR_results <- fit_all_moedls_deepar(g2_A1_nosv_0, batch_process_range)
+g2_A1_nosv_0_DeepAR_results <- fit_all_models_deepar(g2_A1_nosv_0, batch_process_range)
 saveRDS(g2_A1_nosv_0_DeepAR_results, file = "./Model_results/g2_A1_nosv_0_DeepAR_results")
 rm(g2_A1_nosv_0)
 
-session$download_data("data", s3_bucket, key_prefix = "data/g3_A1_nosv_0.rds")
+s3$download_file(s3_bucket, "data/g3_A1_nosv_0.rds", "./data/g3_A1_nosv_0.rds")
 g3_A1_nosv_0 <- readRDS("./data/g3_A1_nosv_0.rds")
 file.remove("./data/g3_A1_nosv_0.rds")
-g3_A1_nosv_0_DeepAR_results <- fit_all_moedls_deepar(g3_A1_nosv_0, batch_process_range)
+g3_A1_nosv_0_DeepAR_results <- fit_all_models_deepar(g3_A1_nosv_0, batch_process_range)
 saveRDS(g3_A1_nosv_0_DeepAR_results, file = "./Model_results/g3_A1_nosv_0_DeepAR_results")
 rm(g3_A1_nosv_0)
 ############################################################################################
-session$download_data("data", s3_bucket, key_prefix = "data/g1_A1_sv_0.01.rds")
+s3$download_file(s3_bucket, "data/g1_A1_sv_0.01.rds", "./data/g1_A1_sv_0.01.rds")
 g1_A1_sv_0.01 <- readRDS("./data/g1_A1_sv_0.01.rds")
 file.remove("./data/g1_A1_sv_0.01.rds")
-g1_A1_sv_0.01_DeepAR_results <- fit_all_moedls_deepar(g1_A1_sv_0.01, batch_process_range)
+g1_A1_sv_0.01_DeepAR_results <- fit_all_models_deepar(g1_A1_sv_0.01, batch_process_range)
 saveRDS(g1_A1_sv_0.01_DeepAR_results, file = "./Model_results/g1_A1_sv_0.01_DeepAR_results")
 rm(g1_A1_sv_0.01)
 
-session$download_data("data", s3_bucket, key_prefix = "data/g2_A1_sv_0.01.rds")
+s3$download_file(s3_bucket, "data/g2_A1_sv_0.01.rds", "./data/g2_A1_sv_0.01.rds")
 g2_A1_sv_0.01 <- readRDS("./data/g2_A1_sv_0.01.rds")
 file.remove("./data/g2_A1_sv_0.01.rds")
-g2_A1_sv_0.01_DeepAR_results <- fit_all_moedls_deepar(g2_A1_sv_0.01, batch_process_range)
+g2_A1_sv_0.01_DeepAR_results <- fit_all_models_deepar(g2_A1_sv_0.01, batch_process_range)
 saveRDS(g2_A1_sv_0.01_DeepAR_results, file = "./Model_results/g2_A1_sv_0.01_DeepAR_results")
 rm(g2_A1_sv_0.01)
 
-session$download_data("data", s3_bucket, key_prefix = "data/g3_A1_sv_0.01.rds")
+s3$download_file(s3_bucket, "data/g3_A1_sv_0.01.rds", "./data/g3_A1_sv_0.01.rds")
 g3_A1_sv_0.01 <- readRDS("./data/g3_A1_sv_0.01.rds")
 file.remove("./data/g3_A1_sv_0.01.rds")
-g3_A1_sv_0.01_DeepAR_results <- fit_all_moedls_deepar(g3_A1_sv_0.01, batch_process_range)
+g3_A1_sv_0.01_DeepAR_results <- fit_all_models_deepar(g3_A1_sv_0.01, batch_process_range)
 saveRDS(g3_A1_sv_0.01_DeepAR_results, file = "./Model_results/g3_A1_sv_0.01_DeepAR_results")
 rm(g3_A1_sv_0.01)
 ############################################################################################
-session$download_data("data", s3_bucket, key_prefix = "data/g1_A1_sv_0.1.rds")
+s3$download_file(s3_bucket, "data/g1_A1_sv_0.1.rds", "./data/g1_A1_sv_0.01.rds")
 g1_A1_sv_0.1 <- readRDS("./data/g1_A1_sv_0.1.rds")
 file.remove("./data/g1_A1_sv_0.1.rds")
-g1_A1_sv_0.1_DeepAR_results <- fit_all_moedls_deepar(g1_A1_sv_0.1, batch_process_range)
+g1_A1_sv_0.1_DeepAR_results <- fit_all_models_deepar(g1_A1_sv_0.1, batch_process_range)
 saveRDS(g1_A1_sv_0.1_DeepAR_results, file = "./Model_results/g1_A1_sv_0.1_DeepAR_results")
 rm(g1_A1_sv_0.1)
 
-session$download_data("data", s3_bucket, key_prefix = "data/g2_A1_sv_0.1.rds")
+s3$download_file(s3_bucket, "data/g2_A1_sv_0.1.rds", "./data/g2_A1_sv_0.01.rds")
 g2_A1_sv_0.1 <- readRDS("./data/g2_A1_sv_0.1.rds")
 file.remove("./data/g2_A1_sv_0.1.rds")
-g2_A1_sv_0.1_DeepAR_results <- fit_all_moedls_deepar(g2_A1_sv_0.1, batch_process_range)
+g2_A1_sv_0.1_DeepAR_results <- fit_all_models_deepar(g2_A1_sv_0.1, batch_process_range)
 saveRDS(g2_A1_sv_0.1_DeepAR_results, file = "./Model_results/g2_A1_sv_0.1_DeepAR_results")
 rm(g2_A1_sv_0.1)
 
-session$download_data("data", s3_bucket, key_prefix = "data/g3_A1_sv_0.1.rds")
+s3$download_file(s3_bucket, "data/g3_A1_sv_0.1.rds", "./data/g3_A1_sv_0.01.rds")
 g3_A1_sv_0.1 <- readRDS("./data/g3_A1_sv_0.1.rds")
 file.remove("./data/g3_A1_sv_0.1.rds")
-g3_A1_sv_0.1_DeepAR_results <- fit_all_moedls_deepar(g3_A1_sv_0.1, batch_process_range)
+g3_A1_sv_0.1_DeepAR_results <- fit_all_models_deepar(g3_A1_sv_0.1, batch_process_range)
 saveRDS(g3_A1_sv_0.1_DeepAR_results, file = "./Model_results/g3_A1_sv_0.1_DeepAR_results")
 rm(g3_A1_sv_0.1)
 #############################################################################################
-session$download_data("data", s3_bucket, key_prefix = "data/g1_A1_sv_1.rds")
+s3$download_file(s3_bucket, "data/g1_A1_sv_1.rds", "./data/g1_A1_sv_1.rds")
 g1_A1_sv_1 <- readRDS("./data/g1_A1_sv_1.rds")
 file.remove("./data/g1_A1_sv_1.rds")
-g1_A1_sv_1_DeepAR_results <- fit_all_moedls_deepar(g1_A1_sv_1, batch_process_range)
+g1_A1_sv_1_DeepAR_results <- fit_all_models_deepar(g1_A1_sv_1, batch_process_range)
 saveRDS(g1_A1_sv_1_DeepAR_results, file = "./Model_results/g1_A1_sv_1_DeepAR_results")
 rm(g1_A1_sv_1)
 
-session$download_data("data", s3_bucket, key_prefix = "data/g2_A1_sv_1.rds")
+s3$download_file(s3_bucket, "data/g2_A1_sv_1.rds", "./data/g2_A1_sv_1.rds")
 g2_A1_sv_1 <- readRDS("./data/g2_A1_sv_1.rds")
 file.remove("./data/g2_A1_sv_1.rds")
-g2_A1_sv_1_DeepAR_results <- fit_all_moedls_deepar(g2_A1_sv_1, batch_process_range)
+g2_A1_sv_1_DeepAR_results <- fit_all_models_deepar(g2_A1_sv_1, batch_process_range)
 saveRDS(g2_A1_sv_1_DeepAR_results, file = "./Model_results/g2_A1_sv_1_DeepAR_results")
 rm(g2_A1_sv_1)
 
-session$download_data("data", s3_bucket, key_prefix = "data/g3_A1_sv_1.rds")
+s3$download_file(s3_bucket, "data/g3_A1_sv_1.rds", "./data/g3_A1_sv_1.rds")
 g3_A1_sv_1 <- readRDS("./data/g3_A1_sv_1.rds")
 file.remove("./data/g3_A1_sv_1.rds")
-g3_A1_sv_1_DeepAR_results <- fit_all_moedls_deepar(g3_A1_sv_1, batch_process_range)
+g3_A1_sv_1_DeepAR_results <- fit_all_models_deepar(g3_A1_sv_1, batch_process_range)
 saveRDS(g3_A1_sv_1_DeepAR_results, file = "./Model_results/g3_A1_sv_1_DeepAR_results")
 rm(g3_A1_sv_1)
