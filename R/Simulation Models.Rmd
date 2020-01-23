@@ -741,6 +741,12 @@ ELN_stats_mae[[3]]$variable_importance %>% arrange(desc(importance))
 # Special Note: variable importance using a standard for loop (not parallelized) here is very computationally intensive
 # ALWAYS make sure that the parallelized version fo RF variable importance is used
 
+## Extra feature: calculate the variable imporance using the built in vimp method for rfsrc objects
+## This is primarily done just to contrast the traditional or normal way of doing VI with our new measure that is consistent across all models
+## There are two vimps available: Breiman Cutler (permutation) and Ishwaran-Kogalur vimp
+## Just do them both, as they don't seem to be too intensive
+## A newer vimp called holdout vimp involves truly holding out certain variables from the entire forest fitting process and seeing hwat effects this has - this is WAY too computationally intensive (they recommend ntree = 1000 * vtry, and a default of ntree = 1000)
+
 RF_fit_model_grid <- function(f, train, validation, RF_grid, loss_function) {
   #Initialize List
   RF_model_grid <- rep(list(0), nrow(RF_grid))
@@ -815,7 +821,7 @@ RF_fit_stats <- function(pooled_panel, RF_grid, timeSlices, loss_function, f) {
                             forecast_resids = 0,
                             model = 0,
                             hyperparameters = 0,
-                            variable_importance = 0)
+                            variable_importance = 0, vimp = 0)
     
     train <- pooled_panel %>%
       filter(time %in% timeSlices[[set]]$train)
@@ -884,6 +890,10 @@ RF_fit_stats <- function(pooled_panel, RF_grid, timeSlices, loss_function, f) {
     
     #Variable Importance
     RF_stats[[set]]$variable_importance <- RF_variable_importance(test, model)
+    
+    #RF Built in VIMPS
+    RF_stats[[set]]$vimp <- list(breiman_cutler = vimp(model, block.size = 1),
+                                 ishwaran_kogalur = vimp(model, block.size = best_model_params$ntree))
   }
   return(RF_stats)
 }
