@@ -46,8 +46,6 @@ library(xgboost)
 library(foreach)
 library(doFuture)
 #Registering
-registerDoFuture()
-plan(multisession)
 ```
 
 ```{r train_valid_test}
@@ -747,6 +745,11 @@ ELN_stats_mae[[3]]$variable_importance %>% arrange(desc(importance))
 ## Just do them both, as they don't seem to be too intensive
 ## A newer vimp called holdout vimp involves truly holding out certain variables from the entire forest fitting process and seeing hwat effects this has - this is WAY too computationally intensive (they recommend ntree = 1000 * vtry, and a default of ntree = 1000)
 
+## Major bug with randomforestSRC - for some reason you need to epxlicitly pass forest = TRUE when calling rfsrc in order for vimp not to crash R, even though forest = TRUE should be the defualt
+## Notes on computational problems: Breiman Cutler (permutation) is NOT feasible for vimp (took >3 hours and did not finish for a single rfsrc model)
+## Increasing block size decreases computational burden - have to use something is Ishwaran-Kogalur
+## Again, not actually too fussed with the specifics - just want to make sure that the results from a "usual" way of doing vimp is consistent
+
 RF_fit_model_grid <- function(f, train, validation, RF_grid, loss_function) {
   #Initialize List
   RF_model_grid <- rep(list(0), nrow(RF_grid))
@@ -848,7 +851,8 @@ RF_fit_stats <- function(pooled_panel, RF_grid, timeSlices, loss_function, f) {
                      mtry = best_model_params$mtry,
                      nodesize = best_model_params$nodesize,
                      splitrule = "mse",
-                     bootstrap = "by.root", samptype = "swr"
+                     bootstrap = "by.root", samptype = "swr",
+                     forest = TRUE
                      )
     } else {
       model <- rfsrc(f, train, 
@@ -858,9 +862,12 @@ RF_fit_stats <- function(pooled_panel, RF_grid, timeSlices, loss_function, f) {
                      nodesize = best_model_params$nodesize,
                      splitrule = "quantile.regr",
                      prob = 0.5,
-                     bootstrap = "by.root", samptype = "swr"
-                     )
+                     bootstrap = "by.root", samptype = "swr",
+                     forest = TRUE)
+      
     }
+    
+    test_vimp <- vimp(model, importance = "permute", block.size = 5)$importance
     
     #RF_stats[[set]]$model <- model
     
