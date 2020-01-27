@@ -1429,11 +1429,11 @@ real_data_results <- fit_all_models_real_data(final_dataset,
 f <- real_panel_formula(final_dataset)
 LM_stats_mse <- LM_fit(final_dataset, realdata_timeSlices, "mse", f,
                        macro_factor_names, individual_factor_names)
-saveRDS(LM_stats_mae, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/LM_stats_mae.rds")
+saveRDS(LM_stats_mae, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_ff/LM_stats_mae.rds")
 
 LM_stats_mae <- LM_fit(final_dataset, realdata_timeSlices, "mae", f,
                        macro_factor_names, individual_factor_names)
-saveRDS(LM_stats_mse, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/LM_stats_mse.rds")
+saveRDS(LM_stats_mse, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_ff/LM_stats_mse.rds")
 
 ####
 
@@ -1452,11 +1452,11 @@ LM_stats_mse[[3]]$variable_importance %>%
 ELN_stats_mse <- ELN_fit_stats(alpha_grid = seq(0, 1, 0.01), nlamb = 100, 
                                realdata_timeSlices, final_dataset, "mse",
                                macro_factor_names, individual_factor_names)
-saveRDS(ELN_stats_mse, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/ELN_stats_mse.rds")
+saveRDS(ELN_stats_mse, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_ff/ELN_stats_mse.rds")
 ELN_stats_mae <- ELN_fit_stats(alpha_grid = seq(0, 1, 0.01), nlamb = 100, 
                                realdata_timeSlices, final_dataset, "mae",
                                macro_factor_names, individual_factor_names)
-saveRDS(ELN_stats_mae, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/ELN_stats_mae.rds")
+saveRDS(ELN_stats_mae, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_ff/ELN_stats_mae.rds")
 
 ELN_stats_mse[[1]]$loss_stats
 ELN_stats_mse[[1]]$hyperparameters
@@ -1502,10 +1502,10 @@ RF_grid <- expand.grid(
 
 RF_mse_stats <- RF_fit_stats(final_dataset, RF_grid, realdata_timeSlices, "mse", f,
                              macro_factor_names, individual_factor_names)
-saveRDS(RF_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/RF_mse_stats_1.5_train_valid.rds")
+saveRDS(RF_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_ff/RF_mse_stats_1.5_train_valid.rds")
 RF_mae_stats <- RF_fit_stats(final_dataset, RF_grid, realdata_timeSlices, "mae", f,
                              macro_factor_names, individual_factor_names)
-saveRDS(RF_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/RF_mae_stats_1.5_train_valid.rds")
+saveRDS(RF_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_ff/RF_mae_stats_1.5_train_valid.rds")
 
 RF_mse_stats[[1]]$loss_stats
 RF_mse_stats[[1]]$hyperparameters
