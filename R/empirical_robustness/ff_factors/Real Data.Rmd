@@ -417,7 +417,8 @@ F_F_Research_Data_5_Factors_2x3_RAW <- read_csv("~/GitHub/Evaluation-of-Machine-
 
 macro_predictors_ff <- F_F_Research_Data_5_Factors_2x3_RAW %>%
   data.frame() %>%
-  dplyr::select(Mkt.RF, SMB, HML, RMW, CMA, Time) %>%
+  ## Filtering out the extra two factors for feasibility and singularity issues
+  dplyr::select(Mkt.RF, SMB, HML, Time) %>%
   # Rename
   mutate(time = Time) %>%
   dplyr::select(-Time) %>%
@@ -428,8 +429,6 @@ macro_predictors_ff <- F_F_Research_Data_5_Factors_2x3_RAW %>%
   mutate(Mkt.RF = lag(Mkt.RF)) %>%
   mutate(SMB = lag(SMB)) %>%
   mutate(HML = lag(HML)) %>%
-  mutate(RMW = lag(RMW)) %>%
-  mutate(CMA = lag(CMA)) %>%
   # Rename
   rename_at(vars(-time), function(x) paste0("macro_ff_", x)) %>%
   # Create constant
@@ -494,24 +493,13 @@ final_dataset <- data.frame(stock = datashare_combined$stock,
 rm(final_dataset_x)
 
 saveRDS(final_dataset, file = "final_dataset.rds")
+
+## Check for collinear columns, seems to be fine
+final_dataset %>%
+  select(-stock, -time) %>%
+  as.matrix() %>%
+  findLinearCombos()
 ```
-
-```{r}
-## This section builds a version of the final dataset which does NOT have any interaction terms
-## This was mainly done to reduce dimensionality
-
-datashare_combined <- full_join(macro_predictors, datashare_normalized, by = "time") %>%
-  # Create Excess Returns
-  mutate(rt = rt - macro_Rfree) %>%
-  select(-macro_Rfree) %>%
-  # Reorder
-  select(time, stock, rt, macro_constant, 
-         macro_bm, macro_dfy, macro_dp, macro_ep, macro_ntis, macro_svar, macro_tbl, macro_tms,
-         everything())
-
-saveRDS(datashare_combined, file = "final_dataset_no_interaction.rds")
-```
-
 
 ```{r}
 # Double Check
@@ -807,7 +795,7 @@ LM_fit <- function(pooled_panel, timeSlices, loss_function, f,
       lm <- lm(f, data = train, model = FALSE, x = FALSE, y = FALSE)
     } else {
       # Use pfn as method here for much faster computation
-      lm <- rq(f, data = train, tau = 0.5, method = "pfn")
+      lm <- rq(f, data = train, tau = 0.5, method = "fn")
     }
     
     #LM_stats[[set]]$model <- lm
@@ -1425,15 +1413,19 @@ real_data_results <- fit_all_models_real_data(final_dataset,
 
 ```{r, eval = FALSE}
 # test
+## Some problems. With more factors (as is with fama french setup) some of the quantile models are singular and have no fit due to the extra dimensionality
+## Solution: use jitter() to add a small amount of noise to the response variable
+final_dataset <- final_dataset %>%
+  mutate(rt = jitter(rt))
 
 f <- real_panel_formula(final_dataset)
 LM_stats_mse <- LM_fit(final_dataset, realdata_timeSlices, "mse", f,
                        macro_factor_names, individual_factor_names)
-saveRDS(LM_stats_mae, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_ff/LM_stats_mae.rds")
+saveRDS(LM_stats_mse, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_ff/LM_stats_mse.rds")
 
 LM_stats_mae <- LM_fit(final_dataset, realdata_timeSlices, "mae", f,
                        macro_factor_names, individual_factor_names)
-saveRDS(LM_stats_mse, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_ff/LM_stats_mse.rds")
+saveRDS(LM_stats_mae, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_ff/LM_stats_mae.rds")
 
 ####
 
