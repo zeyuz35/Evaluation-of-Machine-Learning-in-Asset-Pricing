@@ -1,0 +1,82 @@
+---
+title: "Welch Goyal Dataset"
+author: "Ze Yu Zhong"
+date: "22 May 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+################
+##Load Libraries
+################
+
+library(glmnet)
+library(tidyverse)
+library(keras)
+library(ggplot2)
+library(caret)
+library(forecast)
+library(rlist)
+library(Metrics)
+library(ranger)
+library(zoo)
+
+set.seed(27935248)
+
+#Import Data
+library(readxl)
+PredictorData2017 <- read_excel("PredictorData2017.xlsx", 
+    sheet = "Monthly", 
+    na = "NaN")
+
+PredictorData2017_edit <- PredictorData2017 %>%
+  mutate(yearmon = as.yearmon(as.character(yyyymm), format = "%Y%m")) %>%
+  select(-yyyymm)
+
+
+#Generate returns
+logreturns <- log(PredictorData2017_edit$Index/ lag(PredictorData2017_edit$Index, 1))
+PredictorData2017_edit <- cbind(PredictorData2017_edit, logreturns)
+
+PredictorData2017_edit <- PredictorData2017_edit %>%
+  filter(yearmon >= as.yearmon(as.character(200001), format = "%Y%m")) %>%
+  select(-csp, -Index)
+
+yearmon <- PredictorData2017_edit$yearmon
+logreturns <- PredictorData2017_edit$logreturns
+
+#Build pairwise interactions
+PredictorData2017_pair <- model.matrix(logreturns ~ .^2, 
+                           data = PredictorData2017_edit %>%
+                             select(-yearmon))
+
+PredictorData2017_pair <- as.data.frame(PredictorData2017_pair)
+
+#Normalize all predictors
+
+PredictorData2017_pair <- cbind(logreturns, PredictorData2017_pair)
+
+colnames(PredictorData2017_pair) <- make.names(colnames(PredictorData2017_pair))
+```
+
+```{r}
+rf <- ranger(logreturns ~ ., 
+             data = PredictorData2017_pair,
+             num.trees = 1000, 
+             mtry = 3,
+             write.forest = T,
+             splitrule = "variance",
+             importance = "impurity",
+             replace = T)
+
+rf$variable.importance
+```
+
+```{r}
+#Neural Networks
+
+```
+
+
+

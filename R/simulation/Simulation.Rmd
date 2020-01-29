@@ -1,0 +1,1667 @@
+---
+title: "Simulation"
+author: "Ze Yu Zhong"
+date: "21 March 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+################
+##Load Libraries
+################
+
+library(tidyverse)
+library(keras)
+library(ggplot2)
+library(forecast)
+library(rlist)
+library(Metrics)
+library(ranger)
+library(caret)
+library(tseries)
+
+#Parallel Computing
+library(foreach)
+library(doFuture)
+#Registering
+registerDoFuture()
+plan(multisession)
+
+set.seed(27935248)
+```
+
+```{r global_options}
+#####################################
+##Simulation
+#####################################
+
+#Number of stocks
+N <- 200
+# #Number of characteristics that underly true model
+P_c <- 100
+# #Number of Periods
+Time <- 180
+```
+
+```{r function_simulate_characteristics}
+###################
+##characteristics C_bar
+###################
+
+#######
+##Function to Generate C_bar
+#######
+
+# Bit unsure about which rho specification we want to use
+# Coded this up so that it generates rho ~ unif (a, b) constant across all times and stocks, where a and b are user supplied
+# rho is a correlation (AR parameter), so rho_b should always be <= 1
+# Set rho_a = 0.9, rho_b = 1 for original Gu et al specification
+# Set rho_a = 0.5, rho_b = 1 for our original proposed specification
+# OR, set rho_a = rho_b = constant for just a straight constant (ie no variation)
+# Note that setting lower rho here seems to give higher time series correlation
+
+gen_C_bar <- function(rho_a, rho_b){
+  
+  #Create some dimnames
+  #provideDimnames doesn't do exactly what I want it to
+  #Just do it manually via paste0
+  
+  stock_dim <- paste0("stock_", c(1:N))
+  c_dim <- paste0("c_", c(1:P_c))
+  time_dim <- paste0("time_", c(0:(Time+1)))
+  
+  #Initialize am empty array with i, j, t indexing
+  
+  C_bar <- array(data = 0, dim = c(N, P_c, (Time+2)), dimnames = list(stock_dim, c_dim, time_dim))
+  
+  # Not stated in Gu et al's paper, but found in their source code
+  # the error term here should be normally distributed with (1-rho^2) variance
+  # This results in a much smaller error term in general
+  rho <- runif(P_c, rho_a, rho_b)
+  
+  for (t in 1:(Time+1)) {
+    for (j in 1:P_c) {
+      C_bar[, j, t+1] <- C_bar[, j, t] * rho[j] + rnorm(N, 0, sqrt(1-rho[j]^2))
+    }
+  }
+  
+  ##Delete first period full of zeroes
+  C_bar <- C_bar[, , -1]
+  
+  return(C_bar)
+}
+
+#######################################
+##Generate correlation matrix
+#######################################
+
+gen_W <- function(lambda_degree){
+  #Generate Lambda Matrix first
+  # Change the sd parameter here to control the degree of cross sectional correlation
+  Lambda <- matrix(
+    data = rnorm(N*4, 0, lambda_degree),
+    nrow = N, ncol = 4
+  )
+  
+  #Use Lambda to create B matrix
+  B <- (Lambda) %*% t(Lambda)
+  B <- B + 1/10*diag(nrow = nrow(B))
+  
+  # B is now a positive semi definite matrix
+  # It is therefore a valid covariance matrix
+  
+  #Decompose it via cholesky to give the lower triangle matrix
+  # R by default gives the upper triangle, therefore it needs to be transposed
+  W <- t(chol(B))
+  return(W)
+}
+
+#########################
+##Generate C_hat
+#########################
+#This builds in the correlation from W into original C_bar
+#This already calls gen_W and does everything for you, but you need to specify a C_bar
+
+gen_C_hat <- function(C_bar, cross_corr_degree){
+  W <- gen_W(cross_corr_degree)
+  
+  stock_dim <- paste0("stock_", c(1:N))
+  c_dim <- paste0("c_", c(1:P_c))
+  time_dim <- paste0("time_", c(1:(Time+1)))
+  
+  C_hat <- array(data = 0, dim = c(N, P_c, Time+1), dimnames = list(stock_dim, c_dim, time_dim))
+
+  for (t in 1:(Time+1)) {
+    C_hat[, , t] <- W %*% C_bar[, , t]
+  }
+  
+  return(C_hat)
+}
+
+##################################
+##Generate final "observed" C
+##################################
+
+#This function "observes" characteristics by normalizing them within (-1, 1) via the rank transformation
+#Takes any sort of C matrix and normalizes them via rank trasnformation
+
+gen_C <- function(C_matrix){
+  
+  stock_dim <- paste0("stock_", c(1:N))
+  c_dim <- paste0("c_", c(1:P_c))
+  time_dim <- paste0("time_", c(1:(Time+1)))
+  
+  C <- array(data = 0, dim = c(N, P_c, Time+1), dimnames = list(stock_dim, c_dim, time_dim))
+  
+  for (t in 1:(Time+1)) {
+    C[, , t] <- (2/(N*P_c+1))*
+      rank(C_matrix[, , t]) - matrix(
+        data = 1, nrow = N, ncol = P_c
+        )
+  }
+  return(C)
+}
+```
+
+```{r generate_characteristics, eval = FALSE}
+C_bar <- gen_C_bar(rho_a = 0.9, rho_b = 1)
+C_hat <- gen_C_hat(C_bar)
+
+#No Cross Sectional Correlation
+C <- gen_C(C_bar)
+# We can check this via the following that there is indeed very low levels of correlation among factors
+# cor(C[, , 1])
+
+# Cross Sectional Correlation
+C <- gen_C(C_hat, 0.01)
+# We can similarly check this via the the following that there is a much larger degree correlation among factors
+# cor(C[, , 1])
+```
+
+```{r function_generate_xt_multivariate}
+########################
+##xt set up, original multivariate specification in proposal
+########################
+
+########################
+##Specify A Matrices
+########################
+
+##########################
+# Original specification
+# These do not work because the rows of some of them add up to be over zero, making them explode in value (and in general misbehave)
+##########################
+
+# A1 <- matrix(c(
+#   0.95, 0, 0,
+#   0, 0.95, 0,
+#   0, 0, 0.95),
+#   nrow = 3, ncol = 3
+# )
+# 
+# A2 <- matrix(c(
+#   1, 0, 0.25,
+#   0, 0.95, 0,
+#   0.25, 0, 0.95),
+#   nrow = 3, ncol = 3
+# )
+# 
+# A3 <- matrix(c(
+#   0.99, 0.2, 0.1,
+#   0.2, 0.90, -0.3,
+#   0.1, -0.3, -0.99),
+#   nrow = 3, ncol = 3
+# )
+
+# New specification that achieves the same sort of idea but tries to alleviate the explosion issue
+# It does this by specifying row values that add up to be less than 1 in absolute value
+# Row values that add up to be equal 1 still exhibit exploding
+
+A1 <- matrix(c(
+  0.95, 0, 0,
+  0, 0.95, 0,
+  0, 0, 0.95),
+  nrow = 3, ncol = 3
+)
+
+A2 <- matrix(c(
+  0.75, 0, 0.25,
+  0, 0.95, 0,
+  0.25, 0, 0.75),
+  nrow = 3, ncol = 3
+)
+
+A3 <- matrix(c(
+  0.95, 0.04, 0.01,
+  0.04, 0.90, -0.3,
+  0.01, -0.3, -0.95),
+  nrow = 3, ncol = 3
+)
+
+###################################
+###Function to Generate xt series
+###################################
+#xt is a multivariate time series with 3 different series
+#Generates xt series, given A matrix specification
+
+gen_xt <- function(A){
+  
+  x_dim <- paste0("x_", 1:3)
+  time_dim <- paste0("time_", c(0:(Time)))
+  
+  xt <- array(0, dim = c(1, 3, Time+1), dimnames = list(c(row), x_dim, time_dim))
+  
+  Axt <- xt
+  for (t in 2:(Time+1)) {
+    # sd here used to be 1
+    # Changed it to something much lower and consistent with Gu et al
+    ut <- rnorm(3, mean = 0, sd = sqrt(1 - 0.95^2))
+    Axt[, , t] <- A %*% Axt[, , t-1] + ut
+  }
+  Axt <- Axt[, , -1]
+  return(Axt)
+}
+
+# Function to plot xt
+
+plot_xt <- function(xt) {
+  data.frame(t(xt)) %>%
+  mutate(time = 1:180) %>%
+  gather(series, value, -time) %>%
+  ggplot() +
+  geom_line(aes(x = time, y = value, colour = series))
+}
+```
+
+
+```{r xt_testing, eval = FALSE}
+
+# Generate a multivariate xt
+
+xt <- gen_xt(A1)
+
+plot_xt(xt)
+
+# Remember that we want these macroeconomic series to exhibit persistence
+# Checking persistence via serial correlation
+acf(xt[1, ], lag.max = 90)
+acf(xt[2, ], lag.max = 90)
+acf(xt[3, ], lag.max = 90)
+
+#KPSS Tests
+#Unit root tests tend to have very low power, often fail to detect unit roots even even on random walks, or detect unit roots when there are no unit roots (high AR parameter)
+
+kpss.test(xt[1, ], null = c("Level", "Trend"), lshort = TRUE)
+kpss.test(xt[2, ], null = c("Level", "Trend"), lshort = TRUE)
+kpss.test(xt[3, ], null = c("Level", "Trend"), lshort = TRUE)
+
+#pacf(xt[1, ], lag.max = 90)
+#pacf(xt[2, ], lag.max = 90)
+#pacf(xt[3, ], lag.max = 90)
+```
+
+```{r function_univariate_xt}
+# Gu et al's univariate xt series
+# We could make this take an A matrix and make it reduce down, but that's a little bit too complex for no real payoff
+
+gen_xt_univariate <- function(){
+  
+  x_dim <- paste0("x_", 1)
+  time_dim <- paste0("time_", c(1:(Time)))
+  
+  #Initialize
+  xt <- array(0, dim = c(1, Time), dimnames = list(x_dim, time_dim))
+  rho <- 0.95
+  
+  xt[1, 1] <- rnorm(1, mean = 0, sd = sqrt(1 - rho^2))
+  
+  for (t in 2:(Time)) {
+    xt[1, t] <- xt[t-1]*rho + rnorm(1, mean = 0, sd = sqrt(1 - rho^2))
+  }
+  return(xt)
+}
+```
+
+```{r univariate_xt_testing, eval = FALSE}
+
+# Generate a univariate xt
+
+xt_univariate <- gen_xt_univariate()
+
+plot_xt(xt_univariate)
+
+acf(xt_univariate[1,], lag.max = 90)
+```
+
+```{r function_g}
+############################
+##Different g() functions
+############################
+
+#Logit function, used in some specified structures
+
+logit <- function(x){
+  (1 + exp(-x))^(-1)
+}
+
+#################################
+
+##################################
+## Generate true factors for entire panel
+##################################
+
+gen_g_factor_panel <- function(g_function, C, x) {
+  
+  g_name <- g_function
+  
+  #G1 case
+  if (g_name == "g1") {
+        
+    stock_dim <- paste0("stock_", c(1:N))
+    c_dim <- c("c_i1,t", "c_i2,t", "c_i3,t * x_t'")
+    time_dim <- paste0("time_", c(1:(Time)))
+        
+    g_factor_panel <- array(0, dim = c(N, 3, Time), dimnames = list(stock_dim, c_dim, time_dim))
+    
+    for (i in 1:N) {
+      for (t in 1:Time) {
+        #Univariate xt Case
+        if (nrow(x) == 1) {
+          g_factor_panel[i, , t] <- matrix(c(C[i, 1, t], C[i, 2, t], C[i, 3, t] * x[, t]), nrow = 1)
+        }
+        #Multivariate xt Case
+        else {
+          g_factor_panel[i, , t] <- matrix(c(C[i, 1, t], C[i, 2, t], C[i, 3, t] * t(x[3, t])), nrow = 1)
+        }
+      }
+    }
+  }
+  
+  #G2 Case
+  else if (g_name == "g2") {
+        
+    stock_dim <- paste0("stock_", c(1:N))
+    c_dim <- c("c_i1,t^2", "c_i1,t * c_i2,t", "sgn(c_i3,t * x_t')")
+    time_dim <- paste0("time_", c(1:(Time)))
+        
+    g_factor_panel <- array(0, dim = c(N, 3, Time), dimnames = list(stock_dim, c_dim, time_dim))
+    
+    for (i in 1:N) {
+      for (t in 1:Time) {
+        #Univariate xt Case
+        if (nrow(x) == 1) {
+          g_factor_panel[i, , t] <- matrix(c(C[i, 1, t]^2, C[i, 1, t]*C[i, 2, t], sign(C[i, 3, t] * x[, t])), nrow = 1)
+        }
+        #Multivariate xt Case
+        else {
+          g_factor_panel[i, , t] <- matrix(c(
+            C[i, 1, t]^2, 
+            C[i, 1, t]*C[i, 2, t],
+            sign(C[i, 3, t] * t(x[3, t]))), 
+            nrow = 1
+            )
+        }
+      }
+    }
+  }
+  
+  #G3 Case
+  else if (g_name == "g3") {
+        
+    stock_dim <- paste0("stock_", c(1:N))
+    c_dim <- c("I(c_i3,t > 0)", "c_i2,t^3", "c_i1,t * c_12,t * I(c_i3,t > 0)", "logit(c_i3,t)")
+    time_dim <- paste0("time_", c(1:(Time)))
+        
+    g_factor_panel <- array(0, dim = c(N, 4, Time), dimnames = list(stock_dim, c_dim, time_dim))
+    
+    for (i in 1:N) {
+      for (t in 1:Time) {
+        g_factor_panel[i, , t] <- matrix(c(
+          (C[i, 1, t] > 0), 
+          C[i, 2, t]^3,
+          C[i, 1, t] * C[i, 2, t] * (C[i, 3, t] > 0),
+          logit(C[i, 3, t])
+          ), nrow = 1)
+      }
+    }
+  }
+  
+  #G4 Case
+  else if (g_name == "g4") {
+        
+    stock_dim <- paste0("stock_", c(1:N))
+    c_dim <- c("chat_i1,t", "chat_i2,t", "chat_i3,t * x_t'")
+    time_dim <- paste0("time_", c(1:(Time)))
+        
+    g_factor_panel <- array(0, dim = c(N, 3, Time), dimnames = list(stock_dim, c_dim, time_dim))
+    
+    #Same as G1 case, but remember to pass c_hat through to this
+    
+    for (i in 1:N) {
+      for (t in 1:Time) {
+        #Univariate xt Case
+        if (nrow(x) == 1) {
+          g_factor_panel[i, , t] <- matrix(c(C[i, 1, t], C[i, 2, t], C[i, 3, t] * x[, t]), nrow = 1)
+        }
+        #Multivariate xt Case
+        else {
+          g_factor_panel[i, , t] <- matrix(c(C[i, 1, t], C[i, 2, t], C[i, 3, t] * t(x[3, t])), nrow = 1)
+        }
+      }
+    }
+  }
+  return(g_factor_panel)
+}
+
+#test this
+#working, yay
+
+# g1_factor_panel <- gen_g_factor_panel("g1", C, xt)
+
+# g2_factor_panel <- gen_g_factor_panel("g2", C, xt)
+
+# g3_factor_panel <- gen_g_factor_panel("g3", C, xt)
+
+# g4_factor_panel <- gen_g_factor_panel("g4", C, xt)
+
+#################################
+## Generate an panel of g(), given a panel of g factors and theta
+## Will be useful later
+#################################
+
+#Remmeber to make sure theta and the factor set are conformable
+gen_g_panel <- function(g_factor, theta) {
+  g_panel <- array(0, dim = c(N, 1, Time))
+  for (i in 1:N) {
+    for (t in 1:Time) {
+      g_panel[i, 1, t] <- g_factor[i, , t] %*% t(theta)
+    }
+  }
+  return(g_panel)
+}
+
+# g1_panel <- gen_g_panel(g1_factor_panel, theta = matrix(c(0.02, 0.02, 0.02), nrow = 1))
+```
+
+```{r function_return_equation}
+##Specify omega, gamma and w
+omega <- -0.736
+gamma <- 0.90
+w <- sqrt(0.363)
+##
+
+#############################
+##Function to generate errors
+#############################
+
+#Modified this function that that you can specify which parts of the error you wish to turn on or off
+
+#Gu's specification just had student t errors
+#Our specification in the proposal had SV errors (much more busier)
+
+#It takes sv, a logical value with 1 = sv errors, and 0 = standard student t errors
+
+#This will return an array containing the entire panel of errors
+#i.e. the errors for each i, and across all times
+#Error itself only has one dimension, so it will be in [i, 1, t] format
+
+gen_error <- function(sv, 
+                      #epsilon sd. Note that this is the normal sd in sv case, 
+                      #and student t sd in simple case
+                      ep_sd,
+                      #sv parameters
+                      omega, gamma, w,
+                      #Beta_v Error parameters
+                      C, v_sd){
+  #Initialize
+  error <- array(data = 0, dim = c(N, 1, Time))
+  
+  ##Beta_v component, add this on to the other error component at the end
+  Beta <- C[, 1:3, ]
+  Beta_v <- array(0, dim = c(N, 1, Time))
+  
+  for (t in 1:(Time)) {
+    v <- matrix(data = rnorm(3, mean = 0, sd = v_sd), 
+                nrow = 3, 
+                ncol = 1)
+    for (i in 1:N) {
+      Beta_v[i, 1, t] <- Beta[i, , t] %*% v
+    }
+  }
+  ###########
+  #SV errors
+  ###########
+  if (sv == 1) {
+    ##Generate Sigma first (only indexed by time)
+    logsigma2 <- rep(0, Time)
+    #Initial sigma2
+    logsigma2[1] <- omega/(1-gamma)
+    
+    for (t in 2:(Time)) {
+      logsigma2[t] <- omega + gamma*logsigma2[t-1] + rnorm(1, 0, w)
+    }
+    
+    for (t in 1:(Time)) {
+      for (i in 1:N) {
+        error[i, 1, t] <- sqrt(exp(logsigma2[t])) * rnorm(1, 0, ep_sd)
+      }
+    }
+    return(Beta_v + error)
+  }
+  ##################
+  #NON-SV Student t errors
+  ##################
+  else {
+    for (t in 1:(Time)) {
+      error[, , t] <- matrix(data = rt(N, df = 5) * sqrt(ep_sd^2 * (5-2)/5), nrow = N)
+    }
+    return(error + Beta_v)
+  }
+}
+
+#SV version check
+# error <- gen_error(sv = 1, ep_sd = 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363), C, v_sd = 0.05)
+
+#Non-SV version check
+#You'll still need to specify values for omega, gamma and w, they just won't be used
+# error <- gen_error(sv = 0, ep_sd = 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363), C, v_sd = 0.05)
+
+#Both Working, yay
+
+```
+
+```{r, eval = FALSE}
+##Just a recap chunk of everything that needs to be run to generate everything thus far before we move on to tuning R squared
+
+C_bar <- gen_C_bar(rho_a = 0.9, rho_b = 1)
+C_hat <- gen_C_hat(C_bar)
+
+#Change this to C_hat if you want to build in cross sectional correlation
+C <- gen_C(C_bar)
+
+A1 <- matrix(c(
+  0.95, 0, 0,
+  0, 0.95, 0,
+  0, 0, 0.95),
+  nrow = 3, ncol = 3
+)
+
+A2 <- matrix(c(
+  1, 0, 0.25,
+  0, 0.95, 0,
+  0.25, 0, 0.95),
+  nrow = 3, ncol = 3
+)
+
+A3 <- matrix(c(
+  0.99, 0.2, 0.1,
+  0.2, 0.90, -0.3,
+  0.1, -0.3, -0.99),
+  nrow = 3, ncol = 3
+)
+
+xt <- gen_xt(A1)
+
+xt_univariate <- gen_xt_univariate()
+
+#Generate the true underlying factors first
+g1_factor_panel <- gen_g_factor_panel("g1", C, xt)
+
+#Then pass them through to multiply them by theta to get g()
+g1_panel <- gen_g_panel(g1_factor_panel, theta = matrix(c(0.04, 0.035, 0.01), nrow = 1))
+
+#Generate the errors
+
+#SV version
+error_sv <- gen_error(sv = 1, ep_sd = 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363), C, v_sd = 0.05)
+
+#Non-SV version
+error_nosv <- gen_error(sv = 0, ep_sd = 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363), C, v_sd = 0.05)
+
+#Finally generate a returns panel
+
+rt_panel_g1_A1 <- g1_panel + error_sv
+
+#All works, hooray
+
+```
+
+```{r tune_rsquared, eval = FALSE}
+#See Cochrane's book for more details and explanations, Chapter 12
+
+# Absolutely no clue how Gu et al calibrated their R squared values
+# But, their average time series R squared for each stock was 50%, average annualized volatility was 30%
+# Cross sectional R squared was 25%, and predictive R squared was 5%.
+
+# David was getting something around 20% time series r squared, and 5% cross sectional (double check)
+# This is expected to reduce by a whole lot more as we increase the size of the panel, in terms of both time and cross section size
+
+##########################################
+# Time series R-squared
+##########################################
+
+## Methodology 
+
+# Run a standard regression for expected returns
+# R_it = alpha_i + Beta_i * factor_t + e_it
+# Save the coefficients for Beta from this, labelling them as Lambda
+# Calculate the SSR and SST, and hence R squared for each stock return's time series
+
+#Empty Matrices to be used
+Rsquared <- matrix(0, N, 1)
+SSR <- matrix(0, N, 1)
+SST <- matrix(0, N, 1)
+Fits <- matrix(0, Time, N)
+
+#This stores all the BETAS, NOT the constant
+Coeff_Betas <- matrix(0, N, 3)
+Xs_bar <- matrix(0, N, 3)
+R_bar <- matrix(0, N, 1)
+Resids <- matrix(0, Time, N)
+
+annual_vol <- matrix(0, N, 1)
+
+#Done for the g1 case for now
+
+#First run individual time series regressions
+for (i in 1:N) {
+  #True Returns
+  Rs <- rt_panel_g1_A1[i, , ]
+  R_bar[i, 1] <- mean(Rs)
+  
+  #True Factor Set
+  Xs <- t(g1_factor_panel[i, , ])
+  
+  #Not too sure what this is doing, not used anywhere else
+  Xs_bar[i, ] <- colMeans(Xs)
+  
+  df <- data.frame(Rs, Xs)
+  
+  fit <- lm(Rs ~., df)
+  Fits[, i] <- fit$fitted.values
+  
+  #Save all the betas except for the constant, slightly more clever way that handles different number of true factors
+  Coeff_Betas[i, ] <- as.numeric(fit$coefficients[-1])
+  
+  Resids[, i] <- fit$residuals
+  SSR[i, 1]<- sum(Resids[, i]^2)
+  SST[i, 1]<- sum((Rs-mean(Rs))^2)
+  
+  Rsquared[i, 1]<-summary(fit)$r.squared
+  
+  #annualized volatility
+  
+  annual_vol[i] <- sd(Rs) * sqrt(12)
+}
+
+mean(Rsquared)
+#The no sv designs makes all stocks have pretty similar volatility, hmmmm
+mean(annual_vol)
+
+# Not too sure what is going on here
+
+# val <- g1(C,x,theta)
+# true_res <- rowSums((rt - val)^2)
+# true_sst <- rowSums((rt - rowMeans(rt))^2)
+# true_rRsquared <- 1 - (sum(true_res)/sum(true_sst))
+# 
+# fitted_Rsquared <- 1 - (sum(SSR)/sum(SST))
+
+##########################################
+# Cross-sectional R-squared
+##########################################
+
+#Run a cross sectional regression of average returns on the estimated betas from before
+
+# E(Rei) = alpha_i (constant) + B_i * lambda
+
+R_bar <- rowMeans(rt_panel_g1_A1)
+df_new <- data.frame(R_bar, Coeff_Betas) 
+
+cross_fit <- lm(R_bar~ Coeff_Betas, df_new) 
+summary(cross_fit)$r.squared
+
+# This gives us the cross sectional R squared
+
+# Same as David, both of their r squared values are off
+```
+
+```{r tune_stats_function}
+############################
+# Function Form
+############################
+# Given a return series panel, its signal (non-error component), and its corresponding underlying true factors, return its mean individual time series R squared, mean annualized volatility, cross sectional r squared and predictive r squared
+
+panel_tune_stats <- function(return_panel, signal_panel, true_factor_panel) {
+  #Initialize
+  tune_stats <- data.frame(time_series_fitted.rsquare = 0, annual_vol = 0, true_rsquare = 0, cross_section_rsquare = 0)
+  
+  ########
+  ## Time Series + Annual Vol
+  ########
+  
+    #Empty Matrices to be used
+    Rsquared <- matrix(0, N, 1)
+    SSR <- matrix(0, N, 1)
+    SST <- matrix(0, N, 1)
+    Fits <- matrix(0, Time, N)
+    
+    #This stores all the BETAS, NOT the constant
+    Coeff_Betas <- matrix(0, N, ncol(true_factor_panel))
+    Xs_bar <- matrix(0, N, ncol(true_factor_panel))
+    R_bar <- matrix(0, N, 1)
+    Resids <- matrix(0, Time, N)
+    
+    annual_vol <- matrix(0, N, 1)
+    
+    #First run individual time series regressions
+    for (i in 1:N) {
+      #True Returns
+      Rs <- return_panel[i, , ]
+      R_bar[i, 1] <- mean(Rs)
+      
+      #True Factor Set
+      Xs <- t(true_factor_panel[i, , ])
+      
+      #Not too sure what this is doing, not used anywhere else
+      Xs_bar[i, ] <- colMeans(Xs)
+      
+      df <- data.frame(Rs, Xs)
+      
+      fit <- lm(Rs ~., df)
+      Fits[, i] <- fit$fitted.values
+      
+      #Save all the betas except for the constant, slightly more clever way that handles different number of true factors
+      Coeff_Betas[i, ] <- as.numeric(fit$coefficients[-1])
+      
+      Resids[, i] <- fit$residuals
+      SSR[i, 1] <- sum(Resids[, i]^2)
+      SST[i, 1] <- sum((Rs-mean(Rs))^2)
+      
+      Rsquared[i, 1] <- summary(fit)$r.squared
+      
+      # annualized volatility
+      
+      annual_vol[i] <- sd(Rs) * sqrt(12)
+    }
+    
+  tune_stats$time_series_fitted.rsquare <- mean(Rsquared)
+    
+  tune_stats$annual_vol <- mean(annual_vol)
+  
+  #Predictive R Squared
+  
+  tune_stats$true_rsquare <- R2(signal_panel, return_panel, form = "traditional")
+    
+  # Cross Sectional R squared
+  # Regress the average cross sectional returns on the betas we estimated from previously
+    
+  R_bar <- rowMeans(return_panel)
+  df_new <- data.frame(R_bar, Coeff_Betas) 
+    
+  cross_fit <- lm(R_bar ~ Coeff_Betas, df_new) 
+    
+  tune_stats$cross_section_rsquare <- summary(cross_fit)$r.squared
+  
+  return(tune_stats)
+}
+
+# Testing
+
+# xt_univariate <- gen_xt_univariate()
+
+# Generate the true underlying factors first
+# g1_factor_panel <- gen_g_factor_panel("g1", C, xt)
+
+#Then pass them through to multiply them by theta to get g()
+# g1_panel <- gen_g_panel(g1_factor_panel, theta = matrix(c(0.04, 0.035, 0.01), nrow = 1))
+
+#Generate the errors
+
+#SV version
+# error_sv <- gen_error(sv = 1, ep_sd = 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363), C, v_sd = 0.05)
+
+#Non-SV version
+# error_nosv <- gen_error(sv = 0, ep_sd = 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363), C, v_sd = 0.05)
+
+#Finally generate a returns panel
+
+# rt_panel_g1_A1 <- g1_panel + error_nosv
+
+# Generate a predictor panel
+
+# z_panel_g1_A1 <- gen_predictor_z(C, xt)
+
+# panel_tune_stats(rt_panel_g1_A1, g1_panel, g1_factor_panel)
+```
+
+```{r tune_stats_function_alternative, eval = FALSE}
+############################
+# Function Form
+############################
+# Alternative method
+# Given a return series panel, its signal (non-error component), and its corresponding factors (that are NOT interacted with xt), return its mean individual time series R squared, mean annualized volatility, cross sectional r squared and predictive r squared
+# This is easy, because the factor panel not interacted with xt is just the C panel
+
+panel_tune_stats <- function(return_panel, signal_panel, factor_panel) {
+  #Initialize
+  tune_stats <- data.frame(time_series_fitted.rsquare = 0, annual_vol = 0, true_rsquare = 0, cross_section_rsquare = 0)
+  factor_panel <- factor_panel[, , -1]
+  
+  ########
+  ## Time Series + Annual Vol
+  ########
+  
+    #Empty Matrices to be used
+    Rsquared <- matrix(0, N, 1)
+    SSR <- matrix(0, N, 1)
+    SST <- matrix(0, N, 1)
+    Fits <- matrix(0, Time, N)
+    
+    #This stores all the BETAS, NOT the constant
+    Coeff_Betas <- matrix(0, N, 4)
+    Xs_bar <- matrix(0, N, ncol(factor_panel))
+    R_bar <- matrix(0, N, 1)
+    Resids <- matrix(0, Time, N)
+    
+    annual_vol <- matrix(0, N, 1)
+    
+    #First run individual time series regressions
+    for (i in 1:N) {
+      #True Returns
+      Rs <- return_panel[i, , ]
+      R_bar[i, 1] <- mean(Rs)
+      
+      #True Factor Set
+      Xs <- t(factor_panel[i, , ])
+      
+      #Not too sure what this is doing, not used anywhere else
+      Xs_bar[i, ] <- colMeans(Xs)
+      
+      df <- data.frame(Rs, Xs)
+      
+      fit <- lm(Rs ~., df)
+      Fits[, i] <- fit$fitted.values
+      
+      # Save all the betas except for the constant, slightly more clever way that handles different number of true factors
+      # Save Only the betas of the true factors (to achieve lower cross sectional r squared)
+      # Due to the way they set up the predictor set, it does not actually have some of the exact factors
+      
+      Coeff_Betas[i, ] <- as.numeric(fit$coefficients[1:4])
+      
+      Resids[, i] <- fit$residuals
+      SSR[i, 1] <- sum(Resids[, i]^2)
+      SST[i, 1] <- sum((Rs-mean(Rs))^2)
+      
+      Rsquared[i, 1] <- summary(fit)$r.squared
+      
+      #annualized volatility
+      
+      annual_vol[i] <- sd(Rs) * sqrt(12)
+    }
+    
+  tune_stats$time_series_fitted.rsquare <- mean(Rsquared)
+    
+  tune_stats$annual_vol <- mean(annual_vol)
+  
+  #Predictive R Squared
+  
+  tune_stats$true_rsquare <- R2(signal_panel, return_panel, form = "traditional")
+    
+    # David's approach at doing true (predictive) r squared
+    
+    # val <- g1(C,x,theta)
+    # true_res <- rowSums((rt - val)^2)
+    # true_sst <- rowSums((rt - rowMeans(rt))^2)
+    # true_rRsquared <- 1 - (sum(true_res)/sum(true_sst))
+    
+    # fitted_Rsquared <- 1 - (sum(SSR)/sum(SST))
+    
+  # Cross Sectional R squared
+    
+    R_bar <- rowMeans(return_panel)
+    df_new <- data.frame(R_bar, Coeff_Betas) 
+    
+    cross_fit <- lm(R_bar ~ Coeff_Betas, df_new) 
+    
+  tune_stats$cross_section_rsquare <- summary(cross_fit)$r.squared
+  
+  return(tune_stats)
+}
+
+# Testing
+
+xt_univariate <- gen_xt_univariate()
+
+#Generate the true underlying factors first
+g1_factor_panel <- gen_g_factor_panel("g1", C, xt)
+
+#Then pass them through to multiply them by theta to get g()
+g1_panel <- gen_g_panel(g1_factor_panel, theta = matrix(c(0.04, 0.035, 0.01), nrow = 1))
+
+#Generate the errors
+
+#SV version
+error_sv <- gen_error(sv = 1, ep_sd = 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363), C, v_sd = 0.05)
+
+#Non-SV version
+error_nosv <- gen_error(sv = 0, ep_sd = 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363), C, v_sd = 0.05)
+
+#Finally generate a returns panel
+
+rt_panel_g1_A1 <- g1_panel + error_nosv
+
+# Generate a predictor panel
+
+# z_panel_g1_A1 <- gen_predictor_z(C, xt)
+
+panel_tune_stats(rt_panel_g1_A1, g1_panel, C)
+```
+
+```{r function_build_predictor}
+##############################################################################
+##Function to build predictor set for the entire panel
+##############################################################################
+
+######################
+# Kronecker product
+######################
+
+# Calculated with z_it = (1, xt)' \otimes c_it
+
+# xt should be P_x x 1
+# c_it should be P_c x 1
+# z_it should be a P_c*(P_x + 1) x 1 vector of features
+
+gen_predictor_z <- function(C, x){
+  
+  xt_set <- rbind(1, x)
+  
+  dimnames(xt_set)[[1]][1] <- "constant"
+  
+  stock_dim <- paste0("stock_", c(1:N))
+  c_dim <- dimnames(kronecker(t(xt_set[, 1]), t(C[1, , 1]), make.dimnames = TRUE))[[2]]
+  time_dim <- paste0("time_", c(1:(Time)))
+  
+  z_panel <- array(0, dim = c(N, (nrow(xt_set)) * P_c, Time), dimnames = list(stock_dim, c_dim, time_dim))
+  
+  for (i in 1:N) {
+    for (t in 1:Time) {
+      z_panel[i, , t] <- kronecker(t(xt_set[, t]), t(C[i, , t]), make.dimnames = TRUE)
+    }
+  }
+  return(z_panel)
+}
+
+# Test
+# z_panel_g1_A1 <- gen_predictor_z(C, xt_univariate)
+
+##############
+# Two way
+##############
+# Different z panel which instead returns all two way interaction terms from a base of all xt and c factors
+
+gen_predictor_z_twoway <- function(C, x){
+  
+  stock_dim <- paste0("stock_", c(1:N))
+  time_dim <- paste0("time_", c(1:(Time)))
+  
+  z_panel_base <- array(0, dim = c(N, P_c + nrow(x), Time), dimnames = list(stock_dim, append(dimnames(x)[[1]], dimnames(C)[[2]]), time_dim))
+  z_panel_twoway <- array(0, dim = c(N, (P_c + nrow(x)) + choose(P_c + nrow(x), 2), Time), 
+                          dimnames = list(stock_dim, rep(1, (P_c + nrow(x)) + choose(P_c + nrow(x), 2)), time_dim)
+  )
+  
+  for (t in 1:Time) {
+    # The key here is to realise that array fills data through the 1st dimension, then the second, etc
+    # Therefore, we can easily get an xt panel matrix in the desired format by simply transposing the result
+    z_panel_base[, , t] <- cbind(t(array(rep(x[, t], N), dim = c(nrow(x), N), dimnames = list(dimnames(x)[[1]], stock_dim))), C[, , t])
+  }
+  
+  dmy <- dummyVars(~.^2, data = z_panel_base[, , t])
+  
+  dimnames(z_panel_twoway)[[2]] <- dimnames(predict(dmy, newdata = z_panel_base[, , t]))[[2]]
+  
+  for (t in 1:Time) {
+    z_panel_twoway[, , t] <- predict(dmy, newdata = z_panel_base[, , t])
+  }
+  
+  z_panel_twoway
+}
+
+# Test
+# Caution: this approach requires A LOT of memory
+
+# z_panel_twoway_g1_A1 <- gen_predictor_z_twoway(C, xt)
+
+# Bind Returns and Predictor Sets Together into one 2D dataframe, ready to be used for training models
+
+bind_rt_predictor <- function(rt_panel, z_panel) {
+  
+  df <- cbind(data.frame(rt_panel[, , 1]), time = 2, stock = paste0("stock_", c(1:N)), data.frame(z_panel[, , 1]))
+
+  colnames(df)[1] <- "rt"
+  row.names(df) <- NULL
+  
+  for (t in 2:Time) {
+    df_new <- cbind(data.frame(rt_panel[, , t]), time = 1+t, stock = paste0("stock_", c(1:N)), data.frame(z_panel[, , t]))
+    colnames(df_new)[1] <- "rt"
+    row.names(df_new) <- NULL
+    df <- rbind(df, df_new)
+  }
+  return(df)
+}
+
+#test
+
+# panel_g1_A1 <- bind_rt_predictor(rt_panel_g1_A1, z_panel_g1_A1)
+
+# Note that this dataframe is very similar in size to the original array
+# panel_twoway_g1_A1 <- bind_rt_predictor(rt_panel_g1_A1, z_panel_twoway_g1_A1)
+
+#With that... DONE WITH THIS PART OF THE PROJECT
+
+```
+
+```{r simulation_function_parallel}
+##########################
+
+# Parallel implementation of simulation design
+# This is absolutely amazing, finishes 100 simulations in less than 5 minutes on 12 logical cores
+
+sim_panel_data <- function(sim_N, 
+                           char_rho_a, char_rho_b,
+                           cross_corr, cross_corr_degree, 
+                           A_matrix, xt_multi, g_function, theta,
+                           #Error Parameters
+                           error_sv, error_ep_sd, error_omega, error_gamma, error_w, error_v_sd,
+                           predictor_format) {
+  sim_list <- foreach(i = (1:sim_N)) %dopar% {
+    
+    # Set Seed for each worker so that it is reproducible
+    set.seed(27925248 + i)
+    
+    sim <- list(panel = 0, statistics = 0)
+    
+    C_bar <- gen_C_bar(char_rho_a, char_rho_b)
+    C_hat <- gen_C_hat(C_bar, cross_corr_degree)
+    
+    if (cross_corr == 0) {
+      C <- gen_C(C_bar)
+    }
+    else {
+      C <- gen_C(C_hat)
+    }
+    
+    if (xt_multi == 1) {
+      xt <- gen_xt(A_matrix)
+    }
+    else {
+      xt <- gen_xt_univariate()
+    }
+    
+    #Generate the true underlying factors first
+    g_factor_panel <- gen_g_factor_panel(g_function, C, xt)
+    
+    #Then pass them through to multiply them by theta to get g()
+    g_panel <- gen_g_panel(g_factor_panel, theta)
+    
+    #Generate the errors
+    error <- gen_error(sv = error_sv, ep_sd = error_ep_sd, omega = error_omega, gamma = error_gamma, w = error_w, C, v_sd = error_v_sd)
+    
+    #rt panel
+    rt_panel <- g_panel + error
+    
+    # Alternative twoway Specification
+    if (predictor_format == "twoway") {
+      z_panel <- gen_predictor_z_twoway(C, xt)
+      sim$panel <- bind_rt_predictor(rt_panel, z_panel)
+    }
+    # Original Kronecker specification (set up in else so that it's the default)
+    else {
+      z_panel <- gen_predictor_z(C, xt)
+      sim$panel <- bind_rt_predictor(rt_panel, z_panel)
+    }
+    
+    # Statistics
+    
+    # Old way
+    sim$statistics <- panel_tune_stats(rt_panel, g_panel, g_factor_panel)
+    
+    sim
+  }
+  return(sim_list)
+}
+
+# This function is very straightforward and does not need to be parallelized
+# Run this after generating the data from the previous function (see example right below)
+
+sim_tune_statistics <- function(sim_panel_list) {
+  sim_N <- length(sim_panel_list)
+  #Initialize
+  sim_tune_stats <- data.frame(time_series_fitted.rsquare = rep(0, sim_N),
+                               annual_vol = rep(0, sim_N),
+                               true_rsquare = rep(0, sim_N),
+                               cross_section_rsquare = rep(0, sim_N))
+  for (i in 1:sim_N) {
+    sim_tune_stats[i, ] <- sim_panel_list[[i]]$statistics  
+  }
+  return(sim_tune_stats)
+}
+
+# Observations
+
+# You need a reasonably large number of simulations in order to gauge these designs
+# Turning the simulation number from 10 to 100 does yield some changes
+# Gu et al's design doesn't seem to be replicable
+# True r squared (predictive r squared) is somewhat close to what they specified
+```
+
+```{r simulation_function, eval = FALSE}
+
+# Deprecated, old way implementation using standard for loops
+# Was too slow, kept for reference
+
+sim_panel_data <- function(sim_N, cross_corr, cross_corr_dergee, A_matrix, xt_multi, g_function, theta,
+                           #Error Parameters
+                           error_sv, error_ep_sd, error_omega, error_gamma, error_w, error_v_sd) {
+  #Initialize
+  sim_list <- LM_stats <- rep(list(0), sim_N)
+  
+  for (sim in 1:sim_N) {
+    
+    sim_list[[sim]] <- list(panel = 0, statistics = 0)
+    
+    C_bar <- gen_C_bar()
+    C_hat <- gen_C_hat(C_bar, cross_corr_degree)
+    
+    if (cross_corr == 0) {
+      C <- gen_C(C_bar)
+    }
+    else {
+      C <- gen_C(C_hat)
+    }
+    
+    if (xt_multi == 1) {
+      xt <- gen_xt(A_matrix)
+    }
+    else {
+      xt <- gen_xt_univariate()
+    }
+    
+    #Generate the true underlying factors first
+    g_factor_panel <- gen_g_factor_panel(g_function, C, xt)
+    
+    #Then pass them through to multiply them by theta to get g()
+    g_panel <- gen_g_panel(g_factor_panel, theta)
+    
+    #Generate the errors
+
+    error <- gen_error(sv = error_sv, ep_sd = error_ep_sd, omega = error_omega, gamma = error_gamma, w = error_w, C, v_sd = error_v_sd)
+    
+    #rt panel
+    
+    rt_panel <- g_panel + error
+    
+    z_panel <- gen_predictor_z(C, xt)
+    
+    sim_list[[sim]]$panel <- bind_rt_predictor(rt_panel, z_panel)
+    
+    #Statistics
+    sim_list[[sim]]$statistics <- panel_tune_stats(rt_panel, g_panel, g_factor_panel)
+  }
+  return(sim_list)
+}
+
+# Build a function to calculate average statistics, given a list of realisations
+# Use after the previous function
+
+sim_tune_statistics <- function(sim_panel_list) {
+  sim_N <- length(sim_panel_list)
+  #Initialize
+  sim_tune_stats <- data.frame(time_series_fitted.rsquare = rep(0, sim_N),
+                               annual_vol = rep(0, sim_N),
+                               true_rsquare = rep(0, sim_N),
+                               cross_section_rsquare = rep(0, sim_N))
+  for (i in 1:sim_N) {
+    sim_tune_stats[i, ] <- sim_panel_list[[i]]$statistics  
+  }
+  return(sim_tune_stats)
+}
+
+#Gu et al's original g1 design
+# THIS IS VERY COMPUTATIONALLY INTENSIVE
+# Will consider parallelizing this later
+# With only 10 realisations, the datasets are already taking 1GB in memory
+gu_et_al_g1 <- sim_panel_data(10, cross_corr = 0, A1, xt_multi = 0, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1),
+                              error_sv = 0, error_ep_sd = 0.05, error_omega = -0.736, error_gamma = 0.9, error_w = sqrt(0.363), error_v_sd = 0.05)
+
+#Annualized volatility is somewhat close (25% vs 30% specified)
+summary(sim_tune_statistics(gu_et_al_g1))
+```
+
+```{r debug, eval = FALSE}
+# Debug section for when something breaks, ignore
+# Overall Dimensionality
+N <- 200
+P_c <- 100
+Time <- 180
+
+#Number of realizations
+simN <- 4
+
+char_rho_a = 0.9 
+char_rho_b = 1
+cross_corr = 0
+xt_multi = 0
+g_function = "g1"
+theta = matrix(c(0.02, 0.02, 0.02), nrow = 1)
+error_sv = 0
+error_ep_sd = 0.05
+error_omega = -0.736
+error_gamma = 0.9
+error_w = sqrt(0.363)
+error_v_sd = 0.05
+A_matrix <- A2
+
+C_bar <- gen_C_bar(char_rho_a, char_rho_b)
+    C_hat <- gen_C_hat(C_bar)
+    
+    if (cross_corr == 0) {
+      C <- gen_C(C_bar)
+    }
+    else {
+      C <- gen_C(C_hat)
+    }
+    
+    if (xt_multi == 1) {
+      xt <- gen_xt(A_matrix)
+    }
+    else {
+      xt <- gen_xt_univariate()
+    }
+    
+    #Generate the true underlying factors first
+    g_factor_panel <- gen_g_factor_panel(g_function, C, xt)
+    
+    #Then pass them through to multiply them by theta to get g()
+    g_panel <- gen_g_panel(g_factor_panel, theta)
+    
+    #Generate the errors
+    error <- gen_error(sv = error_sv, ep_sd = error_ep_sd, omega = error_omega, gamma = error_gamma, w = error_w, C, v_sd = error_v_sd)
+    
+    #rt panel
+    rt_panel <- g_panel + error
+    
+    # Alternative twoway Specification
+    if (predictor_format == "twoway") {
+      z_panel <- gen_predictor_z(C, xt)
+      panel <- bind_rt_predictor(rt_panel, z_panel)
+    }
+    # Original Kronecker specification (set up in else so that it's the default)
+    else {
+      z_panel <- gen_predictor_z(C, xt)
+      sim$panel <- bind_rt_predictor(rt_panel, z_panel)
+    }
+
+    panel_tune_stats(rt_panel, g_panel, g_factor_panel)
+    
+```
+
+
+```{r, eval = FALSE}
+#Playing around simulation specifications
+
+set.seed(27935248)
+
+#Overall Dimensionality
+N <- 200
+P_c <- 100
+Time <- 180
+
+#Number of realizations
+simN <- 4 
+
+# A matrices
+# These are just kept here for now, not actually used because they don't seem to have much difference
+
+A1 <- matrix(c(
+  0.95, 0, 0,
+  0, 0.95, 0,
+  0, 0, 0.95),
+  nrow = 3, ncol = 3
+)
+
+A2 <- matrix(c(
+  0.75, 0, 0.25,
+  0, 0.95, 0,
+  0.25, 0, 0.75),
+  nrow = 3, ncol = 3
+)
+
+A3 <- matrix(c(
+  0.95, 0.04, 0.01,
+  0.04, 0.90, -0.3,
+  0.01, -0.3, -0.95),
+  nrow = 3, ncol = 3
+)
+
+#Gu et al's original specfications, recreated
+# Special Note: the twoway specification is very very memory intensive during the actual generation process
+# This means that R will be calling gc() alot, contributing to very slow computational speeds
+# twoway specification is too computationally intensive when you move to actually fitting models to them. Even OLS takes hours for a single sample set. 
+# Mostly implemented as a proof of concept to show that OLS can indeed pick out interactive covariates (though incorrectly still picking out correlated ones) in this simple simulation specification
+# Gu et al's specifications have ~25% annualized volatility, different from the 30% they said in the paper, 
+
+gu_et_al_g1 <- sim_panel_data(simN, 
+                              char_rho_a = 0.9, char_rho_b = 1,
+                              cross_corr = 0, cross_corr_degree = 0, 
+                              A1, xt_multi = 0, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1),
+                              error_sv = 0, error_ep_sd = 0.05, 
+                              error_omega = -0.736, error_gamma = 0.9, error_w = 0.363, error_v_sd = 0.05,
+                              predictor_format = "kronecker")
+summary(sim_tune_statistics(gu_et_al_g1))
+saveRDS(gu_et_al_g1, file = "gu_et_al_g1.rds")
+rm(gu_et_al_g1)
+
+gu_et_al_g2 <- sim_panel_data(simN, 
+                              char_rho_a = 0.9, char_rho_b = 1,
+                              cross_corr = 0, cross_corr_degree = 0, 
+                              A1, xt_multi = 0, g_function = "g2", theta = matrix(c(0.04, 0.035, 0.01), nrow = 1),
+                              error_sv = 0, error_ep_sd = 0.05, 
+                              error_omega = -0.736, error_gamma = 0.9, error_w = 0.363, error_v_sd = 0.05,
+                              predictor_format = "kronecker")
+summary(sim_tune_statistics(gu_et_al_g2))
+saveRDS(gu_et_al_g1, file = "gu_et_al_g2.rds")
+rm(gu_et_al_g2)
+```
+
+```{r, eval = FALSE}
+##################################
+#Our different specifications
+##################################
+
+# For some reason the SV parameters suggested by JPR 1994 (and in the literature) doesn't give ~20% annualized volatility with this returns simulation design, even when re-specifying everything to be weekly
+# Note that JPR's values do indeed give ~20% annualized volatility when plugged into their specified version of the lognormal SV process (see later chunk), so the issues seems to be isolated with just our design
+# Below are the parameter values that give ~20% annualized volatility, fixing the persistence parameter to 0.95, which seems to be commonly observed in the literature
+# Note that due to the time period being only 180, the true annualized volatility may be slightly lower than this, as observed with simulating SV error processes
+# The SV component was also changed NOT to include the Beta_v term from the earlier simpler design just for simplicity
+
+# A design with NO error component seems to have ~7% annualized volatility already (not that will throw ignorable errors when trying to calculate the tuning statistics)
+
+#Playing around simulation specifications
+
+set.seed(27935248)
+
+#Overall Dimensionality
+N <- 200
+P_c <- 100
+Time <- 180
+
+#Number of realizations
+simN <- 10
+
+# A matrices
+# These are just kept here for now, not actually used because they don't seem to have much difference
+
+A1 <- matrix(c(
+  0.95, 0, 0,
+  0, 0.95, 0,
+  0, 0, 0.95),
+  nrow = 3, ncol = 3
+)
+## No cross sectional correlation or stochastic errors
+
+a4_aspect_ratio <- 1.5
+
+#G1
+g1_A1_nosv_0 <- sim_panel_data(simN, 
+                              char_rho_a = 0.5, char_rho_b = 1,
+                              cross_corr = 0, cross_corr_degree = 0.01, 
+                              A1, xt_multi = 1, g_function = "g1", theta = matrix(c(0.02, 0.02, 0.02), nrow = 1), 
+                              error_sv = 0, error_ep_sd = 0.05, 
+                              error_omega = -0.736, error_gamma = 0.9, error_w = 0.363, error_v_sd = 0.05,
+                              predictor_format = "kronecker")
+summary(sim_tune_statistics(g1_A1_nosv_0))
+saveRDS(g1_A1_nosv_0, file = "g1_A1_nosv_0.rds")
+rm(g1_A1_sv_0.01)
+
+## Plot this to see how unreasonable this is
+
+g1_A1_nosv_0[[1]]$panel %>%
+  ggplot() +
+  geom_line(aes(x = time, y = rt, colour = stock)) +
+  theme_bw() +
+  theme(legend.position = "none")
+ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/g1_A1_nosv_panel.pdf",
+       width = 15 * a4_aspect_ratio, height = 15, units = "cm")
+  
+
+#G2
+
+g2_A1_nosv_0 <- sim_panel_data(simN, 
+                              char_rho_a = 0.5, char_rho_b = 1,
+                              cross_corr = 0, cross_corr_degree = 0.01, 
+                              A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.015, 0.015, 0.015), nrow = 1),
+                              error_sv = 0, error_ep_sd = 0.05, 
+                              error_omega = -0.736, error_gamma = 0.9, error_w = 0.363, error_v_sd = 0.05,
+                              predictor_format = "kronecker")
+summary(sim_tune_statistics(g2_A1_nosv_0))
+saveRDS(g2_A1_nosv_0, file = "g2_A1_nosv_0.rds")
+rm(g2_A1_sv_0.01)
+
+#G3
+
+g3_A1_nosv_0 <- sim_panel_data(simN, 
+                              char_rho_a = 0.5, char_rho_b = 1,
+                              cross_corr = 0, cross_corr_degree = 0.01,
+                              A1, xt_multi = 1, g_function = "g3", theta = matrix(c(0.025, 0.025, 0.025, 0.025), nrow = 1), 
+                              error_sv = 0, error_ep_sd = 0.05, 
+                              error_omega = -0.736, error_gamma = 0.9, error_w = 0.363, error_v_sd = 0.05,
+                              predictor_format = "kronecker")
+summary(sim_tune_statistics(g3_A1_nosv_0))
+saveRDS(g3_A1_nosv_0, file = "g3_A1_nosv_0.rds")
+rm(g3_A1_sv_0.01)
+
+####################################################
+## 0.01 Cross Sectional Correlation
+
+#G1
+g1_A1_sv_0.01 <- sim_panel_data(simN, 
+                              char_rho_a = 0.5, char_rho_b = 1,
+                              cross_corr = 1, cross_corr_degree = 0.01, 
+                              A1, xt_multi = 1, g_function = "g1", theta = matrix(c(0.015, 0.015, 0.015), nrow = 1), 
+                              error_sv = 1, error_ep_sd = 1, 
+                              error_omega = -0.275, error_gamma = 0.95, error_w = 0.430, error_v_sd = 0,
+                              predictor_format = "kronecker")
+summary(sim_tune_statistics(g1_A1_sv_0.01))
+saveRDS(g1_A1_sv_0.01, file = "g1_A1_sv_0.01.rds")
+rm(g1_A1_sv_0.01)
+
+g1_A1_sv_0.01[[2]]$panel %>%
+  ggplot() +
+  geom_line(aes(x = time, y = rt, colour = stock)) +
+  theme(legend.position = "none")
+
+#G2
+
+g2_A1_sv_0.01 <- sim_panel_data(simN, 
+                              char_rho_a = 0.5, char_rho_b = 1,
+                              cross_corr = 1, cross_corr_degree = 0.01, 
+                              A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.012, 0.012, 0.012), nrow = 1),
+                              error_sv = 1, error_ep_sd = 1, 
+                              error_omega = -0.275, error_gamma = 0.95, error_w = 0.430, error_v_sd = 0,
+                              predictor_format = "kronecker")
+summary(sim_tune_statistics(g2_A1_sv_0.01))
+saveRDS(g2_A1_sv_0.01, file = "g2_A1_sv_0.01.rds")
+rm(g2_A1_sv_0.01)
+
+g2_A1_sv_0.01[[2]]$panel %>%
+  ggplot() +
+  geom_line(aes(x = time, y = rt, colour = stock)) +
+  theme(legend.position = "none")
+
+#G3
+
+g3_A1_sv_0.01 <- sim_panel_data(simN, 
+                              char_rho_a = 0.5, char_rho_b = 1,
+                              cross_corr = 1, cross_corr_degree = 0.01,
+                              A1, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.02), nrow = 1), 
+                              error_sv = 1, error_ep_sd = 1, 
+                              error_omega = -0.275, error_gamma = 0.95, error_w = 0.430, error_v_sd = 0,
+                              predictor_format = "kronecker")
+summary(sim_tune_statistics(g3_A1_sv_0.01))
+saveRDS(g3_A1_sv_0.01, file = "g3_A1_sv_0.01.rds")
+rm(g3_A1_sv_0.01)
+
+g3_A1_sv_0.01[[2]]$panel %>%
+  ggplot() +
+  geom_line(aes(x = time, y = rt, colour = stock)) +
+  theme(legend.position = "none")
+
+#############################
+## 0.1 Cross Sectional Correlation
+
+#G1
+g1_A1_sv_0.1 <- sim_panel_data(simN, 
+                              char_rho_a = 0.5, char_rho_b = 1,
+                              cross_corr = 1, cross_corr_degree = 0.1, 
+                              A1, xt_multi = 1, g_function = "g1", theta = matrix(c(0.015, 0.015, 0.015), nrow = 1), 
+                              error_sv = 1, error_ep_sd = 1, 
+                              error_omega = -0.275, error_gamma = 0.95, error_w = 0.430, error_v_sd = 0,
+                              predictor_format = "kronecker")
+summary(sim_tune_statistics(g1_A1_sv_0.1))
+saveRDS(g1_A1_sv_0.1, file = "g1_A1_sv_0.1.rds")
+rm(g1_A1_sv_0.1)
+
+g1_A1_sv_0.1[[2]]$panel %>%
+  ggplot() +
+  geom_line(aes(x = time, y = rt, colour = stock)) +
+  theme(legend.position = "none")
+
+#G2
+
+g2_A1_sv_0.1 <- sim_panel_data(simN, 
+                              char_rho_a = 0.5, char_rho_b = 1,
+                              cross_corr = 1, cross_corr_degree = 0.1, 
+                              A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.012, 0.012, 0.012), nrow = 1),
+                              error_sv = 1, error_ep_sd = 1, 
+                              error_omega = -0.275, error_gamma = 0.95, error_w = 0.430, error_v_sd = 0,
+                              predictor_format = "kronecker")
+summary(sim_tune_statistics(g2_A1_sv_0.1))
+saveRDS(g2_A1_sv_0.1, file = "g2_A1_sv_0.1.rds")
+rm(g2_A1_sv_0.1)
+
+g2_A1_sv_0.1[[2]]$panel %>%
+  ggplot() +
+  geom_line(aes(x = time, y = rt, colour = stock)) +
+  theme(legend.position = "none")
+
+#G3
+
+g3_A1_sv_0.1 <- sim_panel_data(simN, 
+                              char_rho_a = 0.5, char_rho_b = 1,
+                              cross_corr = 1, cross_corr_degree = 0.1,
+                              A1, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.02), nrow = 1), 
+                              error_sv = 1, error_ep_sd = 1, 
+                              error_omega = -0.275, error_gamma = 0.95, error_w = 0.430, error_v_sd = 0,
+                              predictor_format = "kronecker")
+summary(sim_tune_statistics(g3_A1_sv_0.1))
+saveRDS(g3_A1_sv_0.1, file = "g3_A1_sv_0.1.rds")
+rm(g3_A1_sv_0.1)
+
+g3_A1_sv_0.1[[3]]$panel %>%
+  ggplot() +
+  geom_line(aes(x = time, y = rt, colour = stock)) +
+  theme(legend.position = "none")
+
+#############################
+## 1 Cross Sectional Correlation
+
+#G1
+g1_A1_sv_1 <- sim_panel_data(simN, 
+                              char_rho_a = 0.5, char_rho_b = 1,
+                              cross_corr = 1, cross_corr_degree = 1, 
+                              A1, xt_multi = 1, g_function = "g1", theta = matrix(c(0.015, 0.015, 0.015), nrow = 1), 
+                              error_sv = 1, error_ep_sd = 1, 
+                              error_omega = -0.275, error_gamma = 0.95, error_w = 0.430, error_v_sd = 0,
+                              predictor_format = "kronecker")
+summary(sim_tune_statistics(g1_A1_sv_1))
+saveRDS(g1_A1_sv_1, file = "g1_A1_sv_1.rds")
+rm(g1_A1_sv_0.1)
+
+g1_A1_sv_1[[1]]$panel %>%
+  ggplot() +
+  geom_line(aes(x = time, y = rt, colour = stock)) +
+  theme_bw() +
+  theme(legend.position = "none")
+ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/g1_A1_sv_panel.pdf",
+       width = 15 * a4_aspect_ratio, height = 15, units = "cm")
+
+#G2
+
+g2_A1_sv_1 <- sim_panel_data(simN, 
+                              char_rho_a = 0.5, char_rho_b = 1,
+                              cross_corr = 1, cross_corr_degree = 1, 
+                              A1, xt_multi = 1, g_function = "g2", theta = matrix(c(0.012, 0.012, 0.012), nrow = 1),
+                              error_sv = 1, error_ep_sd = 1, 
+                              error_omega = -0.275, error_gamma = 0.95, error_w = 0.430, error_v_sd = 0,
+                              predictor_format = "kronecker")
+summary(sim_tune_statistics(g2_A1_sv_1))
+saveRDS(g2_A1_sv_1, file = "g2_A1_sv_1.rds")
+rm(g2_A1_sv_0.1)
+
+g2_A1_sv_1[[2]]$panel %>%
+  ggplot() +
+  geom_line(aes(x = time, y = rt, colour = stock)) +
+  theme(legend.position = "none")
+
+#G3
+
+g3_A1_sv_1 <- sim_panel_data(simN, 
+                              char_rho_a = 0.5, char_rho_b = 1,
+                              cross_corr = 1, cross_corr_degree = 1,
+                              A1, xt_multi = 1, g_function = "g3", theta = matrix(c(0.02, 0.02, 0.02, 0.02), nrow = 1), 
+                              error_sv = 1, error_ep_sd = 1, 
+                              error_omega = -0.275, error_gamma = 0.95, error_w = 0.430, error_v_sd = 0,
+                              predictor_format = "kronecker")
+summary(sim_tune_statistics(g3_A1_sv_1))
+saveRDS(g3_A1_sv_1, file = "g3_A1_sv_1.rds")
+rm(g3_A1_sv_0.1)
+
+g3_A1_sv_1[[3]]$panel %>%
+  ggplot() +
+  geom_line(aes(x = time, y = rt, colour = stock)) +
+  theme(legend.position = "none")
+
+```
+
+```{r, eval = FALSE}
+
+# This is the JPR specification for SV coded up again as a sanity check
+# Seems to be giving annualized volatility values closer to 24% rather than 20-22% when the time period is smaller
+# Increase length to something quite longer such as 52000 weeks (1000 years) to get values of ~20%
+
+test_error_sv <- function(omega, beta, sigmau, length) {
+  logsigma2 <- rep(0, length)
+  return <- rep(0, length)
+  
+  logsigma2[1] <- omega + rnorm(1, 0, sigmau)
+  return[1] <- sqrt(exp(logsigma2[1])) * rnorm(1, 0, 1)
+  
+  for (t in 2:length) {
+    logsigma2[t] <- omega + beta*logsigma2[t-1] + rnorm(1, 0, sigmau)
+    return[t] <- sqrt(exp(logsigma2[t-1])) * rnorm(1, 0, 1)
+  }
+  
+  sd(return) * sqrt(50)
+}
+
+temp <- rep(0, 100)
+
+for (i in 1:100) {
+  temp[i] <- test_error_sv(-0.736, 0.9, 0.363, 52000)
+}
+
+summary(temp)
+```
+
