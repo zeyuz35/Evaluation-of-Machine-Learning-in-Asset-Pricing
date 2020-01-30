@@ -795,7 +795,7 @@ LM_fit <- function(pooled_panel, timeSlices, loss_function, f,
       lm <- lm(f, data = train, model = FALSE, x = FALSE, y = FALSE)
     } else {
       # Use pfn as method here for much faster computation
-      lm <- rq(f, data = train, tau = 0.5, method = "fn")
+      lm <- rq(f, data = train, tau = 0.5, method = "br")
     }
     
     #LM_stats[[set]]$model <- lm

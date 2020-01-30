@@ -152,7 +152,7 @@ datashare <- foreach(i = (1:length(unique(datashare$stock))), .combine = "rbind"
     full_join(time_df, by = "time") %>%
     arrange(time) %>%
     mutate(rt = (PRC - lag(PRC))/lag(PRC)) %>%
-    drop_na()
+    drop_na(rt)
   datashare_stock
 }
 
@@ -448,23 +448,6 @@ rm(final_dataset_x)
 
 saveRDS(final_dataset, file = "final_dataset.rds")
 ```
-
-```{r}
-## This section builds a version of the final dataset which does NOT have any interaction terms
-## This was mainly done to reduce dimensionality
-
-datashare_combined <- full_join(macro_predictors, datashare_normalized, by = "time") %>%
-  # Create Excess Returns
-  mutate(rt = rt - macro_Rfree) %>%
-  select(-macro_Rfree) %>%
-  # Reorder
-  select(time, stock, rt, macro_constant, 
-         macro_bm, macro_dfy, macro_dp, macro_ep, macro_ntis, macro_svar, macro_tbl, macro_tms,
-         everything())
-
-saveRDS(datashare_combined, file = "final_dataset_no_interaction.rds")
-```
-
 
 ```{r}
 # Double Check
@@ -808,7 +791,7 @@ ELN_model_grid <- function(alpha_grid, train_x, train_y, validation_x, validatio
     
     #MSE Case
     if (loss_function == "mse") {
-      ELN <- hqreg(train_x, train_y, method = "ls", alpha = alpha_grid[i], nlambda = nlamb)
+      ELN <- hqreg(X = train_x, y = train_y, method = "ls", alpha = alpha_grid[i], nlambda = nlamb)
       ELN_model_grid$model <- ELN
     
       ELN_model_grid$ELN_grid <- cbind(alpha = alpha_grid[i], lambda = ELN$lambda,

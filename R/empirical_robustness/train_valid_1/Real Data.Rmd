@@ -44,7 +44,7 @@ set.seed(27935248)
 #################################################
 # This is about ~ 3GB in size in total
 # Note that because the honours lab computers don't have their own hard drives (files are stored on some network location), this initial loading processis very slow (bottlenecked by network speed)
-datashare_RAW <- read_csv("data/datashare/datashare.csv",
+datashare_RAW <- read_csv("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/data/datashare/datashare.csv",
                           # Always make sure to force col_types so that read_csv doesn't assume weird stuff
                           col_types = cols(.default = "d"))
 
@@ -55,7 +55,7 @@ write.table(datashare_stock_ids, file = "datashare_stock_ids.txt", sep = " ",
             row.names = FALSE, col.names = FALSE)
 
 # datashare with RET, Prices, and primary exchange
-datashare_RET_RAW <- read_csv("data/datashare/datashare_PRC.csv") %>%
+datashare_RET_RAW <- read_csv("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/data/datashare/datashare_PRC.csv") %>%
   # Rename some columns
   mutate(DATE = date) %>%
   dplyr::select(-date) %>%
@@ -127,9 +127,7 @@ datashare <- datashare_RAW_join %>%
   # Convert time to yearqtr format
   # yearqtr stores data as year + 0/4 for q1, 1/4 for q2, etc
   mutate(time = as.yearqtr(time - 2/12)) %>%
-  dplyr::select(-RET) %>%
-  # Filter to contain more recent data
-  filter(time >= 1993.25)
+  dplyr::select(-RET)
 
 time_df <- data.frame(time = unique(datashare$time)) %>%
   mutate(time = as.numeric(time))
@@ -155,12 +153,8 @@ datashare <- foreach(i = (1:length(unique(datashare$stock))), .combine = "rbind"
     filter(stock == unique(datashare$stock)[i]) %>%
     full_join(time_df, by = "time") %>%
     arrange(time) %>%
-    mutate(rt = (PRC - lag(PRC))/lag(PRC))
-  # Method to remove any incomplete univarriate series
-  if(sum(is.na(datashare_stock$PRC)) > 0) {
-    datashare_stock <- NULL
-  }
-  datashare_stock
+    mutate(rt = (PRC - lag(PRC))/lag(PRC)) %>%
+    drop_na(rt)
 }
 
 length(unique(datashare$stock))
@@ -351,7 +345,7 @@ datashare_normalized <- cross_section_normalize(datashare_imputed) %>%
 # Dividend price ratio dp, earnings price ratio ep, book to market ratio bm,
 # net equity expansion ntis, Treasury bill rate tbl, term spread tms,
 # Default spread dfy, stock variance svar
-PredictorData2017_RAW <- read_excel("data/factors/PredictorData2017.xlsx", 
+PredictorData2017_RAW <- read_excel("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/data/factors/PredictorData2017.xlsx", 
                                     # Specify quarterly as we are now working with quarterly data
                                     sheet = "Quarterly",
                                     na = "NaN")
@@ -519,7 +513,7 @@ real_panel_formula <- function(panel){
 # These are the settings working with a dataset going from 1993 - 2016
 # Results in a traing:validation size ratio of 1.5
 realdata_timeSlices <- realdata_custom_timeslices(
-  start = 1994, initialWindow = 11, horizon = 1, validation_size = 8, test_size = 1, set_no = 3
+  start = 1994, initialWindow = 10, horizon = 1, validation_size = 10, test_size = 1, set_no = 3
   )
 
 # Add the two quarters in from 1993
@@ -1386,11 +1380,11 @@ real_data_results <- fit_all_models_real_data(final_dataset,
 f <- real_panel_formula(final_dataset)
 LM_stats_mse <- LM_fit(final_dataset, realdata_timeSlices, "mse", f,
                        macro_factor_names, individual_factor_names)
-saveRDS(LM_stats_mae, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/LM_stats_mae.rds")
+saveRDS(LM_stats_mae, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_train_valid_1/LM_stats_mae.rds")
 
 LM_stats_mae <- LM_fit(final_dataset, realdata_timeSlices, "mae", f,
                        macro_factor_names, individual_factor_names)
-saveRDS(LM_stats_mse, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/LM_stats_mse.rds")
+saveRDS(LM_stats_mse, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_train_valid_1/LM_stats_mse.rds")
 
 ####
 
@@ -1409,11 +1403,11 @@ LM_stats_mse[[3]]$variable_importance %>%
 ELN_stats_mse <- ELN_fit_stats(alpha_grid = seq(0, 1, 0.01), nlamb = 100, 
                                realdata_timeSlices, final_dataset, "mse",
                                macro_factor_names, individual_factor_names)
-saveRDS(ELN_stats_mse, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/ELN_stats_mse.rds")
+saveRDS(ELN_stats_mse, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_train_valid_1/ELN_stats_mse.rds")
 ELN_stats_mae <- ELN_fit_stats(alpha_grid = seq(0, 1, 0.01), nlamb = 100, 
                                realdata_timeSlices, final_dataset, "mae",
                                macro_factor_names, individual_factor_names)
-saveRDS(ELN_stats_mae, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/ELN_stats_mae.rds")
+saveRDS(ELN_stats_mae, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_train_valid_1/ELN_stats_mae.rds")
 
 ELN_stats_mse[[1]]$loss_stats
 ELN_stats_mse[[1]]$hyperparameters
@@ -1459,10 +1453,10 @@ RF_grid <- expand.grid(
 
 RF_mse_stats <- RF_fit_stats(final_dataset, RF_grid, realdata_timeSlices, "mse", f,
                              macro_factor_names, individual_factor_names)
-saveRDS(RF_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/RF_mse_stats_1.5_train_valid.rds")
+saveRDS(RF_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_train_valid_1/RF_mse_stats_1.5_train_valid.rds")
 RF_mae_stats <- RF_fit_stats(final_dataset, RF_grid, realdata_timeSlices, "mae", f,
                              macro_factor_names, individual_factor_names)
-saveRDS(RF_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/RF_mae_stats_1.5_train_valid.rds")
+saveRDS(RF_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_train_valid_1/RF_mae_stats_1.5_train_valid.rds")
 
 RF_mse_stats[[1]]$loss_stats
 RF_mse_stats[[1]]$hyperparameters
@@ -1483,8 +1477,8 @@ NNet_1_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 1, "mse",
                                    macro_factor_names, individual_factor_names)
 NNet_1_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 1, "mae", batch_size = 256, 20,
                                    macro_factor_names, individual_factor_names)
-saveRDS(NNet_1_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_1_mse_stats_1.5.rds")
-saveRDS(NNet_1_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_1_mae_stats_1.5.rds")
+saveRDS(NNet_1_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_train_valid_1/NNet_1_mse_stats_1.5.rds")
+saveRDS(NNet_1_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_train_valid_1/NNet_1_mae_stats_1.5.rds")
 
 NNet_1_mse_stats[[1]]$loss_stats
 NNet_1_mse_stats[[1]]$forecasts
@@ -1502,8 +1496,8 @@ NNet_2_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 2, "mse",
                                    macro_factor_names, individual_factor_names)
 NNet_2_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 2, "mae", batch_size = 256, 20,
                                    macro_factor_names, individual_factor_names)
-saveRDS(NNet_2_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_2_mse_stats_1.5.rds")
-saveRDS(NNet_2_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_2_mae_stats_1.5.rds")
+saveRDS(NNet_2_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_train_valid_1/NNet_2_mse_stats_1.5.rds")
+saveRDS(NNet_2_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_train_valid_1/NNet_2_mae_stats_1.5.rds")
 
 NNet_2_mse_stats[[1]]$loss_stats
 NNet_2_mse_stats[[1]]$forecasts
@@ -1519,8 +1513,8 @@ NNet_3_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 3, "mse",
                                    macro_factor_names, individual_factor_names)
 NNet_3_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 3, "mae", batch_size = 256, 20,
                                    macro_factor_names, individual_factor_names)
-saveRDS(NNet_3_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_3_mse_stats_1.5.rds")
-saveRDS(NNet_3_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_3_mae_stats_1.5.rds")
+saveRDS(NNet_3_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_train_valid_1/NNet_3_mse_stats_1.5.rds")
+saveRDS(NNet_3_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_train_valid_1/NNet_3_mae_stats_1.5.rds")
 
 NNet_3_mse_stats[[1]]$loss_stats
 NNet_3_mse_stats[[1]]$forecasts
@@ -1536,8 +1530,8 @@ NNet_4_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 4, "mse",
                                    macro_factor_names, individual_factor_names)
 NNet_4_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 4, "mae", batch_size = 256, 20,
                                    macro_factor_names, individual_factor_names)
-saveRDS(NNet_4_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_4_mse_stats_1.5.rds")
-saveRDS(NNet_4_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_4_mae_stats_1.5.rds")
+saveRDS(NNet_4_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_train_valid_1/NNet_4_mse_stats_1.5.rds")
+saveRDS(NNet_4_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_train_valid_1/NNet_4_mae_stats_1.5.rds")
 
 NNet_4_mse_stats[[1]]$loss_stats
 NNet_4_mse_stats[[1]]$forecasts
@@ -1553,8 +1547,8 @@ NNet_5_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 5, "mse",
                                    macro_factor_names, individual_factor_names)
 NNet_5_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 5, "mae", batch_size = 256, 20,
                                    macro_factor_names, individual_factor_names)
-saveRDS(NNet_5_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_5_mse_stats_1.5.rds")
-saveRDS(NNet_5_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_5_mae_stats_1.5.rds")
+saveRDS(NNet_5_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_train_valid_1/NNet_5_mse_stats_1.5.rds")
+saveRDS(NNet_5_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_train_valid_1/NNet_5_mae_stats_1.5.rds")
 
 NNet_5_mse_stats[[1]]$loss_stats
 NNet_5_mse_stats[[1]]$forecasts
