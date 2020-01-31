@@ -22,6 +22,7 @@ library(ranger)
 library(caret)
 library(forcats)
 library(xtable)
+library(kableExtra)
 library(randomForestSRC)
 
 library(xts)
@@ -620,6 +621,107 @@ g3_A1_sv_1_FFORMA_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in
 ## AWS DEEPAR
 #################################################################
 
+## Change format function
+
+deepar_change_format15 <- function(deepar_list_15) {
+  for (i in 1:5) {
+    for (set in 1:3) {
+      deepar_list_15[[i]]$DEEPAR_MSE[[set]]$loss_stats <- deepar_list_15[[i]]$DEEPAR_MSE[[set]]$loss_stats %>%
+        mutate(train_RSquare = train_Rsquare) %>%
+        dplyr::select(train_MAE, train_MSE, train_RMSE, train_RSquare, 
+                      validation_MAE, validation_MSE, validation_RMSE, validation_RSquare,
+                      test_MAE, test_MSE, test_RMSE, test_RSquare)
+    }
+  }
+  deepar_list_15
+}
+
+deepar_change_format610 <- function(deepar_list_610) {
+  for (i in 6:10) {
+    for (set in 1:3) {
+      deepar_list_610[[i]]$DEEPAR_MSE[[set]]$loss_stats <- deepar_list_610[[i]]$DEEPAR_MSE[[set]]$loss_stats %>%
+        mutate(train_RSquare = train_Rsquare) %>%
+        dplyr::select(train_MAE, train_MSE, train_RMSE, train_RSquare, 
+                      validation_MAE, validation_MSE, validation_RMSE, validation_RSquare,
+                      test_MAE, test_MSE, test_RMSE, test_RSquare)
+    }
+  }
+  deepar_list_610
+}
+
+g1_A1_sv_0.01_DeepAR_results15 %>%
+  deepar_change_format15 %>%
+  saveRDS("g1_A1_sv_0.01_DeepAR_results15.rds")
+
+g2_A1_sv_0.01_DeepAR_results15 %>%
+  deepar_change_format15 %>%
+  saveRDS("g2_A1_sv_0.01_DeepAR_results15.rds")
+
+g3_A1_sv_0.01_DeepAR_results15 %>%
+  deepar_change_format15 %>%
+  saveRDS("g3_A1_sv_0.01_DeepAR_results15.rds")
+
+g1_A1_sv_0.1_DeepAR_results15 %>%
+  deepar_change_format15 %>%
+  saveRDS("g1_A1_sv_0.1_DeepAR_results15.rds")
+
+g2_A1_sv_0.1_DeepAR_results15 %>%
+  deepar_change_format15 %>%
+  saveRDS("g2_A1_sv_0.1_DeepAR_results15.rds")
+
+g3_A1_sv_0.1_DeepAR_results15 %>%
+  deepar_change_format15 %>%
+  saveRDS("g3_A1_sv_0.1_DeepAR_results15.rds")
+
+g1_A1_sv_1_DeepAR_results15 %>%
+  deepar_change_format15 %>%
+  saveRDS("g1_A1_sv_1_DeepAR_results15.rds")
+
+g2_A1_sv_1_DeepAR_results15 %>%
+  deepar_change_format15 %>%
+  saveRDS("g2_A1_sv_1_DeepAR_results15.rds")
+
+g3_A1_sv_1_DeepAR_results15 %>%
+  deepar_change_format15 %>%
+  saveRDS("g3_A1_sv_1_DeepAR_results15.rds")
+
+g1_A1_sv_0.01_DeepAR_results610 %>%
+  deepar_change_format610 %>%
+  saveRDS("g1_A1_sv_0.01_DeepAR_results610.rds")
+
+g2_A1_sv_0.01_DeepAR_results610 %>%
+  deepar_change_format610 %>%
+  saveRDS("g2_A1_sv_0.01_DeepAR_results610.rds")
+
+g3_A1_sv_0.01_DeepAR_results610 %>%
+  deepar_change_format610 %>%
+  saveRDS("g3_A1_sv_0.01_DeepAR_results610.rds")
+
+g1_A1_sv_0.1_DeepAR_results610 %>%
+  deepar_change_format610 %>%
+  saveRDS("g1_A1_sv_0.1_DeepAR_results610.rds")
+
+g2_A1_sv_0.1_DeepAR_results610 %>%
+  deepar_change_format610 %>%
+  saveRDS("g2_A1_sv_0.1_DeepAR_results610.rds")
+
+g3_A1_sv_0.1_DeepAR_results610 %>%
+  deepar_change_format610 %>%
+  saveRDS("g3_A1_sv_0.1_DeepAR_results610.rds")
+
+g1_A1_sv_1_DeepAR_results610 %>%
+  deepar_change_format610 %>%
+  saveRDS("g1_A1_sv_1_DeepAR_results610.rds")
+
+g2_A1_sv_1_DeepAR_results610 %>%
+  deepar_change_format610 %>%
+  saveRDS("g2_A1_sv_1_DeepAR_results610.rds")
+
+g3_A1_sv_1_DeepAR_results610 %>%
+  deepar_change_format610 %>%
+  saveRDS("g3_A1_sv_1_DeepAR_results610.rds")
+
+
 g1_A1_sv_0.01_DeepAR_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g1_A1_sv_0.01_DeepAR_results15.RDS")
 g2_A1_sv_0.01_DeepAR_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g2_A1_sv_0.01_DeepAR_results15.RDS")
 g3_A1_sv_0.01_DeepAR_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g3_A1_sv_0.01_DeepAR_results15.RDS")
@@ -959,6 +1061,20 @@ all_loss_df_averaged <- all_loss_df %>%
 write.csv(all_loss_df_averaged, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_loss_averaged.csv")
 write.csv(all_loss_df, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_loss.csv")
 
+########
+## Take the above and average over all training/test samples to make cleaner graphs/tables
+
+all_loss_df_averaged_sam <- all_loss_df_averaged %>%
+  group_by(model, dgp_spec, SV, cross_corr) %>%
+  summarise(validation_MAE = mean(validation_MAE), validation_MSE = mean(validation_MSE), 
+            validation_RMSE = mean(validation_RMSE), validation_RSquare = mean(validation_RSquare),
+              
+            test_MAE = mean(test_MAE), test_MSE = mean(test_MSE), 
+            test_RMSE = mean(test_RMSE), test_RSquare = mean(test_RSquare)
+            )
+
+write.csv(all_loss_df_averaged_sam, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_loss_averaged_sam.csv")
+
 #############################################################################
 # Function to collate variable importance
 
@@ -1032,9 +1148,9 @@ all_realize_vi <- function(simulation_results_list, dgp_spec, SV, cross_corr) {
 }
 
 all_vi_df <- rbind(
-  all_realize_vi(g1_A1_nosv_0_results_all, dgp_spec = "g1", SV = 0, cross_corr = 0),
-  all_realize_vi(g2_A1_nosv_0_results_all, dgp_spec = "g2", SV = 0, cross_corr = 0),
-  all_realize_vi(g3_A1_nosv_0_results_all, dgp_spec = "g3", SV = 0, cross_corr = 0),
+  # all_realize_vi(g1_A1_nosv_0_results_all, dgp_spec = "g1", SV = 0, cross_corr = 0),
+  # all_realize_vi(g2_A1_nosv_0_results_all, dgp_spec = "g2", SV = 0, cross_corr = 0),
+  # all_realize_vi(g3_A1_nosv_0_results_all, dgp_spec = "g3", SV = 0, cross_corr = 0),
   
   all_realize_vi(g1_A1_sv_0.01_results_all, dgp_spec = "g1", SV = 1, cross_corr = 0.01),
   all_realize_vi(g2_A1_sv_0.01_results_all, dgp_spec = "g2", SV = 1, cross_corr = 0.01),
@@ -1059,41 +1175,6 @@ all_vi_df_averaged <- all_vi_df %>%
 
 a4_aspect_ratio <- 1.5
 
-################################################################
-# Training Statistics
-all_loss_df_averaged %>%
-  ungroup() %>%
-  mutate(sample = as.factor(sample)) %>%
-  ggplot() +
-  geom_bar(aes(x = model, y = train_MAE, fill = sample), stat = "identity", position = position_dodge()) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  scale_fill_brewer(palette = "Paired") +
-  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_train_mae.pdf")
-
-all_loss_df_averaged %>%
-  ungroup() %>%
-  mutate(sample = as.factor(sample)) %>%
-  ggplot() +
-  geom_bar(aes(x = model, y = train_MSE, fill = sample), stat = "identity", position = position_dodge()) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  scale_fill_brewer(palette = "Paired") +
-  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_train_mse.pdf")
-
-all_loss_df_averaged %>%
-  ungroup() %>%
-  mutate(sample = as.factor(sample)) %>%
-  ggplot() +
-  geom_bar(aes(x = model, y = train_RSquare, fill = sample), stat = "identity", position = position_dodge()) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  scale_fill_brewer(palette = "Paired") +
-  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_train_rsquare.pdf")
-
 #######################################################################
 # Test Statistics
 
@@ -1104,12 +1185,10 @@ labels[[4]] <- bquote(bold(.(labels[[4]])))
 labels[[6]] <- bquote(bold(.(labels[[6]])))
 labels[[16]] <- bquote(bold(.(labels[[16]])))
 
-## Plots showing that quantile loss is better
-all_loss_df_averaged %>%
+all_loss_df_averaged_sam %>%
   ungroup() %>%
-  mutate(sample = as.factor(sample)) %>%
   ggplot() +
-  geom_bar(aes(x = model, y = test_MAE, fill = sample), stat = "identity", position = position_dodge()) +
+  geom_bar(aes(x = model, y = test_MAE), stat = "identity", position = position_dodge()) +
   scale_x_discrete(label = labels, breaks = breaks) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
@@ -1118,11 +1197,10 @@ all_loss_df_averaged %>%
 ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_mae.pdf",
        width = 15 * a4_aspect_ratio, height = 15, units = "cm")
 
-all_loss_df_averaged %>%
+all_loss_df_averaged_sam %>%
   ungroup() %>%
-  mutate(sample = as.factor(sample)) %>%
   ggplot() +
-  geom_bar(aes(x = model, y = test_RMSE, fill = sample), stat = "identity", position = position_dodge()) +
+  geom_bar(aes(x = model, y = test_RMSE), stat = "identity", position = position_dodge()) +
   scale_x_discrete(label = labels, breaks = breaks) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
@@ -1131,11 +1209,10 @@ all_loss_df_averaged %>%
 ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_rmse.pdf",
        width = 15 * a4_aspect_ratio, height = 15, units = "cm")
 
-all_loss_df_averaged %>%
+all_loss_df_averaged_sam %>%
   ungroup() %>%
-  mutate(sample = as.factor(sample)) %>%
   ggplot() +
-  geom_bar(aes(x = model, y = test_RSquare, fill = sample), stat = "identity", position = position_dodge()) +
+  geom_bar(aes(x = model, y = test_RSquare), stat = "identity", position = position_dodge()) +
   scale_x_discrete(label = labels, breaks = breaks) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
@@ -1144,209 +1221,78 @@ all_loss_df_averaged %>%
 ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_rsquare.pdf",
        width = 15 * a4_aspect_ratio, height = 15, units = "cm")
 
-###########################
-## Plots for presentation
+#################################
+## TABLES
+#################################
 
-breaks <- levels(all_loss_df_averaged$model)
-labels <- as.expression(breaks)
-labels[[4]] <- bquote(bold(.(labels[[4]])))
-labels[[6]] <- bquote(bold(.(labels[[6]])))
-
-all_loss_df_averaged %>%
+model_sam <- all_loss_df_averaged_sam %>%
   ungroup() %>%
-  mutate(sample = as.factor(sample)) %>%
-  filter(model == "LM_MSE" 
-         | model == "ELN_MAE"
-         | model == "RF_MAE"
-         | model == "NN5_MAE") %>%
-  ggplot() +
-  geom_bar(aes(x = model, y = test_MAE, fill = sample), stat = "identity", position = position_dodge()) +
-  scale_x_discrete(label = labels, breaks = breaks) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  scale_fill_brewer(palette = "Paired") +
-  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_mae_pre.pdf")
+  filter(cross_corr == 0.01 | cross_corr == 1) %>%
+  filter(dgp_spec == "g1") %>%
+  dplyr::select(model)
 
-all_loss_df_averaged %>%
+cross_corr_sam <- all_loss_df_averaged_sam %>%
   ungroup() %>%
-  mutate(sample = as.factor(sample)) %>%
-  filter(model == "LM_MSE" 
-         | model == "ELN_MAE"
-         | model == "RF_MAE"
-         | model == "NN5_MAE") %>%
-  ggplot() +
-  geom_bar(aes(x = model, y = test_MSE, fill = sample), stat = "identity", position = position_dodge()) +
-  scale_x_discrete(label = labels, breaks = breaks) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  scale_fill_brewer(palette = "Paired") +
-  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_mse_pre.pdf")
+  filter(cross_corr == 0.01 | cross_corr == 1) %>%
+  filter(dgp_spec == "g1") %>%
+  dplyr::select(cross_corr)
 
-all_loss_df_averaged %>%
+g1_sam_mae <- all_loss_df_averaged_sam %>%
   ungroup() %>%
-  mutate(sample = as.factor(sample)) %>%
-  filter(model == "LM_MSE" 
-         | model == "ELN_MAE"
-         | model == "RF_MAE"
-         | model == "NN5_MAE") %>%
-  ggplot() +
-  geom_bar(aes(x = model, y = test_RSquare, fill = sample), stat = "identity", position = position_dodge()) +
-  scale_x_discrete(label = labels, breaks = breaks) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  scale_fill_brewer(palette = "Paired") +
-  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_rsquare_pre.pdf")
+  dplyr::select(dgp_spec, cross_corr, test_MAE) %>%
+  filter(cross_corr == 0.01 | cross_corr == 1) %>%
+  filter(dgp_spec == "g1") %>%
+  dplyr::select(-dgp_spec, -cross_corr)
 
-###################################################################################################################
-
-all_loss_df_averaged %>%
+g2_sam_mae <- all_loss_df_averaged_sam %>%
   ungroup() %>%
-  mutate(sample = as.factor(sample)) %>%
-  ggplot() +
-  geom_bar(aes(x = model, y = test_RMSE, fill = sample), stat = "identity", position = position_dodge()) +
-  scale_x_discrete(label = labels, breaks = breaks) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  scale_fill_brewer(palette = "Paired") +
-  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_rmse.pdf")
+  dplyr::select(dgp_spec, cross_corr, test_MAE) %>%
+  filter(cross_corr == 0.01 | cross_corr == 1) %>%
+  filter(dgp_spec == "g2") %>%
+  dplyr::select(-dgp_spec, -cross_corr)
 
-all_loss_df_averaged %>%
+g3_sam_mae <- all_loss_df_averaged_sam %>%
   ungroup() %>%
-  mutate(sample = as.factor(sample)) %>%
-  filter(model == "LM_MSE" 
-         | model == "ELN_MAE"
-         | model == "RF_MAE"
-         | model == "NN5_MAE") %>%
-  ggplot() +
-  geom_bar(aes(x = model, y = test_RSquare, fill = sample), stat = "identity", position = position_dodge()) +
-  scale_x_discrete(label = labels, breaks = breaks) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  scale_fill_brewer(palette = "Paired") +
-  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_rsquare.pdf")
+  dplyr::select(dgp_spec, cross_corr, test_MAE) %>%
+  filter(cross_corr == 0.01 | cross_corr == 1) %>%
+  filter(dgp_spec == "g3") %>%
+  dplyr::select(-dgp_spec, -cross_corr)
 
-###############################################################################################################
-###############################################################################################################
-## More proper graphs that are much more readable
-## Achieve this by only showing the best neural network
+#######
 
-breaks <- levels(all_loss_df_averaged$model)
-labels <- as.expression(breaks)
-labels[[4]] <- bquote(bold(.(labels[[4]])))
-labels[[6]] <- bquote(bold(.(labels[[6]])))
-
-all_loss_df_averaged %>%
+g1_sam_mse <- all_loss_df_averaged_sam %>%
   ungroup() %>%
-  mutate(sample = as.factor(sample)) %>%
-  ## Filter out certain models
-  filter(model == "LM_MSE"
-         | model == "ELN_MAE"
-         | model == "RF_MAE"
-         | model == "NN5_MAE") %>%
-  ggplot() +
-  geom_bar(aes(x = model, y = test_MSE, fill = sample), stat = "identity", position = position_dodge()) +
-  scale_x_discrete(label = labels, breaks = breaks) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  scale_fill_brewer(palette = "Paired") +
-  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_mse_small.pdf",
-       width = 15 * a4_aspect_ratio, height = 15, units = "cm")
+  dplyr::select(dgp_spec, cross_corr, test_MSE) %>%
+  filter(cross_corr == 0.01 | cross_corr == 1) %>%
+  filter(dgp_spec == "g1") %>%
+  dplyr::select(-dgp_spec, -cross_corr)
 
-all_loss_df_averaged %>%
+g2_sam_mse <- all_loss_df_averaged_sam %>%
   ungroup() %>%
-  mutate(sample = as.factor(sample)) %>%
-  ## Filter out certain models
-  filter(model == "LM_MSE"
-         | model == "ELN_MAE"
-         | model == "RF_MAE"
-         | model == "NN5_MAE") %>%
-  ggplot() +
-  geom_bar(aes(x = model, y = test_MAE, fill = sample), stat = "identity", position = position_dodge()) +
-  scale_x_discrete(label = labels, breaks = breaks) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  scale_fill_brewer(palette = "Paired") +
-  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_mae_small.pdf",
-       width = 15 * a4_aspect_ratio, height = 15, units = "cm")
+  dplyr::select(dgp_spec, cross_corr, test_MSE) %>%
+  filter(cross_corr == 0.01 | cross_corr == 1) %>%
+  filter(dgp_spec == "g2") %>%
+  dplyr::select(-dgp_spec, -cross_corr)
 
-all_loss_df_averaged %>%
+g3_sam_mse <- all_loss_df_averaged_sam %>%
   ungroup() %>%
-  mutate(sample = as.factor(sample)) %>%
-  ## Filter out certain models
-  filter(model == "LM_MSE"
-         | model == "ELN_MAE"
-         | model == "RF_MAE"
-         | model == "NN5_MAE") %>%
-  ggplot() +
-  geom_bar(aes(x = model, y = test_RSquare, fill = sample), stat = "identity", position = position_dodge()) +
-  scale_x_discrete(label = labels, breaks = breaks) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  scale_fill_brewer(palette = "Paired") +
-  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_rsquare_small.pdf",
-       width = 15 * a4_aspect_ratio, height = 15, units = "cm")
+  dplyr::select(dgp_spec, cross_corr, test_MSE) %>%
+  filter(cross_corr == 0.01 | cross_corr == 1) %>%
+  filter(dgp_spec == "g3") %>%
+  dplyr::select(-dgp_spec, -cross_corr)
 
-##############################################
-## Focusing on only Neural Networks
+cbind(model_sam, cross_corr_sam, g1_sam_mae, g2_sam_mae, g3_sam_mae) %>%
+  kable(align = "c") %>%
+  kable_styling(full_width = F) %>%
+  add_header_above(c(" " = 1, " " = 1, "g1" = 1, "g2" = 1, "g3" = 1)) %>%
+  collapse_rows(columns = c(1:2), valign = "top")
 
-all_loss_df_averaged %>%
-  ungroup() %>%
-  mutate(sample = as.factor(sample)) %>%
-  ## Filter out certain models
-  filter(model == "NN1_MAE"
-         | model == "NN2_MAE"
-         | model == "NN3_MAE"
-         | model == "NN4_MAE"
-         | model == "NN5_MAE") %>%
-  ggplot() +
-  geom_bar(aes(x = model, y = test_MSE, fill = sample), stat = "identity", position = position_dodge()) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  scale_fill_brewer(palette = "Paired") +
-  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_mse_small_nn.pdf")
+cbind(model_sam, cross_corr_sam, g1_sam_mse, g2_sam_mse, g3_sam_mse) %>%
+  kable(align = "c") %>%
+  kable_styling(full_width = F) %>%
+  add_header_above(c(" " = 1, " " = 1, "g1" = 1, "g2" = 1, "g3" = 1)) %>%
+  collapse_rows(columns = c(1:2), valign = "top")
 
-all_loss_df_averaged %>%
-  ungroup() %>%
-  mutate(sample = as.factor(sample)) %>%
-  ## Filter out certain models
-  filter(model == "NN1_MAE"
-         | model == "NN2_MAE"
-         | model == "NN3_MAE"
-         | model == "NN4_MAE"
-         | model == "NN5_MAE") %>%
-  ggplot() +
-  geom_bar(aes(x = model, y = test_MAE, fill = sample), stat = "identity", position = position_dodge()) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  scale_fill_brewer(palette = "Paired") +
-  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_mae_small_nn.pdf")
-
-all_loss_df_averaged %>%
-  ungroup() %>%
-  mutate(sample = as.factor(sample)) %>%
-  ## Filter out certain models
-  filter(model == "NN1_MAE"
-         | model == "NN2_MAE"
-         | model == "NN3_MAE"
-         | model == "NN4_MAE"
-         | model == "NN5_MAE") %>%
-  ggplot() +
-  geom_bar(aes(x = model, y = test_RSquare, fill = sample), stat = "identity", position = position_dodge()) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  scale_fill_brewer(palette = "Paired") +
-  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_rsquare_small_nn.pdf")
 ```
 
 ```{r variable_importance_plots}
