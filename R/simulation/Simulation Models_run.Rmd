@@ -26,7 +26,6 @@ library(randomForestSRC)
 
 library(xts)
 library(uwot)
-library(rugarch)
 
 #Parallel Computing
 library(foreach)
@@ -491,153 +490,161 @@ saveRDS(g3_A1_sv_1_FFORMA_results, "~/GitHub/Evaluation-of-Machine-Learning-in-A
 ```{r load_partial_results}
 ## Chunk to load all results lists
 
-g1_A1_nosv_0_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_nosv_0_results.RDS")
-g2_A1_nosv_0_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_nosv_0_results.RDS")
-g3_A1_nosv_0_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_nosv_0_results.RDS")
+g1_A1_nosv_0_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g1_A1_nosv_0_results.RDS")
+g2_A1_nosv_0_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g2_A1_nosv_0_results.RDS")
+g3_A1_nosv_0_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g3_A1_nosv_0_results.RDS")
 
-g1_A1_sv_0.01_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.01_results.RDS")
-g2_A1_sv_0.01_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.01_results.RDS")
-g3_A1_sv_0.01_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.01_results.RDS")
+g1_A1_sv_0.01_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g1_A1_sv_0.01_results.RDS")
+g2_A1_sv_0.01_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g2_A1_sv_0.01_results.RDS")
+g3_A1_sv_0.01_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g3_A1_sv_0.01_results.RDS")
 
-g1_A1_sv_0.1_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.1_results.RDS")
-g2_A1_sv_0.1_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.1_results.RDS")
-g3_A1_sv_0.1_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.1_results.RDS")
+g1_A1_sv_0.1_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g1_A1_sv_0.1_results.RDS")
+g2_A1_sv_0.1_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g2_A1_sv_0.1_results.RDS")
+g3_A1_sv_0.1_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g3_A1_sv_0.1_results.RDS")
 
-g1_A1_sv_1_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_1_results.RDS")
-g2_A1_sv_1_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_1_results.RDS")
-g3_A1_sv_1_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_1_results.RDS")
+g1_A1_sv_1_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g1_A1_sv_1_results.RDS")
+g2_A1_sv_1_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g2_A1_sv_1_results.RDS")
+g3_A1_sv_1_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g3_A1_sv_1_results.RDS")
 
 ####################################################################################################################
 ## Random Forests
 
-g1_A1_nosv_0_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_nosv_0_RF_results.RDS")
-g2_A1_nosv_0_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_nosv_0_RF_results.RDS")
-g3_A1_nosv_0_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_nosv_0_RF_results.RDS")
+g1_A1_nosv_0_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g1_A1_nosv_0_RF_results.RDS")
+g2_A1_nosv_0_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g2_A1_nosv_0_RF_results.RDS")
+g3_A1_nosv_0_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g3_A1_nosv_0_RF_results.RDS")
 
-g1_A1_sv_0.01_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.01_RF_results.RDS")
-g2_A1_sv_0.01_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.01_RF_results.RDS")
-g3_A1_sv_0.01_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.01_RF_results.RDS")
+g1_A1_sv_0.01_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g1_A1_sv_0.01_RF_results.RDS")
+g2_A1_sv_0.01_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g2_A1_sv_0.01_RF_results.RDS")
+g3_A1_sv_0.01_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g3_A1_sv_0.01_RF_results.RDS")
 
-g1_A1_sv_0.1_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.1_RF_results.RDS")
-g2_A1_sv_0.1_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.1_RF_results.RDS")
-g3_A1_sv_0.1_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.1_RF_results.RDS")
+g1_A1_sv_0.1_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g1_A1_sv_0.1_RF_results.RDS")
+g2_A1_sv_0.1_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g2_A1_sv_0.1_RF_results.RDS")
+g3_A1_sv_0.1_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g3_A1_sv_0.1_RF_results.RDS")
 
-g1_A1_sv_1_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_1_RF_results.RDS")
-g2_A1_sv_1_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_1_RF_results.RDS")
-g3_A1_sv_1_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_1_RF_results.RDS")
+g1_A1_sv_1_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g1_A1_sv_1_RF_results.RDS")
+g2_A1_sv_1_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g2_A1_sv_1_RF_results.RDS")
+g3_A1_sv_1_RF_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g3_A1_sv_1_RF_results.RDS")
 
 ####################################################################################################################
 ## MLP Results
 
-g1_A1_nosv_0_NN_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_nosv_0_NN_results15.RDS")
-g2_A1_nosv_0_NN_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_nosv_0_NN_results15.RDS")
-g3_A1_nosv_0_NN_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_nosv_0_NN_results15.RDS")
+g1_A1_nosv_0_NN_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g1_A1_nosv_0_NN_results15.RDS")
+g2_A1_nosv_0_NN_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g2_A1_nosv_0_NN_results15.RDS")
+g3_A1_nosv_0_NN_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g3_A1_nosv_0_NN_results15.RDS")
 
-g1_A1_sv_0.01_NN_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.01_NN_results15.RDS")
-g2_A1_sv_0.01_NN_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.01_NN_results15.RDS")
-g3_A1_sv_0.01_NN_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.01_NN_results15.RDS")
+g1_A1_sv_0.01_NN_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g1_A1_sv_0.01_NN_results15.RDS")
+g2_A1_sv_0.01_NN_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g2_A1_sv_0.01_NN_results15.RDS")
+g3_A1_sv_0.01_NN_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g3_A1_sv_0.01_NN_results15.RDS")
 
-g1_A1_sv_0.1_NN_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.1_NN_results15.RDS")
-g2_A1_sv_0.1_NN_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.1_NN_results15.RDS")
-g3_A1_sv_0.1_NN_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.1_NN_results15.RDS")
+g1_A1_sv_0.1_NN_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g1_A1_sv_0.1_NN_results15.RDS")
+g2_A1_sv_0.1_NN_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g2_A1_sv_0.1_NN_results15.RDS")
+g3_A1_sv_0.1_NN_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g3_A1_sv_0.1_NN_results15.RDS")
 
-g1_A1_sv_1_NN_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_1_NN_results15.RDS")
-g2_A1_sv_1_NN_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_1_NN_results15.RDS")
-g3_A1_sv_1_NN_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_1_NN_results15.RDS")
+g1_A1_sv_1_NN_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g1_A1_sv_1_NN_results15.RDS")
+g2_A1_sv_1_NN_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g2_A1_sv_1_NN_results15.RDS")
+g3_A1_sv_1_NN_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g3_A1_sv_1_NN_results15.RDS")
 ##
-g1_A1_nosv_0_NN_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_nosv_0_NN_results610.RDS")
-g2_A1_nosv_0_NN_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_nosv_0_NN_results610.RDS")
-g3_A1_nosv_0_NN_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_nosv_0_NN_results610.RDS")
+g1_A1_nosv_0_NN_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g1_A1_nosv_0_NN_results610.RDS")
+g2_A1_nosv_0_NN_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g2_A1_nosv_0_NN_results610.RDS")
+g3_A1_nosv_0_NN_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g3_A1_nosv_0_NN_results610.RDS")
 
-g1_A1_sv_0.01_NN_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.01_NN_results610.RDS")
-g2_A1_sv_0.01_NN_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.01_NN_results610.RDS")
-g3_A1_sv_0.01_NN_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.01_NN_results610.RDS")
+g1_A1_sv_0.01_NN_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g1_A1_sv_0.01_NN_results610.RDS")
+g2_A1_sv_0.01_NN_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g2_A1_sv_0.01_NN_results610.RDS")
+g3_A1_sv_0.01_NN_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g3_A1_sv_0.01_NN_results610.RDS")
 
-g1_A1_sv_0.1_NN_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.1_NN_results610.RDS")
-g2_A1_sv_0.1_NN_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.1_NN_results610.RDS")
-g3_A1_sv_0.1_NN_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.1_NN_results610.RDS")
+g1_A1_sv_0.1_NN_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g1_A1_sv_0.1_NN_results610.RDS")
+g2_A1_sv_0.1_NN_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g2_A1_sv_0.1_NN_results610.RDS")
+g3_A1_sv_0.1_NN_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g3_A1_sv_0.1_NN_results610.RDS")
 
-g1_A1_sv_1_NN_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_1_NN_results610.RDS")
-g2_A1_sv_1_NN_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_1_NN_results610.RDS")
-g3_A1_sv_1_NN_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_1_NN_results610.RDS")
+g1_A1_sv_1_NN_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g1_A1_sv_1_NN_results610.RDS")
+g2_A1_sv_1_NN_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g2_A1_sv_1_NN_results610.RDS")
+g3_A1_sv_1_NN_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g3_A1_sv_1_NN_results610.RDS")
 
 #################################################################
 ## LSTM Results
 #################################################################
-g1_A1_nosv_0_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_nosv_0_LSTM_results_15.RDS")
-g2_A1_nosv_0_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_nosv_0_LSTM_results_15.RDS")
-g3_A1_nosv_0_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_nosv_0_LSTM_results_15.RDS")
+g1_A1_nosv_0_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g1_A1_nosv_0_LSTM_results_15.RDS")
+g2_A1_nosv_0_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g2_A1_nosv_0_LSTM_results_15.RDS")
+g3_A1_nosv_0_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g3_A1_nosv_0_LSTM_results_15.RDS")
 
-g1_A1_sv_0.01_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.01_LSTM_results_15.RDS")
-g2_A1_sv_0.01_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.01_LSTM_results_15.RDS")
-g3_A1_sv_0.01_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.01_LSTM_results_15.RDS")
+g1_A1_sv_0.01_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g1_A1_sv_0.01_LSTM_results_15.RDS")
+g2_A1_sv_0.01_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g2_A1_sv_0.01_LSTM_results_15.RDS")
+g3_A1_sv_0.01_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g3_A1_sv_0.01_LSTM_results_15.RDS")
 
-g1_A1_sv_0.1_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.1_LSTM_results_15.RDS")
-g2_A1_sv_0.1_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.1_LSTM_results_15.RDS")
-g3_A1_sv_0.1_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.1_LSTM_results_15.RDS")
+g1_A1_sv_0.1_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g1_A1_sv_0.1_LSTM_results_15.RDS")
+g2_A1_sv_0.1_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g2_A1_sv_0.1_LSTM_results_15.RDS")
+g3_A1_sv_0.1_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g3_A1_sv_0.1_LSTM_results_15.RDS")
 
-g1_A1_sv_1_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_1_LSTM_results_15.RDS")
-g2_A1_sv_1_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_1_LSTM_results_15.RDS")
-g3_A1_sv_1_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_1_LSTM_results_15.RDS")
+g1_A1_sv_1_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g1_A1_sv_1_LSTM_results_15.RDS")
+g2_A1_sv_1_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g2_A1_sv_1_LSTM_results_15.RDS")
+g3_A1_sv_1_LSTM_results_15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g3_A1_sv_1_LSTM_results_15.RDS")
 #################################################################
 ## These are pending atm
-g1_A1_nosv_0_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_nosv_0_LSTM_results_610.RDS")
-g2_A1_nosv_0_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_nosv_0_LSTM_results_610.RDS")
-g3_A1_nosv_0_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_nosv_0_LSTM_results_610.RDS")
+g1_A1_nosv_0_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g1_A1_nosv_0_LSTM_results_610.RDS")
+g2_A1_nosv_0_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g2_A1_nosv_0_LSTM_results_610.RDS")
+g3_A1_nosv_0_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g3_A1_nosv_0_LSTM_results_610.RDS")
 
-g1_A1_sv_0.01_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.01_LSTM_results_610.RDS")
-g2_A1_sv_0.01_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.01_LSTM_results_610.RDS")
-g3_A1_sv_0.01_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.01_LSTM_results_610.RDS")
+g1_A1_sv_0.01_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g1_A1_sv_0.01_LSTM_results_610.RDS")
+g2_A1_sv_0.01_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g2_A1_sv_0.01_LSTM_results_610.RDS")
+g3_A1_sv_0.01_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g3_A1_sv_0.01_LSTM_results_610.RDS")
 
-g1_A1_sv_0.1_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.1_LSTM_results_610.RDS")
-g2_A1_sv_0.1_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.1_LSTM_results_610.RDS")
-g3_A1_sv_0.1_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.1_LSTM_results_610.RDS")
+g1_A1_sv_0.1_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g1_A1_sv_0.1_LSTM_results_610.RDS")
+g2_A1_sv_0.1_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g2_A1_sv_0.1_LSTM_results_610.RDS")
+g3_A1_sv_0.1_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g3_A1_sv_0.1_LSTM_results_610.RDS")
 
-g1_A1_sv_1_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_1_LSTM_results_610.RDS")
-g2_A1_sv_1_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_1_LSTM_results_610.RDS")
-g3_A1_sv_1_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_1_LSTM_results_610.RDS")
+g1_A1_sv_1_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g1_A1_sv_1_LSTM_results_610.RDS")
+g2_A1_sv_1_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g2_A1_sv_1_LSTM_results_610.RDS")
+g3_A1_sv_1_LSTM_results_610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g3_A1_sv_1_LSTM_results_610.RDS")
 
 #################################################################
 ## FFORMA
 #################################################################
 
-g1_A1_nosv_0_FFORMA_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_nosv_0_FFORMA_results.RDS")
-g2_A1_nosv_0_FFORMA_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_nosv_0_FFORMA_results.RDS")
-g3_A1_nosv_0_FFORMA_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_nosv_0_FFORMA_results.RDS")
+g1_A1_nosv_0_FFORMA_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g1_A1_nosv_0_FFORMA_results.RDS")
+g2_A1_nosv_0_FFORMA_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g2_A1_nosv_0_FFORMA_results.RDS")
+g3_A1_nosv_0_FFORMA_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g3_A1_nosv_0_FFORMA_results.RDS")
 
-g1_A1_sv_0.01_FFORMA_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.01_FFORMA_results.RDS")
-g2_A1_sv_0.01_FFORMA_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.01_FFORMA_results.RDS")
-g3_A1_sv_0.01_FFORMA_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.01_FFORMA_results.RDS")
+g1_A1_sv_0.01_FFORMA_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g1_A1_sv_0.01_FFORMA_results.RDS")
+g2_A1_sv_0.01_FFORMA_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g2_A1_sv_0.01_FFORMA_results.RDS")
+g3_A1_sv_0.01_FFORMA_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g3_A1_sv_0.01_FFORMA_results.RDS")
 
-g1_A1_sv_0.1_FFORMA_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.1_FFORMA_results.RDS")
-g2_A1_sv_0.1_FFORMA_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.1_FFORMA_results.RDS")
-g3_A1_sv_0.1_FFORMA_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.1_FFORMA_results.RDS")
+g1_A1_sv_0.1_FFORMA_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g1_A1_sv_0.1_FFORMA_results.RDS")
+g2_A1_sv_0.1_FFORMA_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g2_A1_sv_0.1_FFORMA_results.RDS")
+g3_A1_sv_0.1_FFORMA_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g3_A1_sv_0.1_FFORMA_results.RDS")
 
-g1_A1_sv_1_FFORMA_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_1_FFORMA_results.RDS")
-g2_A1_sv_1_FFORMA_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_1_FFORMA_results.RDS")
-g3_A1_sv_1_FFORMA_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_1_FFORMA_results.RDS")
+g1_A1_sv_1_FFORMA_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g1_A1_sv_1_FFORMA_results.RDS")
+g2_A1_sv_1_FFORMA_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g2_A1_sv_1_FFORMA_results.RDS")
+g3_A1_sv_1_FFORMA_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g3_A1_sv_1_FFORMA_results.RDS")
 
 #################################################################
 ## AWS DEEPAR
 #################################################################
 
-## Not yet working as DeepAR results aren't in yet
+g1_A1_sv_0.01_DeepAR_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g1_A1_sv_0.01_DeepAR_results15.RDS")
+g2_A1_sv_0.01_DeepAR_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g2_A1_sv_0.01_DeepAR_results15.RDS")
+g3_A1_sv_0.01_DeepAR_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g3_A1_sv_0.01_DeepAR_results15.RDS")
 
-g1_A1_nosv_0_DEEPAR_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_nosv_0_DEEPAR_results.RDS")
-g2_A1_nosv_0_DEEPAR_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_nosv_0_DEEPAR_results.RDS")
-g3_A1_nosv_0_DEEPAR_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_nosv_0_DEEPAR_results.RDS")
+g1_A1_sv_0.1_DeepAR_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g1_A1_sv_0.1_DeepAR_results15.RDS")
+g2_A1_sv_0.1_DeepAR_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g2_A1_sv_0.1_DeepAR_results15.RDS")
+g3_A1_sv_0.1_DeepAR_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g3_A1_sv_0.1_DeepAR_results15.RDS")
 
-g1_A1_sv_0.01_DEEPAR_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.01_DEEPAR_results.RDS")
-g2_A1_sv_0.01_DEEPAR_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.01_DEEPAR_results.RDS")
-g3_A1_sv_0.01_DEEPAR_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.01_DEEPAR_results.RDS")
+g1_A1_sv_1_DeepAR_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g1_A1_sv_1_DeepAR_results15.RDS")
+g2_A1_sv_1_DeepAR_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g2_A1_sv_1_DeepAR_results15.RDS")
+g3_A1_sv_1_DeepAR_results15 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g3_A1_sv_1_DeepAR_results15.RDS")
 
-g1_A1_sv_0.1_DEEPAR_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.1_DEEPAR_results.RDS")
-g2_A1_sv_0.1_DEEPAR_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.1_DEEPAR_results.RDS")
-g3_A1_sv_0.1_DEEPAR_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.1_DEEPAR_results.RDS")
+#########################################################################################
 
-g1_A1_sv_1_DEEPAR_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_1_DEEPAR_results.RDS")
-g2_A1_sv_1_DEEPAR_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_1_DEEPAR_results.RDS")
-g3_A1_sv_1_DEEPAR_results <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_1_DEEPAR_results.RDS")
+g1_A1_sv_0.01_DeepAR_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g1_A1_sv_0.01_DeepAR_results610.RDS")
+g2_A1_sv_0.01_DeepAR_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g2_A1_sv_0.01_DeepAR_results610.RDS")
+g3_A1_sv_0.01_DeepAR_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g3_A1_sv_0.01_DeepAR_results610.RDS")
+
+g1_A1_sv_0.1_DeepAR_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g1_A1_sv_0.1_DeepAR_results610.RDS")
+g2_A1_sv_0.1_DeepAR_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g2_A1_sv_0.1_DeepAR_results610.RDS")
+g3_A1_sv_0.1_DeepAR_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g3_A1_sv_0.1_DeepAR_results610.RDS")
+
+g1_A1_sv_1_DeepAR_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g1_A1_sv_1_DeepAR_results610.RDS")
+g2_A1_sv_1_DeepAR_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g2_A1_sv_1_DeepAR_results610.RDS")
+g3_A1_sv_1_DeepAR_results610 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/simulation/g3_A1_sv_1_DeepAR_results610.RDS")
 
 ```
 
@@ -734,84 +741,98 @@ combine_FFORMA_results_list <- function(normal_list, fforma_list) {
 
 ## Combining DeepAR Results
 
-combine_DeepAR_results_list <- function(normal_list, deepar_list) {
-  for(i in 1:10) {
-    normal_list[[i]]$DeepAR <- deepar_list[[i]]$DeepAR_MSE
+combine_DeepAR_results_list <- function(normal_list, deepar_list15, deepar_list610) {
+  for(i in 1:5) {
+    normal_list[[i]]$DeepAR <- deepar_list15[[i]]$DEEPAR_MSE
+  }
+  for(i in 6:10) {
+    normal_list[[i]]$DeepAR <- deepar_list610[[i]]$DEEPAR_MSE
   }
   normal_list
 }
 
 ## nosv_0
-g1_A1_nosv_0_results_all <- g1_A1_nosv_0_results %>% 
-  combine_RF_results_list(g1_A1_nosv_0_RF_results) %>%
-  combine_NN_results_list(g1_A1_nosv_0_NN_results15, g1_A1_nosv_0_NN_results610) %>%
-  combine_LSTM_results_list(g1_A1_nosv_0_LSTM_results_15, 0) %>%
-  combine_FFORMA_results_list(g1_A1_nosv_0_FFORMA_results)
-g2_A1_nosv_0_results_all <- g2_A1_nosv_0_results %>% 
-  combine_RF_results_list(g2_A1_nosv_0_RF_results) %>%
-  combine_NN_results_list(g2_A1_nosv_0_NN_results15, g2_A1_nosv_0_NN_results610) %>%
-  combine_LSTM_results_list(g2_A1_nosv_0_LSTM_results_15, 0) %>%
-  combine_FFORMA_results_list(g2_A1_nosv_0_FFORMA_results)
-g3_A1_nosv_0_results_all <- g3_A1_nosv_0_results %>% 
-  combine_RF_results_list(g3_A1_nosv_0_RF_results) %>%
-  combine_NN_results_list(g3_A1_nosv_0_NN_results15, g3_A1_nosv_0_NN_results610) %>%
-  combine_LSTM_results_list(g3_A1_nosv_0_LSTM_results_15, 0) %>%
-  combine_FFORMA_results_list(g3_A1_nosv_0_FFORMA_results)
+## Don't bother with this design because it's stupid, and was only done just to replicate Gu's experiments
+# g1_A1_nosv_0_results_all <- g1_A1_nosv_0_results %>% 
+#   combine_RF_results_list(g1_A1_nosv_0_RF_results) %>%
+#   combine_NN_results_list(g1_A1_nosv_0_NN_results15, g1_A1_nosv_0_NN_results610) %>%
+#   combine_LSTM_results_list(g1_A1_nosv_0_LSTM_results_15, 0) %>%
+#   combine_FFORMA_results_list(g1_A1_nosv_0_FFORMA_results) %>%
+#   combine_DeepAR_results_list(g1_A1_nosv)
+# g2_A1_nosv_0_results_all <- g2_A1_nosv_0_results %>% 
+#   combine_RF_results_list(g2_A1_nosv_0_RF_results) %>%
+#   combine_NN_results_list(g2_A1_nosv_0_NN_results15, g2_A1_nosv_0_NN_results610) %>%
+#   combine_LSTM_results_list(g2_A1_nosv_0_LSTM_results_15, 0) %>%
+#   combine_FFORMA_results_list(g2_A1_nosv_0_FFORMA_results)
+# g3_A1_nosv_0_results_all <- g3_A1_nosv_0_results %>% 
+#   combine_RF_results_list(g3_A1_nosv_0_RF_results) %>%
+#   combine_NN_results_list(g3_A1_nosv_0_NN_results15, g3_A1_nosv_0_NN_results610) %>%
+#   combine_LSTM_results_list(g3_A1_nosv_0_LSTM_results_15, 0) %>%
+#   combine_FFORMA_results_list(g3_A1_nosv_0_FFORMA_results)
 ## sv_0.01
 g1_A1_sv_0.01_results_all <- g1_A1_sv_0.01_results %>% 
   combine_RF_results_list(g1_A1_sv_0.01_RF_results) %>%
   combine_NN_results_list(g1_A1_sv_0.01_NN_results15, g1_A1_sv_0.01_NN_results610) %>%
   combine_LSTM_results_list(g1_A1_sv_0.01_LSTM_results_15, 0) %>%
-  combine_FFORMA_results_list(g1_A1_sv_0.01_FFORMA_results)
+  combine_FFORMA_results_list(g1_A1_sv_0.01_FFORMA_results) %>%
+  combine_DeepAR_results_list(g1_A1_sv_0.01_DeepAR_results15, g1_A1_sv_0.01_DeepAR_results610)
 g2_A1_sv_0.01_results_all <- g2_A1_sv_0.01_results %>% 
   combine_RF_results_list(g2_A1_sv_0.01_RF_results) %>%
   combine_NN_results_list(g2_A1_sv_0.01_NN_results15, g2_A1_sv_0.01_NN_results610) %>%
   combine_LSTM_results_list(g2_A1_sv_0.01_LSTM_results_15, 0) %>%
-  combine_FFORMA_results_list(g2_A1_sv_0.01_FFORMA_results)
+  combine_FFORMA_results_list(g2_A1_sv_0.01_FFORMA_results) %>%
+  combine_DeepAR_results_list(g2_A1_sv_0.01_DeepAR_results15, g2_A1_sv_0.01_DeepAR_results610)
 g3_A1_sv_0.01_results_all <- g3_A1_sv_0.01_results %>% 
   combine_RF_results_list(g3_A1_sv_0.01_RF_results) %>%
   combine_NN_results_list(g3_A1_sv_0.01_NN_results15, g3_A1_sv_0.01_NN_results610) %>%
   combine_LSTM_results_list(g3_A1_sv_0.01_LSTM_results_15, 0) %>%
-  combine_FFORMA_results_list(g3_A1_sv_0.01_FFORMA_results)
+  combine_FFORMA_results_list(g3_A1_sv_0.01_FFORMA_results) %>%
+  combine_DeepAR_results_list(g3_A1_sv_0.01_DeepAR_results15, g3_A1_sv_0.01_DeepAR_results610)
 ## sv_0.1
 g1_A1_sv_0.1_results_all <- g1_A1_sv_0.1_results %>% 
   combine_RF_results_list(g1_A1_sv_0.1_RF_results) %>%
   combine_NN_results_list(g1_A1_sv_0.1_NN_results15, g1_A1_sv_0.1_NN_results610) %>%
   combine_LSTM_results_list(g1_A1_sv_0.1_LSTM_results_15, 0) %>%
-  combine_FFORMA_results_list(g1_A1_sv_0.1_FFORMA_results)
+  combine_FFORMA_results_list(g1_A1_sv_0.1_FFORMA_results) %>%
+  combine_DeepAR_results_list(g1_A1_sv_0.1_DeepAR_results15, g1_A1_sv_0.1_DeepAR_results610)
 g2_A1_sv_0.1_results_all <- g2_A1_sv_0.1_results %>% 
   combine_RF_results_list(g2_A1_sv_0.1_RF_results) %>%
   combine_NN_results_list(g2_A1_sv_0.1_NN_results15, g2_A1_sv_0.1_NN_results610) %>%
   combine_LSTM_results_list(g2_A1_sv_0.1_LSTM_results_15, 0) %>%
-  combine_FFORMA_results_list(g2_A1_sv_0.1_FFORMA_results)
+  combine_FFORMA_results_list(g2_A1_sv_0.1_FFORMA_results) %>%
+  combine_DeepAR_results_list(g2_A1_sv_0.1_DeepAR_results15, g2_A1_sv_0.1_DeepAR_results610)
 g3_A1_sv_0.1_results_all <- g3_A1_sv_0.1_results %>% 
   combine_RF_results_list(g3_A1_sv_0.1_RF_results) %>%
   combine_NN_results_list(g3_A1_sv_0.1_NN_results15, g3_A1_sv_0.1_NN_results610) %>%
   combine_LSTM_results_list(g3_A1_sv_0.1_LSTM_results_15, 0) %>%
-  combine_FFORMA_results_list(g3_A1_sv_0.1_FFORMA_results)
+  combine_FFORMA_results_list(g3_A1_sv_0.1_FFORMA_results) %>%
+  combine_DeepAR_results_list(g3_A1_sv_0.1_DeepAR_results15, g3_A1_sv_0.1_DeepAR_results610)
 ## sv_1
 g1_A1_sv_1_results_all <- g1_A1_sv_1_results %>% 
   combine_RF_results_list(g1_A1_sv_1_RF_results) %>%
   combine_NN_results_list(g1_A1_sv_1_NN_results15, g1_A1_sv_1_NN_results610)%>%
   combine_LSTM_results_list(g1_A1_sv_1_LSTM_results_15, 0) %>%
-  combine_FFORMA_results_list(g1_A1_sv_1_FFORMA_results)
+  combine_FFORMA_results_list(g1_A1_sv_1_FFORMA_results) %>%
+  combine_DeepAR_results_list(g1_A1_sv_1_DeepAR_results15, g1_A1_sv_1_DeepAR_results610)
 g2_A1_sv_1_results_all <- g2_A1_sv_1_results %>% 
   combine_RF_results_list(g2_A1_sv_1_RF_results) %>%
   combine_NN_results_list(g2_A1_sv_1_NN_results15, g2_A1_sv_1_NN_results610)%>%
   combine_LSTM_results_list(g2_A1_sv_1_LSTM_results_15, 0) %>%
-  combine_FFORMA_results_list(g2_A1_sv_1_FFORMA_results)
+  combine_FFORMA_results_list(g2_A1_sv_1_FFORMA_results) %>%
+  combine_DeepAR_results_list(g2_A1_sv_1_DeepAR_results15, g2_A1_sv_1_DeepAR_results610)
 g3_A1_sv_1_results_all <- g3_A1_sv_1_results %>% 
   combine_RF_results_list(g3_A1_sv_1_RF_results) %>%
   combine_NN_results_list(g3_A1_sv_1_NN_results15, g3_A1_sv_1_NN_results610)%>%
   combine_LSTM_results_list(g3_A1_sv_1_LSTM_results_15, 0) %>%
-  combine_FFORMA_results_list(g3_A1_sv_1_FFORMA_results)
+  combine_FFORMA_results_list(g3_A1_sv_1_FFORMA_results) %>%
+  combine_DeepAR_results_list(g3_A1_sv_1_DeepAR_results15, g3_A1_sv_1_DeepAR_results610)
 
-saveRDS(g1_A1_nosv_0_results_all, file =
-          "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_nosv_0_results_all.rds")
-saveRDS(g2_A1_nosv_0_results_all, file =
-          "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_nosv_0_results_all.rds")
-saveRDS(g3_A1_nosv_0_results_all, file =
-          "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_nosv_0_results_all.rds")
+# saveRDS(g1_A1_nosv_0_results_all, file =
+#           "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_nosv_0_results_all.rds")
+# saveRDS(g2_A1_nosv_0_results_all, file =
+#           "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_nosv_0_results_all.rds")
+# saveRDS(g3_A1_nosv_0_results_all, file =
+#           "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_nosv_0_results_all.rds")
 
 saveRDS(g1_A1_sv_0.01_results_all, file =
           "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.01_results_all.rds")
@@ -889,7 +910,9 @@ gen_tidy_loss_df <- function(simulation_results_list, realization_no, dgp_spec, 
       cbind(model = "LSTM_MAE", sample = sample, simulation_results_list[[realization_no]]$LSTM_MAE[[sample]]$loss_stats),
       #################################################################################################
       cbind(model = "FFORMA_MSE", sample = sample, simulation_results_list[[realization_no]]$FFORMA_MSE[[sample]]$loss_stats),
-      cbind(model = "FFORMA_MAE", sample = sample, simulation_results_list[[realization_no]]$FFORMA_MAE[[sample]]$loss_stats)
+      cbind(model = "FFORMA_MAE", sample = sample, simulation_results_list[[realization_no]]$FFORMA_MAE[[sample]]$loss_stats),
+      #################################################################################################
+      cbind(model = "DeepAR", sample = sample, simulation_results_list[[realization_no]]$DeepAR[[sample]]$loss_stats)
     )
   }
   cbind(realization_no = realization_no, dgp_spec = dgp_spec, SV = SV, cross_corr = cross_corr, df)
@@ -904,9 +927,9 @@ all_realize_loss_df <- function(simulation_results_list, dgp_spec, SV, cross_cor
 }
 
 all_loss_df <- rbind(
-  all_realize_loss_df(g1_A1_nosv_0_results_all, dgp_spec = "g1", SV = 0, cross_corr = 0),
-  all_realize_loss_df(g2_A1_nosv_0_results_all, dgp_spec = "g2", SV = 0, cross_corr = 0),
-  all_realize_loss_df(g3_A1_nosv_0_results_all, dgp_spec = "g3", SV = 0, cross_corr = 0),
+  # all_realize_loss_df(g1_A1_nosv_0_results_all, dgp_spec = "g1", SV = 0, cross_corr = 0),
+  # all_realize_loss_df(g2_A1_nosv_0_results_all, dgp_spec = "g2", SV = 0, cross_corr = 0),
+  # all_realize_loss_df(g3_A1_nosv_0_results_all, dgp_spec = "g3", SV = 0, cross_corr = 0),
   
   all_realize_loss_df(g1_A1_sv_0.01_results_all, dgp_spec = "g1", SV = 1, cross_corr = 0.01),
   all_realize_loss_df(g2_A1_sv_0.01_results_all, dgp_spec = "g2", SV = 1, cross_corr = 0.01),
