@@ -632,7 +632,7 @@ lm_ave_forecast_resids <- function(lm_model, test) {
   time_periods <- unique(test$time)
   
   # Set .combine to "c" to return a vector of results, which is what we want
-  ave_forecast_resids_vector <- foreach(t = 1:length(time_periods), .combine = "c", .packages = c("speedglm", "quantreg")) %do% {
+  ave_forecast_resids_vector <- foreach(t = 1:length(time_periods), .combine = "c", .packages = c("speedglm", "quantreg")) %dopar% {
     
     test_cross_section <- test %>%
       filter(time == time_periods[t])
@@ -651,7 +651,7 @@ eln_ave_forecast_resids <- function(eln_model, test, alpha, lambda) {
   time_periods <- unique(test$time)
   
   # Set .combine to "c" to return a vector of results, which is what we want
-  ave_forecast_resids_vector <- foreach(t = 1:length(time_periods), .combine = "c") %do% {
+  ave_forecast_resids_vector <- foreach(t = 1:length(time_periods), .combine = "c") %dopar% {
     
     test_cross_section <- test %>%
       filter(time == time_periods[t])
