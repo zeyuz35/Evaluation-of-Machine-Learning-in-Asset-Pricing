@@ -448,23 +448,6 @@ saveRDS(final_dataset, file = "final_dataset.rds")
 ```
 
 ```{r}
-## This section builds a version of the final dataset which does NOT have any interaction terms
-## This was mainly done to reduce dimensionality
-
-datashare_combined <- full_join(macro_predictors, datashare_normalized, by = "time") %>%
-  # Create Excess Returns
-  mutate(rt = rt - macro_Rfree) %>%
-  select(-macro_Rfree) %>%
-  # Reorder
-  select(time, stock, rt, macro_constant, 
-         macro_bm, macro_dfy, macro_dp, macro_ep, macro_ntis, macro_svar, macro_tbl, macro_tms,
-         everything())
-
-saveRDS(datashare_combined, file = "final_dataset_no_interaction.rds")
-```
-
-
-```{r}
 # Double Check
 colnames(final_dataset)
 ncol(final_dataset) - 3
@@ -513,7 +496,7 @@ real_panel_formula <- function(panel){
 # These are the settings working with a dataset going from 1993 - 2016
 # Results in a traing:validation size ratio of 1.5
 realdata_timeSlices <- realdata_custom_timeslices(
-  start = 1994, initialWindow = 10, horizon = 1, validation_size = 10, test_size = 1, set_no = 3
+  start = 1994, initialWindow = 9, horizon = 1, validation_size = 10, test_size = 1, set_no = 3
   )
 
 # Add the two quarters in from 1993
@@ -758,7 +741,7 @@ LM_fit <- function(pooled_panel, timeSlices, loss_function, f,
       lm <- lm(f, data = train, model = FALSE, x = FALSE, y = FALSE)
     } else {
       # Use pfn as method here for much faster computation
-      lm <- rq(f, data = train, tau = 0.5, method = "pfn")
+      lm <- rq(f, data = train, tau = 0.5, method = "pfn", eps = 1e-05)
     }
     
     #LM_stats[[set]]$model <- lm
@@ -1380,11 +1363,11 @@ real_data_results <- fit_all_models_real_data(final_dataset,
 f <- real_panel_formula(final_dataset)
 LM_stats_mse <- LM_fit(final_dataset, realdata_timeSlices, "mse", f,
                        macro_factor_names, individual_factor_names)
-saveRDS(LM_stats_mae, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_train_valid_1/LM_stats_mae.rds")
+saveRDS(LM_stats_mse, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_train_valid_1/LM_stats_mse.rds")
 
 LM_stats_mae <- LM_fit(final_dataset, realdata_timeSlices, "mae", f,
                        macro_factor_names, individual_factor_names)
-saveRDS(LM_stats_mse, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_train_valid_1/LM_stats_mse.rds")
+saveRDS(LM_stats_mae, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_train_valid_1/LM_stats_mae.rds")
 
 ####
 
@@ -1392,11 +1375,11 @@ LM_stats_mse[[1]]$loss_stats
 LM_stats_mse[[1]]$variable_importance %>%
   arrange(desc(importance))
 
-LM_stats_mse[[2]]$loss_stats
+LM_stats_mae[[1]]$loss_stats
 LM_stats_mse[[2]]$variable_importance %>%
   arrange(desc(importance))
 
-LM_stats_mse[[3]]$loss_stats
+LM_stats_mae[[3]]$loss_stats
 LM_stats_mse[[3]]$variable_importance %>%
   arrange(desc(importance))
 ######################################################################################################################

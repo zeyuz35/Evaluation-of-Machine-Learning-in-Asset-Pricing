@@ -204,9 +204,9 @@ fit_all_models_fforma <- function(dataset_list, batch_process_range) {
 
 ```{r load_simulated_datasets}
 ## Chunk to load in simulated datasets
-g1_A1_nosv_0 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Simulated_dataset/g1_A1_nosv_0.RDS")
-g2_A1_nosv_0 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Simulated_dataset/g2_A1_nosv_0.RDS")
-g3_A1_nosv_0 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Simulated_dataset/g3_A1_nosv_0.RDS")
+# g1_A1_nosv_0 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Simulated_dataset/g1_A1_nosv_0.RDS")
+# g2_A1_nosv_0 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Simulated_dataset/g2_A1_nosv_0.RDS")
+# g3_A1_nosv_0 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Simulated_dataset/g3_A1_nosv_0.RDS")
 #######
 g1_A1_sv_0.01 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Simulated_dataset/g1_A1_sv_0.01.RDS")
 g2_A1_sv_0.01 <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Simulated_dataset/g2_A1_sv_0.01.RDS")
