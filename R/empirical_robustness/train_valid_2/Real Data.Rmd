@@ -743,7 +743,7 @@ LM_fit <- function(pooled_panel, timeSlices, loss_function, f,
       lm <- lm(f, data = train, model = FALSE, x = FALSE, y = FALSE)
     } else {
       # Use pfn as method here for much faster computation
-      lm <- rq(f, data = train, tau = 0.5, method = "pfn")
+      lm <- rq(f, data = train, tau = 0.5, method = "pfn", eps = 1e-03)
     }
     
     #LM_stats[[set]]$model <- lm
@@ -1360,11 +1360,6 @@ real_data_results <- fit_all_models_real_data(final_dataset,
 ```
 
 ```{r, eval = FALSE}
-
-final_dataset <- final_dataset %>%
-  mutate(rt = jitter(rt))
-# test
-
 f <- real_panel_formula(final_dataset)
 LM_stats_mse <- LM_fit(final_dataset, realdata_timeSlices, "mse", f,
                        macro_factor_names, individual_factor_names)
