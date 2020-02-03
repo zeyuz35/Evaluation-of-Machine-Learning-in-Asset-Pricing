@@ -417,8 +417,7 @@ F_F_Research_Data_5_Factors_2x3_RAW <- read_csv("~/GitHub/Evaluation-of-Machine-
 
 macro_predictors_ff <- F_F_Research_Data_5_Factors_2x3_RAW %>%
   data.frame() %>%
-  ## Filtering out the extra two factors for feasibility and singularity issues
-  dplyr::select(Mkt.RF, SMB, HML, Time) %>%
+  dplyr::select(Mkt.RF, SMB, HML, CMA, RMW, Time) %>%
   # Rename
   mutate(time = Time) %>%
   dplyr::select(-Time) %>%
@@ -429,6 +428,8 @@ macro_predictors_ff <- F_F_Research_Data_5_Factors_2x3_RAW %>%
   mutate(Mkt.RF = lag(Mkt.RF)) %>%
   mutate(SMB = lag(SMB)) %>%
   mutate(HML = lag(HML)) %>%
+  mutate(RMW = lag(RMW)) %>%
+  mutate(CMA = lag(CMA)) %>%
   # Rename
   rename_at(vars(-time), function(x) paste0("macro_ff_", x)) %>%
   # Create constant
@@ -679,6 +680,10 @@ variable_importance_df
 ## Linear Model
 # Given a an lm object and a test dataset, return the cross sectional average forecast errors
 
+## Change these to be dummy functions that just return 0 for computational feasibility
+## This was originally just implemented so that the stupid diebold mariano tests could be done
+## DM tests are either unreliable and have numerical issues, or just tell you what you can already decipher from loss stats anyway
+
 lm_ave_forecast_resids <- function(lm_model, test) {
   
   time_periods <- unique(test$time)
@@ -716,6 +721,10 @@ eln_ave_forecast_resids <- function(eln_model, test, alpha, lambda) {
     mean(residuals)
   }
   ave_forecast_resids_vector
+}
+
+eln_ave_forecast_resids <- function(eln_model, test, alpha, lambda) {
+  0
 }
 
 ## Random Forest
@@ -795,7 +804,7 @@ LM_fit <- function(pooled_panel, timeSlices, loss_function, f,
       lm <- lm(f, data = train, model = FALSE, x = FALSE, y = FALSE)
     } else {
       # Use pfn as method here for much faster computation
-      lm <- rq(f, data = train, tau = 0.5, method = "br")
+      lm <- rq(f, data = train, tau = 0.5, method = "pfn", eps = 1e-03)
     }
     
     #LM_stats[[set]]$model <- lm
@@ -1311,96 +1320,6 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
 ###################################################################################################################
 ```
 
-```{r}
-################################################################
-## Function to fit all models for real data
-## Slightly different from simulation model fitting function
-################################################################
-
-fit_all_models_real_data <- function(pooled_panel, macro_factor_names, individual_factor_names, 
-                           # Logical arguments specifying which models you want to fit
-                           # This is useful if you don't want to fit some of the most intensive methods such as RF and Neural Networks
-                           LM, ELN, RF, NNet) {
-  # Initialize List
-  real_data_results_list <- list(0)
-    
-  real_data_results_list <- list(
-    # Panel Statistics
-    pooled_panel_stats = 0, 
-    # Y Values (used for Diebold Mariano Tests later)
-    returns = 0,
-    # Models
-    LM_MSE = 0, LM_MAE = 0,
-    ELN_MSE = 0, ELN_MAE = 0,
-    RF_MSE = 0, RF_MAE = 0,
-    # Neural Networks
-    NN1_MSE = 0, NN1_MAE = 0,
-    NN2_MSE = 0, NN2_MAE = 0,
-    NN3_MSE = 0, NN3_MAE = 0,
-    NN4_MSE = 0, NN4_MAE = 0,
-    NN5_MSE = 0, NN5_MAE = 0
-  )
-  
-  realdata_timeSlices <- realdata_custom_timeslices(start = 1993, initialWindow = 15, horizon = 1, validation_size = 3, test_size = 3, set_no = 3)
-    
-  f <- real_panel_formula(pooled_panel)
-    
-  if (LM == 1) {
-    # Linear Models
-    real_data_results_list$LM_MSE <- LM_fit(pooled_panel, realdata_timeSlices, "mse", f)
-    real_data_results_list$LM_MAE <- LM_fit(pooled_panel, realdata_timeSlices, "mae", f)
-  }
-    
-  if (ELN == 1) {
-    # Penalized Linear Models
-  
-    alpha_grid <- seq(0, 1, 0.01)
-    
-    real_data_results_list$ELN_MAE <- ELN_fit_stats(alpha_grid, nlamb = 100, realdata_timeSlices, pooled_panel, loss_function = "mae")
-    real_data_results_list$ELN_MSE <- ELN_fit_stats(alpha_grid, nlamb = 100, realdata_timeSlices, pooled_panel, loss_function = "mse")
-  }
-    
-  if (RF == 1) {
-    # Random Forests
-    RF_grid <- expand.grid(
-    #ntree usually isn't tuned. Just set to max of computationally feasible
-    ntree = 100,
-    mtry = seq(10, round(ncol(pooled_panel[4:ncol(pooled_panel)])/3), 20)
-    # nodesize = seq(2, 14, 2)
-    # nodedepth recommended not to be changed
-    #nodedepth = 1
-    )
-    
-    real_data_results_list$RF_MSE <- RF_fit_stats(pooled_panel, RF_grid, realdata_timeSlices, "mse")
-    real_data_results_list$RF_MAE <- RF_fit_stats(pooled_panel, RF_grid, realdata_timeSlices, "mae")
-  }
-      
-  if (NNet == 1) {
-    # Neural Networks
-    # Commented for now because honours lab computers don't have keras/tensorflow
-    
-    batch_size <- 32
-    patience <- 20
-    
-    real_data_results_list$NN1_MSE <- NNet_fit_stats(pooled_panel, realdata_timeSlices, 1, "mse", batch_size = batch_size, patience = patience)
-    real_data_results_list$NN1_MAE <- NNet_fit_stats(pooled_panel, realdata_timeSlices, 1, "mae", batch_size = batch_size, patience = patience)
-    
-    real_data_results_list$NN2_MSE <- NNet_fit_stats(pooled_panel, realdata_timeSlices, 2, "mse", batch_size = batch_size, patience = patience)
-    real_data_results_list$NN2_MAE <- NNet_fit_stats(pooled_panel, realdata_timeSlices, 2, "mae", batch_size = batch_size, patience = patience)
-    
-    real_data_results_list$NN3_MSE <- NNet_fit_stats(pooled_panel, realdata_timeSlices, 3, "mse", batch_size = batch_size, patience = patience)
-    real_data_results_list$NN3_MAE <- NNet_fit_stats(pooled_panel, realdata_timeSlices, 3, "mae", batch_size = batch_size, patience = patience)
-    
-    real_data_results_list$NN4_MSE <- NNet_fit_stats(pooled_panel, realdata_timeSlices, 4, "mse", batch_size = batch_size, patience = patience)
-    real_data_results_list$NN4_MAE <- NNet_fit_stats(pooled_panel, realdata_timeSlices, 4, "mae", batch_size = batch_size, patience = patience)
-    
-    real_data_results_list$NN5_MSE <- NNet_fit_stats(pooled_panel, realdata_timeSlices, 5, "mse", batch_size = batch_size, patience = patience)
-    real_data_results_list$NN5_MAE <- NNet_fit_stats(pooled_panel, realdata_timeSlices, 5, "mae", batch_size = batch_size, patience = patience)
-  }
-  real_data_results_list
-}
-```
-
 ```{r, eval = FALSE}
 # Test on fitting actual data
 # Lots of memory issues, need to change fit functions so that they are more memory efficient
@@ -1412,12 +1331,6 @@ real_data_results <- fit_all_models_real_data(final_dataset,
 ```
 
 ```{r, eval = FALSE}
-# test
-## Some problems. With more factors (as is with fama french setup) some of the quantile models are singular and have no fit due to the extra dimensionality
-## Solution: use jitter() to add a small amount of noise to the response variable
-final_dataset <- final_dataset %>%
-  mutate(rt = jitter(rt))
-
 f <- real_panel_formula(final_dataset)
 LM_stats_mse <- LM_fit(final_dataset, realdata_timeSlices, "mse", f,
                        macro_factor_names, individual_factor_names)
@@ -1437,8 +1350,8 @@ LM_stats_mse[[2]]$loss_stats
 LM_stats_mse[[2]]$variable_importance %>%
   arrange(desc(importance))
 
-LM_stats_mse[[3]]$loss_stats
-LM_stats_mse[[3]]$variable_importance %>%
+LM_stats_mae[[3]]$loss_stats
+LM_stats_mae[[3]]$variable_importance %>%
   arrange(desc(importance))
 ######################################################################################################################
 ELN_stats_mse <- ELN_fit_stats(alpha_grid = seq(0, 1, 0.01), nlamb = 100, 
