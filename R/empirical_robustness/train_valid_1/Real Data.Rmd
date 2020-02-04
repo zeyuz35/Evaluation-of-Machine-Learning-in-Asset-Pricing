@@ -630,7 +630,7 @@ lm_ave_forecast_resids <- function(lm_model, test) {
   time_periods <- unique(test$time)
   
   # Set .combine to "c" to return a vector of results, which is what we want
-  ave_forecast_resids_vector <- foreach(t = 1:length(time_periods), .combine = "c", .packages = c("speedglm", "quantreg")) %do% {
+  ave_forecast_resids_vector <- foreach(t = 1:length(time_periods), .combine = "c", .packages = c("speedglm", "quantreg")) %dopar% {
     
     test_cross_section <- test %>%
       filter(time == time_periods[t])
@@ -649,7 +649,7 @@ eln_ave_forecast_resids <- function(eln_model, test, alpha, lambda) {
   time_periods <- unique(test$time)
   
   # Set .combine to "c" to return a vector of results, which is what we want
-  ave_forecast_resids_vector <- foreach(t = 1:length(time_periods), .combine = "c") %do% {
+  ave_forecast_resids_vector <- foreach(t = 1:length(time_periods), .combine = "c") %dopar% {
     
     test_cross_section <- test %>%
       filter(time == time_periods[t])
@@ -795,7 +795,8 @@ ELN_model_grid <- function(alpha_grid, train_x, train_y, validation_x, validatio
                                        validation_loss = apply(predict(ELN, validation_x), 2, mse, actual = validation_y))
     } else {
       #MAE Case
-      ELN <- hqreg(train_x, train_y, method = "quantile", tau = 0.5, alpha = alpha_grid[i], nlambda = nlamb)
+      ELN <- hqreg(train_x, train_y, method = "quantile", tau = 0.5, alpha = alpha_grid[i], nlambda = nlamb,
+                   eps = 1e-05)
       ELN_model_grid$model <- ELN
     
       ELN_model_grid$ELN_grid <- cbind(alpha = alpha_grid[i], lambda = ELN$lambda,

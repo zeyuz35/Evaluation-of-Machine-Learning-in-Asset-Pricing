@@ -23,6 +23,7 @@ library(caret)
 library(forcats)
 library(xtable)
 library(randomForestSRC)
+library(kableExtra)
 
 #Parallel Computing
 library(foreach)
@@ -37,9 +38,9 @@ set.seed(27935248)
 ```{r load_final_results}
 ## Chunk to load final results list (just load this to avoid bothering with combining different results list)
 
-g1_A1_nosv_0_results_all <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_nosv_0_results_all.RDS")
-g2_A1_nosv_0_results_all <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_nosv_0_results_all.RDS")
-g3_A1_nosv_0_results_all <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_nosv_0_results_all.RDS")
+# g1_A1_nosv_0_results_all <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_nosv_0_results_all.RDS")
+# g2_A1_nosv_0_results_all <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_nosv_0_results_all.RDS")
+# g3_A1_nosv_0_results_all <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_nosv_0_results_all.RDS")
 
 g1_A1_sv_0.01_results_all <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.01_results_all.RDS")
 g2_A1_sv_0.01_results_all <- readRDS("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g2_A1_sv_0.01_results_all.RDS")
@@ -62,19 +63,13 @@ gen_tidy_loss_df <- function(simulation_results_list, realization_no, dgp_spec, 
     rbind(
       cbind(model = "LM_MSE", sample = sample, simulation_results_list[[realization_no]]$LM_MSE[[sample]]$loss_stats),
       cbind(model = "LM_MAE", sample = sample, simulation_results_list[[realization_no]]$LM_MAE[[sample]]$loss_stats),
-      
       ################################################################################################
-      
       cbind(model = "ELN_MSE", sample = sample, simulation_results_list[[realization_no]]$ELN_MSE[[sample]]$loss_stats),
       cbind(model = "ELN_MAE", sample = sample, simulation_results_list[[realization_no]]$ELN_MAE[[sample]]$loss_stats),
-      
       ################################################################################################
-      
       cbind(model = "RF_MSE", sample = sample, simulation_results_list[[realization_no]]$RF_MSE[[sample]]$loss_stats),
       cbind(model = "RF_MAE", sample = sample, simulation_results_list[[realization_no]]$RF_MAE[[sample]]$loss_stats),
-      
       ################################################################################################
-      
       cbind(model = "NN1_MSE", sample = sample, simulation_results_list[[realization_no]]$NN1_MSE[[sample]]$loss_stats),
       cbind(model = "NN1_MAE", sample = sample, simulation_results_list[[realization_no]]$NN1_MAE[[sample]]$loss_stats),
 
@@ -88,7 +83,15 @@ gen_tidy_loss_df <- function(simulation_results_list, realization_no, dgp_spec, 
       cbind(model = "NN4_MAE", sample = sample, simulation_results_list[[realization_no]]$NN4_MAE[[sample]]$loss_stats),
 
       cbind(model = "NN5_MSE", sample = sample, simulation_results_list[[realization_no]]$NN5_MSE[[sample]]$loss_stats),
-      cbind(model = "NN5_MAE", sample = sample, simulation_results_list[[realization_no]]$NN5_MAE[[sample]]$loss_stats)
+      cbind(model = "NN5_MAE", sample = sample, simulation_results_list[[realization_no]]$NN5_MAE[[sample]]$loss_stats),
+      #################################################################################################
+      cbind(model = "LSTM_MSE", sample = sample, simulation_results_list[[realization_no]]$LSTM_MSE[[sample]]$loss_stats),
+      cbind(model = "LSTM_MAE", sample = sample, simulation_results_list[[realization_no]]$LSTM_MAE[[sample]]$loss_stats),
+      #################################################################################################
+      cbind(model = "FFORMA_MSE", sample = sample, simulation_results_list[[realization_no]]$FFORMA_MSE[[sample]]$loss_stats),
+      cbind(model = "FFORMA_MAE", sample = sample, simulation_results_list[[realization_no]]$FFORMA_MAE[[sample]]$loss_stats),
+      #################################################################################################
+      cbind(model = "DeepAR", sample = sample, simulation_results_list[[realization_no]]$DeepAR[[sample]]$loss_stats)
     )
   }
   cbind(realization_no = realization_no, dgp_spec = dgp_spec, SV = SV, cross_corr = cross_corr, df)
@@ -97,15 +100,15 @@ gen_tidy_loss_df <- function(simulation_results_list, realization_no, dgp_spec, 
 # Function to iterate over all realizations
 
 all_realize_loss_df <- function(simulation_results_list, dgp_spec, SV, cross_corr) {
-  foreach(realization_no = (1:10), .combine = "rbind") %do% {
+  foreach(realization_no = (1:5), .combine = "rbind") %do% {
     gen_tidy_loss_df(simulation_results_list, realization_no, dgp_spec, SV, cross_corr)
   }
 }
 
 all_loss_df <- rbind(
-  all_realize_loss_df(g1_A1_nosv_0_results_all, dgp_spec = "g1", SV = 0, cross_corr = 0),
-  all_realize_loss_df(g2_A1_nosv_0_results_all, dgp_spec = "g2", SV = 0, cross_corr = 0),
-  all_realize_loss_df(g3_A1_nosv_0_results_all, dgp_spec = "g3", SV = 0, cross_corr = 0),
+  # all_realize_loss_df(g1_A1_nosv_0_results_all, dgp_spec = "g1", SV = 0, cross_corr = 0),
+  # all_realize_loss_df(g2_A1_nosv_0_results_all, dgp_spec = "g2", SV = 0, cross_corr = 0),
+  # all_realize_loss_df(g3_A1_nosv_0_results_all, dgp_spec = "g3", SV = 0, cross_corr = 0),
   
   all_realize_loss_df(g1_A1_sv_0.01_results_all, dgp_spec = "g1", SV = 1, cross_corr = 0.01),
   all_realize_loss_df(g2_A1_sv_0.01_results_all, dgp_spec = "g2", SV = 1, cross_corr = 0.01),
@@ -121,11 +124,9 @@ all_loss_df <- rbind(
 )
 
 all_loss_df_averaged <- all_loss_df %>%
+  data.frame() %>%
   group_by(model, dgp_spec, sample, SV, cross_corr) %>%
-  summarise(train_MAE = mean(train_MAE), train_MSE = mean(train_MSE), 
-            train_RMSE = mean(train_RMSE), train_RSquare = mean(train_RSquare),
-            
-            validation_MAE = mean(validation_MAE), validation_MSE = mean(validation_MSE), 
+  summarise(validation_MAE = mean(validation_MAE), validation_MSE = mean(validation_MSE), 
             validation_RMSE = mean(validation_RMSE), validation_RSquare = mean(validation_RSquare),
               
             test_MAE = mean(test_MAE), test_MSE = mean(test_MSE), 
@@ -136,6 +137,20 @@ all_loss_df_averaged <- all_loss_df %>%
 
 write.csv(all_loss_df_averaged, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_loss_averaged.csv")
 write.csv(all_loss_df, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_loss.csv")
+
+########
+## Take the above and average over all training/test samples to make cleaner graphs/tables
+
+all_loss_df_averaged_sam <- all_loss_df_averaged %>%
+  group_by(model, dgp_spec, SV, cross_corr) %>%
+  summarise(validation_MAE = mean(validation_MAE), validation_MSE = mean(validation_MSE), 
+            validation_RMSE = mean(validation_RMSE), validation_RSquare = mean(validation_RSquare),
+              
+            test_MAE = mean(test_MAE), test_MSE = mean(test_MSE), 
+            test_RMSE = mean(test_RMSE), test_RSquare = mean(test_RSquare)
+            )
+
+write.csv(all_loss_df_averaged_sam, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_loss_averaged_sam.csv")
 
 #############################################################################
 # Function to collate variable importance
@@ -210,9 +225,9 @@ all_realize_vi <- function(simulation_results_list, dgp_spec, SV, cross_corr) {
 }
 
 all_vi_df <- rbind(
-  all_realize_vi(g1_A1_nosv_0_results_all, dgp_spec = "g1", SV = 0, cross_corr = 0),
-  all_realize_vi(g2_A1_nosv_0_results_all, dgp_spec = "g2", SV = 0, cross_corr = 0),
-  all_realize_vi(g3_A1_nosv_0_results_all, dgp_spec = "g3", SV = 0, cross_corr = 0),
+  # all_realize_vi(g1_A1_nosv_0_results_all, dgp_spec = "g1", SV = 0, cross_corr = 0),
+  # all_realize_vi(g2_A1_nosv_0_results_all, dgp_spec = "g2", SV = 0, cross_corr = 0),
+  # all_realize_vi(g3_A1_nosv_0_results_all, dgp_spec = "g3", SV = 0, cross_corr = 0),
   
   all_realize_vi(g1_A1_sv_0.01_results_all, dgp_spec = "g1", SV = 1, cross_corr = 0.01),
   all_realize_vi(g2_A1_sv_0.01_results_all, dgp_spec = "g2", SV = 1, cross_corr = 0.01),
@@ -232,48 +247,7 @@ all_vi_df_averaged <- all_vi_df %>%
   summarise(importance = mean(importance))
 ```
 
-```{r prediction_performance_plots}
-## Prediction Performance Plots
-
-a4_aspect_ratio <- 1.5
-
-################################################################
-# Training Statistics
-all_loss_df_averaged %>%
-  ungroup() %>%
-  mutate(sample = as.factor(sample)) %>%
-  ggplot() +
-  geom_bar(aes(x = model, y = train_MAE, fill = sample), stat = "identity", position = position_dodge()) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  scale_fill_brewer(palette = "Paired") +
-  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_train_mae.pdf")
-
-all_loss_df_averaged %>%
-  ungroup() %>%
-  mutate(sample = as.factor(sample)) %>%
-  ggplot() +
-  geom_bar(aes(x = model, y = train_MSE, fill = sample), stat = "identity", position = position_dodge()) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  scale_fill_brewer(palette = "Paired") +
-  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_train_mse.pdf")
-
-all_loss_df_averaged %>%
-  ungroup() %>%
-  mutate(sample = as.factor(sample)) %>%
-  ggplot() +
-  geom_bar(aes(x = model, y = train_RSquare, fill = sample), stat = "identity", position = position_dodge()) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  scale_fill_brewer(palette = "Paired") +
-  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_train_rsquare.pdf")
-```
-
-```{r}
+```{r plots}
 #######################################################################
 # Test Statistics
 
@@ -577,6 +551,185 @@ all_loss_df_averaged %>%
   scale_fill_brewer(palette = "Paired") +
   facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
 ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_test_rsquare.pdf")
+```
+
+```{r tables}
+#################################
+## COMPREHENSIVE TABLES (SHOVE IN APPENDIX)
+#################################
+## Test MAE Comprehensive
+model_sam <- all_loss_df_averaged_sam %>%
+  ungroup() %>%
+  filter(cross_corr != 0) %>%
+  filter(dgp_spec == "g1") %>%
+  dplyr::select(model)
+
+cross_corr_sam <- all_loss_df_averaged_sam %>%
+  ungroup() %>%
+  filter(cross_corr != 0) %>%
+  filter(dgp_spec == "g1") %>%
+  dplyr::select(cross_corr)
+
+g1_sam_mae <- all_loss_df_averaged_sam %>%
+  ungroup() %>%
+  dplyr::select(dgp_spec, cross_corr, test_MAE) %>%
+  filter(cross_corr != 0) %>%
+  filter(dgp_spec == "g1") %>%
+  dplyr::select(-dgp_spec, -cross_corr)
+
+g2_sam_mae <- all_loss_df_averaged_sam %>%
+  ungroup() %>%
+  dplyr::select(dgp_spec, cross_corr, test_MAE) %>%
+  filter(cross_corr != 0) %>%
+  filter(dgp_spec == "g2") %>%
+  dplyr::select(-dgp_spec, -cross_corr)
+
+g3_sam_mae <- all_loss_df_averaged_sam %>%
+  ungroup() %>%
+  dplyr::select(dgp_spec, cross_corr, test_MAE) %>%
+  filter(cross_corr != 0) %>%
+  filter(dgp_spec == "g3") %>%
+  dplyr::select(-dgp_spec, -cross_corr)
+
+#######
+
+g1_sam_mse <- all_loss_df_averaged_sam %>%
+  ungroup() %>%
+  dplyr::select(dgp_spec, cross_corr, test_MSE) %>%
+  filter(cross_corr != 0) %>%
+  filter(dgp_spec == "g1") %>%
+  dplyr::select(-dgp_spec, -cross_corr)
+
+g2_sam_mse <- all_loss_df_averaged_sam %>%
+  ungroup() %>%
+  dplyr::select(dgp_spec, cross_corr, test_MSE) %>%
+  filter(cross_corr != 0) %>%
+  filter(dgp_spec == "g2") %>%
+  dplyr::select(-dgp_spec, -cross_corr)
+
+g3_sam_mse <- all_loss_df_averaged_sam %>%
+  ungroup() %>%
+  dplyr::select(dgp_spec, cross_corr, test_MSE) %>%
+  filter(cross_corr != 0) %>%
+  filter(dgp_spec == "g3") %>%
+  dplyr::select(-dgp_spec, -cross_corr)
+
+#########################
+
+g1_sam_r2 <- all_loss_df_averaged_sam %>%
+  ungroup() %>%
+  dplyr::select(dgp_spec, cross_corr, test_RSquare) %>%
+  filter(cross_corr != 0) %>%
+  filter(dgp_spec == "g1") %>%
+  dplyr::select(-dgp_spec, -cross_corr)
+
+g2_sam_r2 <- all_loss_df_averaged_sam %>%
+  ungroup() %>%
+  dplyr::select(dgp_spec, cross_corr, test_RSquare) %>%
+  filter(cross_corr != 0) %>%
+  filter(dgp_spec == "g2") %>%
+  dplyr::select(-dgp_spec, -cross_corr)
+
+g3_sam_r2 <- all_loss_df_averaged_sam %>%
+  ungroup() %>%
+  dplyr::select(dgp_spec, cross_corr, test_RSquare) %>%
+  filter(cross_corr != 0) %>%
+  filter(dgp_spec == "g3") %>%
+  dplyr::select(-dgp_spec, -cross_corr)
+
+cbind(model_sam, cross_corr_sam, 
+      g1_sam_mae, g1_sam_mse, g1_sam_r2, 
+      g2_sam_mae, g2_sam_mse, g2_sam_r2, 
+      g3_sam_mae, g3_sam_mse, g3_sam_r2) %>%
+  kable(align = "c", booktabs = T) %>%
+  kable_styling(full_width = F) %>%
+  add_header_above(c(" " = 1, " " = 1, "g1" = 3, "g2" = 3, "g3" = 3)) %>%
+  collapse_rows(columns = c(1:2), valign = "top")
+  
+```
+
+```{r small_tables}
+g1_0.01 <- all_loss_df_averaged_sam %>%
+  ungroup() %>%
+  filter(cross_corr == 0.01) %>%
+  filter(dgp_spec == "g1") %>%
+  arrange(-desc(test_MSE)) %>%
+  dplyr::select(model, dgp_spec, cross_corr, test_MSE) %>%
+  ## Filtering out so that we only have the quantile methods
+  filter(model == "ELN_MAE" | model == "RF_MAE" | 
+           model == "NN5_MAE" | model == "NN4_MAE" | model == "NN3_MAE" | model == "NN2_MAE" | model == "NN1_MAE") %>%
+  ## Keep only top 5
+  head(5) %>%
+  dplyr::select(-dgp_spec, -cross_corr)
+
+g2_0.01 <- all_loss_df_averaged_sam %>%
+  ungroup() %>%
+  filter(cross_corr == 0.01) %>%
+  filter(dgp_spec == "g2") %>%
+  arrange(-desc(test_MSE)) %>%
+  dplyr::select(model, dgp_spec, cross_corr, test_MSE) %>%
+  ## Filtering out so that we only have the quantile methods %>%
+  ## Keep only top 5
+  filter(model == "ELN_MAE" | model == "RF_MAE" | model == "NN1_MSE" | model == "NN3_MSE" | model == "NN5_MAE") %>%
+  head(5) %>%
+  dplyr::select(-dgp_spec, -cross_corr)
+
+g3_0.01 <- all_loss_df_averaged_sam %>%
+  ungroup() %>%
+  filter(cross_corr == 0.01) %>%
+  filter(dgp_spec == "g3") %>%
+  arrange(-desc(test_MSE)) %>%
+  dplyr::select(model, dgp_spec, cross_corr, test_MSE) %>%
+  filter(model == "ELN_MAE" | model == "RF_MAE" | model == "NN1_MAE" | model == "NN2_MAE" | model == "NN3_MAE" | model == "NN5_MAE" | model == "NN4_MAE") %>%
+  head(5) %>%
+  dplyr::select(-dgp_spec, -cross_corr)
+
+################
+
+g1_1 <- all_loss_df_averaged_sam %>%
+  ungroup() %>%
+  filter(cross_corr == 1) %>%
+  filter(dgp_spec == "g1") %>%
+  arrange(-desc(test_MSE)) %>%
+  dplyr::select(model, dgp_spec, cross_corr, test_MSE) %>%
+  ## Filtering out so that we only have the quantile methods
+  filter(model == "ELN_MAE" | model == "RF_MAE" | 
+           model == "NN5_MAE" | model == "NN4_MAE" | model == "NN3_MAE" | model == "NN2_MAE" | model == "NN1_MAE") %>%
+  ## Keep only top 5
+  head(5) %>%
+  dplyr::select(-dgp_spec, -cross_corr)
+
+g2_1 <- all_loss_df_averaged_sam %>%
+  ungroup() %>%
+  filter(cross_corr == 1) %>%
+  filter(dgp_spec == "g2") %>%
+  arrange(-desc(test_MSE)) %>%
+  dplyr::select(model, dgp_spec, cross_corr, test_MSE) %>%
+  ## Filtering out so that we only have the quantile methods %>%
+  ## Keep only top 5
+  filter(model == "ELN_MAE" | model == "RF_MAE" | model == "NN1_MSE" | model == "NN3_MSE" | model == "NN5_MAE") %>%
+  head(5) %>%
+  dplyr::select(-dgp_spec, -cross_corr)
+
+g3_1 <- all_loss_df_averaged_sam %>%
+  ungroup() %>%
+  filter(cross_corr == 1) %>%
+  filter(dgp_spec == "g3") %>%
+  arrange(-desc(test_MSE)) %>%
+  dplyr::select(model, dgp_spec, cross_corr, test_MSE) %>%
+  filter(model == "ELN_MAE" | model == "RF_MAE" | model == "NN1_MAE" | model == "NN2_MAE" | model == "NN3_MAE" | model == "NN5_MAE" | model == "NN4_MAE") %>%
+  head(5) %>%
+  dplyr::select(-dgp_spec, -cross_corr)
+
+sam_0.01 <- cbind(cross_corr = 0.01, g1_0.01, g2_0.01, g3_0.01)
+sam_1 <- cbind(cross_corr = 1, g1_1, g2_1, g3_1)
+
+rbind(sam_0.01, sam_1) %>%
+  kable(align = "c", booktabs = T) %>%
+  kable_styling(full_width = F) %>%
+  add_header_above(c(" " = 1, "g1" = 2, "g2" = 2, "g3" = 2)) %>%
+  collapse_rows(columns = c(1), valign = "top")
+
 ```
 
 ```{r variable_importance_plots}

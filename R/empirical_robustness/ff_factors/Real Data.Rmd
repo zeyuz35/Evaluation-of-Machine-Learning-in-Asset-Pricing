@@ -494,12 +494,6 @@ final_dataset <- data.frame(stock = datashare_combined$stock,
 rm(final_dataset_x)
 
 saveRDS(final_dataset, file = "final_dataset.rds")
-
-## Check for collinear columns, seems to be fine
-final_dataset %>%
-  select(-stock, -time) %>%
-  as.matrix() %>%
-  findLinearCombos()
 ```
 
 ```{r}
@@ -858,7 +852,8 @@ ELN_model_grid <- function(alpha_grid, train_x, train_y, validation_x, validatio
                                        validation_loss = apply(predict(ELN, validation_x), 2, mse, actual = validation_y))
     } else {
       #MAE Case
-      ELN <- hqreg(train_x, train_y, method = "quantile", tau = 0.5, alpha = alpha_grid[i], nlambda = nlamb)
+      ELN <- hqreg(train_x, train_y, method = "quantile", tau = 0.5, alpha = alpha_grid[i], nlambda = nlamb,
+                   eps = 1e-5)
       ELN_model_grid$model <- ELN
     
       ELN_model_grid$ELN_grid <- cbind(alpha = alpha_grid[i], lambda = ELN$lambda,
@@ -979,7 +974,8 @@ RF_fit_stats <- function(pooled_panel, RF_grid, timeSlices, loss_function, f,
                             forecast_resids = 0,
                             model = 0,
                             hyperparameters = 0,
-                            variable_importance = 0)
+                            variable_importance = 0,
+                            vimp = 0)
     
     train <- pooled_panel %>%
       filter(time %in% timeSlices[[set]]$train)
@@ -1006,7 +1002,8 @@ RF_fit_stats <- function(pooled_panel, RF_grid, timeSlices, loss_function, f,
                      mtry = best_model_params$mtry,
                      nodesize = best_model_params$nodesize,
                      splitrule = "mse",
-                     bootstrap = "by.root", samptype = "swr"
+                     bootstrap = "by.root", samptype = "swr",
+                     forest = TRUE
                      )
     } else {
       model <- rfsrc(f, train, 
@@ -1016,8 +1013,8 @@ RF_fit_stats <- function(pooled_panel, RF_grid, timeSlices, loss_function, f,
                      nodesize = best_model_params$nodesize,
                      splitrule = "quantile.regr",
                      prob = 0.5,
-                     bootstrap = "by.root", samptype = "swr"
-                     )
+                     bootstrap = "by.root", samptype = "swr",
+                     forest = TRUE)
     }
     
     #RF_stats[[set]]$model <- model
@@ -1049,6 +1046,9 @@ RF_fit_stats <- function(pooled_panel, RF_grid, timeSlices, loss_function, f,
     #Variable Importance
     RF_stats[[set]]$variable_importance <- RF_variable_importance(test, model,
                                                                   macro_factor_names, individual_factor_names)
+    
+    #Vimp
+    RF_stats[[set]]$vimp <- vimp(model, importance = "random", block.size = 20)
   }
   return(RF_stats)
 }
