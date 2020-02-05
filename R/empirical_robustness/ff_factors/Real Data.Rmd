@@ -717,10 +717,6 @@ eln_ave_forecast_resids <- function(eln_model, test, alpha, lambda) {
   ave_forecast_resids_vector
 }
 
-eln_ave_forecast_resids <- function(eln_model, test, alpha, lambda) {
-  0
-}
-
 ## Random Forest
 
 rf_ave_forecast_resids <- function(rf_model, test) {
@@ -1427,12 +1423,12 @@ RF_mae_stats[[1]]$variable_importance %>%
 
 ######################################################################################################################
 
-NNet_1_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 1, "mse", batch_size = 512, 20,
+NNet_1_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 1, "mse", batch_size = 256, 20,
                                    macro_factor_names, individual_factor_names)
 NNet_1_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 1, "mae", batch_size = 256, 20,
                                    macro_factor_names, individual_factor_names)
-saveRDS(NNet_1_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_1_mse_stats_1.5.rds")
-saveRDS(NNet_1_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_1_mae_stats_1.5.rds")
+saveRDS(NNet_1_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_ff/NNet_1_mse_stats_1.5.rds")
+saveRDS(NNet_1_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_ff/NNet_1_mae_stats_1.5.rds")
 
 NNet_1_mse_stats[[1]]$loss_stats
 NNet_1_mse_stats[[1]]$forecasts
@@ -1450,8 +1446,8 @@ NNet_2_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 2, "mse",
                                    macro_factor_names, individual_factor_names)
 NNet_2_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 2, "mae", batch_size = 256, 20,
                                    macro_factor_names, individual_factor_names)
-saveRDS(NNet_2_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_2_mse_stats_1.5.rds")
-saveRDS(NNet_2_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_2_mae_stats_1.5.rds")
+saveRDS(NNet_2_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_ff/NNet_2_mse_stats_1.5.rds")
+saveRDS(NNet_2_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_ff/NNet_2_mae_stats_1.5.rds")
 
 NNet_2_mse_stats[[1]]$loss_stats
 NNet_2_mse_stats[[1]]$forecasts
@@ -1467,8 +1463,8 @@ NNet_3_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 3, "mse",
                                    macro_factor_names, individual_factor_names)
 NNet_3_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 3, "mae", batch_size = 256, 20,
                                    macro_factor_names, individual_factor_names)
-saveRDS(NNet_3_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_3_mse_stats_1.5.rds")
-saveRDS(NNet_3_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_3_mae_stats_1.5.rds")
+saveRDS(NNet_3_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_ff/NNet_3_mse_stats_1.5.rds")
+saveRDS(NNet_3_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_ff/NNet_3_mae_stats_1.5.rds")
 
 NNet_3_mse_stats[[1]]$loss_stats
 NNet_3_mse_stats[[1]]$forecasts
@@ -1484,8 +1480,8 @@ NNet_4_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 4, "mse",
                                    macro_factor_names, individual_factor_names)
 NNet_4_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 4, "mae", batch_size = 256, 20,
                                    macro_factor_names, individual_factor_names)
-saveRDS(NNet_4_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_4_mse_stats_1.5.rds")
-saveRDS(NNet_4_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_4_mae_stats_1.5.rds")
+saveRDS(NNet_4_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_ff/NNet_4_mse_stats_1.5.rds")
+saveRDS(NNet_4_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_ff/NNet_4_mae_stats_1.5.rds")
 
 NNet_4_mse_stats[[1]]$loss_stats
 NNet_4_mse_stats[[1]]$forecasts
@@ -1501,8 +1497,8 @@ NNet_5_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 5, "mse",
                                    macro_factor_names, individual_factor_names)
 NNet_5_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 5, "mae", batch_size = 256, 20,
                                    macro_factor_names, individual_factor_names)
-saveRDS(NNet_5_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_5_mse_stats_1.5.rds")
-saveRDS(NNet_5_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/NNet_5_mae_stats_1.5.rds")
+saveRDS(NNet_5_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_ff/NNet_5_mse_stats_1.5.rds")
+saveRDS(NNet_5_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_ff/NNet_5_mae_stats_1.5.rds")
 
 NNet_5_mse_stats[[1]]$loss_stats
 NNet_5_mse_stats[[1]]$forecasts
