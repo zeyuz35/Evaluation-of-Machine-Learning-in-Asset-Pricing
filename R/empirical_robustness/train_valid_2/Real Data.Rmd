@@ -27,6 +27,7 @@ library(tidyimpute)
 library(tidyverse)
 library(hqreg)
 library(xtable)
+library(randomForestSRC)
 
 #Parallel Computing
 library(foreach)
@@ -802,7 +803,7 @@ ELN_model_grid <- function(alpha_grid, train_x, train_y, validation_x, validatio
     } else {
       #MAE Case
       ELN <- hqreg(train_x, train_y, method = "quantile", tau = 0.5, alpha = alpha_grid[i], nlambda = nlamb,
-                   eps = 1e-4, max.iter = 5000)
+                   eps = 1e-4, max.iter = 1000)
       ELN_model_grid$model <- ELN
     
       ELN_model_grid$ELN_grid <- cbind(alpha = alpha_grid[i], lambda = ELN$lambda,
@@ -909,6 +910,65 @@ ELN_fit_stats <- function(alpha_grid, nlamb, timeSlices, pooled_panel, loss_func
 
 ################################################################################################################################
 
+RF_fit_model_grid <- function(f, train, validation, RF_grid, loss_function) {
+  #Initialize List
+  RF_model_grid <- rep(list(0), nrow(RF_grid))
+  
+  for (i in 1:nrow(RF_grid)) {
+    
+    RF_model_grid[[i]] <- list(RF_grid = 0, model = 0)
+    
+    #MSE Case
+    if (loss_function == "mse") {
+      RF <- rfsrc(f, train, 
+                  #Hyperparameters
+                  ntree = RF_grid$ntree[i],
+                  mtry = RF_grid$mtry[i],
+                  nodesize = RF_grid$nodesize[i],
+                  splitrule = "mse"
+                  )
+      
+      #RF_model_grid[[i]]$model <- RF
+      RF_model_grid[[i]]$RF_grid <- cbind(RF_grid[i, ],
+                                          #Train Loss
+                                          train_loss = mse(train$rt, predict(RF)$predicted),
+                                          #Validation Loss
+                                          validation_loss = mse(validation$rt, predict(RF, newdata = validation)$predicted)
+                                          )
+      
+    } else {
+      #MAE Case
+      RF <- rfsrc(f, train, 
+                  #Hyperparameters
+                  ntree = RF_grid$ntree[i],
+                  mtry = RF_grid$mtry[i],
+                  nodesize = RF_grid$nodesize[i],
+                  splitrule = "quantile.regr",
+                  prob = 0.5
+                  )
+      
+      #RF_model_grid[[i]]$model <- RF
+      RF_model_grid[[i]]$RF_grid <- cbind(RF_grid[i, ],
+                                          #Train Loss
+                                          train_loss = mae(train$rt, predict(RF)$predicted),
+                                          #Validation Loss
+                                          validation_loss = mae(validation$rt, predict(RF, newdata = validation)$predicted)
+                                          )
+    }
+  }
+  return(RF_model_grid)
+}
+
+#Returns the dataframe row containing the "best" hyperparameters
+
+get_RF_best_tune <- function(RF_model_grid) {
+  RF_tune_grid <- RF_model_grid[[1]]$RF_grid
+  for (i in 2:length(RF_model_grid)) {
+    RF_tune_grid <- rbind(RF_tune_grid, RF_model_grid[[i]]$RF_grid)
+  }
+  return(RF_tune_grid[which.min(RF_tune_grid$validation_loss), ])
+}
+
 RF_fit_stats <- function(pooled_panel, RF_grid, timeSlices, loss_function, f,
                          macro_factor_names, individual_factor_names) {
   #Initialize
@@ -999,8 +1059,12 @@ RF_fit_stats <- function(pooled_panel, RF_grid, timeSlices, loss_function, f,
                                                                   macro_factor_names, individual_factor_names)
     
     ## vimp
-    RF_stats[[set]]$vimp <- vimp(model, importance = "permute", block.size = 20,
-                                 newdata = test)$importance
+    RF_stats[[set]]$vimp <- list(breiman_cutler = vimp(model, importance = "permute", 
+                                                       block.size = 1,
+                                                       newdata = test)$importance,
+                                 ishwaran_kogalur = vimp(model, importance = "permute", 
+                                                         block.size = best_model_params$ntree,
+                                                         newdata = test)$importance)
   }
   return(RF_stats)
 }
