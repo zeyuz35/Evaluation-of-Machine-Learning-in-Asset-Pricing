@@ -27,6 +27,7 @@ library(tidyimpute)
 library(tidyverse)
 library(hqreg)
 library(xtable)
+library(randomForestSRC)
 
 #Parallel Computing
 library(foreach)
@@ -901,6 +902,65 @@ ELN_fit_stats <- function(alpha_grid, nlamb, timeSlices, pooled_panel, loss_func
 
 ################################################################################################################################
 
+RF_fit_model_grid <- function(f, train, validation, RF_grid, loss_function) {
+  #Initialize List
+  RF_model_grid <- rep(list(0), nrow(RF_grid))
+  
+  for (i in 1:nrow(RF_grid)) {
+    
+    RF_model_grid[[i]] <- list(RF_grid = 0, model = 0)
+    
+    #MSE Case
+    if (loss_function == "mse") {
+      RF <- rfsrc(f, train, 
+                  #Hyperparameters
+                  ntree = RF_grid$ntree[i],
+                  mtry = RF_grid$mtry[i],
+                  nodesize = RF_grid$nodesize[i],
+                  splitrule = "mse"
+                  )
+      
+      #RF_model_grid[[i]]$model <- RF
+      RF_model_grid[[i]]$RF_grid <- cbind(RF_grid[i, ],
+                                          #Train Loss
+                                          train_loss = mse(train$rt, predict(RF)$predicted),
+                                          #Validation Loss
+                                          validation_loss = mse(validation$rt, predict(RF, newdata = validation)$predicted)
+                                          )
+      
+    } else {
+      #MAE Case
+      RF <- rfsrc(f, train, 
+                  #Hyperparameters
+                  ntree = RF_grid$ntree[i],
+                  mtry = RF_grid$mtry[i],
+                  nodesize = RF_grid$nodesize[i],
+                  splitrule = "quantile.regr",
+                  prob = 0.5
+                  )
+      
+      #RF_model_grid[[i]]$model <- RF
+      RF_model_grid[[i]]$RF_grid <- cbind(RF_grid[i, ],
+                                          #Train Loss
+                                          train_loss = mae(train$rt, predict(RF)$predicted),
+                                          #Validation Loss
+                                          validation_loss = mae(validation$rt, predict(RF, newdata = validation)$predicted)
+                                          )
+    }
+  }
+  return(RF_model_grid)
+}
+
+#Returns the dataframe row containing the "best" hyperparameters
+
+get_RF_best_tune <- function(RF_model_grid) {
+  RF_tune_grid <- RF_model_grid[[1]]$RF_grid
+  for (i in 2:length(RF_model_grid)) {
+    RF_tune_grid <- rbind(RF_tune_grid, RF_model_grid[[i]]$RF_grid)
+  }
+  return(RF_tune_grid[which.min(RF_tune_grid$validation_loss), ])
+}
+
 RF_fit_stats <- function(pooled_panel, RF_grid, timeSlices, loss_function, f,
                          macro_factor_names, individual_factor_names) {
   #Initialize
@@ -917,7 +977,7 @@ RF_fit_stats <- function(pooled_panel, RF_grid, timeSlices, loss_function, f,
                             forecast_resids = 0,
                             model = 0,
                             hyperparameters = 0,
-                            variable_importance = 0)
+                            variable_importance = 0, vimp = 0)
     
     train <- pooled_panel %>%
       filter(time %in% timeSlices[[set]]$train)
@@ -944,7 +1004,8 @@ RF_fit_stats <- function(pooled_panel, RF_grid, timeSlices, loss_function, f,
                      mtry = best_model_params$mtry,
                      nodesize = best_model_params$nodesize,
                      splitrule = "mse",
-                     bootstrap = "by.root", samptype = "swr"
+                     bootstrap = "by.root", samptype = "swr",
+                     forest = TRUE
                      )
     } else {
       model <- rfsrc(f, train, 
@@ -954,7 +1015,8 @@ RF_fit_stats <- function(pooled_panel, RF_grid, timeSlices, loss_function, f,
                      nodesize = best_model_params$nodesize,
                      splitrule = "quantile.regr",
                      prob = 0.5,
-                     bootstrap = "by.root", samptype = "swr"
+                     bootstrap = "by.root", samptype = "swr", 
+                     forest = TRUE
                      )
     }
     
@@ -984,9 +1046,17 @@ RF_fit_stats <- function(pooled_panel, RF_grid, timeSlices, loss_function, f,
     #Forecast residuals
     RF_stats[[set]]$forecast_resids <- rf_ave_forecast_resids(rf_model = model, test = test)
     
-    #Variable Importance
+    #Variable Importance 
     RF_stats[[set]]$variable_importance <- RF_variable_importance(test, model,
                                                                   macro_factor_names, individual_factor_names)
+    
+    ## vimp
+    RF_stats[[set]]$vimp <- list(breiman_cutler = vimp(model, importance = "permute", 
+                                                       block.size = 1,
+                                                       newdata = test)$importance,
+                                 ishwaran_kogalur = vimp(model, importance = "permute", 
+                                                         block.size = best_model_params$ntree,
+                                                         newdata = test)$importance)
   }
   return(RF_stats)
 }
@@ -1258,96 +1328,6 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
 ###################################################################################################################
 ```
 
-```{r}
-################################################################
-## Function to fit all models for real data
-## Slightly different from simulation model fitting function
-################################################################
-
-fit_all_models_real_data <- function(pooled_panel, macro_factor_names, individual_factor_names, 
-                           # Logical arguments specifying which models you want to fit
-                           # This is useful if you don't want to fit some of the most intensive methods such as RF and Neural Networks
-                           LM, ELN, RF, NNet) {
-  # Initialize List
-  real_data_results_list <- list(0)
-    
-  real_data_results_list <- list(
-    # Panel Statistics
-    pooled_panel_stats = 0, 
-    # Y Values (used for Diebold Mariano Tests later)
-    returns = 0,
-    # Models
-    LM_MSE = 0, LM_MAE = 0,
-    ELN_MSE = 0, ELN_MAE = 0,
-    RF_MSE = 0, RF_MAE = 0,
-    # Neural Networks
-    NN1_MSE = 0, NN1_MAE = 0,
-    NN2_MSE = 0, NN2_MAE = 0,
-    NN3_MSE = 0, NN3_MAE = 0,
-    NN4_MSE = 0, NN4_MAE = 0,
-    NN5_MSE = 0, NN5_MAE = 0
-  )
-  
-  realdata_timeSlices <- realdata_custom_timeslices(start = 1993, initialWindow = 15, horizon = 1, validation_size = 3, test_size = 3, set_no = 3)
-    
-  f <- real_panel_formula(pooled_panel)
-    
-  if (LM == 1) {
-    # Linear Models
-    real_data_results_list$LM_MSE <- LM_fit(pooled_panel, realdata_timeSlices, "mse", f)
-    real_data_results_list$LM_MAE <- LM_fit(pooled_panel, realdata_timeSlices, "mae", f)
-  }
-    
-  if (ELN == 1) {
-    # Penalized Linear Models
-  
-    alpha_grid <- seq(0, 1, 0.01)
-    
-    real_data_results_list$ELN_MAE <- ELN_fit_stats(alpha_grid, nlamb = 100, realdata_timeSlices, pooled_panel, loss_function = "mae")
-    real_data_results_list$ELN_MSE <- ELN_fit_stats(alpha_grid, nlamb = 100, realdata_timeSlices, pooled_panel, loss_function = "mse")
-  }
-    
-  if (RF == 1) {
-    # Random Forests
-    RF_grid <- expand.grid(
-    #ntree usually isn't tuned. Just set to max of computationally feasible
-    ntree = 100,
-    mtry = seq(10, round(ncol(pooled_panel[4:ncol(pooled_panel)])/3), 20)
-    # nodesize = seq(2, 14, 2)
-    # nodedepth recommended not to be changed
-    #nodedepth = 1
-    )
-    
-    real_data_results_list$RF_MSE <- RF_fit_stats(pooled_panel, RF_grid, realdata_timeSlices, "mse")
-    real_data_results_list$RF_MAE <- RF_fit_stats(pooled_panel, RF_grid, realdata_timeSlices, "mae")
-  }
-      
-  if (NNet == 1) {
-    # Neural Networks
-    # Commented for now because honours lab computers don't have keras/tensorflow
-    
-    batch_size <- 32
-    patience <- 20
-    
-    real_data_results_list$NN1_MSE <- NNet_fit_stats(pooled_panel, realdata_timeSlices, 1, "mse", batch_size = batch_size, patience = patience)
-    real_data_results_list$NN1_MAE <- NNet_fit_stats(pooled_panel, realdata_timeSlices, 1, "mae", batch_size = batch_size, patience = patience)
-    
-    real_data_results_list$NN2_MSE <- NNet_fit_stats(pooled_panel, realdata_timeSlices, 2, "mse", batch_size = batch_size, patience = patience)
-    real_data_results_list$NN2_MAE <- NNet_fit_stats(pooled_panel, realdata_timeSlices, 2, "mae", batch_size = batch_size, patience = patience)
-    
-    real_data_results_list$NN3_MSE <- NNet_fit_stats(pooled_panel, realdata_timeSlices, 3, "mse", batch_size = batch_size, patience = patience)
-    real_data_results_list$NN3_MAE <- NNet_fit_stats(pooled_panel, realdata_timeSlices, 3, "mae", batch_size = batch_size, patience = patience)
-    
-    real_data_results_list$NN4_MSE <- NNet_fit_stats(pooled_panel, realdata_timeSlices, 4, "mse", batch_size = batch_size, patience = patience)
-    real_data_results_list$NN4_MAE <- NNet_fit_stats(pooled_panel, realdata_timeSlices, 4, "mae", batch_size = batch_size, patience = patience)
-    
-    real_data_results_list$NN5_MSE <- NNet_fit_stats(pooled_panel, realdata_timeSlices, 5, "mse", batch_size = batch_size, patience = patience)
-    real_data_results_list$NN5_MAE <- NNet_fit_stats(pooled_panel, realdata_timeSlices, 5, "mae", batch_size = batch_size, patience = patience)
-  }
-  real_data_results_list
-}
-```
-
 ```{r, eval = FALSE}
 # Test on fitting actual data
 # Lots of memory issues, need to change fit functions so that they are more memory efficient
@@ -1384,11 +1364,11 @@ LM_stats_mae[[3]]$loss_stats
 LM_stats_mse[[3]]$variable_importance %>%
   arrange(desc(importance))
 ######################################################################################################################
-ELN_stats_mse <- ELN_fit_stats(alpha_grid = seq(0, 1, 0.01), nlamb = 100, 
+ELN_stats_mse <- ELN_fit_stats(alpha_grid = seq(0.01, 1, 0.01), nlamb = 100, 
                                realdata_timeSlices, final_dataset, "mse",
                                macro_factor_names, individual_factor_names)
 saveRDS(ELN_stats_mse, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_train_valid_1/ELN_stats_mse.rds")
-ELN_stats_mae <- ELN_fit_stats(alpha_grid = seq(0, 1, 0.01), nlamb = 100, 
+ELN_stats_mae <- ELN_fit_stats(alpha_grid = seq(0.01, 1, 0.01), nlamb = 100, 
                                realdata_timeSlices, final_dataset, "mae",
                                macro_factor_names, individual_factor_names)
 saveRDS(ELN_stats_mae, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_train_valid_1/ELN_stats_mae.rds")
