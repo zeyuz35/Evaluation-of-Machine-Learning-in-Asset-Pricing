@@ -896,8 +896,8 @@ RF_fit_stats <- function(pooled_panel, RF_grid, timeSlices, loss_function, f) {
     RF_stats[[set]]$variable_importance <- RF_variable_importance(test, model)
     
     #RF Built in VIMPS
-    RF_stats[[set]]$vimp <- list(breiman_cutler = vimp(model, newdata = test, block.size = 1),
-                                 ishwaran_kogalur = vimp(model, newdata = test, block.size = best_model_params$ntree))
+    RF_stats[[set]]$vimp <- list(breiman_cutler = vimp(model, newdata = test, block.size = 1)$importance,
+                                 ishwaran_kogalur = vimp(model, newdata = test, block.size = best_model_params$ntree)$importance)
   }
   return(RF_stats)
 }
