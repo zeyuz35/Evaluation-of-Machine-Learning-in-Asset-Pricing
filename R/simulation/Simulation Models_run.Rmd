@@ -252,8 +252,6 @@ saveRDS(g2_A1_sv_0.01_RF_results, "~/GitHub/Evaluation-of-Machine-Learning-in-As
 g3_A1_sv_0.01_RF_results <- fit_all_models(g3_A1_sv_0.01, batch_process_range, LM = 0, ELN = 0, RF = 1, NNet = 0)
 saveRDS(g3_A1_sv_0.01_RF_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g3_A1_sv_0.01_RF_results.rds")
 
-g1_A1_sv_0.01_RF_results[[1]]$RF_MSE[[1]]$vimp$breiman_cutler$importance
-
 g1_A1_sv_0.1_RF_results <- fit_all_models(g1_A1_sv_0.1, batch_process_range, LM = 0, ELN = 0, RF = 1, NNet = 0)
 saveRDS(g1_A1_sv_0.1_RF_results, "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/g1_A1_sv_0.1_RF_results.rds")
 g2_A1_sv_0.1_RF_results <- fit_all_models(g2_A1_sv_0.1, batch_process_range, LM = 0, ELN = 0, RF = 1, NNet = 0)
