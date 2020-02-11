@@ -1,0 +1,30 @@
+\begin{table}[H]
+\centering
+\begin{tabular}{ccccc}
+\toprule
+\multicolumn{1}{c}{ } & \multicolumn{1}{c}{ } & \multicolumn{3}{c}{Test MAE} \\
+\cmidrule(l{3pt}r{3pt}){3-5}
+Corr & model & g1 & g2 & g3\\
+\midrule
+ & ELN.MAE & \textbf{0.034579} & 0.036195 & \textbf{0.035334}\\
+
+ & RF.MAE & 0.035459 & \textbf{0.03542} & 0.03554\\
+
+ & NN2.MAE & 0.03596 & 0.036921 & 0.036305\\
+
+ & NN1.MAE & 0.035894 & 0.036834 & 0.036335\\
+
+\multirow{-5}{*}{\centering\arraybackslash \rotatebox{90}{0.01}} & NN3.MAE & 0.035816 & 0.036934 & 0.036471\\
+\cmidrule{1-5}
+ & ELN.MSE & \textbf{0.034614} & 0.036276 & \textbf{0.035444}\\
+
+ & RF.MAE & 0.035916 & \textbf{0.035643} & 0.036053\\
+
+ & NN5.MAE & 0.037009 & 0.03727 & 0.037413\\
+
+ & NN4.MSE & 0.037382 & 0.036897 & 0.037354\\
+
+\multirow{-5}{*}{\centering\arraybackslash \rotatebox{90}{1}} & NN3.MAE & 0.037285 & 0.037038 & 0.037193\\
+\bottomrule
+\end{tabular}
+\end{table}

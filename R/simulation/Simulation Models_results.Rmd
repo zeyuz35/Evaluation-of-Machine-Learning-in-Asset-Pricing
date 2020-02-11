@@ -645,14 +645,24 @@ g3_sam_r2 <- all_loss_df_averaged_sam %>%
   filter(dgp_spec == "g3") %>%
   dplyr::select(-dgp_spec, -cross_corr)
 
-cbind(model_sam, cross_corr_sam, 
-      g1_sam_mae, g1_sam_mse, g1_sam_r2, 
-      g2_sam_mae, g2_sam_mse, g2_sam_r2, 
-      g3_sam_mae, g3_sam_mse, g3_sam_r2) %>%
-  kable(align = "c", booktabs = T) %>%
+model_sam <- model_sam %>%
+  mutate(model = str_replace(model, "_", ".")) %>%
+  mutate(model = cell_spec(model, angle = 90, format = "latex"))
+
+cross_corr_sam <- cross_corr_sam %>%
+  rename(Corr = cross_corr)
+
+test_loss_latex <- cbind(model_sam, cross_corr_sam, 
+                         g1_sam_mae, g1_sam_mse, g1_sam_r2, 
+                         g2_sam_mae, g2_sam_mse, g2_sam_r2, 
+                         g3_sam_mae, g3_sam_mse, g3_sam_r2) %>%
+  kable(align = "c", format = "latex", digits = 6, escape = F) %>%
   kable_styling(full_width = F) %>%
   add_header_above(c(" " = 1, " " = 1, "g1" = 3, "g2" = 3, "g3" = 3)) %>%
   collapse_rows(columns = c(1:2), valign = "top")
+
+test_loss_latex %>%
+  cat("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation/test_loss_latex.tex")
   
 ```
 
@@ -739,16 +749,37 @@ g3_1 <- all_loss_df_averaged_sam %>%
   filter(model %in% ordering_1_mae) %>%
   dplyr::select(-model, -dgp_spec, -cross_corr)
 
-sam_0.01 <- cbind(cross_corr = 0.01, model = ordering_0.01_mae, g1_0.01, g2_0.01, g3_0.01)
-sam_1 <- cbind(cross_corr = 1, model = ordering_1_mae, g1_1, g2_1, g3_1)
+sam_0.01 <- cbind(cross_corr = 0.01, model = ordering_0.01_mae, g1_0.01, g2_0.01, g3_0.01) %>%
+  ## Round off to significant digits here because cell_spec doesn't play nicely with digits argument
+  ## Also bolden the "best" statistics
+  mutate(g1 = cell_spec(round(g1, 6), format = "latex", 
+                        bold = if_else(g1 == min(g1), 1, 0)),
+         g2 = cell_spec(round(g2, 6), format = "latex", 
+                        bold = if_else(g2 == min(g2), 1, 0)),
+         g3 = cell_spec(round(g3, 6), format = "latex", 
+                        bold = if_else(g3 == min(g3), 1, 0)))
+sam_1 <- cbind(cross_corr = 1, model = ordering_1_mae, g1_1, g2_1, g3_1) %>%
+  mutate(g1 = cell_spec(round(g1, 6), format = "latex", 
+                        bold = if_else(g1 == min(g1), 1, 0)),
+         g2 = cell_spec(round(g2, 6), format = "latex", 
+                        bold = if_else(g2 == min(g2), 1, 0)),
+         g3 = cell_spec(round(g3, 6), format = "latex", 
+                        bold = if_else(g3 == min(g3), 1, 0)))
 
 ## This is all working beautifully, now to figure how to bold specific cells...
 
-rbind(sam_0.01, sam_1) %>%
-  kable(align = "c", booktabs = T) %>%
+test_mae_latex <- rbind(sam_0.01, sam_1) %>% 
+  data.frame() %>%
+  rename(Corr = cross_corr) %>%
+  mutate(model = str_replace(model, "_", ".")) %>%
+  mutate(Corr = cell_spec(Corr, angle = 90, format = "latex")) %>%
+  kable(align = "c", format = "latex", booktabs = T, escape = F) %>%
   kable_styling(full_width = F) %>%
-  add_header_above(c(" " = 1, " " = 1, "test_MAE" = 3)) %>%
-  collapse_rows(columns = c(1), valign = "top")
+  add_header_above(c(" " = 1, " " = 1, "Test MAE" = 3)) %>%
+  collapse_rows(columns = c(1), valign = "middle", latex_hline = "major")
+
+test_mae_latex %>%
+  cat(file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation/test_mae_latex.tex")
 ```
 
 ```{r}
@@ -835,14 +866,35 @@ g3_1 <- all_loss_df_averaged_sam %>%
   filter(model %in% ordering_1_mse) %>%
   dplyr::select(-model, -dgp_spec, -cross_corr)
 
-sam_0.01 <- cbind(cross_corr = 0.01, model = ordering_0.01_mse, g1_0.01, g2_0.01, g3_0.01)
-sam_1 <- cbind(cross_corr = 1, model = ordering_1_mse, g1_1, g2_1, g3_1)
+sam_0.01 <- cbind(cross_corr = 0.01, model = ordering_0.01_mse, g1_0.01, g2_0.01, g3_0.01) %>%
+  ## Round off to significant digits here because cell_spec doesn't play nicely with digits argument
+  ## Also bolden the "best" statistics
+  mutate(g1 = cell_spec(round(g1, 6), format = "latex", 
+                        bold = if_else(g1 == min(g1), 1, 0)),
+         g2 = cell_spec(round(g2, 6), format = "latex", 
+                        bold = if_else(g2 == min(g2), 1, 0)),
+         g3 = cell_spec(round(g3, 6), format = "latex", 
+                        bold = if_else(g3 == min(g3), 1, 0)))
+sam_1 <- cbind(cross_corr = 1, model = ordering_1_mse, g1_1, g2_1, g3_1) %>%
+  mutate(g1 = cell_spec(round(g1, 6), format = "latex", 
+                        bold = if_else(g1 == min(g1), 1, 0)),
+         g2 = cell_spec(round(g2, 6), format = "latex", 
+                        bold = if_else(g2 == min(g2), 1, 0)),
+         g3 = cell_spec(round(g3, 6), format = "latex", 
+                        bold = if_else(g3 == min(g3), 1, 0)))
 
-rbind(sam_0.01, sam_1) %>%
-  kable(align = "c", booktabs = T) %>%
+test_mse_latex <- rbind(sam_0.01, sam_1) %>% 
+  data.frame() %>%
+  rename(Corr = cross_corr) %>%
+  mutate(model = str_replace(model, "_", ".")) %>%
+  mutate(Corr = cell_spec(Corr, angle = 90, format = "latex")) %>%
+  kable(align = "c", format = "latex", booktabs = T, escape = F) %>%
   kable_styling(full_width = F) %>%
-  add_header_above(c(" " = 1, " " = 1, "test_MSE" = 3)) %>%
-  collapse_rows(columns = c(1), valign = "top")
+  add_header_above(c(" " = 1, " " = 1, "Test MSE" = 3)) %>%
+  collapse_rows(columns = c(1), valign = "middle", latex_hline = "major")
+
+test_mse_latex %>%
+  cat(file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation/test_mse_latex.tex")
 ```
 
 ```{r variable_importance_plots}
