@@ -148,6 +148,14 @@ all_loss_df_averaged_sam <- all_loss_df_averaged %>%
               
             test_MAE = mean(test_MAE), test_MSE = mean(test_MSE), 
             test_RMSE = mean(test_RMSE), test_RSquare = mean(test_RSquare)
+            ) %>%
+  ## Create a new column for each loss metric averaged over all specifications for ordering purposes later
+  group_by(model, cross_corr) %>%
+  mutate(validation_MAE_ave = mean(validation_MAE), validation_MSE_ave = mean(validation_MSE), 
+            validation_RMSE_ave = mean(validation_RMSE), validation_RSquare_ave = mean(validation_RSquare),
+              
+            test_MAE_ave = mean(test_MAE), test_MSE_ave = mean(test_MSE), 
+            test_RMSE_ave = mean(test_RMSE), test_RSquare_ave = mean(test_RSquare)
             )
 
 write.csv(all_loss_df_averaged_sam, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_loss_averaged_sam.csv")
@@ -649,40 +657,56 @@ cbind(model_sam, cross_corr_sam,
 ```
 
 ```{r small_tables}
+## DIfferent methods are better on different specifications:
+## Solution: make an "average" loss column across all specifications and order them by this metric
+
+ordering_0.01_mae <- all_loss_df_averaged_sam %>%
+  ungroup() %>%
+  filter(cross_corr == 0.01) %>%
+  arrange(-desc(test_MAE_ave)) %>%
+  dplyr::select(model) %>%
+  unique()
+
+ordering_1_mae <- all_loss_df_averaged_sam %>%
+  ungroup() %>%
+  filter(cross_corr == 1) %>%
+  arrange(-desc(test_MAE_ave)) %>%
+  dplyr::select(model) %>%
+  unique()
+
+## Doesn't seem to be an easy way to choose which "sub method" is the best, just doing it manually from viewing above
+ordering_0.01_mae <- c("ELN_MAE", "RF_MAE", "NN2_MAE", "NN1_MAE", "NN3_MAE")
+
+ordering_1_mae <- c("ELN_MSE", "RF_MAE", "NN5_MAE", "NN4_MSE", "NN3_MAE")
+
 g1_0.01 <- all_loss_df_averaged_sam %>%
   ungroup() %>%
   filter(cross_corr == 0.01) %>%
   filter(dgp_spec == "g1") %>%
-  arrange(-desc(test_MSE)) %>%
-  dplyr::select(model, dgp_spec, cross_corr, test_MSE) %>%
+  dplyr::select(model, dgp_spec, cross_corr, test_MAE) %>%
+  rename(g1 = test_MAE) %>%
   ## Filtering out so that we only have the quantile methods
-  filter(model == "ELN_MAE" | model == "RF_MAE" | 
-           model == "NN5_MAE" | model == "NN4_MAE" | model == "NN3_MAE" | model == "NN2_MAE" | model == "NN1_MAE") %>%
-  ## Keep only top 5
-  head(5) %>%
-  dplyr::select(-dgp_spec, -cross_corr)
+  filter(model %in% ordering_0.01_mae) %>%
+  dplyr::select(-model, -dgp_spec, -cross_corr)
 
 g2_0.01 <- all_loss_df_averaged_sam %>%
   ungroup() %>%
   filter(cross_corr == 0.01) %>%
   filter(dgp_spec == "g2") %>%
-  arrange(-desc(test_MSE)) %>%
-  dplyr::select(model, dgp_spec, cross_corr, test_MSE) %>%
+  dplyr::select(model, dgp_spec, cross_corr, test_MAE) %>%
+  rename(g2 = test_MAE) %>%
   ## Filtering out so that we only have the quantile methods %>%
-  ## Keep only top 5
-  filter(model == "ELN_MAE" | model == "RF_MAE" | model == "NN1_MSE" | model == "NN3_MSE" | model == "NN5_MAE") %>%
-  head(5) %>%
-  dplyr::select(-dgp_spec, -cross_corr)
+  filter(model %in% ordering_0.01_mae) %>%
+  dplyr::select(-model, -dgp_spec, -cross_corr)
 
 g3_0.01 <- all_loss_df_averaged_sam %>%
   ungroup() %>%
   filter(cross_corr == 0.01) %>%
   filter(dgp_spec == "g3") %>%
-  arrange(-desc(test_MSE)) %>%
-  dplyr::select(model, dgp_spec, cross_corr, test_MSE) %>%
-  filter(model == "ELN_MAE" | model == "RF_MAE" | model == "NN1_MAE" | model == "NN2_MAE" | model == "NN3_MAE" | model == "NN5_MAE" | model == "NN4_MAE") %>%
-  head(5) %>%
-  dplyr::select(-dgp_spec, -cross_corr)
+  dplyr::select(model, dgp_spec, cross_corr, test_MAE) %>%
+  rename(g3 = test_MAE) %>%
+  filter(model %in% ordering_0.01_mae) %>%
+  dplyr::select(-model, -dgp_spec, -cross_corr)
 
 ################
 
@@ -690,46 +714,135 @@ g1_1 <- all_loss_df_averaged_sam %>%
   ungroup() %>%
   filter(cross_corr == 1) %>%
   filter(dgp_spec == "g1") %>%
-  arrange(-desc(test_MSE)) %>%
-  dplyr::select(model, dgp_spec, cross_corr, test_MSE) %>%
+  dplyr::select(model, dgp_spec, cross_corr, test_MAE) %>%
+  rename(g1 = test_MAE) %>%
   ## Filtering out so that we only have the quantile methods
-  filter(model == "ELN_MAE" | model == "RF_MAE" | 
-           model == "NN5_MAE" | model == "NN4_MAE" | model == "NN3_MAE" | model == "NN2_MAE" | model == "NN1_MAE") %>%
-  ## Keep only top 5
-  head(5) %>%
-  dplyr::select(-dgp_spec, -cross_corr)
+  filter(model %in% ordering_1_mae) %>%
+  dplyr::select(-model, -dgp_spec, -cross_corr)
 
 g2_1 <- all_loss_df_averaged_sam %>%
   ungroup() %>%
   filter(cross_corr == 1) %>%
   filter(dgp_spec == "g2") %>%
-  arrange(-desc(test_MSE)) %>%
-  dplyr::select(model, dgp_spec, cross_corr, test_MSE) %>%
+  dplyr::select(model, dgp_spec, cross_corr, test_MAE) %>%
+  rename(g2 = test_MAE) %>%
   ## Filtering out so that we only have the quantile methods %>%
-  ## Keep only top 5
-  filter(model == "ELN_MAE" | model == "RF_MAE" | model == "NN1_MSE" | model == "NN3_MSE" | model == "NN5_MAE") %>%
-  head(5) %>%
-  dplyr::select(-dgp_spec, -cross_corr)
+  filter(model %in% ordering_1_mae) %>%
+  dplyr::select(-model, -dgp_spec, -cross_corr)
 
 g3_1 <- all_loss_df_averaged_sam %>%
   ungroup() %>%
   filter(cross_corr == 1) %>%
   filter(dgp_spec == "g3") %>%
-  arrange(-desc(test_MSE)) %>%
-  dplyr::select(model, dgp_spec, cross_corr, test_MSE) %>%
-  filter(model == "ELN_MAE" | model == "RF_MAE" | model == "NN1_MAE" | model == "NN2_MAE" | model == "NN3_MAE" | model == "NN5_MAE" | model == "NN4_MAE") %>%
-  head(5) %>%
-  dplyr::select(-dgp_spec, -cross_corr)
+  dplyr::select(model, dgp_spec, cross_corr, test_MAE) %>%
+  rename(g3 = test_MAE) %>%
+  filter(model %in% ordering_1_mae) %>%
+  dplyr::select(-model, -dgp_spec, -cross_corr)
 
-sam_0.01 <- cbind(cross_corr = 0.01, g1_0.01, g2_0.01, g3_0.01)
-sam_1 <- cbind(cross_corr = 1, g1_1, g2_1, g3_1)
+sam_0.01 <- cbind(cross_corr = 0.01, model = ordering_0.01_mae, g1_0.01, g2_0.01, g3_0.01)
+sam_1 <- cbind(cross_corr = 1, model = ordering_1_mae, g1_1, g2_1, g3_1)
+
+## This is all working beautifully, now to figure how to bold specific cells...
 
 rbind(sam_0.01, sam_1) %>%
   kable(align = "c", booktabs = T) %>%
   kable_styling(full_width = F) %>%
-  add_header_above(c(" " = 1, "g1" = 2, "g2" = 2, "g3" = 2)) %>%
+  add_header_above(c(" " = 1, " " = 1, "test_MAE" = 3)) %>%
   collapse_rows(columns = c(1), valign = "top")
+```
 
+```{r}
+## Repeat all of the Abvoe for now for Test_MSE
+## DIfferent methods are better on different specifications:
+## Solution: make an "average" loss column across all specifications and order them by this metric
+
+ordering_0.01_mse <- all_loss_df_averaged_sam %>%
+  ungroup() %>%
+  filter(cross_corr == 0.01) %>%
+  arrange(-desc(test_MSE_ave)) %>%
+  dplyr::select(model) %>%
+  unique()
+
+ordering_1_mse <- all_loss_df_averaged_sam %>%
+  ungroup() %>%
+  filter(cross_corr == 1) %>%
+  arrange(-desc(test_MSE_ave)) %>%
+  dplyr::select(model) %>%
+  unique()
+
+## Doesn't seem to be an easy way to choose which "sub method" is the best, just doing it manually from viewing above
+ordering_0.01_mse <- c("ELN_MAE", "RF_MAE", "NN2_MAE", "NN1_MAE", "NN3_MAE")
+
+ordering_1_mse <- c("ELN_MSE", "RF_MAE", "NN5_MAE", "NN3_MAE", "NN4_MSE")
+
+g1_0.01 <- all_loss_df_averaged_sam %>%
+  ungroup() %>%
+  filter(cross_corr == 0.01) %>%
+  filter(dgp_spec == "g1") %>%
+  dplyr::select(model, dgp_spec, cross_corr, test_MSE) %>%
+  rename(g1 = test_MSE) %>%
+  ## Filtering out so that we only have the quantile methods
+  filter(model %in% ordering_0.01_mse) %>%
+  dplyr::select(-model, -dgp_spec, -cross_corr)
+
+g2_0.01 <- all_loss_df_averaged_sam %>%
+  ungroup() %>%
+  filter(cross_corr == 0.01) %>%
+  filter(dgp_spec == "g2") %>%
+  dplyr::select(model, dgp_spec, cross_corr, test_MSE) %>%
+  rename(g2 = test_MSE) %>%
+  ## Filtering out so that we only have the quantile methods %>%
+  filter(model %in% ordering_0.01_mse) %>%
+  dplyr::select(-model, -dgp_spec, -cross_corr)
+
+g3_0.01 <- all_loss_df_averaged_sam %>%
+  ungroup() %>%
+  filter(cross_corr == 0.01) %>%
+  filter(dgp_spec == "g3") %>%
+  dplyr::select(model, dgp_spec, cross_corr, test_MSE) %>%
+  rename(g3 = test_MSE) %>%
+  filter(model %in% ordering_0.01_mse) %>%
+  dplyr::select(-model, -dgp_spec, -cross_corr)
+
+################
+
+g1_1 <- all_loss_df_averaged_sam %>%
+  ungroup() %>%
+  filter(cross_corr == 1) %>%
+  filter(dgp_spec == "g1") %>%
+  dplyr::select(model, dgp_spec, cross_corr, test_MSE) %>%
+  rename(g1 = test_MSE) %>%
+  ## Filtering out so that we only have the quantile methods
+  filter(model %in% ordering_1_mse) %>%
+  dplyr::select(-model, -dgp_spec, -cross_corr)
+
+g2_1 <- all_loss_df_averaged_sam %>%
+  ungroup() %>%
+  filter(cross_corr == 1) %>%
+  filter(dgp_spec == "g2") %>%
+  dplyr::select(model, dgp_spec, cross_corr, test_MSE) %>%
+  rename(g2 = test_MSE) %>%
+  ## Filtering out so that we only have the quantile methods %>%
+  filter(model %in% ordering_1_mse) %>%
+  dplyr::select(-model, -dgp_spec, -cross_corr)
+
+g3_1 <- all_loss_df_averaged_sam %>%
+  ungroup() %>%
+  filter(cross_corr == 1) %>%
+  filter(dgp_spec == "g3") %>%
+  dplyr::select(model, dgp_spec, cross_corr, test_MSE) %>%
+  rename(g3 = test_MSE) %>%
+  filter(model %in% ordering_1_mse) %>%
+  dplyr::select(-model, -dgp_spec, -cross_corr)
+
+sam_0.01 <- cbind(cross_corr = 0.01, model = ordering_0.01_mse, g1_0.01, g2_0.01, g3_0.01)
+sam_1 <- cbind(cross_corr = 1, model = ordering_1_mse, g1_1, g2_1, g3_1)
+
+rbind(sam_0.01, sam_1) %>%
+  kable(align = "c", booktabs = T) %>%
+  kable_styling(full_width = F) %>%
+  add_header_above(c(" " = 1, " " = 1, "test_MSE" = 3)) %>%
+  collapse_rows(columns = c(1), valign = "top")
 ```
 
 ```{r variable_importance_plots}
