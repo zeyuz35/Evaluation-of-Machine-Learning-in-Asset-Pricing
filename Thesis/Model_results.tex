@@ -1,0 +1,202 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Preamble
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\PassOptionsToPackage{usenames, dvipsnames}{xcolor}
+
+\documentclass[11pt, a4paper, table]{article}
+\usepackage[english]{babel}
+\usepackage[margin=1in]{geometry}
+\usepackage[ruled, vlined]{algorithm2e}
+
+\usepackage{amsfonts}
+\usepackage{setspace,graphicx,epstopdf,amsmath}
+\usepackage{marginnote, datetime, url, enumitem, subfigure}
+\usepackage[capposition=top]{floatrow}
+\usepackage{placeins}
+
+%Journal Style
+%JFE looks nice, JF looks awful
+	\usepackage{amsthm}
+	\usepackage{jfe}
+
+%Bibliography Stuff
+	%Use natbib even though it's old because it's compliant with journal styles
+	%Actual bibliography style etc are specified where you actually want it
+	\usepackage{natbib}
+
+%Fluff
+	\linespread{1.3}
+
+%Neural Network Packages
+	\usepackage{neuralnetwork}
+	\usepackage{xpatch}
+	\makeatletter
+	% \linklayers have \nn@lastnode instead of \lastnode,
+	% patch it to replace the former with the latter, and similar for thisnode
+	\xpatchcmd{\linklayers}{\nn@lastnode}{\lastnode}{}{}
+	\xpatchcmd{\linklayers}{\nn@thisnode}{\thisnode}{}{}
+	\makeatother
+	
+%Regression Tree
+	\usepackage{tikz,forest}
+	\usetikzlibrary{arrows.meta}
+	
+	\forestset{
+		.style={
+			for tree={
+				base=bottom,
+				child anchor=north,
+				align=center,
+				s sep+=1cm,
+				straight edge/.style={
+					edge path={\noexpand\path[\forestoption{edge},thick,-{Latex}] 
+						(!u.parent anchor) -- (.child anchor);}
+				},
+				if n children={0}
+				{tier=word, draw, thick, rectangle}
+				{draw, diamond, thick, aspect=2},
+				if n=1{%
+					edge path={\noexpand\path[\forestoption{edge},thick,-{Latex}] 
+						(!u.parent anchor) -| (.child anchor) node[pos=.2, above] {Y};}
+				}{
+					edge path={\noexpand\path[\forestoption{edge},thick,-{Latex}] 
+						(!u.parent anchor) -| (.child anchor) node[pos=.2, above] {N};}
+				}
+			}
+		}
+	}
+
+\usepackage{lscape}
+\usepackage{longtable}
+
+%%TODONOTE commands
+\usepackage[colorinlistoftodos]{todonotes}
+\newcommand{\smalltodo}[2][] {\todo[caption={#2}, size=\scriptsize,%
+	fancyline,#1]{\begin{spacing}{.5}#2\end{spacing}}}
+\newcommand{\rhs}[2][]{\smalltodo[color=green!30,#1]{{\bf RS:} #2}}
+%%
+
+%Graphs
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage[export]{adjustbox}
+
+\graphicspath{{../Results/}}
+
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+
+%Coloured Tables
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%Title and other fluff, just before document start
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%Hyperref apparently is a big package and causes a lot of issues, so it's recommended to load this last
+
+\usepackage{hyperref}
+
+%Gets rid of the neon green boxes around boxes
+
+\usepackage[]{xcolor}
+
+\hypersetup{
+	colorlinks,
+	linkcolor = {red!50!black},
+	citecolor = {blue!50!black},
+	urlcolor = {blue!80!black}
+}
+
+\title{Evaluation of Machine Learning in Empirical Asset Pricing
+\thanks{I acknowledge and thank David Frazier, my supervisor, Xueyan Zhao and Jun Sung Kim, my honours degree coordinators, as well as my fellow honours cohort for their support throughout the writing of this thesis. I would also like to acknowledge the work of \cite{gu_empirical_2018}, and in particular for their provision of the dataset which they constructed.}
+}
+\author{Ze Yu Zhong \\
+Supervisor: David Frazier \\ 
+Thesis submitted for the completion of the \\
+Bachelor of Commerce (Honours) in Econometrics at \\
+Monash University}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%BEGIN DOCUMENT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\section{Appendix}
+
+\subsection{Data}
+
+\subsection{Additional Results}
+
+\subsubsection{Simulation Study}
+
+%% Small Results
+\input{../Results/simulation/test_mae_latex.tex}
+
+\input{../Results/simulation/test_mse_latex.tex}
+
+\newpage
+
+%% Comprehensive Results
+\input{../Results/simulation/test_loss_latex.tex}
+
+\subsubsection{Empirical Study}
+%% Small Results
+
+%% Comprehensive Results
+
+\subsubsection{Empirical Robustness Checks}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Missing Threshold
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Loss Stats
+
+%% Factor Importance
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Train:Validation 1:1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Loss Stats
+
+%% Factor Importance
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Train:Validation 2:1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Loss Stats
+
+%% Factor Importance
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Fama French Factors
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Loss Stats
+
+%% Factor Importance
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%BIBLIOGRAPHY
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\bibliographystyle{jfe}
+\bibliography{Bibliography}
+
+\end{document}

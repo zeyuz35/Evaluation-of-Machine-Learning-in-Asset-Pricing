@@ -1,0 +1,11 @@
+\select@language {english}
+\contentsline {section}{\numberline {1}Appendix}{3}{section.1}
+\contentsline {subsection}{\numberline {1.1}Data}{3}{subsection.1.1}
+\contentsline {subsection}{\numberline {1.2}Additional Results}{8}{subsection.1.2}
+\contentsline {subsubsection}{\numberline {1.2.1}Simulation Study}{8}{subsubsection.1.2.1}
+\contentsline {subsection}{\numberline {1.3}Computational Details}{11}{subsection.1.3}
+\contentsline {subsubsection}{\numberline {1.3.1}Linear Models}{11}{subsubsection.1.3.1}
+\contentsline {subsubsection}{\numberline {1.3.2}Penalized Linear}{11}{subsubsection.1.3.2}
+\contentsline {subsubsection}{\numberline {1.3.3}Classification and Regression Trees and Random Forests}{11}{subsubsection.1.3.3}
+\contentsline {subsubsection}{\numberline {1.3.4}Neural Networks}{11}{subsubsection.1.3.4}
+\contentsline {subsubsection}{\numberline {1.3.5}Tuning of Simulated Datasets}{12}{subsubsection.1.3.5}
