@@ -218,7 +218,15 @@ gen_tidy_vi <- function(simulation_results_list, realization_no, dgp_spec, SV, c
       cbind(model = "NN5_MSE", sample = sample,
             normalize_variable_importance(simulation_results_list[[realization_no]]$NN5_MSE[[sample]]$variable_importance)),
       cbind(model = "NN5_MAE", sample = sample,
-            normalize_variable_importance(simulation_results_list[[realization_no]]$NN5_MAE[[sample]]$variable_importance))
+            normalize_variable_importance(simulation_results_list[[realization_no]]$NN5_MAE[[sample]]$variable_importance)),
+      
+      ################################################################################################
+      
+      cbind(model = "LSTM_MSE", sample = sample,
+            normalize_variable_importance(simulation_results_list[[realization_no]]$LSTM_MSE[[sample]]$variable_importance)),
+      
+      cbind(model = "LSTM_MAE", sample = sample,
+            normalize_variable_importance(simulation_results_list[[realization_no]]$LSTM_MAE[[sample]]$variable_importance))
     )
   }
   cbind(realization_no = realization_no, dgp_spec = dgp_spec, SV = SV, cross_corr = cross_corr, df)
@@ -227,7 +235,7 @@ gen_tidy_vi <- function(simulation_results_list, realization_no, dgp_spec, SV, c
 # Iterate over all realizations
 
 all_realize_vi <- function(simulation_results_list, dgp_spec, SV, cross_corr) {
-  foreach(realization_no = (1:10), .combine = "rbind") %do% {
+  foreach(realization_no = (1:5), .combine = "rbind") %do% {
     gen_tidy_vi(simulation_results_list, realization_no, dgp_spec, SV, cross_corr)
   }
 }
@@ -581,6 +589,7 @@ cross_corr_sam <- all_loss_df_averaged_sam %>%
 g1_sam_mae <- all_loss_df_averaged_sam %>%
   ungroup() %>%
   dplyr::select(dgp_spec, cross_corr, test_MAE) %>%
+  rename(`Test MAE` = test_MAE) %>%
   filter(cross_corr != 0) %>%
   filter(dgp_spec == "g1") %>%
   dplyr::select(-dgp_spec, -cross_corr)
@@ -588,6 +597,7 @@ g1_sam_mae <- all_loss_df_averaged_sam %>%
 g2_sam_mae <- all_loss_df_averaged_sam %>%
   ungroup() %>%
   dplyr::select(dgp_spec, cross_corr, test_MAE) %>%
+  rename(`Test MAE` = test_MAE) %>%
   filter(cross_corr != 0) %>%
   filter(dgp_spec == "g2") %>%
   dplyr::select(-dgp_spec, -cross_corr)
@@ -595,6 +605,7 @@ g2_sam_mae <- all_loss_df_averaged_sam %>%
 g3_sam_mae <- all_loss_df_averaged_sam %>%
   ungroup() %>%
   dplyr::select(dgp_spec, cross_corr, test_MAE) %>%
+  rename(`Test MAE` = test_MAE) %>%
   filter(cross_corr != 0) %>%
   filter(dgp_spec == "g3") %>%
   dplyr::select(-dgp_spec, -cross_corr)
@@ -604,6 +615,7 @@ g3_sam_mae <- all_loss_df_averaged_sam %>%
 g1_sam_mse <- all_loss_df_averaged_sam %>%
   ungroup() %>%
   dplyr::select(dgp_spec, cross_corr, test_MSE) %>%
+  rename(`Test MSE` = test_MSE) %>%
   filter(cross_corr != 0) %>%
   filter(dgp_spec == "g1") %>%
   dplyr::select(-dgp_spec, -cross_corr)
@@ -611,6 +623,7 @@ g1_sam_mse <- all_loss_df_averaged_sam %>%
 g2_sam_mse <- all_loss_df_averaged_sam %>%
   ungroup() %>%
   dplyr::select(dgp_spec, cross_corr, test_MSE) %>%
+  rename(`Test MSE` = test_MSE) %>%
   filter(cross_corr != 0) %>%
   filter(dgp_spec == "g2") %>%
   dplyr::select(-dgp_spec, -cross_corr)
@@ -618,6 +631,7 @@ g2_sam_mse <- all_loss_df_averaged_sam %>%
 g3_sam_mse <- all_loss_df_averaged_sam %>%
   ungroup() %>%
   dplyr::select(dgp_spec, cross_corr, test_MSE) %>%
+  rename(`Test MSE` = test_MSE) %>%
   filter(cross_corr != 0) %>%
   filter(dgp_spec == "g3") %>%
   dplyr::select(-dgp_spec, -cross_corr)
@@ -627,6 +641,7 @@ g3_sam_mse <- all_loss_df_averaged_sam %>%
 g1_sam_r2 <- all_loss_df_averaged_sam %>%
   ungroup() %>%
   dplyr::select(dgp_spec, cross_corr, test_RSquare) %>%
+  rename(`Test $R^2$` = test_RSquare) %>%
   filter(cross_corr != 0) %>%
   filter(dgp_spec == "g1") %>%
   dplyr::select(-dgp_spec, -cross_corr)
@@ -634,6 +649,7 @@ g1_sam_r2 <- all_loss_df_averaged_sam %>%
 g2_sam_r2 <- all_loss_df_averaged_sam %>%
   ungroup() %>%
   dplyr::select(dgp_spec, cross_corr, test_RSquare) %>%
+  rename(`Test $R^2$` = test_RSquare) %>%
   filter(cross_corr != 0) %>%
   filter(dgp_spec == "g2") %>%
   dplyr::select(-dgp_spec, -cross_corr)
@@ -641,13 +657,13 @@ g2_sam_r2 <- all_loss_df_averaged_sam %>%
 g3_sam_r2 <- all_loss_df_averaged_sam %>%
   ungroup() %>%
   dplyr::select(dgp_spec, cross_corr, test_RSquare) %>%
+  rename(`Test $R^2$` = test_RSquare) %>%
   filter(cross_corr != 0) %>%
   filter(dgp_spec == "g3") %>%
   dplyr::select(-dgp_spec, -cross_corr)
 
 model_sam <- model_sam %>%
-  mutate(model = str_replace(model, "_", ".")) %>%
-  mutate(model = cell_spec(model, angle = 90, format = "latex"))
+  mutate(model = str_replace(model, "_", "."))
 
 cross_corr_sam <- cross_corr_sam %>%
   rename(Corr = cross_corr)
@@ -656,13 +672,16 @@ test_loss_latex <- cbind(model_sam, cross_corr_sam,
                          g1_sam_mae, g1_sam_mse, g1_sam_r2, 
                          g2_sam_mae, g2_sam_mse, g2_sam_r2, 
                          g3_sam_mae, g3_sam_mse, g3_sam_r2) %>%
-  kable(align = "c", format = "latex", digits = 6, escape = F) %>%
-  kable_styling(full_width = F) %>%
+  kable(align = "c", format = "latex", booktabs = T, 
+        escape = F, digits = 6, longtable = T) %>%
   add_header_above(c(" " = 1, " " = 1, "g1" = 3, "g2" = 3, "g3" = 3)) %>%
-  collapse_rows(columns = c(1:2), valign = "top")
+  kable_styling(font_size = 6,
+                latex_options = c("repeat_header"),
+                repeat_header_text = "") %>%
+  collapse_rows(columns = c(1:2), valign = "middle")
 
 test_loss_latex %>%
-  cat("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation/test_loss_latex.tex")
+  cat(file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation/test_loss_latex.tex")
   
 ```
 
@@ -774,7 +793,7 @@ test_mae_latex <- rbind(sam_0.01, sam_1) %>%
   mutate(model = str_replace(model, "_", ".")) %>%
   mutate(Corr = cell_spec(Corr, angle = 90, format = "latex")) %>%
   kable(align = "c", format = "latex", booktabs = T, escape = F) %>%
-  kable_styling(full_width = F) %>%
+  kable_styling(full_width = F, font_size = 8) %>%
   add_header_above(c(" " = 1, " " = 1, "Test MAE" = 3)) %>%
   collapse_rows(columns = c(1), valign = "middle", latex_hline = "major")
 
@@ -889,7 +908,7 @@ test_mse_latex <- rbind(sam_0.01, sam_1) %>%
   mutate(model = str_replace(model, "_", ".")) %>%
   mutate(Corr = cell_spec(Corr, angle = 90, format = "latex")) %>%
   kable(align = "c", format = "latex", booktabs = T, escape = F) %>%
-  kable_styling(full_width = F) %>%
+  kable_styling(full_width = F, font_size = 8) %>%
   add_header_above(c(" " = 1, " " = 1, "Test MSE" = 3)) %>%
   collapse_rows(columns = c(1), valign = "middle", latex_hline = "major")
 
@@ -901,175 +920,327 @@ test_mse_latex %>%
 # Variable Importance Plots
 
 breaks <- levels(all_vi_df_averaged$variable)
-labels <- as.expression(breaks)
-labels[[1]] <- bquote(bold(.(labels[[1]])))
-labels[[2]] <- bquote(bold(.(labels[[2]])))
-labels[[3]] <- bquote(bold(.(labels[[3]])))
-labels[[303]] <- bquote(bold(.(labels[[303]])))
+
+## Bolding the true predictors for each specification
+g1_labels <- as.expression(breaks)
+g1_labels[[1]] <- bquote(bold(.(g1_labels[[1]])))
+g1_labels[[2]] <- bquote(bold(.(g1_labels[[2]])))
+g1_labels[[303]] <- bquote(bold(.(g1_labels[[303]])))
+
+g2_labels <- as.expression(breaks)
+g2_labels[[1]] <- bquote(bold(.(g2_labels[[1]])))
+g2_labels[[2]] <- bquote(bold(.(g2_labels[[2]])))
+g2_labels[[303]] <- bquote(bold(.(g2_labels[[303]])))
+
+g3_labels <- as.expression(breaks)
+g3_labels[[1]] <- bquote(bold(.(g3_labels[[1]])))
+g3_labels[[2]] <- bquote(bold(.(g3_labels[[2]])))
+g3_labels[[3]] <- bquote(bold(.(g3_labels[[3]])))
 
 ## Plots for PRESENTATION
-
-all_vi_df_averaged %>%
-  filter(dgp_spec == "g1") %>%
-  filter(model == "LM_MSE" 
-         | model == "ELN_MAE"
-         | model == "RF_MAE"
-         | model == "NN5_MAE") %>%
-  group_by(dgp_spec, model, variable, cross_corr, SV) %>%
+## Average over all samples
+all_vi_df_averaged_sam <- all_vi_df_averaged %>%
+  group_by(dgp_spec, model, variable, cross_corr) %>%
   summarise(importance = mean(importance)) %>%
-  ungroup() %>%
-  mutate(variable = fct_reorder(variable, importance)) %>%
-  top_n(10, importance) %>%
-  ggplot() + 
-  geom_tile(aes(x = variable, y = model, alpha = importance)) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  theme(legend.position = "none") +
-  # Facet
-  facet_grid(rows = vars(cross_corr))
-ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_g1_vi_plot.pdf")
+  ungroup()
 
-all_vi_df_averaged %>%
-  filter(dgp_spec == "g2") %>%
-  mutate(variable = fct_reorder(variable, importance)) %>%
-  group_by(dgp_spec, model, sample, cross_corr, SV) %>%
-  top_n(2, importance) %>%
-  ggplot() + 
-  geom_tile(aes(x = model, y = variable, alpha = importance)) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  theme(legend.position = "none") +
-  # Facet
-  facet_grid(rows = vars(cross_corr), cols = vars(sample))
-ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_g2_vi_plot.pdf")
-
-all_vi_df_averaged %>%
-  filter(dgp_spec == "g3") %>%
-  mutate(variable = fct_reorder(variable, importance)) %>%
-  group_by(dgp_spec, model, sample, cross_corr, SV) %>%
-  top_n(2, importance) %>%
-  ggplot() + 
-  geom_tile(aes(x = model, y = variable, alpha = importance)) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  theme(legend.position = "none") +
-  # Facet
-  facet_grid(rows = vars(cross_corr), cols = vars(sample))
-ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_g3_vi_plot.pdf")
-
-## Average variable importance over all samples
-
-## Find the top x% of important varaibles, on average
-
-top_variables <- all_vi_df_averaged %>%
+## Find the most important variables across all variables over all methods
+important_variables_g1 <- all_vi_df_averaged_sam %>%
+  filter(dgp_spec == "g1") %>%
   group_by(variable) %>%
   summarise(importance = mean(importance)) %>%
   arrange(desc(importance)) %>%
-  top_n(30, importance)
-
-top_variables <- as.character(top_variables$variable)
-
-all_vi_df_averaged %>%
-  filter(model == "LM_MSE" 
-         | model == "ELN_MAE"
-         | model == "RF_MAE"
-         | model == "NN5_MAE") %>%
-  filter(variable %in% top_variables) %>%
-  group_by(dgp_spec, model, cross_corr, variable, SV) %>%
+  ## Select the top 10
+  head(10) %>%
+  dplyr::select(variable) %>%
+  pull() %>%
+  as.vector()
+  
+important_variables_g2 <- all_vi_df_averaged_sam %>%
+  filter(dgp_spec == "g2") %>%
+  group_by(variable) %>%
   summarise(importance = mean(importance)) %>%
-  ungroup() %>%
+  arrange(desc(importance)) %>%
+  ## Select the top 10
+  head(10) %>%
+  dplyr::select(variable) %>%
+  pull() %>%
+  as.vector()
+
+important_variables_g3 <- all_vi_df_averaged_sam %>%
+  filter(dgp_spec == "g3") %>%
+  group_by(variable) %>%
+  summarise(importance = mean(importance)) %>%
+  arrange(desc(importance)) %>%
+  ## Select the top 10
+  head(10) %>%
+  dplyr::select(variable) %>%
+  pull() %>%
+  as.vector()
+
+top_model <- c("LM_MSE", "ELN_MAE", "RF_MAE", "NN5_MAE", "LSTM_MAE", "FFORMA_MSE")
+
+all_vi_df_averaged_sam %>%
+  filter(dgp_spec == "g1") %>%
+  filter(model %in% top_model) %>%
   mutate(variable = fct_reorder(variable, importance)) %>%
-  ggplot() + 
+  filter(variable %in% important_variables_g1) %>%
+  ggplot() +
   geom_tile(aes(x = variable, y = model, fill = importance)) +
-  scale_x_discrete(label = labels, breaks = breaks) + 
+  scale_x_discrete(label = g1_labels, breaks = breaks) + 
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   theme(legend.position = "right") +
-  scale_fill_distiller(palette = "Spectral") + 
-  # Facet
-  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
-ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_ave_vi_plot_pre.pdf",
-       width = 20 * a4_aspect_ratio, height = 20, units = "cm")
+  scale_fill_distiller(palette = "Spectral") +
+  facet_grid(rows = vars(cross_corr))
+ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g1_vi.pdf",
+       width = 8 * a4_aspect_ratio, height = 8, units = "cm")
 
-all_vi_df_averaged %>%
-  filter(model == "NN1_MAE"
-         | model == "NN2_MAE"
-         | model == "NN3_MAE"
-         | model == "NN4_MAE"
-         | model == "NN5_MAE") %>%
-  filter(variable %in% top_variables) %>%
-  group_by(dgp_spec, model, cross_corr, variable, SV) %>%
-  summarise(importance = mean(importance)) %>%
-  ungroup() %>%
+all_vi_df_averaged_sam %>%
+  filter(dgp_spec == "g2") %>%
+  filter(model %in% top_model) %>%
   mutate(variable = fct_reorder(variable, importance)) %>%
-  ggplot() + 
+  filter(variable %in% important_variables_g2) %>%
+  ggplot() +
   geom_tile(aes(x = variable, y = model, fill = importance)) +
-  scale_x_discrete(label = labels, breaks = breaks) + 
+  scale_x_discrete(label = g2_labels, breaks = breaks) + 
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   theme(legend.position = "right") +
-  scale_fill_distiller(palette = "Spectral") + 
-  # Facet
-  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
-ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_ave_vi_plot_pre_nn.pdf",
-       width = 20 * a4_aspect_ratio, height = 20, units = "cm")
+  scale_fill_distiller(palette = "Spectral") +
+  facet_grid(rows = vars(cross_corr))
+ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g2_vi.pdf",
+       width = 8 * a4_aspect_ratio, height = 8, units = "cm")
 
-all_vi_df_averaged %>%
-  filter(model == "RF_MAE"
-         | model == "RF_MSE") %>%
-  filter(variable %in% top_variables) %>%
-  group_by(dgp_spec, model, cross_corr, variable, SV) %>%
-  summarise(importance = mean(importance)) %>%
-  ungroup() %>%
+all_vi_df_averaged_sam %>%
+  filter(dgp_spec == "g3") %>%
+  filter(model %in% top_model) %>%
   mutate(variable = fct_reorder(variable, importance)) %>%
-  ggplot() + 
+  filter(variable %in% important_variables_g3) %>%
+  ggplot() +
   geom_tile(aes(x = variable, y = model, fill = importance)) +
-  scale_x_discrete(label = labels, breaks = breaks) + 
+  scale_x_discrete(label = g3_labels, breaks = breaks) + 
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   theme(legend.position = "right") +
-  scale_fill_distiller(palette = "Spectral") + 
-  # Facet
-  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
-ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_ave_vi_plot_pre_rf.pdf",
-       width = 20 * a4_aspect_ratio, height = 20, units = "cm")
+  scale_fill_distiller(palette = "Spectral") +
+  facet_grid(rows = vars(cross_corr))
+ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g3_vi.pdf",
+       width = 8 * a4_aspect_ratio, height = 8, units = "cm")
+```
 
-all_vi_df_averaged %>%
-  filter(model == "ELN_MAE"
-         | model == "ELN_MSE") %>%
-  filter(variable %in% top_variables) %>%
-  group_by(dgp_spec, model, cross_corr, variable, SV) %>%
+```{r}
+# Variable Importance Plots for Random Forests
+
+breaks <- levels(all_vi_df_averaged$variable)
+
+## Bolding the true predictors for each specification
+g1_labels <- as.expression(breaks)
+g1_labels[[1]] <- bquote(bold(.(g1_labels[[1]])))
+g1_labels[[2]] <- bquote(bold(.(g1_labels[[2]])))
+g1_labels[[303]] <- bquote(bold(.(g1_labels[[303]])))
+
+g2_labels <- as.expression(breaks)
+g2_labels[[1]] <- bquote(bold(.(g2_labels[[1]])))
+g2_labels[[2]] <- bquote(bold(.(g2_labels[[2]])))
+g2_labels[[303]] <- bquote(bold(.(g2_labels[[303]])))
+
+g3_labels <- as.expression(breaks)
+g3_labels[[1]] <- bquote(bold(.(g3_labels[[1]])))
+g3_labels[[2]] <- bquote(bold(.(g3_labels[[2]])))
+g3_labels[[3]] <- bquote(bold(.(g3_labels[[3]])))
+
+## Function to loop over and extract all vimps from results list objects
+
+vimp_realisation <- function(results_list, realisation) {
+  vimp_tidy <- foreach(set = 1:3, .combine = "rbind") %do% {
+    bc <- rbind(cbind(sample = set, model = "RF_MSE", type = "bc",
+                      data.frame(variable = names(results_list[[realisation]]$RF_MSE[[set]]$vimp$breiman_cutler),
+                                 importance = results_list[[realisation]]$RF_MSE[[set]]$vimp$breiman_cutler)), 
+                cbind(sample = set, model = "RF_MAE", type = "bc",
+                      data.frame(variable = names(results_list[[realisation]]$RF_MAE[[set]]$vimp$breiman_cutler),
+                                 importance = results_list[[realisation]]$RF_MAE[[set]]$vimp$breiman_cutler))
+                )
+    
+    ik <- rbind(cbind(sample = set, model = "RF_MSE", type = "ik", 
+                      data.frame(variable = names(results_list[[realisation]]$RF_MSE[[set]]$vimp$ishwaran_kogalur),
+                                 importance = results_list[[realisation]]$RF_MSE[[set]]$vimp$ishwaran_kogalur)),
+                cbind(sample = set, model = "RF_MAE", type = "ik", 
+                      data.frame(variable = names(results_list[[realisation]]$RF_MAE[[set]]$vimp$ishwaran_kogalur),
+                                 importance = results_list[[realisation]]$RF_MAE[[set]]$vimp$ishwaran_kogalur))
+    )
+    rbind(bc, ik)
+  }
+  row.names(vimp_tidy) <- NULL
+  vimp_tidy
+}
+
+## Function to iterate the above function over all realisations
+
+vimp_iterate <- function(results_list) {
+  vimp_tidy <- foreach(i = 1:10, .combine = "rbind") %do% {
+    cbind(realization_no = i, vimp_realisation(results_list, realisation = i))
+  }
+}
+
+all_vimp_tidy_df <- rbind(
+  cbind(dgp_spec = "g1", cross_corr = 0.01, g1_A1_sv_0.01_results_all %>% vimp_iterate),
+  cbind(dgp_spec = "g2", cross_corr = 0.01, g2_A1_sv_0.01_results_all %>% vimp_iterate),
+  cbind(dgp_spec = "g3", cross_corr = 0.01, g3_A1_sv_0.01_results_all %>% vimp_iterate),
+  
+  cbind(dgp_spec = "g1", cross_corr = 0.1, g1_A1_sv_0.1_results_all %>% vimp_iterate),
+  cbind(dgp_spec = "g2", cross_corr = 0.1, g2_A1_sv_0.1_results_all %>% vimp_iterate),
+  cbind(dgp_spec = "g3", cross_corr = 0.1, g3_A1_sv_0.1_results_all %>% vimp_iterate),
+  
+  cbind(dgp_spec = "g1", cross_corr = 1, g1_A1_sv_1_results_all %>% vimp_iterate),
+  cbind(dgp_spec = "g2", cross_corr = 1, g2_A1_sv_1_results_all %>% vimp_iterate),
+  cbind(dgp_spec = "g3", cross_corr = 1, g3_A1_sv_1_results_all %>% vimp_iterate)
+)
+
+## Average everything over all samples and realizations
+all_vimp_tidy_df_sam <- all_vimp_tidy_df %>%
+  group_by(dgp_spec, cross_corr, model, variable, type) %>%
+  summarise(importance = mean(importance)) %>%
+  ungroup()
+
+## Find the top variables for each specification
+important_vimps_g1 <- all_vimp_tidy_df_sam %>%
+  filter(dgp_spec == "g1") %>%
+  group_by(dgp_spec, variable) %>%
   summarise(importance = mean(importance)) %>%
   ungroup() %>%
+  arrange(desc(importance)) %>%
+  head(10) %>%
+  dplyr::select(variable) %>%
+  pull() %>%
+  as.vector()
+
+important_vimps_g2 <- all_vimp_tidy_df_sam %>%
+  filter(dgp_spec == "g2") %>%
+  group_by(dgp_spec, variable) %>%
+  summarise(importance = mean(importance)) %>%
+  ungroup() %>%
+  arrange(desc(importance)) %>%
+  head(10) %>%
+  dplyr::select(variable) %>%
+  pull() %>%
+  as.vector()
+
+important_vimps_g3 <- all_vimp_tidy_df_sam %>%
+  filter(dgp_spec == "g3") %>%
+  group_by(dgp_spec, variable) %>%
+  summarise(importance = mean(importance)) %>%
+  ungroup() %>%
+  arrange(desc(importance)) %>%
+  head(10) %>%
+  dplyr::select(variable) %>%
+  pull() %>%
+  as.vector()
+
+## Begin plotting
+## Notes on these plots
+## They don't look incredibly consistent at first, but realise that these are the raw vimps which have no been normalised
+## If anything, our metric is more lenient
+
+## BC Type first
+
+all_vimp_tidy_df_sam %>%
+  filter(dgp_spec == "g1") %>%
+  filter(variable %in% important_vimps_g1) %>%
+  filter(type == "bc") %>%
   mutate(variable = fct_reorder(variable, importance)) %>%
-  ggplot() + 
+  ggplot() +
   geom_tile(aes(x = variable, y = model, fill = importance)) +
-  scale_x_discrete(label = labels, breaks = breaks) + 
+  scale_x_discrete(label = g1_labels, breaks = breaks) + 
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   theme(legend.position = "right") +
-  scale_fill_distiller(palette = "Spectral") + 
-  # Facet
-  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
+  scale_fill_distiller(palette = "Spectral") +
+  facet_grid(rows = vars(cross_corr))
+ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g1_vimp_bc.pdf",
+       width = 8 * a4_aspect_ratio, height = 8, units = "cm")
 
-all_vi_df_averaged %>%
-  filter(variable %in% top_variables) %>%
-  group_by(dgp_spec, model, cross_corr, variable, SV) %>%
-  summarise(importance = mean(importance)) %>%
-  ungroup() %>%
+all_vimp_tidy_df_sam %>%
+  filter(dgp_spec == "g2") %>%
+  filter(variable %in% important_vimps_g1) %>%
+  filter(type == "bc") %>%
   mutate(variable = fct_reorder(variable, importance)) %>%
-  ggplot() + 
+  ggplot() +
   geom_tile(aes(x = variable, y = model, fill = importance)) +
-  scale_x_discrete(label = labels, breaks = breaks) + 
+  scale_x_discrete(label = g2_labels, breaks = breaks) + 
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   theme(legend.position = "right") +
-  scale_fill_distiller(palette = "Spectral") + 
-  # Facet
-  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
-ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation_ave_vi_plot.pdf",
-       width = 20 * a4_aspect_ratio, height = 20, units = "cm")
+  scale_fill_distiller(palette = "Spectral") +
+  facet_grid(rows = vars(cross_corr))
+ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g2_vimp_bc.pdf",
+       width = 8 * a4_aspect_ratio, height = 8, units = "cm")
 
+all_vimp_tidy_df_sam %>%
+  filter(dgp_spec == "g3") %>%
+  filter(variable %in% important_vimps_g1) %>%
+  filter(type == "bc") %>%
+  mutate(variable = fct_reorder(variable, importance)) %>%
+  ggplot() +
+  geom_tile(aes(x = variable, y = model, fill = importance)) +
+  scale_x_discrete(label = g3_labels, breaks = breaks) + 
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(legend.position = "right") +
+  scale_fill_distiller(palette = "Spectral") +
+  facet_grid(rows = vars(cross_corr))
+ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g3_vimp_bc.pdf",
+       width = 8 * a4_aspect_ratio, height = 8, units = "cm")
+
+#########
+
+all_vimp_tidy_df_sam %>%
+  filter(dgp_spec == "g1") %>%
+  filter(variable %in% important_vimps_g1) %>%
+  filter(type == "ik") %>%
+  mutate(variable = fct_reorder(variable, importance)) %>%
+  ggplot() +
+  geom_tile(aes(x = variable, y = model, fill = importance)) +
+  scale_x_discrete(label = g1_labels, breaks = breaks) + 
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(legend.position = "right") +
+  scale_fill_distiller(palette = "Spectral") +
+  facet_grid(rows = vars(cross_corr))
+ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g1_vimp_ik.pdf",
+       width = 8 * a4_aspect_ratio, height = 8, units = "cm")
+
+all_vimp_tidy_df_sam %>%
+  filter(dgp_spec == "g2") %>%
+  filter(variable %in% important_vimps_g1) %>%
+  filter(type == "ik") %>%
+  mutate(variable = fct_reorder(variable, importance)) %>%
+  ggplot() +
+  geom_tile(aes(x = variable, y = model, fill = importance)) +
+  scale_x_discrete(label = g2_labels, breaks = breaks) + 
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(legend.position = "right") +
+  scale_fill_distiller(palette = "Spectral") +
+  facet_grid(rows = vars(cross_corr))
+ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g2_vimp_ik.pdf",
+       width = 8 * a4_aspect_ratio, height = 8, units = "cm")
+
+all_vimp_tidy_df_sam %>%
+  filter(dgp_spec == "g3") %>%
+  filter(variable %in% important_vimps_g1) %>%
+  filter(type == "ik") %>%
+  mutate(variable = fct_reorder(variable, importance)) %>%
+  ggplot() +
+  geom_tile(aes(x = variable, y = model, fill = importance)) +
+  scale_x_discrete(label = g3_labels, breaks = breaks) + 
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(legend.position = "right") +
+  scale_fill_distiller(palette = "Spectral") +
+  facet_grid(rows = vars(cross_corr))
+ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g3_vimp_ik.pdf",
+       width = 8 * a4_aspect_ratio, height = 8, units = "cm")
 ```
 
 ```{r hyperparam_functions}
