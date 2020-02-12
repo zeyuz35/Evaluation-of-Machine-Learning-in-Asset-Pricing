@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2020.2.11)  12 FEB 2020 14:38
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2020.2.11)  12 FEB 2020 16:09
 entering extended mode
 **Model_results.tex
 
@@ -1828,6 +1828,8 @@ df used on input line 204.
 (pdftex.def)             Requested size: 318.18796pt x 226.84694pt.
 
 (\\ad.monash.edu\home\User069\zzho0068\Documents\GitHub\Evaluation-of-Machine-L
+earning-in-Asset-Pricing\Results\empirical\empirical_loss_latex.tex)
+(\\ad.monash.edu\home\User069\zzho0068\Documents\GitHub\Evaluation-of-Machine-L
 earning-in-Asset-Pricing\Thesis\Model_results.bbl
 
 Package natbib Warning: Empty `thebibliography' environment on input line 4.
@@ -1850,22 +1852,22 @@ mp_ik.pdf>] [7 <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluati
 on-of-Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_
 g2_vimp_ik.pdf> <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluat
 ion-of-Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation
-_g3_vimp_ik.pdf>]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 254.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 254.
+_g3_vimp_ik.pdf>] [8]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 255.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 255.
 
 (\\ad.monash.edu\home\User069\zzho0068\Documents\GitHub\Evaluation-of-Machine-L
 earning-in-Asset-Pricing\Thesis\Model_results.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 254.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 254.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 255.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 255.
 Package rerunfilecheck Info: File `Model_results.out' has not changed.
 (rerunfilecheck)             Checksum: 67AF5FC809C9D218EE617B232544395B;404.
  ) 
 Here is how much of TeX's memory you used:
- 43624 strings out of 493705
- 985081 string characters out of 3144561
- 1252907 words of memory out of 3000000
- 46187 multiletter control sequences out of 15000+200000
+ 43633 strings out of 493705
+ 985562 string characters out of 3144561
+ 1253076 words of memory out of 3000000
+ 46189 multiletter control sequences out of 15000+200000
  9696 words of font info for 37 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
  69i,13n,76p,10403b,609s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -1878,9 +1880,9 @@ blic/amsfonts/cm/cmr6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfo
 nts/cm/cmr8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmt
 i10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti12.pfb>
 
-Output written on Model_results.pdf (7 pages, 171904 bytes).
+Output written on Model_results.pdf (8 pages, 173951 bytes).
 PDF statistics:
- 185 PDF objects out of 1000 (max. 8388607)
- 22 named destinations out of 1000 (max. 500000)
+ 190 PDF objects out of 1000 (max. 8388607)
+ 24 named destinations out of 1000 (max. 500000)
  106 words of extra memory for PDF output out of 10000 (max. 10000000)
 
