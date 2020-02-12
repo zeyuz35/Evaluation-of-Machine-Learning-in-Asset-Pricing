@@ -155,11 +155,8 @@ datashare <- foreach(i = (1:length(unique(datashare$stock))), .combine = "rbind"
     filter(stock == unique(datashare$stock)[i]) %>%
     full_join(time_df, by = "time") %>%
     arrange(time) %>%
-    mutate(rt = (PRC - lag(PRC))/lag(PRC))
-  # Method to remove any incomplete univarriate series
-  if(sum(is.na(datashare_stock$PRC)) > 0) {
-    datashare_stock <- NULL
-  }
+    mutate(rt = (PRC - lag(PRC))/lag(PRC)) %>%
+    drop_na(rt)
   datashare_stock
 }
 
@@ -1066,7 +1063,9 @@ RF_fit_stats <- function(pooled_panel, RF_grid, timeSlices, loss_function, f,
 }
 
 #########################################################################################################################
+```
 
+```{r}
 NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_function, batch_size, patience,
                            macro_factor_names, individual_factor_names) {
   #Initialize
