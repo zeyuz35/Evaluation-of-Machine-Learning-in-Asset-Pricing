@@ -155,11 +155,12 @@ datashare <- foreach(i = (1:length(unique(datashare$stock))), .combine = "rbind"
     filter(stock == unique(datashare$stock)[i]) %>%
     full_join(time_df, by = "time") %>%
     arrange(time) %>%
-    mutate(rt = (PRC - lag(PRC))/lag(PRC))
+    mutate(rt = (PRC - lag(PRC))/lag(PRC)) %>%
+    drop_na(rt)
   # Method to remove any incomplete univarriate series
-  if(sum(is.na(datashare_stock$PRC)) > 0) {
-    datashare_stock <- NULL
-  }
+  # if(sum(is.na(datashare_stock$PRC)) > 0) {
+  #   datashare_stock <- NULL
+  # }
   datashare_stock
 }
 
@@ -1441,7 +1442,7 @@ RF_mae_stats[[1]]$variable_importance %>%
 
 ######################################################################################################################
 
-NNet_1_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 1, "mse", batch_size = 512, 20,
+NNet_1_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 1, "mse", batch_size = 256, 20,
                                    macro_factor_names, individual_factor_names)
 NNet_1_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 1, "mae", batch_size = 256, 20,
                                    macro_factor_names, individual_factor_names)
