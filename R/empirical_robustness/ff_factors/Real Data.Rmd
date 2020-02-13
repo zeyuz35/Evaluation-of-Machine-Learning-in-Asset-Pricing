@@ -849,8 +849,7 @@ ELN_model_grid <- function(alpha_grid, train_x, train_y, validation_x, validatio
                                        validation_loss = apply(predict(ELN, validation_x), 2, mse, actual = validation_y))
     } else {
       #MAE Case
-      ELN <- hqreg(train_x, train_y, method = "quantile", tau = 0.5, alpha = alpha_grid[i], nlambda = nlamb,
-                   eps = 1e-5)
+      ELN <- hqreg(train_x, train_y, method = "quantile", tau = 0.5, alpha = alpha_grid[i], nlambda = nlamb)
       ELN_model_grid$model <- ELN
     
       ELN_model_grid$ELN_grid <- cbind(alpha = alpha_grid[i], lambda = ELN$lambda,
