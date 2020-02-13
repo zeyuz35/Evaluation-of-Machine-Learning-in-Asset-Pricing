@@ -31,10 +31,6 @@ library(kableExtra)
 #Parallel Computing
 library(foreach)
 library(doFuture)
-#Registering
-registerDoFuture()
-plan(multisession)
-
 set.seed(27935248)
 ```
 
@@ -115,16 +111,34 @@ empirical_results_model <- empirical_results_df %>%
 empirical_results_df_sam_1 <- empirical_results_df %>%
   filter(Sample == 1) %>%
   dplyr::select(-Sample, -model) %>%
+  mutate(test_MAE = cell_spec(round(test_MAE, 6), format = "latex", 
+                              bold = if_else(test_MAE == min(test_MAE), 1, 0)),
+         test_MSE = cell_spec(round(test_MSE, 6), format = "latex", 
+                              bold = if_else(test_MSE == min(test_MSE), 1, 0)),
+         test_RSquare = cell_spec(round(test_RSquare, 6), format = "latex", 
+                              bold = if_else(test_RSquare == max(test_RSquare), 1, 0))) %>%
   rename(`Test MAE` = test_MAE, `Test MSE` = test_MSE, `Test $R^2$` = test_RSquare)
 
 empirical_results_df_sam_2 <- empirical_results_df %>%
   filter(Sample == 2) %>%
   dplyr::select(-Sample, -model) %>%
+  mutate(test_MAE = cell_spec(round(test_MAE, 6), format = "latex", 
+                              bold = if_else(test_MAE == min(test_MAE), 1, 0)),
+         test_MSE = cell_spec(round(test_MSE, 6), format = "latex", 
+                              bold = if_else(test_MSE == min(test_MSE), 1, 0)),
+         test_RSquare = cell_spec(round(test_RSquare, 6), format = "latex", 
+                              bold = if_else(test_RSquare == max(test_RSquare), 1, 0))) %>%
   rename(`Test MAE` = test_MAE, `Test MSE` = test_MSE, `Test $R^2$` = test_RSquare)
 
 empirical_results_df_sam_3 <- empirical_results_df %>%
   filter(Sample == 3) %>%
   dplyr::select(-Sample, -model) %>%
+  mutate(test_MAE = cell_spec(round(test_MAE, 6), format = "latex", 
+                              bold = if_else(test_MAE == min(test_MAE), 1, 0)),
+         test_MSE = cell_spec(round(test_MSE, 6), format = "latex", 
+                              bold = if_else(test_MSE == min(test_MSE), 1, 0)),
+         test_RSquare = cell_spec(round(test_RSquare, 6), format = "latex", 
+                              bold = if_else(test_RSquare == max(test_RSquare), 1, 0))) %>%
   rename(`Test MAE` = test_MAE, `Test MSE` = test_MSE, `Test $R^2$` = test_RSquare)
 
 empirical_loss_latex <- cbind(empirical_results_model, 
@@ -133,7 +147,7 @@ empirical_loss_latex <- cbind(empirical_results_model,
                               empirical_results_df_sam_3) %>%
   kable(align = "c", format = "latex", booktabs = T, 
         escape = F, digits = 6, longtable = T) %>%
-  add_header_above(c(" " = 1, "Sample 1" = 3, "Sample 2" = 3, "Sample 2" = 3)) %>%
+  add_header_above(c(" " = 1, "Sample 1" = 3, "Sample 2" = 3, "Sample 3" = 3)) %>%
   kable_styling(font_size = 6,
                 latex_options = c("repeat_header"),
                 repeat_header_text = "")

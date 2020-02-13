@@ -139,9 +139,7 @@ Monash University}
 
 \subsection{Data}
 
-\subsection{Additional Results}
-
-\subsubsection{Simulation Study}
+\subsection{Simulation Study}
 
 %% Small Results
 \input{../Results/simulation/test_mae_latex.tex}
@@ -211,14 +209,45 @@ Monash University}
 %% Comprehensive Results
 \input{../Results/empirical/empirical_loss_latex.tex}
 
-\subsubsection{Empirical Robustness Checks}
+%% Factor Importance
+
+
+
+\subsection{Empirical Robustness Checks}
+
+\subsubsection{Missing Data Threshold Robustness Check}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Missing Threshold
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Loss Stats
 
-%% Factor Importance
+%\input{../Results/empirical_missing_threshold/empirical_loss_latex.tex}
+%
+%\FloatBarrier
+%
+%%% Factor Importance
+%
+%\begin{figure}
+%	\includegraphics[]{../Results/empirical_missing_threshold/empirical_all_sample_vi_ind.pdf}
+%	\caption{Missing Data Threshold Robustness Check Indiviudal Factor Importance}
+%\end{figure}
+%
+%\begin{figure}
+%	\includegraphics[]{../Results/empirical_missing_threshold/empirical_sample_all_vi_macro.pdf}
+%	\caption{Missing Data Threshold Robustness Check Macroeconomic Factor Importance}
+%\end{figure}
+%
+%%% RF Vimps
+%
+%\begin{figure}
+%	\includegraphics[]{../Results/empirical_missing_threshold/empirical_vimp.pdf}
+%	\caption{Missing Data Threshold Robustness Check RF VIMP}
+%\end{figure}
+
+\FloatBarrier
+\subsubsection{Train:Validation = 1:1 Robustness Check}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Train:Validation 1:1
@@ -226,7 +255,31 @@ Monash University}
 
 %% Loss Stats
 
+\input{../Results/empirical_train_valid_1/empirical_loss_latex.tex}
+
+\FloatBarrier
+
 %% Factor Importance
+
+\begin{figure}
+	\includegraphics[]{../Results/empirical_train_valid_1/empirical_all_sample_vi_ind.pdf}
+	\caption{{Train:Validation = 1:1 Robustness Check Indiviudal Factor Importance}
+\end{figure}
+
+\begin{figure}
+	\includegraphics[]{../Results/empirical_train_valid_1/empirical_sample_all_vi_macro.pdf}
+	\caption{{Train:Validation = 1:1 Robustness Check Macroeconomic Factor Importance}
+\end{figure}
+
+%% RF Vimps
+
+\begin{figure}
+	\includegraphics[]{../Results/empirical_train_valid_1/empirical_vimp.pdf}
+	\caption{{Train:Validation = 1:1 Robustness Check RF VIMP}
+\end{figure}
+
+\FloatBarrier
+\subsubsection{Train:Validation = 2:1 Robustness Check}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Train:Validation 2:1
@@ -234,7 +287,31 @@ Monash University}
 
 %% Loss Stats
 
+\input{../Results/empirical_train_valid_2/empirical_loss_latex.tex}
+
+\FloatBarrier
+
 %% Factor Importance
+
+\begin{figure}
+	\includegraphics[]{../Results/empirical_train_valid_2/empirical_all_sample_vi_ind.pdf}
+	\caption{Train:Validation = 2:1 Robustness Check Indiviudal Factor Importance}
+\end{figure}
+
+\begin{figure}
+	\includegraphics[]{../Results/empirical_train_valid_2/empirical_sample_all_vi_macro.pdf}
+	\caption{Train:Validation = 2:1 Robustness Check Macroeconomic Factor Importance}
+\end{figure}
+
+%% RF Vimps
+
+\begin{figure}
+	\includegraphics[]{../Results/empirical_train_valid_2/empirical_vimp.pdf}
+	\caption{Train:Validation = 2:1 Robustness Check RF VIMP}
+\end{figure}
+
+\FloatBarrier
+\subsubsection{Fama French Factors Robustness Check}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Fama French Factors
@@ -242,8 +319,28 @@ Monash University}
 
 %% Loss Stats
 
+\input{../Results/empirical_ff/empirical_loss_latex.tex}
+
+\FloatBarrier
+
 %% Factor Importance
 
+\begin{figure}
+	\includegraphics[]{../Results/empirical_ff/empirical_all_sample_vi_ind.pdf}
+	\caption{Fama French Factors Robustness Check Indiviudal Factor Importance}
+\end{figure}
+
+\begin{figure}
+	\includegraphics[]{../Results/empirical_ff/empirical_sample_all_vi_macro.pdf}
+	\caption{Fama French Factors Robustness Check Macroeconomic Factor Importance}
+\end{figure}
+
+%% RF Vimps
+
+\begin{figure}
+	\includegraphics[]{../Results/empirical_ff/empirical_vimp.pdf}
+	\caption{Fama French Factors Robustness Check RF VIMP}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%BIBLIOGRAPHY

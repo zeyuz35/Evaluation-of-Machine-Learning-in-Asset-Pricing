@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2020.2.11)  12 FEB 2020 16:09
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2020.2.11)  13 FEB 2020 12:04
 entering extended mode
 **Model_results.tex
 
@@ -1746,143 +1746,256 @@ Overfull \hbox (29.97752pt too wide) in alignment at lines 140--146
  []
 
 [2])
-<../Results/simulation/graphics/simulation_g1_vi.pdf, id=49, 318.18875pt x 226.
+<../Results/simulation/graphics/simulation_g1_vi.pdf, id=60, 318.18875pt x 226.
 8475pt>
 File: ../Results/simulation/graphics/simulation_g1_vi.pdf Graphic file (type pd
 f)
  <use ../Results/simulation/graphics/simulation_g1_vi.pdf>
 Package pdftex.def Info: ../Results/simulation/graphics/simulation_g1_vi.pdf us
-ed on input line 161.
+ed on input line 159.
 (pdftex.def)             Requested size: 318.18796pt x 226.84694pt.
 
-<../Results/simulation/graphics/simulation_g2_vi.pdf, id=50, 318.18875pt x 226.
+<../Results/simulation/graphics/simulation_g2_vi.pdf, id=61, 318.18875pt x 226.
 8475pt>
 File: ../Results/simulation/graphics/simulation_g2_vi.pdf Graphic file (type pd
 f)
  <use ../Results/simulation/graphics/simulation_g2_vi.pdf>
 Package pdftex.def Info: ../Results/simulation/graphics/simulation_g2_vi.pdf us
-ed on input line 165.
+ed on input line 163.
 (pdftex.def)             Requested size: 318.18796pt x 226.84694pt.
 
-<../Results/simulation/graphics/simulation_g3_vi.pdf, id=51, 318.18875pt x 226.
+<../Results/simulation/graphics/simulation_g3_vi.pdf, id=62, 318.18875pt x 226.
 8475pt>
 File: ../Results/simulation/graphics/simulation_g3_vi.pdf Graphic file (type pd
 f)
  <use ../Results/simulation/graphics/simulation_g3_vi.pdf>
 Package pdftex.def Info: ../Results/simulation/graphics/simulation_g3_vi.pdf us
-ed on input line 169.
+ed on input line 167.
 (pdftex.def)             Requested size: 318.18796pt x 226.84694pt.
 
-<../Results/simulation/graphics/simulation_g1_vimp_bc.pdf, id=52, 318.18875pt x
+<../Results/simulation/graphics/simulation_g1_vimp_bc.pdf, id=63, 318.18875pt x
  226.8475pt>
 File: ../Results/simulation/graphics/simulation_g1_vimp_bc.pdf Graphic file (ty
 pe pdf)
  <use ../Results/simulation/graphics/simulation_g1_vimp_bc.pdf>
 Package pdftex.def Info: ../Results/simulation/graphics/simulation_g1_vimp_bc.p
-df used on input line 177.
+df used on input line 175.
 (pdftex.def)             Requested size: 318.18796pt x 226.84694pt.
 
-<../Results/simulation/graphics/simulation_g2_vimp_bc.pdf, id=53, 318.18875pt x
+<../Results/simulation/graphics/simulation_g2_vimp_bc.pdf, id=64, 318.18875pt x
  226.8475pt>
 File: ../Results/simulation/graphics/simulation_g2_vimp_bc.pdf Graphic file (ty
 pe pdf)
  <use ../Results/simulation/graphics/simulation_g2_vimp_bc.pdf>
 Package pdftex.def Info: ../Results/simulation/graphics/simulation_g2_vimp_bc.p
-df used on input line 182.
+df used on input line 180.
 (pdftex.def)             Requested size: 318.18796pt x 226.84694pt.
 
-<../Results/simulation/graphics/simulation_g3_vimp_bc.pdf, id=54, 318.18875pt x
+<../Results/simulation/graphics/simulation_g3_vimp_bc.pdf, id=65, 318.18875pt x
  226.8475pt>
 File: ../Results/simulation/graphics/simulation_g3_vimp_bc.pdf Graphic file (ty
 pe pdf)
  <use ../Results/simulation/graphics/simulation_g3_vimp_bc.pdf>
 Package pdftex.def Info: ../Results/simulation/graphics/simulation_g3_vimp_bc.p
-df used on input line 187.
+df used on input line 185.
 (pdftex.def)             Requested size: 318.18796pt x 226.84694pt.
 
-<../Results/simulation/graphics/simulation_g1_vimp_ik.pdf, id=55, 318.18875pt x
+<../Results/simulation/graphics/simulation_g1_vimp_ik.pdf, id=66, 318.18875pt x
  226.8475pt>
 File: ../Results/simulation/graphics/simulation_g1_vimp_ik.pdf Graphic file (ty
 pe pdf)
  <use ../Results/simulation/graphics/simulation_g1_vimp_ik.pdf>
 Package pdftex.def Info: ../Results/simulation/graphics/simulation_g1_vimp_ik.p
-df used on input line 194.
+df used on input line 192.
 (pdftex.def)             Requested size: 318.18796pt x 226.84694pt.
 
-<../Results/simulation/graphics/simulation_g2_vimp_ik.pdf, id=56, 318.18875pt x
+<../Results/simulation/graphics/simulation_g2_vimp_ik.pdf, id=67, 318.18875pt x
  226.8475pt>
 File: ../Results/simulation/graphics/simulation_g2_vimp_ik.pdf Graphic file (ty
 pe pdf)
  <use ../Results/simulation/graphics/simulation_g2_vimp_ik.pdf>
 Package pdftex.def Info: ../Results/simulation/graphics/simulation_g2_vimp_ik.p
-df used on input line 199.
+df used on input line 197.
 (pdftex.def)             Requested size: 318.18796pt x 226.84694pt.
 
-<../Results/simulation/graphics/simulation_g3_vimp_ik.pdf, id=57, 318.18875pt x
+<../Results/simulation/graphics/simulation_g3_vimp_ik.pdf, id=68, 318.18875pt x
  226.8475pt>
 File: ../Results/simulation/graphics/simulation_g3_vimp_ik.pdf Graphic file (ty
 pe pdf)
  <use ../Results/simulation/graphics/simulation_g3_vimp_ik.pdf>
 Package pdftex.def Info: ../Results/simulation/graphics/simulation_g3_vimp_ik.p
-df used on input line 204.
+df used on input line 202.
 (pdftex.def)             Requested size: 318.18796pt x 226.84694pt.
 
 (\\ad.monash.edu\home\User069\zzho0068\Documents\GitHub\Evaluation-of-Machine-L
-earning-in-Asset-Pricing\Results\empirical\empirical_loss_latex.tex)
+earning-in-Asset-Pricing\Results\empirical\empirical_loss_latex.tex) [3]
+[4 <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-of-Machin
+e-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g1_vi.pdf> <
+//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-of-Machine-Le
+arning-in-Asset-Pricing/Results/simulation/graphics/simulation_g2_vi.pdf> <//ad
+.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-of-Machine-Learni
+ng-in-Asset-Pricing/Results/simulation/graphics/simulation_g3_vi.pdf>] [5 <//ad
+.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-of-Machine-Learni
+ng-in-Asset-Pricing/Results/simulation/graphics/simulation_g1_vimp_bc.pdf> <//a
+d.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-of-Machine-Learn
+ing-in-Asset-Pricing/Results/simulation/graphics/simulation_g2_vimp_bc.pdf>]
+[6 <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-of-Machin
+e-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g3_vimp_bc.p
+df> <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-of-Machi
+ne-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g1_vimp_ik.
+pdf>] [7 <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-of-
+Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g2_vim
+p_ik.pdf> <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-of
+-Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g3_vi
+mp_ik.pdf>] [8]
+(\\ad.monash.edu\home\User069\zzho0068\Documents\GitHub\Evaluation-of-Machine-L
+earning-in-Asset-Pricing\Results\empirical_train_valid_1\empirical_loss_latex.t
+ex)
+<../Results/empirical_train_valid_1/empirical_all_sample_vi_ind.pdf, id=165, 39
+7.485pt x 284.06125pt>
+File: ../Results/empirical_train_valid_1/empirical_all_sample_vi_ind.pdf Graphi
+c file (type pdf)
+
+<use ../Results/empirical_train_valid_1/empirical_all_sample_vi_ind.pdf>
+Package pdftex.def Info: ../Results/empirical_train_valid_1/empirical_all_sampl
+e_vi_ind.pdf used on input line 265.
+(pdftex.def)             Requested size: 397.48402pt x 284.06053pt.
+
+<../Results/empirical_train_valid_1/empirical_sample_all_vi_macro.pdf, id=166, 
+397.485pt x 284.06125pt>
+File: ../Results/empirical_train_valid_1/empirical_sample_all_vi_macro.pdf Grap
+hic file (type pdf)
+
+<use ../Results/empirical_train_valid_1/empirical_sample_all_vi_macro.pdf>
+Package pdftex.def Info: ../Results/empirical_train_valid_1/empirical_sample_al
+l_vi_macro.pdf used on input line 270.
+(pdftex.def)             Requested size: 397.48402pt x 284.06053pt.
+
+<../Results/empirical_train_valid_1/empirical_vimp.pdf, id=167, 397.485pt x 557
+.08125pt>
+File: ../Results/empirical_train_valid_1/empirical_vimp.pdf Graphic file (type 
+pdf)
+ <use ../Results/empirical_train_valid_1/empirical_vimp.pdf>
+Package pdftex.def Info: ../Results/empirical_train_valid_1/empirical_vimp.pdf 
+used on input line 277.
+(pdftex.def)             Requested size: 397.48402pt x 557.0799pt.
+ [9]
+[10 <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-of-Machi
+ne-Learning-in-Asset-Pricing/Results/empirical_train_valid_1/empirical_all_samp
+le_vi_ind.pdf> <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluati
+on-of-Machine-Learning-in-Asset-Pricing/Results/empirical_train_valid_1/empiric
+al_sample_all_vi_macro.pdf>] [11 <//ad.monash.edu/home/User069/zzho0068/Documen
+ts/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_tra
+in_valid_1/empirical_vimp.pdf>]
+(\\ad.monash.edu\home\User069\zzho0068\Documents\GitHub\Evaluation-of-Machine-L
+earning-in-Asset-Pricing\Results\empirical_train_valid_2\empirical_loss_latex.t
+ex)
+<../Results/empirical_train_valid_2/empirical_all_sample_vi_ind.pdf, id=203, 39
+7.485pt x 284.06125pt>
+File: ../Results/empirical_train_valid_2/empirical_all_sample_vi_ind.pdf Graphi
+c file (type pdf)
+
+<use ../Results/empirical_train_valid_2/empirical_all_sample_vi_ind.pdf>
+Package pdftex.def Info: ../Results/empirical_train_valid_2/empirical_all_sampl
+e_vi_ind.pdf used on input line 297.
+(pdftex.def)             Requested size: 397.48402pt x 284.06053pt.
+
+<../Results/empirical_train_valid_2/empirical_sample_all_vi_macro.pdf, id=204, 
+397.485pt x 284.06125pt>
+File: ../Results/empirical_train_valid_2/empirical_sample_all_vi_macro.pdf Grap
+hic file (type pdf)
+
+<use ../Results/empirical_train_valid_2/empirical_sample_all_vi_macro.pdf>
+Package pdftex.def Info: ../Results/empirical_train_valid_2/empirical_sample_al
+l_vi_macro.pdf used on input line 302.
+(pdftex.def)             Requested size: 397.48402pt x 284.06053pt.
+
+<../Results/empirical_train_valid_2/empirical_vimp.pdf, id=205, 397.485pt x 557
+.08125pt>
+File: ../Results/empirical_train_valid_2/empirical_vimp.pdf Graphic file (type 
+pdf)
+ <use ../Results/empirical_train_valid_2/empirical_vimp.pdf>
+Package pdftex.def Info: ../Results/empirical_train_valid_2/empirical_vimp.pdf 
+used on input line 309.
+(pdftex.def)             Requested size: 397.48402pt x 557.0799pt.
+ [12]
+[13 <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-of-Machi
+ne-Learning-in-Asset-Pricing/Results/empirical_train_valid_2/empirical_all_samp
+le_vi_ind.pdf> <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluati
+on-of-Machine-Learning-in-Asset-Pricing/Results/empirical_train_valid_2/empiric
+al_sample_all_vi_macro.pdf>] [14 <//ad.monash.edu/home/User069/zzho0068/Documen
+ts/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_tra
+in_valid_2/empirical_vimp.pdf>]
+(\\ad.monash.edu\home\User069\zzho0068\Documents\GitHub\Evaluation-of-Machine-L
+earning-in-Asset-Pricing\Results\empirical_ff\empirical_loss_latex.tex)
+<../Results/empirical_ff/empirical_all_sample_vi_ind.pdf, id=241, 397.485pt x 2
+84.06125pt>
+File: ../Results/empirical_ff/empirical_all_sample_vi_ind.pdf Graphic file (typ
+e pdf)
+ <use ../Results/empirical_ff/empirical_all_sample_vi_ind.pdf>
+Package pdftex.def Info: ../Results/empirical_ff/empirical_all_sample_vi_ind.pd
+f used on input line 329.
+(pdftex.def)             Requested size: 397.48402pt x 284.06053pt.
+
+<../Results/empirical_ff/empirical_sample_all_vi_macro.pdf, id=242, 318.18875pt
+ x 226.8475pt>
+File: ../Results/empirical_ff/empirical_sample_all_vi_macro.pdf Graphic file (t
+ype pdf)
+ <use ../Results/empirical_ff/empirical_sample_all_vi_macro.pdf>
+Package pdftex.def Info: ../Results/empirical_ff/empirical_sample_all_vi_macro.
+pdf used on input line 334.
+(pdftex.def)             Requested size: 318.18796pt x 226.84694pt.
+
+<../Results/empirical_ff/empirical_vimp.pdf, id=243, 397.485pt x 557.08125pt>
+File: ../Results/empirical_ff/empirical_vimp.pdf Graphic file (type pdf)
+
+<use ../Results/empirical_ff/empirical_vimp.pdf>
+Package pdftex.def Info: ../Results/empirical_ff/empirical_vimp.pdf used on inp
+ut line 341.
+(pdftex.def)             Requested size: 397.48402pt x 557.0799pt.
+
 (\\ad.monash.edu\home\User069\zzho0068\Documents\GitHub\Evaluation-of-Machine-L
 earning-in-Asset-Pricing\Thesis\Model_results.bbl
 
 Package natbib Warning: Empty `thebibliography' environment on input line 4.
 
-) [3] [4 <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-of-
-Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g1_vi.
-pdf> <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-of-Mach
-ine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g2_vi.pdf>
- <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-of-Machine-
-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g3_vi.pdf>]
-[5 <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-of-Machin
-e-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g1_vimp_bc.p
-df> <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-of-Machi
-ne-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g2_vimp_bc.
-pdf>] [6 <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-of-
-Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g3_vim
-p_bc.pdf> <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-of
--Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g1_vi
-mp_ik.pdf>] [7 <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluati
-on-of-Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_
-g2_vimp_ik.pdf> <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluat
-ion-of-Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation
-_g3_vimp_ik.pdf>] [8]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 255.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 255.
+) [15] [16 <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-o
+f-Machine-Learning-in-Asset-Pricing/Results/empirical_ff/empirical_all_sample_v
+i_ind.pdf> <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-o
+f-Machine-Learning-in-Asset-Pricing/Results/empirical_ff/empirical_sample_all_v
+i_macro.pdf>] [17 <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evalu
+ation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_ff/empirical_vimp.
+pdf>]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 352.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 352.
 
 (\\ad.monash.edu\home\User069\zzho0068\Documents\GitHub\Evaluation-of-Machine-L
 earning-in-Asset-Pricing\Thesis\Model_results.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 255.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 255.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 352.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 352.
 Package rerunfilecheck Info: File `Model_results.out' has not changed.
-(rerunfilecheck)             Checksum: 67AF5FC809C9D218EE617B232544395B;404.
+(rerunfilecheck)             Checksum: 166C692E9A86AD89E754B22FAF2D3A61;709.
  ) 
 Here is how much of TeX's memory you used:
- 43633 strings out of 493705
- 985562 string characters out of 3144561
- 1253076 words of memory out of 3000000
- 46189 multiletter control sequences out of 15000+200000
- 9696 words of font info for 37 fonts, out of 3000000 for 9000
+ 43719 strings out of 493705
+ 989709 string characters out of 3144561
+ 1253583 words of memory out of 3000000
+ 46235 multiletter control sequences out of 15000+200000
+ 10008 words of font info for 38 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
  69i,13n,76p,10403b,609s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Pr
-ogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx8.pfb><C:/Program Fil
-es/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Program Files/MiKTeX
- 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files/MiKTeX 2.9/font
-s/type1/public/amsfonts/cm/cmr5.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/pu
-blic/amsfonts/cm/cmr6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfo
-nts/cm/cmr8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmt
-i10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti12.pfb>
-
-Output written on Model_results.pdf (8 pages, 173951 bytes).
+ogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx6.pfb><C:/Program Fil
+es/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx8.pfb><C:/Program Files/MiKTeX
+ 2.9/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Program Files/MiKTeX 2.9/font
+s/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/p
+ublic/amsfonts/cm/cmr5.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsf
+onts/cm/cmr6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cm
+r8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb><
+C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti12.pfb>
+Output written on Model_results.pdf (17 pages, 267316 bytes).
 PDF statistics:
- 190 PDF objects out of 1000 (max. 8388607)
- 24 named destinations out of 1000 (max. 500000)
- 106 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 324 PDF objects out of 1000 (max. 8388607)
+ 48 named destinations out of 1000 (max. 500000)
+ 175 words of extra memory for PDF output out of 10000 (max. 10000000)
 
