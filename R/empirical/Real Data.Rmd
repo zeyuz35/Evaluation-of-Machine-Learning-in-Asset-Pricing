@@ -27,7 +27,6 @@ library(tidyimpute)
 library(tidyverse)
 library(hqreg)
 library(xtable)
-library(randomForestSRC)
 
 #Parallel Computing
 library(foreach)
@@ -128,7 +127,9 @@ datashare <- datashare_RAW_join %>%
   # Convert time to yearqtr format
   # yearqtr stores data as year + 0/4 for q1, 1/4 for q2, etc
   mutate(time = as.yearqtr(time - 2/12)) %>%
-  dplyr::select(-RET)
+  dplyr::select(-RET) %>%
+  # Filter to contain more recent data
+  filter(time >= 1993.25)
 
 time_df <- data.frame(time = unique(datashare$time)) %>%
   mutate(time = as.numeric(time))
@@ -145,6 +146,8 @@ time_df <- data.frame(time = unique(datashare$time)) %>%
 ## Because the original dataset goes back to when the stock exchange was founded, the dataset needs to be filtered by time first
 ## Otherwise, you will inadventerdently filter out so that only stocks that have been listed on the exchange since the begginning are included
 ## The old apparoch kept ~ 20000 unique stocks
+## This approach keeps a highly variable number of stocks, depending on when you filter the data from
+## Going with a filter of >= 1993.5 gives us 195 unique stocks, just going with this for now for feasibility
 
 datashare <- foreach(i = (1:length(unique(datashare$stock))), .combine = "rbind") %dopar% {
   datashare_stock <- datashare %>%
@@ -196,10 +199,7 @@ missing_factors <- datashare %>%
   gather(col, value) %>%
   group_by(col) %>%
   summarize(missing_share = mean(is.na(value))) %>%
-  ##############################################################
-  ## Change the proportion here to 10% as a ROBUSTNESS CHECK
-  ##############################################################
-  filter(missing_share > 0.10)
+  filter(missing_share > 0.20)
 
 write.csv(missing_factors, file = "missing_factors.csv")
 
@@ -744,7 +744,7 @@ LM_fit <- function(pooled_panel, timeSlices, loss_function, f,
       lm <- lm(f, data = train, model = FALSE, x = FALSE, y = FALSE)
     } else {
       # Use pfn as method here for much faster computation
-      lm <- rq(f, data = train, tau = 0.5, method = "pfn", eps = 1e-04)
+      lm <- rq(f, data = train, tau = 0.5, method = "pfn", eps = 1e-03)
     }
     
     #LM_stats[[set]]$model <- lm
@@ -782,17 +782,15 @@ LM_fit <- function(pooled_panel, timeSlices, loss_function, f,
   return(LM_stats)
 }
 ###################################################################################################################
-```
 
-```{r}
 ELN_model_grid <- function(alpha_grid, train_x, train_y, validation_x, validation_y, loss_function, nlamb) {
   
-  ELN_model_grid_list <- foreach(i = (1:length(alpha_grid)), .packages = c("hqreg")) %dopar% {
+  ELN_model_grid_list <- foreach(i = (1:length(alpha_grid))) %dopar% {
     ELN_model_grid <- list(ELN_grid = 0, model = 0)
     
     #MSE Case
     if (loss_function == "mse") {
-      ELN <- hqreg(X = train_x, y = train_y, method = "ls", alpha = alpha_grid[i], nlambda = nlamb)
+      ELN <- hqreg(train_x, train_y, method = "ls", alpha = alpha_grid[i], nlambda = nlamb)
       ELN_model_grid$model <- ELN
     
       ELN_model_grid$ELN_grid <- cbind(alpha = alpha_grid[i], lambda = ELN$lambda,
@@ -926,7 +924,7 @@ RF_fit_model_grid <- function(f, train, validation, RF_grid, loss_function) {
       #RF_model_grid[[i]]$model <- RF
       RF_model_grid[[i]]$RF_grid <- cbind(RF_grid[i, ],
                                           #Train Loss
-                                          train_loss = mse(train$rt, predict(RF)$predicted),
+                                          train_loss = mse(train$rt, predict(RF, newdata = train)$predicted),
                                           #Validation Loss
                                           validation_loss = mse(validation$rt, predict(RF, newdata = validation)$predicted)
                                           )
@@ -1063,11 +1061,11 @@ RF_fit_stats <- function(pooled_panel, RF_grid, timeSlices, loss_function, f,
   }
   return(RF_stats)
 }
+
+#########################################################################################################################
 ```
 
 ```{r}
-#########################################################################################################################
-
 NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_function, batch_size, patience,
                            macro_factor_names, individual_factor_names) {
   #Initialize
@@ -1344,14 +1342,16 @@ real_data_results <- fit_all_models_real_data(final_dataset,
 ```
 
 ```{r, eval = FALSE}
+# test
+
 f <- real_panel_formula(final_dataset)
 LM_stats_mse <- LM_fit(final_dataset, realdata_timeSlices, "mse", f,
                        macro_factor_names, individual_factor_names)
-saveRDS(LM_stats_mse, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_missing_threshold/LM_stats_mse.rds")
+saveRDS(LM_stats_mse, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical/LM_stats_mae.rds")
 
 LM_stats_mae <- LM_fit(final_dataset, realdata_timeSlices, "mae", f,
                        macro_factor_names, individual_factor_names)
-saveRDS(LM_stats_mae, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_missing_threshold/LM_stats_mae.rds")
+saveRDS(LM_stats_mae, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical/LM_stats_mse.rds")
 
 ####
 
@@ -1370,11 +1370,11 @@ LM_stats_mse[[3]]$variable_importance %>%
 ELN_stats_mse <- ELN_fit_stats(alpha_grid = seq(0.01, 1, 0.01), nlamb = 100, 
                                realdata_timeSlices, final_dataset, "mse",
                                macro_factor_names, individual_factor_names)
-saveRDS(ELN_stats_mse, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_missing_threshold/ELN_stats_mse.rds")
+saveRDS(ELN_stats_mse, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical/ELN_stats_mse.rds")
 ELN_stats_mae <- ELN_fit_stats(alpha_grid = seq(0.01, 1, 0.01), nlamb = 100, 
                                realdata_timeSlices, final_dataset, "mae",
                                macro_factor_names, individual_factor_names)
-saveRDS(ELN_stats_mae, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_missing_threshold/ELN_stats_mae.rds")
+saveRDS(ELN_stats_mae, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical/ELN_stats_mae.rds")
 
 ELN_stats_mse[[1]]$loss_stats
 ELN_stats_mse[[1]]$hyperparameters
@@ -1420,10 +1420,10 @@ RF_grid <- expand.grid(
 
 RF_mse_stats <- RF_fit_stats(final_dataset, RF_grid, realdata_timeSlices, "mse", f,
                              macro_factor_names, individual_factor_names)
-saveRDS(RF_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_missing_threshold/RF_mse_stats_1.5_train_valid.rds")
+saveRDS(RF_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical/RF_mse_stats_1.5_train_valid.rds")
 RF_mae_stats <- RF_fit_stats(final_dataset, RF_grid, realdata_timeSlices, "mae", f,
                              macro_factor_names, individual_factor_names)
-saveRDS(RF_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_missing_threshold/RF_mae_stats_1.5_train_valid.rds")
+saveRDS(RF_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical/RF_mae_stats_1.5_train_valid.rds")
 
 RF_mse_stats[[1]]$loss_stats
 RF_mse_stats[[1]]$hyperparameters
@@ -1444,8 +1444,8 @@ NNet_1_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 1, "mse",
                                    macro_factor_names, individual_factor_names)
 NNet_1_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 1, "mae", batch_size = 256, 20,
                                    macro_factor_names, individual_factor_names)
-saveRDS(NNet_1_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_missing_threshold/NNet_1_mse_stats_1.5.rds")
-saveRDS(NNet_1_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_missing_threshold/NNet_1_mae_stats_1.5.rds")
+saveRDS(NNet_1_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical/NNet_1_mse_stats_1.5.rds")
+saveRDS(NNet_1_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical/NNet_1_mae_stats_1.5.rds")
 
 NNet_1_mse_stats[[1]]$loss_stats
 NNet_1_mse_stats[[1]]$forecasts
@@ -1463,8 +1463,8 @@ NNet_2_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 2, "mse",
                                    macro_factor_names, individual_factor_names)
 NNet_2_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 2, "mae", batch_size = 256, 20,
                                    macro_factor_names, individual_factor_names)
-saveRDS(NNet_2_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_missing_threshold/NNet_2_mse_stats_1.5.rds")
-saveRDS(NNet_2_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_missing_threshold/NNet_2_mae_stats_1.5.rds")
+saveRDS(NNet_2_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical/NNet_2_mse_stats_1.5.rds")
+saveRDS(NNet_2_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical/NNet_2_mae_stats_1.5.rds")
 
 NNet_2_mse_stats[[1]]$loss_stats
 NNet_2_mse_stats[[1]]$forecasts
@@ -1480,8 +1480,8 @@ NNet_3_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 3, "mse",
                                    macro_factor_names, individual_factor_names)
 NNet_3_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 3, "mae", batch_size = 256, 20,
                                    macro_factor_names, individual_factor_names)
-saveRDS(NNet_3_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_missing_threshold/NNet_3_mse_stats_1.5.rds")
-saveRDS(NNet_3_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_missing_threshold/NNet_3_mae_stats_1.5.rds")
+saveRDS(NNet_3_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical/NNet_3_mse_stats_1.5.rds")
+saveRDS(NNet_3_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical/NNet_3_mae_stats_1.5.rds")
 
 NNet_3_mse_stats[[1]]$loss_stats
 NNet_3_mse_stats[[1]]$forecasts
@@ -1497,8 +1497,8 @@ NNet_4_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 4, "mse",
                                    macro_factor_names, individual_factor_names)
 NNet_4_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 4, "mae", batch_size = 256, 20,
                                    macro_factor_names, individual_factor_names)
-saveRDS(NNet_4_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_missing_threshold/NNet_4_mse_stats_1.5.rds")
-saveRDS(NNet_4_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_missing_threshold/NNet_4_mae_stats_1.5.rds")
+saveRDS(NNet_4_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical/NNet_4_mse_stats_1.5.rds")
+saveRDS(NNet_4_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical/NNet_4_mae_stats_1.5.rds")
 
 NNet_4_mse_stats[[1]]$loss_stats
 NNet_4_mse_stats[[1]]$forecasts
@@ -1514,8 +1514,8 @@ NNet_5_mse_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 5, "mse",
                                    macro_factor_names, individual_factor_names)
 NNet_5_mae_stats <- NNet_fit_stats(final_dataset, realdata_timeSlices, 5, "mae", batch_size = 256, 20,
                                    macro_factor_names, individual_factor_names)
-saveRDS(NNet_5_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_missing_threshold/NNet_5_mse_stats_1.5.rds")
-saveRDS(NNet_5_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical_missing_threshold/NNet_5_mae_stats_1.5.rds")
+saveRDS(NNet_5_mse_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical/NNet_5_mse_stats_1.5.rds")
+saveRDS(NNet_5_mae_stats, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/Model_results/empirical/NNet_5_mae_stats_1.5.rds")
 
 NNet_5_mse_stats[[1]]$loss_stats
 NNet_5_mse_stats[[1]]$forecasts
@@ -1527,4 +1527,3 @@ NNet_5_mae_stats[[1]]$forecasts
 NNet_5_mae_stats[[1]]$variable_importance %>%
   arrange(desc(importance))
 ```
-

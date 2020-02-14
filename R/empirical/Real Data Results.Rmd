@@ -31,6 +31,7 @@ library(kableExtra)
 #Parallel Computing
 library(foreach)
 library(doFuture)
+
 set.seed(27935248)
 ```
 
@@ -97,7 +98,7 @@ empirical_results_df <- foreach(sample = (1:3), .combine = "rbind") %do% {
   )
 }
 
-write.csv(empirical_results_df, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_results.csv")
+write.csv(empirical_results_df, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical/empirical_results.csv")
 
 empirical_results_df <- empirical_results_df %>%
   dplyr::select(model, test_MAE, test_MSE, test_RSquare, Sample)
@@ -146,141 +147,12 @@ empirical_loss_latex <- cbind(empirical_results_model,
                               empirical_results_df_sam_2, 
                               empirical_results_df_sam_3) %>%
   kable(align = "c", format = "latex", booktabs = T, 
-        escape = F, digits = 6, longtable = T) %>%
+        escape = F, digits = 6) %>%
   add_header_above(c(" " = 1, "Sample 1" = 3, "Sample 2" = 3, "Sample 3" = 3)) %>%
-  kable_styling(font_size = 6,
-                latex_options = c("repeat_header"),
-                repeat_header_text = "")
+  kable_styling(font_size = 6)
 
 empirical_loss_latex %>%
   cat(file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical/empirical_loss_latex.tex")
-```
-
-```{r empirical_results_df_plot}
-#####################################################################
-## Plot These Results
-
-a4_aspect_ratio <- 1.5
-
-# Test Statistics
-
-breaks <- levels(empirical_results_df$model)
-labels <- as.expression(breaks)
-labels[[4]] <- bquote(bold(.(labels[[4]])))
-labels[[6]] <- bquote(bold(.(labels[[6]])))
-
-## Test Statistics by Sample
-# Test MAE
-empirical_results_df %>%
-  mutate(Sample = as.factor(Sample)) %>%
-  ggplot() +
-  geom_bar(aes(x = model, y = test_MAE, fill = Sample), stat = "identity", position = position_dodge()) +
-  scale_x_discrete(label = labels, breaks = breaks) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  scale_fill_brewer(palette = "Paired")
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_test_mae.pdf",
-       width = 15 * a4_aspect_ratio, height = 15, units = "cm")
-
-# Test MSE
-empirical_results_df %>%
-  mutate(Sample = as.factor(Sample)) %>%
-  ggplot() +
-  geom_bar(aes(x = model, y = test_MSE, fill = Sample), stat = "identity", position = position_dodge()) +
-  scale_x_discrete(label = labels, breaks = breaks) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  scale_fill_brewer(palette = "Paired")
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_test_mse.pdf",
-       width = 15 * a4_aspect_ratio, height = 15, units = "cm")
-
-# Test Rsquare
-empirical_results_df %>%
-  mutate(Sample = as.factor(Sample)) %>%
-  ggplot() +
-  geom_bar(aes(x = model, y = test_RSquare, fill = Sample), stat = "identity", position = position_dodge()) +
-  scale_x_discrete(label = labels, breaks = breaks) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  scale_fill_brewer(palette = "Paired")
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_test_rsquare.pdf",
-       width = 15 * a4_aspect_ratio, height = 15, units = "cm")
-
-## Test Statistics averaged over all training samples
-
-empirical_results_df %>%
-  group_by(model) %>%
-  mutate(test_MAE = mean(test_MAE)) %>%
-  ggplot() +
-  geom_bar(aes(x = model, y = test_MAE), stat = "identity", position = position_dodge()) +
-  scale_x_discrete(label = labels, breaks = breaks) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  scale_fill_brewer(palette = "Paired")
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_test_mae_ave_sample.pdf",
-       width = 7 * a4_aspect_ratio, height = 7, units = "cm")
-
-# Test MSE
-empirical_results_df %>%
-  group_by(model) %>%
-  mutate(test_MSE = mean(test_MSE)) %>%
-  ggplot() +
-  geom_bar(aes(x = model, y = test_MSE), stat = "identity", position = position_dodge()) +
-  scale_x_discrete(label = labels, breaks = breaks) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  scale_fill_brewer(palette = "Paired")
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_test_mse_ave_sample.pdf",
-       width = 7 * a4_aspect_ratio, height = 7, units = "cm")
-
-# Test Rsquare
-empirical_results_df %>%
-  group_by(model) %>%
-  mutate(test_RSquare = mean(test_RSquare)) %>%
-  ggplot() +
-  geom_bar(aes(x = model, y = test_RSquare), stat = "identity", position = position_dodge()) +
-  scale_x_discrete(label = labels, breaks = breaks) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  scale_fill_brewer(palette = "Paired")
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_test_rsquare_ave_sample.pdf",
-       width = 7 * a4_aspect_ratio, height = 7, units = "cm")
-
-####
-# Training Statistics
-
-# Train MAE
-empirical_results_df %>%
-  mutate(Sample = as.factor(Sample)) %>%
-  ggplot() +
-  geom_bar(aes(x = model, y = train_MAE, fill = Sample), stat = "identity", position = position_dodge()) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  scale_fill_brewer(palette = "Paired")
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_train_mae.pdf",
-       width = 7 * a4_aspect_ratio, height = 7, units = "cm")
-
-# Train MSE
-empirical_results_df %>%
-  mutate(Sample = as.factor(Sample)) %>%
-  ggplot() +
-  geom_bar(aes(x = model, y = train_MSE, fill = Sample), stat = "identity", position = position_dodge()) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  scale_fill_brewer(palette = "Paired")
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_train_mse.pdf",
-       width = 7 * a4_aspect_ratio, height = 7, units = "cm")
-
-# Train Rsquare
-empirical_results_df %>%
-  mutate(Sample = as.factor(Sample)) %>%
-  ggplot() +
-  geom_bar(aes(x = model, y = train_RSquare, fill = Sample), stat = "identity", position = position_dodge()) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
-  scale_fill_brewer(palette = "Paired")
-ggsave(filename = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_train_rsquare.pdf",
-       width = 7 * a4_aspect_ratio, height = 7, units = "cm")
 ```
 
 ```{r vi_df}
@@ -336,7 +208,7 @@ empirical_tidy_vi_all <- empirical_tidy_vi_all %>%
   arrange(as.character((variable))) %>%
   mutate(variable = factor(as.character(variable), levels= unique(sort(as.character(variable)))))
 
-write.csv(empirical_tidy_vi_all, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_tidy_vi.csv")
+write.csv(empirical_tidy_vi_all, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical/empirical_tidy_vi.csv")
 
 ## By factor type
 
@@ -420,7 +292,7 @@ empirical_tidy_vi_ind <- empirical_tidy_vi_ind %>%
   arrange(as.character(variable)) %>%
   mutate(variable = factor(as.character(variable), levels= unique(sort(as.character(variable)))))
 
-write.csv(empirical_tidy_vi_ind, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_tidy_vi_ind.csv")
+write.csv(empirical_tidy_vi_ind, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical/empirical_tidy_vi_ind.csv")
 
 empirical_tidy_vi_macro <- foreach(sample = 1:3, .combine = "rbind") %do% {
     rbind(
@@ -502,7 +374,7 @@ empirical_tidy_vi_macro <- empirical_tidy_vi_macro %>%
   arrange(as.character(variable)) %>%
   mutate(variable = factor(as.character(variable), levels= unique(sort(as.character(variable)))))
 
-write.csv(empirical_tidy_vi_macro, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_tidy_vi_macro.csv")
+write.csv(empirical_tidy_vi_macro, file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical/empirical_tidy_vi_macro.csv")
 ```
 
 ```{r vi_plots}
@@ -531,13 +403,13 @@ empirical_tidy_vi_ind %>%
   mutate(variable = fct_reorder(variable, importance)) %>%
   filter(variable %in% top_variables) %>%
   ggplot() +
-  geom_tile(aes(x = model, y = variable, fill = importance)) +
+  geom_tile(aes(x = variable, y = model, fill = importance)) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   theme(legend.position = "right") +
   scale_fill_distiller(palette = "Spectral")
 ggsave(filename= "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical/empirical_all_sample_vi_ind.pdf", 
-       width = 8, height = 8 * a4_aspect_ratio, units = "cm")
+       width = 10 * a4_aspect_ratio, height = 10, units = "cm")
 
 ```
 
@@ -556,28 +428,28 @@ empirical_tidy_vi_macro %>%
   theme(legend.position = "right") +
   scale_fill_distiller(palette = "Spectral")
 ggsave(filename= "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical/empirical_sample_all_vi_macro.pdf", 
-       width = 8  * a4_aspect_ratio, height = 8, units = "cm")
+       width = 10  * a4_aspect_ratio, height = 10, units = "cm")
 ```
 
 ```{r}
 ## RF vimp functions & Plots
 
-vimp_iterate <- function(rf_results_list) {
-  vimp_list <- foreach(set = 1:3, .combine = "rbind") %do% {
+vimp_iterate <- function(rf_results_list_mse, rf_results_list_mae) {
+  vimp_tidy <- foreach(set = 1:3, .combine = "rbind") %do% {
     bc <- rbind(cbind(sample = set, model = "RF_MSE", type = "bc",
-                      data.frame(variable = names(rf_results_list[[set]]$vimp$breiman_cutler),
-                                 importance = rf_results_list$RF_MSE[[set]]$vimp$breiman_cutler)), 
+                      data.frame(variable = names(rf_results_list_mse[[set]]$vimp$breiman_cutler),
+                                 importance = rf_results_list_mse[[set]]$vimp$breiman_cutler)), 
                 cbind(sample = set, model = "RF_MAE", type = "bc",
-                      data.frame(variable = names(rf_results_list$RF_MAE[[set]]$vimp$breiman_cutler),
-                                 importance = rf_results_list$RF_MAE[[set]]$vimp$breiman_cutler))
+                      data.frame(variable = names(rf_results_list_mae[[set]]$vimp$breiman_cutler),
+                                 importance = rf_results_list_mae[[set]]$vimp$breiman_cutler))
                 )
     
     ik <- rbind(cbind(sample = set, model = "RF_MSE", type = "ik", 
-                      data.frame(variable = names(rf_results_list$RF_MSE[[set]]$vimp$ishwaran_kogalur),
-                                 importance = rf_results_list$RF_MSE[[set]]$vimp$ishwaran_kogalur)),
+                      data.frame(variable = names(rf_results_list_mse[[set]]$vimp$ishwaran_kogalur),
+                                 importance = rf_results_list_mse[[set]]$vimp$ishwaran_kogalur)),
                 cbind(sample = set, model = "RF_MAE", type = "ik", 
-                      data.frame(variable = names(rf_results_list$RF_MAE[[set]]$vimp$ishwaran_kogalur),
-                                 importance = rf_results_list$RF_MAE[[set]]$vimp$ishwaran_kogalur))
+                      data.frame(variable = names(rf_results_list_mae[[set]]$vimp$ishwaran_kogalur),
+                                 importance = rf_results_list_mae[[set]]$vimp$ishwaran_kogalur))
     )
     rbind(bc, ik)
   }
@@ -585,9 +457,34 @@ vimp_iterate <- function(rf_results_list) {
   vimp_tidy
 }
 
+tidy_vimp_df <- vimp_iterate(RF_mse_stats, RF_mae_stats)
+
+## Average vimps over all samples
+
+tidy_vimp_df_sam <- tidy_vimp_df %>%
+  group_by(model, type, variable) %>%
+  summarise(importance = mean(importance)) %>%
+  ungroup()
+
+top_variables <- tidy_vimp_df_sam %>%
+  group_by(variable) %>%
+  summarise(importance = mean(importance)) %>%
+  arrange(desc(importance)) %>%
+  head(20) %>%
+  dplyr::select(variable) %>%
+  pull() %>%
+  as.vector()
+
+tidy_vimp_df_sam %>%
+  mutate(variable = fct_reorder(variable, importance)) %>%
+  filter(variable %in% top_variables) %>%
+  ggplot() +
+  geom_tile(aes(x = variable, y = model, fill = importance)) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(legend.position = "right") +
+  scale_fill_distiller(palette = "Spectral") +
+  facet_grid(rows = vars(type))
+ggsave(filename= "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical/empirical_vimp.pdf", 
+       width = 14, height = 14 * a4_aspect_ratio, units = "cm")
 ```
-
-
-
-
-

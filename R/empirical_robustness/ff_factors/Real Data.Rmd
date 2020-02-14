@@ -443,6 +443,9 @@ macro_predictors_ff <- F_F_Research_Data_5_Factors_2x3_RAW %>%
 
 macro_predictors <- macro_predictors_ff %>% 
   full_join(macro_predictors_wg, by = "time")
+
+macro_predictors <- macro_predictors %>%
+  dplyr::select(macro_constant, everything())
 ```
 
 ```{r combined_dataset}

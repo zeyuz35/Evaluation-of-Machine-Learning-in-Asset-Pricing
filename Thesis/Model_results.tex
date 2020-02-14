@@ -79,11 +79,7 @@
 
 %Graphs
 \usepackage{tikz}
-\usepackage{pgfplots}
 \usepackage[export]{adjustbox}
-
-\graphicspath{{../Results/}}
-
 \usepackage{multirow}
 \usepackage{array}
 \usepackage{multirow}
@@ -167,7 +163,7 @@ Monash University}
 
 \begin{figure}
 	\includegraphics[]{../Results/simulation/graphics/simulation_g3_vi.pdf}
-	\caption{Simulation g3 Variable Importance}
+%	\caption{Simulation g3 Variable Importance}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%
@@ -206,6 +202,8 @@ Monash University}
 	\caption{g3 IK VIMP}
 \end{figure}
 
+\FloatBarrier
+
 \subsubsection{Empirical Study}
 %% Small Results
 
@@ -214,7 +212,24 @@ Monash University}
 
 %% Factor Importance
 
+\begin{figure}
+	\includegraphics[]{../Results/empirical/empirical_all_sample_vi_ind.pdf}
+	\caption{Individual Factor Importance}
+\end{figure}
 
+\begin{figure}
+	\includegraphics[]{../Results/empirical/empirical_sample_all_vi_macro.pdf}
+	\caption{Macroeconomic Factor Importance}
+\end{figure}
+
+%% RF Vimps
+
+\begin{figure}
+	\includegraphics[]{../Results/empirical/empirical_vimp.pdf}
+	\caption{Robustness Check RF VIMP}
+\end{figure}
+
+\FloatBarrier
 
 \subsection{Empirical Robustness Checks}
 
@@ -224,30 +239,29 @@ Monash University}
 %% Missing Threshold
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% Loss Stats
+% Loss Stats
+\input{../Results/empirical_missing_threshold/empirical_loss_latex.tex}
 
-%\input{../Results/empirical_missing_threshold/empirical_loss_latex.tex}
-%
-%\FloatBarrier
-%
-%%% Factor Importance
-%
-%\begin{figure}
-%	\includegraphics[]{../Results/empirical_missing_threshold/empirical_all_sample_vi_ind.pdf}
-%	\caption{Missing Data Threshold Robustness Check Indiviudal Factor Importance}
-%\end{figure}
-%
-%\begin{figure}
-%	\includegraphics[]{../Results/empirical_missing_threshold/empirical_sample_all_vi_macro.pdf}
-%	\caption{Missing Data Threshold Robustness Check Macroeconomic Factor Importance}
-%\end{figure}
-%
-%%% RF Vimps
-%
-%\begin{figure}
-%	\includegraphics[]{../Results/empirical_missing_threshold/empirical_vimp.pdf}
-%	\caption{Missing Data Threshold Robustness Check RF VIMP}
-%\end{figure}
+\FloatBarrier
+
+%% Factor Importance
+
+\begin{figure}
+	\includegraphics[]{../Results/empirical_missing_threshold/empirical_all_sample_vi_ind.pdf}
+	\caption{Missing Data Threshold Robustness Check Individual Factor Importance}
+\end{figure}
+
+\begin{figure}
+	\includegraphics[]{../Results/empirical_missing_threshold/empirical_sample_all_vi_macro.pdf}
+	\caption{Missing Data Threshold Robustness Check Macroeconomic Factor Importance}
+\end{figure}
+
+%% RF Vimps
+
+\begin{figure}
+	\includegraphics[]{../Results/empirical_missing_threshold/empirical_vimp.pdf}
+	\caption{Missing Data Threshold Robustness Check RF VIMP}
+\end{figure}
 
 \FloatBarrier
 \subsubsection{Train:Validation = 1:1 Robustness Check}
@@ -266,19 +280,19 @@ Monash University}
 
 \begin{figure}
 	\includegraphics[]{../Results/empirical_train_valid_1/empirical_all_sample_vi_ind.pdf}
-	\caption{{Train:Validation = 1:1 Robustness Check Indiviudal Factor Importance}
+	\caption{{Train:Validation = 1:1 Robustness Check Individual Factor Importance}}
 \end{figure}
 
 \begin{figure}
 	\includegraphics[]{../Results/empirical_train_valid_1/empirical_sample_all_vi_macro.pdf}
-	\caption{{Train:Validation = 1:1 Robustness Check Macroeconomic Factor Importance}
+	\caption{{Train:Validation = 1:1 Robustness Check Macroeconomic Factor Importance}}
 \end{figure}
 
 %% RF Vimps
 
 \begin{figure}
 	\includegraphics[]{../Results/empirical_train_valid_1/empirical_vimp.pdf}
-	\caption{{Train:Validation = 1:1 Robustness Check RF VIMP}
+	\caption{{Train:Validation = 1:1 Robustness Check RF VIMP}}
 \end{figure}
 
 \FloatBarrier
@@ -298,7 +312,7 @@ Monash University}
 
 \begin{figure}
 	\includegraphics[]{../Results/empirical_train_valid_2/empirical_all_sample_vi_ind.pdf}
-	\caption{Train:Validation = 2:1 Robustness Check Indiviudal Factor Importance}
+	\caption{Train:Validation = 2:1 Robustness Check Individual Factor Importance}
 \end{figure}
 
 \begin{figure}
@@ -330,7 +344,7 @@ Monash University}
 
 \begin{figure}
 	\includegraphics[]{../Results/empirical_ff/empirical_all_sample_vi_ind.pdf}
-	\caption{Fama French Factors Robustness Check Indiviudal Factor Importance}
+	\caption{Fama French Factors Robustness Check Individual Factor Importance}
 \end{figure}
 
 \begin{figure}
