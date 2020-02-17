@@ -147,7 +147,8 @@ empirical_loss_latex <- cbind(empirical_results_model,
                               empirical_results_df_sam_2, 
                               empirical_results_df_sam_3) %>%
   kable(align = "c", format = "latex", booktabs = T, 
-        escape = F, digits = 6, longtable = T) %>%
+        escape = F, digits = 6, longtable = T,
+        caption = "Train:Validation 2:1 Robustness Check Loss Statistics") %>%
   add_header_above(c(" " = 1, "Sample 1" = 3, "Sample 2" = 3, "Sample 3" = 3)) %>%
   kable_styling(font_size = 6,
                 latex_options = c("repeat_header"),
@@ -488,7 +489,7 @@ tidy_vimp_df_sam %>%
   scale_fill_distiller(palette = "Spectral") +
   facet_grid(rows = vars(type))
 ggsave(filename= "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_train_valid_2/empirical_vimp.pdf", 
-       width = 14, height = 14 * a4_aspect_ratio, units = "cm")
+       width = 12 * a4_aspect_ratio, height = 12, units = "cm")
 
 ###########################
 ## Latex Table Approach
