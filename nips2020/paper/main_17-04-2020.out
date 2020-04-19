@@ -1,0 +1,53 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{Model and Methods}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Statistical Model}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{Methods}{section.2}% 4
+\BOOKMARK [3][-]{subsubsection.2.2.1}{Mitigating over-fitting}{subsection.2.2}% 5
+\BOOKMARK [3][-]{subsubsection.2.2.2}{Loss functions}{subsection.2.2}% 6
+\BOOKMARK [2][-]{subsection.2.3}{Learning models}{section.2}% 7
+\BOOKMARK [2][-]{subsection.2.4}{Model Evaluation Measures}{section.2}% 8
+\BOOKMARK [3][-]{subsubsection.2.4.1}{Predictive Accuracy}{subsection.2.4}% 9
+\BOOKMARK [3][-]{subsubsection.2.4.2}{Factor Selection}{subsection.2.4}% 10
+\BOOKMARK [1][-]{section.3}{Simulation Study}{}% 11
+\BOOKMARK [2][-]{subsubsection.3.0.3}{Overall Design}{section.3}% 12
+\BOOKMARK [3][-]{subsubsection.3.0.4}{Simulating Characteristics}{subsubsection.3.0.3}% 13
+\BOOKMARK [3][-]{subsubsection.3.0.5}{Simulating Macroeconomic Series}{subsubsection.3.0.3}% 14
+\BOOKMARK [3][-]{subsubsection.3.0.6}{Simulating Return Series}{subsubsection.3.0.3}% 15
+\BOOKMARK [3][-]{subsubsection.3.0.7}{Sample Splitting}{subsubsection.3.0.3}% 16
+\BOOKMARK [2][-]{subsection.3.1}{Simulation Study Results}{section.3}% 17
+\BOOKMARK [3][-]{subsubsection.3.1.1}{Prediction Performance}{subsection.3.1}% 18
+\BOOKMARK [3][-]{subsubsection.3.1.2}{Factor Importance}{subsection.3.1}% 19
+\BOOKMARK [1][-]{section.4}{Empirical analysis}{}% 20
+\BOOKMARK [2][-]{subsection.4.1}{Data}{section.4}% 21
+\BOOKMARK [2][-]{subsection.4.2}{Empirical Data Results}{section.4}% 22
+\BOOKMARK [3][-]{subsubsection.4.2.1}{Prediction Accuracy}{subsection.4.2}% 23
+\BOOKMARK [3][-]{subsubsection.4.2.2}{Factor Importance}{subsection.4.2}% 24
+\BOOKMARK [1][-]{section.5}{Conclusion}{}% 25
+\BOOKMARK [2][-]{subsection.5.1}{Retrieval of style files}{section.5}% 26
+\BOOKMARK [1][-]{section.6}{General formatting instructions}{}% 27
+\BOOKMARK [1][-]{section.7}{Headings: first level}{}% 28
+\BOOKMARK [2][-]{subsection.7.1}{Headings: second level}{section.7}% 29
+\BOOKMARK [3][-]{subsubsection.7.1.1}{Headings: third level}{subsection.7.1}% 30
+\BOOKMARK [1][-]{section.8}{Citations, figures, tables, references}{}% 31
+\BOOKMARK [2][-]{subsection.8.1}{Citations within the text}{section.8}% 32
+\BOOKMARK [2][-]{subsection.8.2}{Footnotes}{section.8}% 33
+\BOOKMARK [2][-]{subsection.8.3}{Figures}{section.8}% 34
+\BOOKMARK [2][-]{subsection.8.4}{Tables}{section.8}% 35
+\BOOKMARK [1][-]{section.9}{Final instructions}{}% 36
+\BOOKMARK [1][-]{section.10}{Preparing PDF files}{}% 37
+\BOOKMARK [2][-]{subsection.10.1}{Margins in LaTeX}{section.10}% 38
+\BOOKMARK [1][-]{appendix.A}{Additional details: dimulation design}{}% 39
+\BOOKMARK [2][-]{subsection.A.1}{Simulation Design}{appendix.A}% 40
+\BOOKMARK [3][-]{subsubsection.A.1.1}{Overall Design}{subsection.A.1}% 41
+\BOOKMARK [3][-]{subsubsection.A.1.2}{Simulating Characteristics}{subsection.A.1}% 42
+\BOOKMARK [3][-]{subsubsection.A.1.3}{Simulating Macroeconomic Series}{subsection.A.1}% 43
+\BOOKMARK [3][-]{subsubsection.A.1.4}{Simulating Return Series}{subsection.A.1}% 44
+\BOOKMARK [3][-]{subsubsection.A.1.5}{Sample Splitting}{subsection.A.1}% 45
+\BOOKMARK [2][-]{subsection.A.2}{Simulation Study Results}{appendix.A}% 46
+\BOOKMARK [3][-]{subsubsection.A.2.1}{Prediction Performance}{subsection.A.2}% 47
+\BOOKMARK [3][-]{subsubsection.A.2.2}{Factor Importance}{subsection.A.2}% 48
+\BOOKMARK [1][-]{appendix.A}{Additional details: Empirical analysis}{}% 49
+\BOOKMARK [2][-]{subsection.A.1}{Data}{appendix.A}% 50
+\BOOKMARK [2][-]{subsection.A.2}{Empirical Data Results}{appendix.A}% 51
+\BOOKMARK [3][-]{subsubsection.A.2.1}{Prediction Accuracy}{subsection.A.2}% 52
+\BOOKMARK [3][-]{subsubsection.A.2.2}{Factor Importance}{subsection.A.2}% 53
