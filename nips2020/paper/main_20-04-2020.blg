@@ -8,10 +8,10 @@ I found no \bibdata command---while reading file main_20-04-2020.aux
 I found no \bibstyle command---while reading file main_20-04-2020.aux
 
 Here's how much of BibTeX's memory you used:
- Cites:                 5 out of 750
+ Cites:                 6 out of 750
  Fields:                0 out of 5000
- Hash table:         4996 out of 5000
- Strings:              86 out of 4000
- Free string pool:    578 out of 65000
+ Hash table:         4995 out of 5000
+ Strings:              87 out of 4000
+ Free string pool:    601 out of 65000
  Wizard functions:      0 out of 3000
 (There were 2 error messages)

@@ -380,7 +380,7 @@ test_loss_latex %>%
 ```
 
 ```{r small_tables}
-## DIfferent methods are better on different specifications:
+## Different methods are better on different specifications:
 ## Solution: make an "average" loss column across all specifications and order them by this metric
 
 ordering_0.01_mae <- all_loss_df_averaged_sam %>%
@@ -398,221 +398,211 @@ ordering_1_mae <- all_loss_df_averaged_sam %>%
   unique()
 
 ## Doesn't seem to be an easy way to choose which "sub method" is the best, just doing it manually from viewing above
-ordering_0.01_mae <- c("ELN_MAE", "RF_MAE", "NN2_MAE", "NN1_MAE", "NN3_MAE")
+ordering_0.01 <- c("ELN_MAE", "RF_MAE", "NN2_MAE", "NN1_MAE", "NN3_MAE")
 
-ordering_1_mae <- c("ELN_MSE", "RF_MAE", "NN5_MAE", "NN4_MSE", "NN3_MAE")
+ordering_1 <- c("ELN_MSE", "RF_MAE", "NN5_MAE", "NN4_MSE", "NN3_MAE")
 
-g1_0.01 <- all_loss_df_averaged_sam %>%
+g1_0.01_mae <- all_loss_df_averaged_sam %>%
   ungroup() %>%
   filter(cross_corr == 0.01) %>%
   filter(dgp_spec == "g1") %>%
   dplyr::select(model, dgp_spec, cross_corr, test_MAE) %>%
   rename(g1 = test_MAE) %>%
   ## Filtering out so that we only have the quantile methods
-  filter(model %in% ordering_0.01_mae) %>%
+  filter(model %in% ordering_0.01) %>%
   dplyr::select(-model, -dgp_spec, -cross_corr)
 
-g2_0.01 <- all_loss_df_averaged_sam %>%
+g2_0.01_mae <- all_loss_df_averaged_sam %>%
   ungroup() %>%
   filter(cross_corr == 0.01) %>%
   filter(dgp_spec == "g2") %>%
   dplyr::select(model, dgp_spec, cross_corr, test_MAE) %>%
   rename(g2 = test_MAE) %>%
   ## Filtering out so that we only have the quantile methods %>%
-  filter(model %in% ordering_0.01_mae) %>%
+  filter(model %in% ordering_0.01) %>%
   dplyr::select(-model, -dgp_spec, -cross_corr)
 
-g3_0.01 <- all_loss_df_averaged_sam %>%
+g3_0.01_mae <- all_loss_df_averaged_sam %>%
   ungroup() %>%
   filter(cross_corr == 0.01) %>%
   filter(dgp_spec == "g3") %>%
   dplyr::select(model, dgp_spec, cross_corr, test_MAE) %>%
   rename(g3 = test_MAE) %>%
-  filter(model %in% ordering_0.01_mae) %>%
+  filter(model %in% ordering_0.01) %>%
   dplyr::select(-model, -dgp_spec, -cross_corr)
 
 ################
-
-g1_1 <- all_loss_df_averaged_sam %>%
+g1_1_mae <- all_loss_df_averaged_sam %>%
   ungroup() %>%
   filter(cross_corr == 1) %>%
   filter(dgp_spec == "g1") %>%
   dplyr::select(model, dgp_spec, cross_corr, test_MAE) %>%
   rename(g1 = test_MAE) %>%
   ## Filtering out so that we only have the quantile methods
-  filter(model %in% ordering_1_mae) %>%
+  filter(model %in% ordering_1) %>%
   dplyr::select(-model, -dgp_spec, -cross_corr)
 
-g2_1 <- all_loss_df_averaged_sam %>%
+g2_1_mae <- all_loss_df_averaged_sam %>%
   ungroup() %>%
   filter(cross_corr == 1) %>%
   filter(dgp_spec == "g2") %>%
   dplyr::select(model, dgp_spec, cross_corr, test_MAE) %>%
   rename(g2 = test_MAE) %>%
   ## Filtering out so that we only have the quantile methods %>%
-  filter(model %in% ordering_1_mae) %>%
+  filter(model %in% ordering_1) %>%
   dplyr::select(-model, -dgp_spec, -cross_corr)
 
-g3_1 <- all_loss_df_averaged_sam %>%
+g3_1_mae <- all_loss_df_averaged_sam %>%
   ungroup() %>%
   filter(cross_corr == 1) %>%
   filter(dgp_spec == "g3") %>%
   dplyr::select(model, dgp_spec, cross_corr, test_MAE) %>%
   rename(g3 = test_MAE) %>%
-  filter(model %in% ordering_1_mae) %>%
+  filter(model %in% ordering_1) %>%
   dplyr::select(-model, -dgp_spec, -cross_corr)
-
-sam_0.01 <- cbind(cross_corr = 0.01, model = ordering_0.01_mae, g1_0.01, g2_0.01, g3_0.01) %>%
-  ## Round off to significant digits here because cell_spec doesn't play nicely with digits argument
-  ## Also bolden the "best" statistics
-  mutate(g1 = cell_spec(round(g1, 6), format = "latex", 
-                        bold = if_else(g1 == min(g1), 1, 0)),
-         g2 = cell_spec(round(g2, 6), format = "latex", 
-                        bold = if_else(g2 == min(g2), 1, 0)),
-         g3 = cell_spec(round(g3, 6), format = "latex", 
-                        bold = if_else(g3 == min(g3), 1, 0)))
-sam_1 <- cbind(cross_corr = 1, model = ordering_1_mae, g1_1, g2_1, g3_1) %>%
-  mutate(g1 = cell_spec(round(g1, 6), format = "latex", 
-                        bold = if_else(g1 == min(g1), 1, 0)),
-         g2 = cell_spec(round(g2, 6), format = "latex", 
-                        bold = if_else(g2 == min(g2), 1, 0)),
-         g3 = cell_spec(round(g3, 6), format = "latex", 
-                        bold = if_else(g3 == min(g3), 1, 0)))
-
-## This is all working beautifully, now to figure how to bold specific cells...
-
-test_mae_latex <- rbind(sam_0.01, sam_1) %>% 
-  data.frame() %>%
-  rename(Corr = cross_corr) %>%
-  mutate(model = str_replace(model, "_", ".")) %>%
-  mutate(Corr = cell_spec(Corr, angle = 90, format = "latex")) %>%
-  kable(align = "c", format = "latex", booktabs = T, escape = F,
-        caption = "Top Models by MAE in Simulation Study") %>%
-  kable_styling(full_width = F, font_size = 8) %>%
-  add_header_above(c(" " = 1, " " = 1, "Test MAE" = 3)) %>%
-  collapse_rows(columns = c(1), valign = "middle", latex_hline = "major")
-
-test_mae_latex %>%
-  cat(file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation/test_mae_latex.tex")
-```
-
-```{r}
-## Repeat all of the Abvoe for now for Test_MSE
-## DIfferent methods are better on different specifications:
-## Solution: make an "average" loss column across all specifications and order them by this metric
-
-ordering_0.01_mse <- all_loss_df_averaged_sam %>%
-  ungroup() %>%
-  filter(cross_corr == 0.01) %>%
-  arrange(-desc(test_MSE_ave)) %>%
-  dplyr::select(model) %>%
-  unique()
-
-ordering_1_mse <- all_loss_df_averaged_sam %>%
-  ungroup() %>%
-  filter(cross_corr == 1) %>%
-  arrange(-desc(test_MSE_ave)) %>%
-  dplyr::select(model) %>%
-  unique()
-
-## Doesn't seem to be an easy way to choose which "sub method" is the best, just doing it manually from viewing above
-ordering_0.01_mse <- c("ELN_MAE", "RF_MAE", "NN2_MAE", "NN1_MAE", "NN3_MAE")
-
-ordering_1_mse <- c("ELN_MSE", "RF_MAE", "NN5_MAE", "NN3_MAE", "NN4_MSE")
-
-g1_0.01 <- all_loss_df_averaged_sam %>%
+###############################################################################################
+g1_0.01_mse <- all_loss_df_averaged_sam %>%
   ungroup() %>%
   filter(cross_corr == 0.01) %>%
   filter(dgp_spec == "g1") %>%
   dplyr::select(model, dgp_spec, cross_corr, test_MSE) %>%
   rename(g1 = test_MSE) %>%
   ## Filtering out so that we only have the quantile methods
-  filter(model %in% ordering_0.01_mse) %>%
+  filter(model %in% ordering_0.01) %>%
   dplyr::select(-model, -dgp_spec, -cross_corr)
 
-g2_0.01 <- all_loss_df_averaged_sam %>%
+g2_0.01_mse <- all_loss_df_averaged_sam %>%
   ungroup() %>%
   filter(cross_corr == 0.01) %>%
   filter(dgp_spec == "g2") %>%
   dplyr::select(model, dgp_spec, cross_corr, test_MSE) %>%
   rename(g2 = test_MSE) %>%
   ## Filtering out so that we only have the quantile methods %>%
-  filter(model %in% ordering_0.01_mse) %>%
+  filter(model %in% ordering_0.01) %>%
   dplyr::select(-model, -dgp_spec, -cross_corr)
 
-g3_0.01 <- all_loss_df_averaged_sam %>%
+g3_0.01_mse <- all_loss_df_averaged_sam %>%
   ungroup() %>%
   filter(cross_corr == 0.01) %>%
   filter(dgp_spec == "g3") %>%
   dplyr::select(model, dgp_spec, cross_corr, test_MSE) %>%
   rename(g3 = test_MSE) %>%
-  filter(model %in% ordering_0.01_mse) %>%
+  filter(model %in% ordering_0.01) %>%
   dplyr::select(-model, -dgp_spec, -cross_corr)
-
 ################
-
-g1_1 <- all_loss_df_averaged_sam %>%
+g1_1_mse <- all_loss_df_averaged_sam %>%
   ungroup() %>%
   filter(cross_corr == 1) %>%
   filter(dgp_spec == "g1") %>%
   dplyr::select(model, dgp_spec, cross_corr, test_MSE) %>%
   rename(g1 = test_MSE) %>%
   ## Filtering out so that we only have the quantile methods
-  filter(model %in% ordering_1_mse) %>%
+  filter(model %in% ordering_1) %>%
   dplyr::select(-model, -dgp_spec, -cross_corr)
 
-g2_1 <- all_loss_df_averaged_sam %>%
+g2_1_mse <- all_loss_df_averaged_sam %>%
   ungroup() %>%
   filter(cross_corr == 1) %>%
   filter(dgp_spec == "g2") %>%
   dplyr::select(model, dgp_spec, cross_corr, test_MSE) %>%
   rename(g2 = test_MSE) %>%
   ## Filtering out so that we only have the quantile methods %>%
-  filter(model %in% ordering_1_mse) %>%
+  filter(model %in% ordering_1) %>%
   dplyr::select(-model, -dgp_spec, -cross_corr)
 
-g3_1 <- all_loss_df_averaged_sam %>%
+g3_1_mse <- all_loss_df_averaged_sam %>%
   ungroup() %>%
   filter(cross_corr == 1) %>%
   filter(dgp_spec == "g3") %>%
   dplyr::select(model, dgp_spec, cross_corr, test_MSE) %>%
   rename(g3 = test_MSE) %>%
-  filter(model %in% ordering_1_mse) %>%
+  filter(model %in% ordering_1) %>%
+  dplyr::select(-model, -dgp_spec, -cross_corr)
+################################################################
+g1_0.01_r2 <- all_loss_df_averaged_sam %>%
+  ungroup() %>%
+  filter(cross_corr == 0.01) %>%
+  filter(dgp_spec == "g1") %>%
+  dplyr::select(model, dgp_spec, cross_corr, test_RSquare) %>%
+  rename(g1 = test_RSquare) %>%
+  ## Filtering out so that we only have the quantile methods
+  filter(model %in% ordering_0.01) %>%
   dplyr::select(-model, -dgp_spec, -cross_corr)
 
-sam_0.01 <- cbind(cross_corr = 0.01, model = ordering_0.01_mse, g1_0.01, g2_0.01, g3_0.01) %>%
-  ## Round off to significant digits here because cell_spec doesn't play nicely with digits argument
-  ## Also bolden the "best" statistics
-  mutate(g1 = cell_spec(round(g1, 6), format = "latex", 
-                        bold = if_else(g1 == min(g1), 1, 0)),
-         g2 = cell_spec(round(g2, 6), format = "latex", 
-                        bold = if_else(g2 == min(g2), 1, 0)),
-         g3 = cell_spec(round(g3, 6), format = "latex", 
-                        bold = if_else(g3 == min(g3), 1, 0)))
-sam_1 <- cbind(cross_corr = 1, model = ordering_1_mse, g1_1, g2_1, g3_1) %>%
-  mutate(g1 = cell_spec(round(g1, 6), format = "latex", 
-                        bold = if_else(g1 == min(g1), 1, 0)),
-         g2 = cell_spec(round(g2, 6), format = "latex", 
-                        bold = if_else(g2 == min(g2), 1, 0)),
-         g3 = cell_spec(round(g3, 6), format = "latex", 
-                        bold = if_else(g3 == min(g3), 1, 0)))
+g2_0.01_r2 <- all_loss_df_averaged_sam %>%
+  ungroup() %>%
+  filter(cross_corr == 0.01) %>%
+  filter(dgp_spec == "g2") %>%
+  dplyr::select(model, dgp_spec, cross_corr, test_RSquare) %>%
+  rename(g2 = test_RSquare) %>%
+  ## Filtering out so that we only have the quantile methods %>%
+  filter(model %in% ordering_0.01) %>%
+  dplyr::select(-model, -dgp_spec, -cross_corr)
 
-test_mse_latex <- rbind(sam_0.01, sam_1) %>% 
-  data.frame() %>%
-  rename(Corr = cross_corr) %>%
-  mutate(model = str_replace(model, "_", ".")) %>%
-  mutate(Corr = cell_spec(Corr, angle = 90, format = "latex")) %>%
-  kable(align = "c", format = "latex", booktabs = T, escape = F,
-        caption = "Top Models by MSE in Simulation Study") %>%
-  kable_styling(full_width = F, font_size = 8) %>%
-  add_header_above(c(" " = 1, " " = 1, "Test MSE" = 3)) %>%
-  collapse_rows(columns = c(1), valign = "middle", latex_hline = "major")
+g3_0.01_r2 <- all_loss_df_averaged_sam %>%
+  ungroup() %>%
+  filter(cross_corr == 0.01) %>%
+  filter(dgp_spec == "g3") %>%
+  dplyr::select(model, dgp_spec, cross_corr, test_RSquare) %>%
+  rename(g3 = test_RSquare) %>%
+  filter(model %in% ordering_0.01) %>%
+  dplyr::select(-model, -dgp_spec, -cross_corr)
+################
+g1_1_r2 <- all_loss_df_averaged_sam %>%
+  ungroup() %>%
+  filter(cross_corr == 1) %>%
+  filter(dgp_spec == "g1") %>%
+  dplyr::select(model, dgp_spec, cross_corr, test_RSquare) %>%
+  rename(g1 = test_RSquare) %>%
+  ## Filtering out so that we only have the quantile methods
+  filter(model %in% ordering_1) %>%
+  dplyr::select(-model, -dgp_spec, -cross_corr)
 
-test_mse_latex %>%
-  cat(file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation/test_mse_latex.tex")
+g2_1_r2 <- all_loss_df_averaged_sam %>%
+  ungroup() %>%
+  filter(cross_corr == 1) %>%
+  filter(dgp_spec == "g2") %>%
+  dplyr::select(model, dgp_spec, cross_corr, test_RSquare) %>%
+  rename(g2 = test_RSquare) %>%
+  ## Filtering out so that we only have the quantile methods %>%
+  filter(model %in% ordering_1) %>%
+  dplyr::select(-model, -dgp_spec, -cross_corr)
+
+g3_1_r2 <- all_loss_df_averaged_sam %>%
+  ungroup() %>%
+  filter(cross_corr == 1) %>%
+  filter(dgp_spec == "g3") %>%
+  dplyr::select(model, dgp_spec, cross_corr, test_RSquare) %>%
+  rename(g3 = test_RSquare) %>%
+  filter(model %in% ordering_1) %>%
+  dplyr::select(-model, -dgp_spec, -cross_corr)
+
+cross_corr_sam <- data.frame(Corr = c(rep(0.01, 5), rep(1, 5))) %>%
+  mutate(Corr = cell_spec(Corr, angle = 90, format = "latex"))
+
+model_sam <- data.frame(model = c(ordering_0.01, ordering_1)) %>%
+  mutate(model = str_replace(model, "_", "."))
+
+test_small_latex <- cbind(cross_corr_sam, model = model_sam,
+                          rbind(
+                            cbind(g1_0.01_mae, g2_0.01_mae, g3_0.01_mae, g1_0.01_mse, g2_0.01_mse, g3_0.01_mse),
+                            cbind(g1_1_mae, g2_1_mae, g3_1_mae, g1_1_mse, g2_1_mse, g3_1_mse)
+                          )) %>%
+  kable(align = "c", format = "latex", booktabs = T, 
+        escape = F, longtable = T,
+        caption = "Top Models in Simulation Study") %>%
+  add_header_above(c(" " = 1, " " = 1, "Test MAE" = 3, "Test MSE" = 3)) %>%
+  kable_styling(font_size = 6,
+                latex_options = c("repeat_header"),
+                repeat_header_text = "") %>%
+  collapse_rows(columns = c(1:2), valign = "middle", latex_hline = "major")
+
+test_small_latex %>%
+  cat(file = "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation/test_small_latex.tex")
 ```
 
 ```{r variable_importance_plots}
+a4_aspect_ratio <- 1.3
 # Variable Importance Plots
 
 breaks <- levels(all_vi_df_averaged$variable)
@@ -685,12 +675,13 @@ all_vi_df_averaged_sam %>%
   geom_tile(aes(x = variable, y = model, fill = importance)) +
   scale_x_discrete(label = g1_labels, breaks = breaks) + 
   theme_bw() +
+  theme(text = element_text(size = rel(3.5))) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   theme(legend.position = "right") +
   scale_fill_distiller(palette = "Spectral") +
   facet_grid(rows = vars(cross_corr))
 ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g1_vi.pdf",
-       width = 8 * a4_aspect_ratio, height = 8, units = "cm")
+       width = 7 * a4_aspect_ratio, height = 7, units = "cm")
 
 all_vi_df_averaged_sam %>%
   filter(dgp_spec == "g2") %>%
@@ -701,12 +692,13 @@ all_vi_df_averaged_sam %>%
   geom_tile(aes(x = variable, y = model, fill = importance)) +
   scale_x_discrete(label = g2_labels, breaks = breaks) + 
   theme_bw() +
+  theme(text = element_text(size = rel(3.5))) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   theme(legend.position = "right") +
   scale_fill_distiller(palette = "Spectral") +
   facet_grid(rows = vars(cross_corr))
 ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g2_vi.pdf",
-       width = 8 * a4_aspect_ratio, height = 8, units = "cm")
+       width = 7 * a4_aspect_ratio, height = 7, units = "cm")
 
 all_vi_df_averaged_sam %>%
   filter(dgp_spec == "g3") %>%
@@ -717,12 +709,13 @@ all_vi_df_averaged_sam %>%
   geom_tile(aes(x = variable, y = model, fill = importance)) +
   scale_x_discrete(label = g3_labels, breaks = breaks) + 
   theme_bw() +
+  theme(text = element_text(size = rel(3.5))) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   theme(legend.position = "right") +
   scale_fill_distiller(palette = "Spectral") +
   facet_grid(rows = vars(cross_corr))
 ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g3_vi.pdf",
-       width = 8 * a4_aspect_ratio, height = 8, units = "cm")
+       width = 7 * a4_aspect_ratio, height = 7, units = "cm")
 ```
 
 ```{r}
