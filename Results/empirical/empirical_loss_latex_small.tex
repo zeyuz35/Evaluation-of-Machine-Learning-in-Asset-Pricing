@@ -1,0 +1,19 @@
+\begin{table}
+
+\caption{\label{tab:}Top 5 models in empirical study}
+\centering
+\fontsize{6}{8}\selectfont
+\begin{tabular}[t]{cccccccccc}
+\toprule
+\multicolumn{1}{c}{ } & \multicolumn{3}{c}{Sample 1} & \multicolumn{3}{c}{Sample 2} & \multicolumn{3}{c}{Sample 3} \\
+\cmidrule(l{3pt}r{3pt}){2-4} \cmidrule(l{3pt}r{3pt}){5-7} \cmidrule(l{3pt}r{3pt}){8-10}
+model & Test MAE & Test MSE & Test $R^2$ & Test MAE & Test MSE & Test $R^2$ & Test MAE & Test MSE & Test $R^2$\\
+\midrule
+ELN.MAE & 0.131369 & 0.040718 & 0.014306 & \textbf{0.137092} & \textbf{0.041892} & \textbf{0.017875} & \textbf{0.146251} & \textbf{0.045207} & \textbf{0.000835}\\
+RF.MAE & \textbf{0.126703} & \textbf{0.036785} & \textbf{0.109505} & 0.173721 & 0.057546 & -0.349132 & 0.14692 & 0.046037 & -0.01752\\
+NN5.MAE & 0.146411 & 0.044901 & -0.086967 & 0.18499 & 0.06461 & -0.514744 & 0.184986 & 0.063861 & -0.411475\\
+NN4.MAE & 0.157301 & 0.050286 & -0.217308 & 0.168815 & 0.055711 & -0.306102 & 0.167998 & 0.055129 & -0.218463\\
+NN3.MAE & 0.140781 & 0.042832 & -0.036882 & 0.181096 & 0.06216 & -0.4573 & 0.164896 & 0.053458 & -0.181528\\
+\bottomrule
+\end{tabular}
+\end{table}

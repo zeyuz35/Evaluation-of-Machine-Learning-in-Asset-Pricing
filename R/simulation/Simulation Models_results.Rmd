@@ -667,7 +667,6 @@ important_variables_g3 <- all_vi_df_averaged_sam %>%
 top_model <- c("LM_MSE", "ELN_MAE", "RF_MAE", "NN5_MAE", "LSTM_MAE", "FFORMA_MSE")
 
 all_vi_df_averaged_sam %>%
-  filter(dgp_spec == "g1") %>%
   filter(model %in% top_model) %>%
   mutate(variable = fct_reorder(variable, importance)) %>%
   filter(variable %in% important_variables_g1) %>%
@@ -679,9 +678,9 @@ all_vi_df_averaged_sam %>%
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   theme(legend.position = "right") +
   scale_fill_distiller(palette = "Spectral") +
-  facet_grid(rows = vars(cross_corr))
-ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g1_vi.pdf",
-       width = 7 * a4_aspect_ratio, height = 7, units = "cm")
+  facet_grid(rows = vars(cross_corr), cols = vars(dgp_spec))
+ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_all_g_vi.pdf",
+       width = 14, height = 7, units = "cm")
 
 all_vi_df_averaged_sam %>%
   filter(dgp_spec == "g2") %>%

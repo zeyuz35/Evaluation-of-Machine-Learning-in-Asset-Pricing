@@ -32,15 +32,12 @@
 \BOOKMARK [2][-]{subsection.A.7}{DeepAR}{appendix.A}% 32
 \BOOKMARK [1][-]{appendix.A}{Additional details: simulation design}{}% 33
 \BOOKMARK [2][-]{subsection.A.1}{Simulation Design}{appendix.A}% 34
-\BOOKMARK [3][-]{subsubsection.A.1.1}{Simulating Characteristics}{subsection.A.1}% 35
-\BOOKMARK [3][-]{subsubsection.A.1.2}{Simulating Macroeconomic Series}{subsection.A.1}% 36
-\BOOKMARK [3][-]{subsubsection.A.1.3}{Simulating Return Series}{subsection.A.1}% 37
-\BOOKMARK [3][-]{subsubsection.A.1.4}{Sample Splitting}{subsection.A.1}% 38
-\BOOKMARK [2][-]{subsection.A.2}{Simulation Study Results}{appendix.A}% 39
-\BOOKMARK [3][-]{subsubsection.A.2.1}{Prediction Performance}{subsection.A.2}% 40
-\BOOKMARK [2][-]{subsection.A.3}{Random Forest VIMPs}{appendix.A}% 41
-\BOOKMARK [1][-]{appendix.A}{Additional details: Empirical analysis}{}% 42
-\BOOKMARK [2][-]{subsection.A.1}{Data \046 cleaning}{appendix.A}% 43
-\BOOKMARK [2][-]{subsection.A.2}{Empirical study robustness checks}{appendix.A}% 44
-\BOOKMARK [2][-]{subsection.A.3}{Empirical Data Results}{appendix.A}% 45
-\BOOKMARK [3][-]{subsubsection.A.3.1}{Prediction Accuracy}{subsection.A.3}% 46
+\BOOKMARK [3][-]{subsubsection.A.1.1}{Sample Splitting}{subsection.A.1}% 35
+\BOOKMARK [2][-]{subsection.A.2}{Simulation Study Results}{appendix.A}% 36
+\BOOKMARK [3][-]{subsubsection.A.2.1}{Prediction Performance}{subsection.A.2}% 37
+\BOOKMARK [2][-]{subsection.A.3}{Random Forest VIMPs}{appendix.A}% 38
+\BOOKMARK [1][-]{appendix.A}{Additional details: Empirical analysis}{}% 39
+\BOOKMARK [2][-]{subsection.A.1}{Data \046 cleaning}{appendix.A}% 40
+\BOOKMARK [2][-]{subsection.A.2}{Empirical study robustness checks}{appendix.A}% 41
+\BOOKMARK [2][-]{subsection.A.3}{Empirical Data Results}{appendix.A}% 42
+\BOOKMARK [3][-]{subsubsection.A.3.1}{Prediction Accuracy}{subsection.A.3}% 43

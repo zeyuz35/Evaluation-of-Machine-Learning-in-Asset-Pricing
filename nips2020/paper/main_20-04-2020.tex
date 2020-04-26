@@ -187,7 +187,6 @@ R^2_{OOS} &= 1 - \frac{\sum_{(i, t)\in\mathcal{T}_3}(r_{i, t+1} - \widehat{r}_{i
 where $\mathcal{T}_3$ indicates that the fits are only assessed on the test sub-sample, which is never used for training or tuning.
 
 Since $R^2$ is based on in-sample-fit of a linear model, this measure is less meaningful for most of the ML methods considered in in this paper. However, we report this measure since this measure has also been considered in other applications of ML to empirical finance (see, e.g., Gu et al., 2019). 
-
 \paragraph{Factor Selection}
 An important aspect of empirical finance is the understanding of which features drive risk. That is, which features are explicitly represented within $z_{i,t}$ and can thus be used to help price risk using equation \ref{eq:model}. To this end, we define a simple variable importance (VI) measure to be applied across all ML methods in this research. To this end, we mirror the measure produced in \cite{gu_empirical_2018} and define $VI_j$ as the reduction in predictive $R^2$ from setting all values of predictor $j$ to 0, while holding the remaining model estimates fixed. Each $VI_j$ is then normalized to sum to 1. 
 
@@ -212,7 +211,7 @@ e_{i, t+1} &=
 \quad u \sim N(0, 1)
 \end{align}
 where $v_{t+1}$ is a $3\times 1$ vector of errors, $w_{t+1} \sim N(0, 1)$,  $\varepsilon_{i,t+1} \sim N(0, 1)$ scalar error terms, matrix $C_t$ is an $N\times P_c$ matrix of latent factors, where the first three columns correspond to $\beta_{i,t}$, across the $1\leq i\leq N$ dimensions, while the remaining $P_c-3$ factors do not enter the return equation. The $P_x\times1$ vector $x_t$ is a $3 \times 1$ multivariate time series, and $\varepsilon_{t+1}$ is a $N\times 1$ vector of idiosyncratic errors. The parameters of these were tuned such that the annualized volatility of each return series was approximately 22\%, as is often observed empirically.
-
+%%%%%%%%%%%%%%%%%%%%%
 \paragraph{Simulating characteristics}
 We build in correlation across time among factors by drawing normal random numbers for each $1\leq i\leq N$ and $1\leq j\leq P_{c}$, according to :
 \begin{equation}
@@ -222,19 +221,18 @@ We build in correlation across time among factors by drawing normal random numbe
 We then build in cross sectional correlation:
 \begin{align}
 \widehat{C}_{t}&=L\overline{C}_{t} ; \quad B = LL' \\
-B:&=\Lambda\Lambda' + \frac{1}{10}\mathbb{I}_{n}, \quad
+B:&=\Lambda\Lambda' + 0.1\mathbb{I}_{n}, \quad
 \Lambda_i = (\lambda_{i1}, \dots, \lambda_{i4}), \quad
 \lambda_{ik}\sim N(0, \lambda_{sd}), \; k=1, \dots, 4
 \end{align}
-where $B$ serves as a variance covariance matrix with $\lambda_{sd}$ controlling the density of the matrix, and $L$ represents the lower triangle matrix of $B$ using the Cholesky decomposition. $\lambda_{sd}$ values of 0.01, 0.1 and 1 were used to explore increasing degrees of cross sectional correlation.
-Finally, the "observed" characteristics for each $1\leq i\leq N$ and for $j=1, \dots, P_{c}$ are constructed according to:
+where $B$ serves as a variance covariance matrix with $\lambda_{sd}$ its density, and $L$ represents the lower triangle matrix of $B$ via the Cholesky decomposition. $\lambda_{sd}$ values of 0.01, 0.1 and 1 were used to explore increasing degrees of cross sectional correlation.
+Characteristics are then normalized to be within $[-1, 1]$ for each $1\leq i\leq N$ and for $j=1, \dots, P_{c}$ via:
 \begin{equation}
 c_{i j, t} = \frac{2}{n+1} \operatorname{rank}\left(\hat{c}_{i j, t}\right) - 1.
 \end{equation}
-with the rank transformation normalizing all predictors to be within $[-1, 1]$. 
-
+%%%%%%%%%%%%%%%%%%%%%%
 \paragraph{Simulating macroeconomic series}
-For simulation of $x_{t}$, a $3 \times 1$ multivariate time series, we consider a Vector Autoregression (VAR) model \footnote{More complex specifications of $A$ were briefly explored, but these did not have a significant impact on results.}:
+We consider a Vector Autoregression (VAR) model for $x_{t}$, a $3 \times 1$ multivariate time series \footnote{More complex specifications for $A$ were briefly explored, but these did not have a significant impact on results.}:
 \begin{flalign*}
 x_{t} = Ax_{t-1}+u_t; 
 \quad A = 0.95 I_3;
@@ -249,10 +247,10 @@ We consider three different functions for $g(z_{i, t})$:
 (3)\; & g_3 \left(z_{i, t}\right) = \left(1[c_{i3,t}>0],c_{i 2, t}^{3}, c_{i 1, t} \times c_{i 2, t}\times 1[c_{i3,t}>0], \text{logit}\left({c}_{i3, t} \right)\right) \theta_{0}
 \end{align}
 where $x_{t}'[3,]$ denotes the third element of the $x_{t}'$ vector.
-
+%%%%%%%%%%%%%%%%%%%%%%%%%
 $g_1 \left(z_{i, t}\right)$ allows the characteristics to enter the return equation linearly, and $g_2 \left(z_{i, t}\right)$ and $g_3 \left(z_{i, t}\right)$ allow the characteristics to enter the return equation interactively and non-linearly. \footnote{($g_1, g_2$ correspond to the simulation design used by \cite{gu_empirical_2018}.)} $\theta^0$ was tuned such that the predictive $R^2$ was approximately 5\%.
 
-The simulation design results in $3 \times 3 = 9$ different simulated datasets, each with $N = 200$ stocks, $T = 180$ periods and $P_c = 100$ characteristics. Each design was simulated 10 times to assess the robustness of machine learning algorithms. The number of simulations was kept low for computational feasibility. We employ the hybrid data splitting approach with a training:validation length ratio of approximately 1.5 and a test set that is 1 year in length. 
+The simulation design results in $3 \times 3 = 9$ different simulated datasets, each with $N = 200$ stocks, $T = 180$ periods and $P_c = 100$ characteristics. Each design was simulated 10 times to assess the robustness of machine learning algorithms, with the number of simulations kept low for computational feasibility. We employ the hybrid data splitting approach with a training:validation length ratio of approximately 1.5 and a test set that is 1 year in length. 
 
 %% Other schemes in the forecasting literature such as using an ``inner" rolling window validation loop to find the best hyperparameters on average, finally aggregating them in an ``outer" loop for a more robust error were considered but not implemented for a variety of reasons. Firstly, many of the models were computationally too intensive for this to be feasible. More importantly, during the model fitting process it was observed that the optimal hyperparameters for the different rolling windows were highly unstable (see Appendix). Thus, this would have made the selection of the best hyperparameters on average across all windows significantly less meaningful.
 
@@ -260,13 +258,12 @@ The simulation design results in $3 \times 3 = 9$ different simulated datasets, 
 \subsection{Simulation Study Results}
 
 \paragraph{Prediction Performance}
-We observe that in general elastic nets are the best performing model, followed closely by random forests, then neural networks. All machine learning models were unaffected by cross sectional correlation in terms of prediction performance, and had better performance when fitted with respect to quantile loss. Random forest models only outperformed the elastic nets on highly non-linear specifications. The neural network models were not observed to outperform any of the machine learning models. 
+In general, elastic nets are the best performing model, followed closely by random forests, then neural networks. All machine learning models were unaffected by cross sectional correlation in terms of prediction performance, and typically had better performance when fitted with respect to quantile loss. Random forests only outperformed the elastic nets on highly non-linear specifications. The neural network models were not observed to outperform any of the machine learning models. 
 
-This is in stark contrast to the linear models, whose prediction performance is severely affected by both non-linearities, and increasing cross sectional correlation. This result is consistent across all loss metrics, and is most obvious when looking at the out-of-sample R-squared metrics.
+This is in stark contrast to the linear models, which are severely affected by both increasing non-linearities cross sectional correlation. This result is consistent across all loss metrics.
 
 Machine learning models fitted with respect to minimizing MAE (quantile loss) generally perform better, even when evaluated against MSE loss metrics. This is not a surprising result, especially considering the stochastic error design which introduces significant shocks to the returns process. Though the actual difference between the loss metrics between the penalized linear models, random forests and neural networks are very small, when considering the consistency of the results across numerous Monte Carlo simulations, the differences in prediction performance, though small, is robust and significant.
 
-We note that most of these results contradict the sparse literature.
 \input{../../Results/simulation/test_small_latex.tex}
 % Across all specifications with a stochastic volatility component, we observe a decrease in prediction performance as the sample size increased according to the expanding window approach implemented. This is likely due a larger sample having a higher chance to experiences external shocks due to the stochastic volatility process, and thus a higher chance to experience large outliers in the training sample, leading to worse prediction performance. This indicates that machine learning performs poorly when the training data supplied contains more large outliers, and is still sensitive to such outliers even with the use of regularization and robust loss functions.
 
@@ -275,7 +272,7 @@ We note that most of these results contradict the sparse literature.
 \paragraph{Factor Importance}
 We observe that the elastic net outperforms all other models consistently in terms of assigning the correct relative importance to the true underlying regressors, \footnote{($c_1.\text{constant}$, $c_2.\text{constant}$ and $c_3.x_3$ for $g1$ and $g_2$ specifications, and $c_1.\text{constant}$, $c_2.\text{constant}$ and $c_3.\text{constant}$ for $g_3$)} even in settings with high cross sectional correlation. 
 
-Elastic net models perform the best at identifying the true data generating regressors, and  this appears to be mostly robust regardless of the amount of cross sectional correlation, though their performance worsens as the data generating process becomes more non-linear. On more difficult specifications, the elastic net models are conservative and typically identify a single regressor as importance - most apparent on the $g_2$ specification. Occasionally, the elastic nets identified the incorrect covariates, though the relative importance assigned to them was small. 
+Elastic net models perform the best at identifying the true data generating regressors, and  this appears to be mostly robust regardless of cross sectional correlation, though their performance worsens as the data generating process becomes more non-linear. On more difficult specifications, the elastic net models are conservative and typically identify a single regressor as importance - most apparent on the $g_2$ specification. Occasionally, the elastic nets identified the incorrect covariates, assigned them low relative importance.
 
 The random forests and to a lesser extent the neural networks also correctly identified the correct underlying regressors, but struggled with adequately discerning relative importance among correlated regressors. This was became more apparent as the degree of cross sectional correlation increased (see decreasing relative importance of true underlying regressors in Figures \ref{fig:rf_sim_vi} and \ref{fig:nn_sim_vi} in Appendix). 
 
@@ -283,20 +280,10 @@ The random forests and to a lesser extent the neural networks also correctly ide
 %In the case of the random forests, this is to be expected, likely due to how the random forest algorithms work. The random forest algorithm is an ensemble of tree models, with each tree model only having access to a subset of all available predictors. If this subset does not include the true data generating predictor, then that particular tree will likely select the predictors which have the highest correlation with the true data generating predictor instead. Thus, the resulting ensemble model is likely to believe that cross sectionally correlated predictors are important, relative to the true underlying regressor. Due to the complexity of the neural networks, there does not exist a similar intuitive explanation for their factor selection ability.
 
 %% Need to make these plots even smaller somehow, or omit one or two of them
-
+%% Ended up faceting and mushing these graphs all together
 \begin{figure}
-	\includegraphics[]{../../Results/simulation/graphics/simulation_g1_vi.pdf}
+	\includegraphics[]{../../Results/simulation/graphics/simulation_all_g_vi.pdf}
 	\caption{Simulation g1 Variable Importance}
-\end{figure}
-
-\begin{figure}
-	\includegraphics[]{../../Results/simulation/graphics/simulation_g2_vi.pdf}
-	\caption{Simulation g2 Variable Importance}
-\end{figure}
-
-\begin{figure}
-	\includegraphics[]{../../Results/simulation/graphics/simulation_g3_vi.pdf}
-	\caption{Simulation g3 Variable Importance}
 \end{figure}
 
 The linear models unsurprisingly struggled with factor significance analysis with respect to both increasing cross sectional correlation non-linearities. This highlights the non-robustness and ineffectiveness of using traditional linear regression as documented by the literature; linear models were consistently observed to identify irrelevant regressors as important, especially as the degree of cross sectional correlation increased. Considering that the graphs represent the averaged variable importance metrics over different simulation realisations, this means that on a single simulation realization, the performance of linear models is significantly worse.
@@ -313,19 +300,17 @@ We conduct an empirical study as a final way to corroborate the findings of the 
 Importantly, we find that our findings from the simulation study are largely corroborated for empirical returns data.
 
 \subsection{Data}
-We begin by obtaining monthly individual price data from CRSP for all firms listed in the NYSE, AMEX and NASDAQ, starting from 1957 (starting date of the S\&P 500) and ending in December 2016, totalling 60 years. To build individual factors, we construct a factor set based on the cross section of returns literature. This data was sourced from and is the same data used in \cite{gu_empirical_2018}. Like our initial returns sample, it begins in March 1957 and ends in December 2016, totalling 60 years. It contains 94 stock level characteristics: 61 updated annually, 13 updated quarterly and 20 updated monthly \footnote{The dataset also included 74 Standard Industrial Classification (SIC) codes, but these were omitted due to their inconsistency, and inadequateness at classifying companies, as noted by WRDS}.
+We begin by obtaining monthly individual price data from CRSP for all firms listed in the NYSE, AMEX and NASDAQ, starting from 1957 (starting date of the S\&P 500) and ending in December 2016, totalling 60 years. To build individual factors, we construct a factor set based on the cross section of returns literature. This data was sourced from and is the same data used in \cite{gu_empirical_2018}. We restrict our dataset to begin from 1993 Q3 and end on 2016 Q4 to alleviate data quality issues. Our individual factor set contains 94 characteristics: 61 updated annually, 13 updated quarterly and 20 updated monthly \footnote{The dataset also included 74 Standard Industrial Classification (SIC) codes, but these were omitted due to their inconsistency, and inadequateness at classifying companies, as noted by WRDS}.
 
 % Begin Cleaning
 
 % the dataset was filtered such that only stocks traded primarily on NASDAQ were included (using the PRIMEXCH variable from WRDS). Then, penny stocks (also referred to as microcaps in the literature) with a stock price of less than \$5 were filtered out, as is commonly done in the literature to reduce variability. Stocks without a share code of 10 or 11 (referring to equities) were filtered out, so that securities that are not equities were not included (such as REITs and trust funds). The dataset is provided in a monthly format, which means that many of the factors which are updated only quarterly or annually have very low levels of variability, which can lead to misleading results in the model fitting process. 
 
 We detail our cleaning procedure of this dataset. To reduce the size of the dataset and increase feasibility, we only consider non-penny equities traded primarily on the NASDAQ. To achieve a balance between having a dataset with enough data points and variability among factors, the dataset was converted to a quarterly format. Quarterly returns were then constructed using the PRC variable according to actual returns (ie not logged differences):
-
 \begin{equation}
-RET_t = \frac{PRC_t - PRC_{t-1}}{PRC_{t-1}}
+RET_t = (PRC_t - PRC_{t-1})/PRC_{t-1}
 \end{equation}
-
-We allow all stocks which have a quarterly return to enter the dataset, even if they disappear from the dataset for certain periods, as opposed to only keeping stocks which appear continuously throughout the entire period. This was primarily done to reduce survivorship bias in the dataset, and also allows for stocks which were unlisted and relisted again to feature in the dataset. \footnote{To deal with missing data, any characteristics that had over 20\% of their data missing were omitted. Remaining missing data were then imputed using their cross sectional medians for each year. See Appendix for more details.}
+We allow all stocks which have a quarterly return to enter the dataset, even if they disappear from the dataset for certain periods. This was primarily done to reduce survivorship bias in the dataset, and also allows for stocks which were unlisted and relisted again to feature in the dataset. \footnote{To deal with missing data, any characteristics that had over 20\% of their data missing were omitted. Remaining missing data were then imputed using their cross sectional medians for each year. See Appendix for more details.}
 
 %% Gu et al has the missing data part as a footnote - trying that approach here
 
@@ -340,9 +325,9 @@ The two sets of factors were then combined to form a baseline set of covariates,
 \begin{equation}
 z_{i,t} = (1, x_t)' \otimes c_{i, t}
 \end{equation}
-where $c_{i,t}$ is a $P_c$ matrix of characteristics for each stock $i$, and $(1, x_t)'$ is a $P_x \times 1$ vector of macroeconomic predictors, , and $\otimes$ represents the Kronecker product. $z_{i,t}$ is therefore a $P_x P_c$ vector of features for predicting individual stock returns and includes interactions between stock level characteristics and macroeconomic variables. The total number of covariates in this baseline set is $61 \times (8 + 1) = 549$\footnote{As the individual and macroeconomic factors can have similar names, individual and macroeconomic factors were prefixed with ind\_ and macro\_ respectively.}. The final dataset spanned from 1993 Q3 to 2016 Q4 with 202, 066 individual observations. \footnote{The dataset was not normalized for all methods, as only penalized regression and neural networks are sensitive to normalization. For these two methods, the dataset was normalized such that each predictor column had 0 mean and 1 variance.}
+where $c_{i,t}$ is a $P_c$ matrix of characteristics for each stock $i$, and $(1, x_t)'$ is a $P_x \times 1$ vector of macroeconomic predictors, , and $\otimes$ represents the Kronecker product. $z_{i,t}$ is therefore a $P_x P_c$ vector of features for predicting individual stock returns and includes interactions between stock level characteristics and macroeconomic variables. The total number of covariates in this baseline set is $61 \times (8 + 1) = 549$\footnote{As the individual and macroeconomic factors can have similar names, individual and macroeconomic factors were prefixed with ind\_ and macro\_ respectively.}. The final dataset contains 202, 066 individual observations. We note that due to data quality issues, LSTMs, FFORMA and DeepAR are not feasible on empirical data, though the results of the simulation study suggest that even if were to be used, their performance would be underwhelming. \footnote{The dataset was not normalized for all methods, as only penalized regression and neural networks are sensitive to normalization. For these two methods, the dataset was normalized such that each predictor column had 0 mean and 1 variance.}
 
-We mimic the procedure used in the simulation study. For the sample splitting procedure, the dataset was split such that the training and validation sets were split such that the training set was approximately 1.5 times the length of the validation set, in order to predict a test set that is one year in length.
+We mimic the sample splitting procedure used in the simulation study: the dataset was split such that the training and validation sets were split such that the training set was approximately 1.5 times the length of the validation set, in order to predict a test set that is one year in length.
 
 \subsection{Empirical Data Results}
 
@@ -352,10 +337,10 @@ In general, the empirical results are in remarkable agreement with the those obt
 
 \paragraph{Prediction Accuracy}
 
-In terms of prediction accuracy, we can see that in general the results of the simulation study were repeated: the elastic net models perform the best, followed by the random forests, then the neural networks, and finally the linear models. We note that the differences between each model using the MSE and MAE loss metrics are much more pronounced on empirical data. Even so, the predictive performance between the elastic net models and the quantile random forests is not particularly large, and we observe the quantile random forests outperforming the elastic nets in the first data sample. We similarly see that machine learning models perform better when fitted with respect to quantile loss instead of MSE. Most notably, we start to see the neural network models performing poorly on the empirical data, a direct contradiction to what has been reported in the literature.
+In general the results of the simulation study were repeated: the elastic net models perform the best, followed by the random forests, then the DFNs, and finally the linear models. We note that the differences between each model using the MSE and MAE loss metrics are much more pronounced on empirical data. Even so, the predictive performance between the elastic net models and the quantile random forests is not particularly large, and we observe the quantile random forests outperforming the elastic nets in the first data sample. We similarly see that machine learning models perform better when fitted with respect to quantile loss instead of MSE. Most notably, we start to see the neural network models performing poorly on the empirical data, a direct contradiction to what has been reported in the literature.
 
-%% Change this to be much smaller
-\input{../../Results/empirical/empirical_loss_latex.tex}
+%% Change this to be much smaller, fixed!
+\input{../../Results/empirical/empirical_loss_latex_small.tex}
 
 The non-robustness of DFNs is amplified on the empirical dataset. This was observed to be somewhat more common on neural networks fitted with respect to MSE, suggesting that they are indeed very sensitive to outliers in training data. We similarly observe some evidence that deeper neural networks perform better, though this result is less apparent due to the lower robustness on empirical data (see \ref{empirical_study_appendix} in Appendix for results).
 
@@ -367,15 +352,15 @@ As the data generating process for empirical returns is unknown, the variable im
 
 \begin{figure}[!htb]
 	\centering
-	%	\includegraphics[max size = {\textwidth}{0.35\textheight}]{empirical_sample_all_vi_ind}
+	\includegraphics[max size = {\textwidth}{0.35\textheight}]{../../Results/empirical/empirical_all_sample_vi_ind.pdf}
 	\caption{Empirical Individual Factor Importance, averaged across all training samples}
-	\floatfoot{Individual factors shown on x axis, with most important variables bolded (see Table \ref{ind_factors} in Appendix for definitions)}
+	\floatfoot{Individual factors shown on x axis (see Table \ref{ind_factors} in Appendix for definitions)}
 \end{figure}
 
 \begin{figure}[!htb]
 	\label{empirical_macro_facet}
 	\centering
-	%	\includegraphics[max size = {\textwidth}{0.35\textheight}]{empirical_sample_all_vi_macro_facet}
+	\includegraphics[max size = {\textwidth}{0.35\textheight}]{../../Results/empirical/empirical_all_sample_vi_macro.pdf}
 	\caption{Empirical Macroeconomic Factor Importance, faceted by training sample}
 	\floatfoot{Macroeconomic Factors shown on x axis (see Table \ref{macro_factors} for definitions)}
 \end{figure}
@@ -795,104 +780,59 @@ In this section, we give additional features of the simulation design required t
 
 \subsection{Simulation Design}
 
-We simulate a latent factor model with a stochastic volatility process for excess returns  $r_{t+1}$, for $t=1,\dots,T$:
-
+We begin with the simulation study as a way to explore how machine learning performs with regards to the stylized facts of empirical returns in a controlled environment. We simulate according to a design which incorporates low signal to noise ratio, stochastic volatility in errors, persistence and cross sectional correlation in regressors. Our specification is a latent factor model for excess returns $r_{t+1}$, for $t=1, \dots, T$:
 \begin{align}
 r_{i, t+1} &= 
 g\left(z_{i, t}\right) + \beta_{i,t+1}v_{t+1} + e_{i, t+1}; 
-\quad z_{i, t}=\left(1, x_{t}\right)^{\prime} \otimes c_{i, t}, 
-\quad \beta_{i, t}=\left(c_{i 1, t}, c_{i 2, t}, c_{i 3, t}\right) \\ 
+\enspace z_{i, t} = \left(1, x_{t}\right)^{\prime} \otimes c_{i, t}, 
+\enspace \beta_{i, t} = \left(c_{i 1, t}, c_{i 2, t}, c_{i 3, t}\right) \\ 
 e_{i, t+1} &= 
 \sigma_{i, t+1} \varepsilon_{i, t+1}; \\
 \operatorname{log} (\sigma^2_{i,t+1}) &= 
-\omega + \gamma \operatorname{log} (\sigma^2_{t}) + \sigma_{u}u; 
+\omega + \gamma \operatorname{log} (\sigma^2_{t}) + \sigma_{u}u;
 \quad u \sim N(0, 1)
 \end{align}
-
-Let $v_{t+1}$ be a $3\times 1$ vector of errors, and $w_{t+1} \sim N(0, 1)$ and $\varepsilon_{i,t+1} \sim N(0, 1)$ scalar error terms. 
-
-The matrix $C_t$ is an $N\times P_c$ matrix of latent factors, where the first three columns correspond to $\beta_{i,t}$, across the $1\leq i\leq N$ dimensions, while the remaining $P_c-3$ factors do not enter the return equation. The $P_x\times1$ vector $x_t$ is a $3 \times 1$ multivariate time series, and $\varepsilon_{t+1}$ is a $N\times 1$ vector of idiosyncratic errors. 
-
-The parameters of these were tuned such that the annualized volatility of each return series was approximately 22\%, as is often observed empirically.
-
-Note that we also reproduce \cite{gu_empirical_2018}'s error specification as a case where there is no stochastic volatility:
-
-\begin{align}
-v_{t+1} \sim N(0, 0.05^2 \times I_3) \\
-e_{i, t+1} \sim t_5(0, 0.05^2)
-\end{align}
-
-\subsubsection{Simulating Characteristics}
-We build in correlation across time among factors by drawing normal random numbers for each $1\leq i\leq N$ and $1\leq j\leq P_{c}$, according to 
-
+where $v_{t+1}$ is a $3\times 1$ vector of errors, $w_{t+1} \sim N(0, 1)$,  $\varepsilon_{i,t+1} \sim N(0, 1)$ scalar error terms, matrix $C_t$ is an $N\times P_c$ matrix of latent factors, where the first three columns correspond to $\beta_{i,t}$, across the $1\leq i\leq N$ dimensions, while the remaining $P_c-3$ factors do not enter the return equation. The $P_x\times1$ vector $x_t$ is a $3 \times 1$ multivariate time series, and $\varepsilon_{t+1}$ is a $N\times 1$ vector of idiosyncratic errors. The parameters of these were tuned such that the annualized volatility of each return series was approximately 22\%, as is often observed empirically.
+%%%%%%%%%%%%%%%%%%%%%
+\paragraph{Simulating characteristics}
+We build in correlation across time among factors by drawing normal random numbers for each $1\leq i\leq N$ and $1\leq j\leq P_{c}$, according to :
 \begin{equation}
 \overline{c}_{i j, t} = \rho_{j} \overline{c}_{i j, t-1}+\epsilon_{i j, t} ;
-\quad \rho_{j} \sim \mathcal{U} \left( \frac{1}{2},1 \right) 
+\quad \rho_{j} \sim \mathcal{U} \left( 0.5, 1 \right) 
 \end{equation}
-
-To build in cross sectional correlation, we define the positive-semidefinite matrix $B$:
-
-\begin{equation}
-B:=\Lambda\Lambda' + \frac{1}{10}\mathbb{I}_{n}, \quad
-\Lambda_i = (\lambda_{i1},\dots,\lambda_{i4}), \quad
+We then build in cross sectional correlation:
+\begin{align}
+\widehat{C}_{t}&=L\overline{C}_{t} ; \quad B = LL' \\
+B:&=\Lambda\Lambda' + 0.1\mathbb{I}_{n}, \quad
+\Lambda_i = (\lambda_{i1}, \dots, \lambda_{i4}), \quad
 \lambda_{ik}\sim N(0, \lambda_{sd}), \; k=1, \dots, 4
-\end{equation}
-
-to serve as a variance covariance matrix with $\lambda_{sd}$ controlling the density of the matrix, and hence degree of cross sectional correlation. $\lambda_{sd}$ values of 0.01, 0.1 and 1 were used to explore increasing degrees of cross sectional correlation.
-
-To build this into our $N\times P_{c}$ characteristics matrix $\bar{C}_t$, we simulate characteristics according to
-
-\begin{equation}
-\widehat{C}_{t}=L\overline{C}_{t} ; \quad B = LL' 
-\end{equation}
-
-where $L$ represents the lower triangle matrix of $B$ using the Cholesky decomposition.
-
-Finally, the "observed" characteristics for each $1\leq i\leq N$ and for $j=1, \dots, P_{c}$ are constructed according to:
-
+\end{align}
+where $B$ serves as a variance covariance matrix with $\lambda_{sd}$ its density, and $L$ represents the lower triangle matrix of $B$ via the Cholesky decomposition. $\lambda_{sd}$ values of 0.01, 0.1 and 1 were used to explore increasing degrees of cross sectional correlation.
+Characteristics are then normalized to be within $[-1, 1]$ for each $1\leq i\leq N$ and for $j=1, \dots, P_{c}$ via:
 \begin{equation}
 c_{i j, t} = \frac{2}{n+1} \operatorname{rank}\left(\hat{c}_{i j, t}\right) - 1.
 \end{equation}
-
-with the rank transformation normalizing all predictors to be within $[-1, 1]$. 
-
-\subsubsection{Simulating Macroeconomic Series}
-
-For simulation of $x_{t}$, a $3 \times 1$ multivariate time series, we consider a Vector Autoregression (VAR) model \footnote{Other more complex and interactive matrix specifications of $A$ were briefly explored, but these did not appear to have a significant impact on results. More complex designs were observed to only affect the variable importance metrics, but to an insignificant degree}:
-
+%%%%%%%%%%%%%%%%%%%%%%
+\paragraph{Simulating macroeconomic series}
+We consider a Vector Autoregression (VAR) model for $x_{t}$, a $3 \times 1$ multivariate time series \footnote{More complex specifications for $A$ were briefly explored, but these did not have a significant impact on results.}:
 \begin{flalign*}
 x_{t} = Ax_{t-1}+u_t; 
-\quad A = 
-\begin{pmatrix}
-.95 & 0 & 0 \\
-0 & .95 & 0 \\
-0 & 0 & .95
-\end{pmatrix} \;
+\quad A = 0.95 I_3;
 \quad u_t \sim N\left( \mu = (0, 0, 0)' , \Sigma = I_3
 \right) 
 \end{flalign*}
-
-\subsubsection{Simulating Return Series}
-
+\paragraph{Simulating return series}
 We consider three different functions for $g(z_{i, t})$:
-
 \begin{align}
 (1)\; & g_1 \left(z_{i, t}\right)=\left(c_{i 1, t}, c_{i 2, t}, c_{i 3, t} \times x_{t}'[3,]\right) \theta_{0} \\
 (2)\; & g_2 \left(z_{i, t}\right)=\left(c_{i 1, t}^{2}, c_{i 1, t} \times c_{i 2, t}, \operatorname{sgn}\left(c_{i 3, t} \times  x_{t}'[3,]\right)\right) \theta_{0} \\
 (3)\; & g_3 \left(z_{i, t}\right) = \left(1[c_{i3,t}>0],c_{i 2, t}^{3}, c_{i 1, t} \times c_{i 2, t}\times 1[c_{i3,t}>0], \text{logit}\left({c}_{i3, t} \right)\right) \theta_{0}
 \end{align}
-
 where $x_{t}'[3,]$ denotes the third element of the $x_{t}'$ vector.
+%%%%%%%%%%%%%%%%%%%%%%%%%
+$g_1 \left(z_{i, t}\right)$ allows the characteristics to enter the return equation linearly, and $g_2 \left(z_{i, t}\right)$ and $g_3 \left(z_{i, t}\right)$ allow the characteristics to enter the return equation interactively and non-linearly. \footnote{($g_1, g_2$ correspond to the simulation design used by \cite{gu_empirical_2018}.)} $\theta^0$ was tuned such that the predictive $R^2$ was approximately 5\%.
 
-$g_1 \left(z_{i, t}\right)$ allows the characteristics to enter the return equation linearly, and $g_2 \left(z_{i, t}\right)$ allows the characteristics to enter the return equation interactively and non-linearly. The true underlying regressors for these specifications are $\left(c_{i 1, t}, c_{i 2, t}, c_{i 3, t} \times x_{t}'[3,]\right)$.These two specifications correspond to the simulation design used by \cite{gu_empirical_2018}. 
-
-$g_3 \left(z_{i, t}\right)$ allows the characteristics to enter in a complex and non-linear fashion. The true underlying regressors for this specification are $\left(c_{i 1, t}, c_{i 2, t}, c_{i 3, t} \right)$. 
-
-It should be noted however, that because $g_2 \left(z_{i, t}\right)$ has a large part of its signal entering through a $\operatorname{sgn}$ function, this should make it the most difficult to estimate given the regressors and resulting returns process.
-
-$\theta^0$ was tuned such that the predictive $R^2$ was approximately 5\%.
-
-The simulation design results in $3 \times 3 = 12$ different simulated datasets, each with $N = 200$ stocks, $T = 180$ periods and $P_c = 100$ characteristics. Each design was simulated 10 times to assess the robustness of machine learning algorithms. The number of simulations was kept low for computational feasibility.
+The simulation design results in $3 \times 3 = 9$ different simulated datasets, each with $N = 200$ stocks, $T = 180$ periods and $P_c = 100$ characteristics. Each design was simulated 10 times to assess the robustness of machine learning algorithms, with the number of simulations kept low for computational feasibility. We employ the hybrid data splitting approach with a training:validation length ratio of approximately 1.5 and a test set that is 1 year in length. 
 
 \subsubsection{Sample Splitting}
 
@@ -900,7 +840,7 @@ If viewed as monthly periods, $T = 180$ corresponds to 15 years. A data splittin
 
 \begin{figure}[!htb]
 	\begin{center}
-		\begin{tabular}{|c|p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}p{0.40cm}|}
+		\begin{tabular}{|c|p{0.30cm}p{0.30cm}p{0.30cm}p{0.30cm}p{0.30cm}p{0.30cm}p{0.30cm}p{0.30cm}p{0.30cm}p{0.30cm}p{0.30cm}p{0.30cm}p{0.30cm}p{0.30cm}p{0.30cm}|}
 			\hline
 			Set No. &&&&&&&&&&&&&&& \\
 			\hline
@@ -921,7 +861,7 @@ If viewed as monthly periods, $T = 180$ corresponds to 15 years. A data splittin
 			\hline
 		\end{tabular}
 		\medskip
-		\begin{tabular}{|c|p{0.40cm}|}
+		\begin{tabular}{|c|p{0.30cm}|}
 			\hline
 			Training & \cellcolor{cyan} \\
 			\hline
@@ -948,7 +888,9 @@ Other schemes in the forecasting literature such as using an ``inner" rolling wi
 
 \subsection{Random Forest VIMPs}
 
-We note that random forest methods typically have their own built-in ways to calculate variable importance which are different to the variable importance metric presented in the main body of the paper. Here we provide two popular schemes of calculating random forest vairable importance metrics - . Importantly, the overall conclusion regarding factor selection does not change with respect to which vimp methodology employed.
+We note that random forest methods typically have their own built-in ways to calculate variable importance which are different to the variable importance metric presented in the main body of the paper. Here we provide two popular schemes of calculating random forest variable importance metrics - Breiman-cutler VIMP (traditional) and Ishwarlan-Kogalur VIMP. Importantly, the overall conclusion regarding factor selection does not change with respect to which vimp methodology employed.
+
+%% Re-generate or resize these graphs
 
 \begin{figure}
 	\includegraphics[]{../../Results/simulation/graphics/simulation_g1_vimp_bc.pdf}
