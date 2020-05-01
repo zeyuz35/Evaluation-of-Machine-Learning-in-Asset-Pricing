@@ -667,7 +667,7 @@ important_variables_g3 <- all_vi_df_averaged_sam %>%
 
 top_model <- c("LM_MSE", "ELN_MAE", "RF_MAE", "NN5_MAE", "LSTM_MAE", "FFORMA_MSE")
 
-all_vi_df_averaged_sam %>%
+g1_vi_plot <- all_vi_df_averaged_sam %>%
   filter(dgp_spec == "g1") %>%
   filter(model %in% top_model) %>%
   mutate(variable = fct_reorder(variable, importance)) %>%
@@ -676,15 +676,19 @@ all_vi_df_averaged_sam %>%
   geom_tile(aes(x = variable, y = model, fill = importance)) +
   scale_x_discrete(label = g1_labels, breaks = breaks) + 
   theme_bw() +
-  theme(text = element_text(size = rel(3.5))) +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(axis.text.y = element_text(size = rel(0.9))) +
+  theme(axis.text.x = element_text(size = rel(0.9), angle = 90, hjust = 1)) +
   theme(legend.position = "right") +
-  scale_fill_distiller(palette = "Spectral") +
+  scale_fill_distiller(palette = "Spectral",
+                       limits = c(min(all_vi_df_averaged_sam$importance), 
+                                  max(all_vi_df_averaged_sam$importance))
+                       ) +
+  ggtitle("g1") + 
   facet_grid(rows = vars(cross_corr))
 ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g1_vi.pdf",
        width = 7 * a4_aspect_ratio, height = 7, units = "cm")
 
-all_vi_df_averaged_sam %>%
+g2_vi_plot <- all_vi_df_averaged_sam %>%
   filter(dgp_spec == "g2") %>%
   filter(model %in% top_model) %>%
   mutate(variable = fct_reorder(variable, importance)) %>%
@@ -693,15 +697,21 @@ all_vi_df_averaged_sam %>%
   geom_tile(aes(x = variable, y = model, fill = importance)) +
   scale_x_discrete(label = g2_labels, breaks = breaks) + 
   theme_bw() +
-  theme(text = element_text(size = rel(3.5))) +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(axis.text.x = element_text(size = rel(0.9), angle = 90, hjust = 1)) +
   theme(legend.position = "right") +
-  scale_fill_distiller(palette = "Spectral") +
+  theme(axis.text.y = element_blank()) + 
+  ylab("") + 
+  scale_y_discrete(breaks = NULL) +
+  scale_fill_distiller(palette = "Spectral",
+                       limits = c(min(all_vi_df_averaged_sam$importance), 
+                                  max(all_vi_df_averaged_sam$importance))
+                       ) + 
+  ggtitle("g2") + 
   facet_grid(rows = vars(cross_corr))
 ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g2_vi.pdf",
        width = 7 * a4_aspect_ratio, height = 7, units = "cm")
 
-all_vi_df_averaged_sam %>%
+g3_vi_plot <- all_vi_df_averaged_sam %>%
   filter(dgp_spec == "g3") %>%
   filter(model %in% top_model) %>%
   mutate(variable = fct_reorder(variable, importance)) %>%
@@ -710,13 +720,24 @@ all_vi_df_averaged_sam %>%
   geom_tile(aes(x = variable, y = model, fill = importance)) +
   scale_x_discrete(label = g3_labels, breaks = breaks) + 
   theme_bw() +
-  theme(text = element_text(size = rel(3.5))) +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(axis.text.x = element_text(size = rel(0.9), angle = 90, hjust = 1)) +
   theme(legend.position = "right") +
-  scale_fill_distiller(palette = "Spectral") +
+  theme(axis.text.y = element_blank()) + 
+  ylab("") + 
+  scale_y_discrete(breaks = NULL) +
+  scale_fill_distiller(palette = "Spectral",
+                       limits = c(min(all_vi_df_averaged_sam$importance), 
+                                  max(all_vi_df_averaged_sam$importance))
+                       ) +
+  ggtitle("g3") + 
   facet_grid(rows = vars(cross_corr))
 ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g3_vi.pdf",
        width = 7 * a4_aspect_ratio, height = 7, units = "cm")
+
+g1_vi_plot + g2_vi_plot + g3_vi_plot +
+  plot_layout(guides = 'collect')
+ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_all_g_vi.pdf",
+       width = 18, height = 9, units = "cm")
 ```
 
 ```{r}
