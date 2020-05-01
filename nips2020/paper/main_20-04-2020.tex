@@ -360,17 +360,9 @@ As the data generating process for empirical returns is unknown, the variable im
 
 \begin{figure}[!htb]
 	\centering
-	\includegraphics[max size = {\textwidth}{0.35\textheight}]{../../Results/empirical/empirical_all_sample_vi_ind.pdf}
-	\caption{Empirical Individual Factor Importance, averaged across all training samples}
+	\includegraphics[max size = {\textwidth}{0.35\textheight}]{../../Results/empirical/empirical_all_sample_vi.pdf}
+	\caption{Empirical individual and macroeconomic factor importance, averaged over all samples}
 	\floatfoot{Individual factors shown on x axis (see Table \ref{ind_factors} in Appendix for definitions)}
-\end{figure}
-
-\begin{figure}[!htb]
-	\label{empirical_macro_facet}
-	\centering
-	\includegraphics[max size = {\textwidth}{0.35\textheight}]{../../Results/empirical/empirical_all_sample_vi_macro.pdf}
-	\caption{Empirical Macroeconomic Factor Importance, faceted by training sample}
-	\floatfoot{Macroeconomic Factors shown on x axis (see Table \ref{macro_factors} for definitions)}
 \end{figure}
 
 The two top performing models of elastic net and random forest consistently pick out the 1 month and 6 month momentum factors out of the individual characteristics as important, and the book-to-market and default yield spread factors out of the macroeconomic factors are important. In general, the variable importance metrics are less consistent for the random forests, and it should be noted in particular that the random forest tends to determine factors highly correlated with momentum as important, such as change in momentum, dollar trading volume and return volatility. Within the macroeconomic factors, penalized linear models tend to identify the average book to market ratio and the default spread as the most important. The random forests were inconsistent with the elastic nets, and tended to assign very similar variable importance metrics to most macroeconomic factors.
