@@ -22,6 +22,7 @@
 \usepackage{url}            % simple URL typesetting
 \usepackage{booktabs}       % professional-quality tables
 \usepackage{amsfonts}       % blackboard math symbols
+\usepackage{amssymb}
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
 \usepackage{microtype}      % microtypography
 \usepackage{amsmath}
@@ -102,12 +103,19 @@
 \usepackage{makecell}
 \usepackage{xcolor}
 
+%% Macros
+\newcommand{\z}[2]{z_{#1, #2}}
+\newcommand{\xbf}{\mathbf{x}}
+\newcommand{\zVec}[3]{\mathbf{z}_{#1, #2:#3}}
+\newcommand{\xVec}[3]{\mathbf{x}_{#1, #2:#3}}
+\newcommand{\hVec}{\mathbf{h}}
+
 \begin{document}
 
 \maketitle
 
 \begin{abstract}
-	Several recent studies have claimed that machine learning methods provide superior predictive accuracy of asset returns, relative to simpler modelling approaches, and can correctly identify factors needed to price portfolio risk. Herein, we demonstrate that this performance is critically dependent on several features of the data being analysed; including, the training/test sample split, the frequency at which the data is observed, and the chosen loss-function. In contrast to existing studies, which claim that neural nets provide superior predictive accuracy, through a series of realistic examples that mimics the stylized facts of asset returns, we demonstrate that neural methods are easily outperformed by simpler methods, such as random forest and elastic nets.
+	Several recent studies have claimed that machine learning methods provide superior predictive accuracy of asset returns, relative to simpler modelling approaches, and can correctly identify factors needed to price portfolio risk. Herein, we demonstrate that this performance is critically dependent on several features of the data being analysed; including, the training/test sample split, the frequency at which the data is observed, and the chosen loss-function. In contrast to existing studies, which claim that neural nets provide superior predictive accuracy, through a series of realistic examples that mimics the stylized facts of asset returns, we demonstrate that neural methods are easily outperformed by simpler methods, such as random forests and elastic nets.
 \end{abstract}
 
 \section{Introduction}
@@ -282,8 +290,8 @@ The random forests and to a lesser extent the neural networks also correctly ide
 %% Need to make these plots even smaller somehow, or omit one or two of them
 %% Ended up faceting and mushing these graphs all together
 \begin{figure}
-	\includegraphics[]{../../Results/simulation/graphics/simulation_all_g_vi.pdf}
-	\caption{Simulation g1 Variable Importance}
+	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/simulation/graphics/simulation_all_g_vi.pdf}
+	\caption{Simulation variable importance, faceted by simulation specification}
 \end{figure}
 
 The linear models unsurprisingly struggled with factor significance analysis with respect to both increasing cross sectional correlation non-linearities. This highlights the non-robustness and ineffectiveness of using traditional linear regression as documented by the literature; linear models were consistently observed to identify irrelevant regressors as important, especially as the degree of cross sectional correlation increased. Considering that the graphs represent the averaged variable importance metrics over different simulation realisations, this means that on a single simulation realization, the performance of linear models is significantly worse.
@@ -306,7 +314,7 @@ We begin by obtaining monthly individual price data from CRSP for all firms list
 
 % the dataset was filtered such that only stocks traded primarily on NASDAQ were included (using the PRIMEXCH variable from WRDS). Then, penny stocks (also referred to as microcaps in the literature) with a stock price of less than \$5 were filtered out, as is commonly done in the literature to reduce variability. Stocks without a share code of 10 or 11 (referring to equities) were filtered out, so that securities that are not equities were not included (such as REITs and trust funds). The dataset is provided in a monthly format, which means that many of the factors which are updated only quarterly or annually have very low levels of variability, which can lead to misleading results in the model fitting process. 
 
-We detail our cleaning procedure of this dataset. To reduce the size of the dataset and increase feasibility, we only consider non-penny equities traded primarily on the NASDAQ. To achieve a balance between having a dataset with enough data points and variability among factors, the dataset was converted to a quarterly format. Quarterly returns were then constructed using the PRC variable according to actual returns (ie not logged differences):
+We detail our cleaning procedure of this dataset. To reduce the size of the dataset and increase feasibility, we only consider non-penny equities traded primarily on the NASDAQ. To achieve a balance between having a dataset with enough data points and variability among factors, the dataset was converted to a quarterly format. Quarterly returns were then constructed using the PRC variable according to:
 \begin{equation}
 RET_t = (PRC_t - PRC_{t-1})/PRC_{t-1}
 \end{equation}
@@ -747,9 +755,9 @@ Further details are given in cite().
 \subsection{FFORMA}
 Feature-based Forecast Model Averaging, cite() is an automated method for obtaining weighted forecast combinations for time series. We provide a brief overview of the two phases in this methodology.
 
-First, we use a collection of 
+We follow cite()'s selection of time series features as inputs to the meta-learner. 
 
-To incorporate all regressors in each individual time series model, we applied dimensional reduction techniques of PCA and UMAP to generate new feature mappings for use in GARCH (1, 1) models (generally the best performing of the constituent models). It was noted that none of the feature mappings improved fit, however.
+To incorporate all regressors in each individual time series model, we applied dimensional reduction techniques of PCA and UMAP to generate new feature mappings for use in GARCH (1, 1) models (generally the best performing of the constituent models). It was noted that none of the new external regressors as generated by these feature mappings improved fit, however.
 
 The constituent models we considered are:
 \begin{itemize}
@@ -761,13 +769,74 @@ The constituent models we considered are:
 	\item TBATS
 	\item Neural network auto-regressive model
 	\item ARMA (1, 1) with g.e.d. GARCH(1, 1) errors
-	\item ARMA (1, 1) with g.e.d. GARCH(1, 1) errors and UMAP regressors
+	\item ARMA (1, 1) with g.e.d. GARCH(1, 1) errors and UMAP external regressors
 \end{itemize}
 
 The time series features used to train the meta-model are detailed in cite(), with the addition of realized volatility.
 
+Note that because financial returns data does not typically exhibit seasonality, features and constituent models related which utilized seasonality were omitted.
+
 \subsection{DeepAR}
 DeepAR is a generalization of traditional Auto Regressive (AR) models to include additional layers into order to introduce non-linearities into the model.
+
+%% This is directly plonked from deepar arxiv paper, change this so this isn't plagiarism!
+%% DeepAR does not require inputs from the entire cross section to produce forecasts!
+
+DeepAR aims to model the conditional distribution of the 
+\begin{equation*}
+P(\zVec{i}{t_0}{T} | \zVec{i}{1}{t_0-1}, \xVec{i}{1}{T})
+\label{eq:condDist}
+\end{equation*}
+of the future of each
+time series $[\z{i}{t_0}, \z{i}{t_0 + 1}, \ldots, \z{i}{T}] := \zVec{i}{t_0}{T}$ given its 
+\hbox{past $[\z{i}{1}, \ldots, \z{i}{t_0-2}, \z{i}{t_0-1}] := \zVec{i}{1}{t_0-1}$},
+where $t_0$ denotes the time point from which we assume $\z{i}{t}$ to be unknown at prediction time,
+and $\xVec{i}{1}{T}$ are covariates that are assumed to be known for all time points. To prevent
+confusion we avoid the ambiguous terms ``past'' and ``future'' and will refer to time ranges $[1, t_0-1]$ and $[t_0, T]$ as the conditioning range and 
+prediction range, respectively. During training, both ranges have to lie in the past so that the $\z{i}{t}$ are observed, but during prediction $\z{i}{t}$
+is only available in the conditioning range. Note that the time index $t$ is relative, i.e.\ $t=1$ can correspond to a different actual
+time period for each $i$. 
+
+\newcommand{\modelDist}{Q_\Theta(\zVec{i}{t_0}{T} | \zVec{i}{1}{t_0-1}, \xVec{i}{1}{T})}
+
+Our model, summarized in Fig.~\ref{fig:encoderdecoder}, is based on an autoregressive recurrent network
+architecture \cite{graves2013,sutskever2014}.
+We assume that our model distribution $\modelDist$
+consists of a product of likelihood factors
+\begin{align*}
+\modelDist &= \prod\nolimits_{t=t_0}^T Q_\Theta(z_{i,t}|\mathbf{z}_{i,1:t-1}, \xVec{i}{1}{T}) = \prod\nolimits_{t=t_0}^T \ell(\z{i}{t} | \theta(\hVec_{i, t}, \Theta))
+\end{align*}
+parametrized by the output $\hVec_{i, t}$ of an autoregressive recurrent network
+\begin{equation}
+\hVec_{i, t} = h\left(\hVec_{i, t-1}, \z{i}{t-1}, \xbf_{i, t}, \Theta\right) \,,
+\label{eq:recurrence}
+\end{equation}
+where $h$ is a function implemented by a multi-layer recurrent neural network with LSTM cells.% 
+\footnote{Details of the architecture and hyper-parameters are given in the supplementary material.}
+The model is autoregressive, in the sense that it consumes the observation at the last time step $\z{i}{t-1}$ as an input,
+as well as recurrent, i.e.\ the previous output of the network $\hVec_{i,t-1}$ is fed back as an input at the next time step.
+The likelihood $\ell(\z{i}{t}|\theta(\hVec_{i,t}))$ is a fixed distribution
+whose parameters are given by a function $\theta(\hVec_{i,t}, \Theta)$ of the network output $\hVec_{i, t}$ (see below).
+
+Information about the observations in the conditioning range $\zVec{i}{1}{t_0 -1}$ is transferred to the
+prediction range through the initial state $\hVec_{i, t_0-1}$. In the sequence-to-sequence setup, this initial state is
+the output of an \emph{encoder network}. While in general this encoder network can have a different architecture, in our 
+experiments we opt for using the
+same architecture for the model in the conditioning range and the prediction range (corresponding to the \emph{encoder} and \emph{decoder} in
+a sequence-to-sequence model). Further, we share weights between them, so that the initial state
+for the decoder $\hVec_{i, t_0 - 1}$ is
+obtained by computing \eqref{eq:recurrence} for $t = 1, \ldots, t_0 - 1$, where all required quantities are observed.
+The initial state of the encoder $\hVec_{i, 0}$ as well as $\z{i}{0}$ are initialized to zero.
+
+Given the model parameters $\Theta$, we can directly obtain joint samples
+$\tilde{\mathbf{z}}_{i, t_0:T} \sim \modelDist$ through ancestral sampling:
+First, we obtain $\hVec_{i, t_0-1}$ by computing \eqref{eq:recurrence} for $t=1,\ldots, t_0$.
+For $t=t_0, t_0+1, \ldots, T$ we sample $\tilde{z}_{i, t} \sim \ell(\cdot | \theta(\tilde{\mathbf{h}}_{i,t}, \Theta))$
+where $\tilde{\mathbf{h}}_{i, t} = h\left(\hVec_{i, t-1}, \tilde{z}_{i, t-1}, \xbf_{i, t}, \Theta\right)$
+initialized with $\tilde{\mathbf{h}}_{i, t_0-1} = \hVec_{i, t_0-1}$ and $\tilde{z}_{i, t_0 -1} = \z{i}{t_0 - 1}$.
+Samples from the model obtained in this way can then be used to compute quantities
+of interest, e.g.\ quantiles of the distribution of the sum of values for some
+time range in the future.
 
 Further details are given in cite().
 

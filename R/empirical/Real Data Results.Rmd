@@ -462,6 +462,7 @@ top_variables <- empirical_tidy_vi_ind %>%
 
 ## All sample variable importance
 empirical_tidy_vi_ind %>%
+  filter(model %in% top_models) %>%
   # Average importance over all training samples
   group_by(model, variable) %>%
   summarise(importance = mean(importance)) %>%
@@ -474,7 +475,7 @@ empirical_tidy_vi_ind %>%
   theme(legend.position = "right") +
   scale_fill_distiller(palette = "Spectral")
 ggsave(filename= "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical/empirical_all_sample_vi_ind.pdf", 
-       width = 10 * a4_aspect_ratio, height = 10, units = "cm")
+       width = 8, height = 5, units = "cm")
 
 ```
 
@@ -483,6 +484,7 @@ a4_aspect_ratio <- 1.4
 
 ## All sample variable importance
 empirical_tidy_vi_macro %>%
+  filter(model %in% top_models) %>%
   # Average importance over all training samples
   group_by(model, variable) %>%
   summarise(importance = mean(importance)) %>%
@@ -492,8 +494,8 @@ empirical_tidy_vi_macro %>%
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   theme(legend.position = "right") +
   scale_fill_distiller(palette = "Spectral")
-ggsave(filename= "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical/empirical_sample_all_vi_macro.pdf", 
-       width = 10  * a4_aspect_ratio, height = 10, units = "cm")
+ggsave(filename= "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical/empirical_all_sample_vi_macro.pdf", 
+       width = 7* a4_aspect_ratio, height = 5, units = "cm")
 ```
 
 ```{r}
