@@ -855,7 +855,7 @@ important_vimps_g3 <- all_vimp_tidy_df_sam %>%
 
 ## BC Type first
 
-all_vimp_tidy_df_sam %>%
+g1_vimp_bc_plot <- all_vimp_tidy_df_sam %>%
   filter(dgp_spec == "g1") %>%
   filter(variable %in% important_vimps_g1) %>%
   filter(type == "bc") %>%
@@ -864,14 +864,18 @@ all_vimp_tidy_df_sam %>%
   geom_tile(aes(x = variable, y = model, fill = importance)) +
   scale_x_discrete(label = g1_labels, breaks = breaks) + 
   theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(axis.text.x = element_text(size = rel(0.8), angle = 90, hjust = 1)) +
   theme(legend.position = "right") +
-  scale_fill_distiller(palette = "Spectral") +
-  facet_grid(rows = vars(cross_corr))
+  scale_fill_distiller(palette = "Spectral",
+                       limits = c(min(filter(all_vimp_tidy_df_sam, type == "bc")$importance), 
+                                  max(filter(all_vimp_tidy_df_sam, type == "bc")$importance))
+                       ) +
+  facet_grid(rows = vars(cross_corr)) +
+  ggtitle("g1")
 ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g1_vimp_bc.pdf",
-       width = 8 * a4_aspect_ratio, height = 6, units = "cm")
+       width = 18, height = 6, units = "cm")
 
-all_vimp_tidy_df_sam %>%
+g2_vimp_bc_plot <- all_vimp_tidy_df_sam %>%
   filter(dgp_spec == "g2") %>%
   filter(variable %in% important_vimps_g1) %>%
   filter(type == "bc") %>%
@@ -880,14 +884,20 @@ all_vimp_tidy_df_sam %>%
   geom_tile(aes(x = variable, y = model, fill = importance)) +
   scale_x_discrete(label = g2_labels, breaks = breaks) + 
   theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(axis.text.x = element_text(size = rel(0.8), angle = 90, hjust = 1)) +
+  theme(axis.text.y = element_blank()) + 
+  ylab("") + 
   theme(legend.position = "right") +
-  scale_fill_distiller(palette = "Spectral") +
-  facet_grid(rows = vars(cross_corr))
+  scale_fill_distiller(palette = "Spectral",
+                       limits = c(min(filter(all_vimp_tidy_df_sam, type == "bc")$importance), 
+                                  max(filter(all_vimp_tidy_df_sam, type == "bc")$importance))
+                       ) +
+  facet_grid(rows = vars(cross_corr)) +
+  ggtitle("g2")
 ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g2_vimp_bc.pdf",
        width = 8 * a4_aspect_ratio, height = 6, units = "cm")
 
-all_vimp_tidy_df_sam %>%
+g3_vimp_bc_plot <- all_vimp_tidy_df_sam %>%
   filter(dgp_spec == "g3") %>%
   filter(variable %in% important_vimps_g1) %>%
   filter(type == "bc") %>%
@@ -896,16 +906,27 @@ all_vimp_tidy_df_sam %>%
   geom_tile(aes(x = variable, y = model, fill = importance)) +
   scale_x_discrete(label = g3_labels, breaks = breaks) + 
   theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(axis.text.x = element_text(size = rel(0.8), angle = 90, hjust = 1)) +
+  theme(axis.text.y = element_blank()) + 
+  ylab("") + 
   theme(legend.position = "right") +
-  scale_fill_distiller(palette = "Spectral") +
-  facet_grid(rows = vars(cross_corr))
+  scale_fill_distiller(palette = "Spectral",
+                       limits = c(min(filter(all_vimp_tidy_df_sam, type == "bc")$importance), 
+                                  max(filter(all_vimp_tidy_df_sam, type == "bc")$importance))
+                       ) +
+  facet_grid(rows = vars(cross_corr)) +
+  ggtitle("g3")
 ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g3_vimp_bc.pdf",
        width = 8 * a4_aspect_ratio, height = 6, units = "cm")
 
+g1_vimp_bc_plot + g2_vimp_bc_plot + g3_vimp_bc_plot +
+  plot_layout(guides = 'collect')
+ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g_vimp_bc.pdf",
+       width = 18, height = 9, units = "cm")
+
 #########
 
-all_vimp_tidy_df_sam %>%
+g1_vimp_ik_plot <- all_vimp_tidy_df_sam %>%
   filter(dgp_spec == "g1") %>%
   filter(variable %in% important_vimps_g1) %>%
   filter(type == "ik") %>%
@@ -914,14 +935,19 @@ all_vimp_tidy_df_sam %>%
   geom_tile(aes(x = variable, y = model, fill = importance)) +
   scale_x_discrete(label = g1_labels, breaks = breaks) + 
   theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(axis.text.x = element_text(size = rel(0.8), angle = 90, hjust = 1)) +
   theme(legend.position = "right") +
-  scale_fill_distiller(palette = "Spectral") +
-  facet_grid(rows = vars(cross_corr))
+  scale_fill_distiller(palette = "Spectral",
+                       limits = c(min(filter(all_vimp_tidy_df_sam, type == "ik")$importance), 
+                                  max(filter(all_vimp_tidy_df_sam, type == "ik")$importance))
+                       ) +
+  theme(legend.position = "right") +
+  facet_grid(rows = vars(cross_corr)) +
+  ggtitle("g1")
 ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g1_vimp_ik.pdf",
        width = 8 * a4_aspect_ratio, height = 6, units = "cm")
 
-all_vimp_tidy_df_sam %>%
+g2_vimp_ik_plot <- all_vimp_tidy_df_sam %>%
   filter(dgp_spec == "g2") %>%
   filter(variable %in% important_vimps_g1) %>%
   filter(type == "ik") %>%
@@ -930,14 +956,21 @@ all_vimp_tidy_df_sam %>%
   geom_tile(aes(x = variable, y = model, fill = importance)) +
   scale_x_discrete(label = g2_labels, breaks = breaks) + 
   theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(axis.text.x = element_text(size = rel(0.8), angle = 90, hjust = 1)) +
+  theme(axis.text.y = element_blank()) + 
+  ylab("") + 
   theme(legend.position = "right") +
-  scale_fill_distiller(palette = "Spectral") +
-  facet_grid(rows = vars(cross_corr))
+  scale_fill_distiller(palette = "Spectral",
+                       limits = c(min(filter(all_vimp_tidy_df_sam, type == "ik")$importance), 
+                                  max(filter(all_vimp_tidy_df_sam, type == "ik")$importance))
+                       ) +
+  theme(legend.position = "right") +
+  facet_grid(rows = vars(cross_corr)) +
+  ggtitle("g2")
 ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g2_vimp_ik.pdf",
        width = 8 * a4_aspect_ratio, height = 6, units = "cm")
 
-all_vimp_tidy_df_sam %>%
+g3_vimp_ik_plot <- all_vimp_tidy_df_sam %>%
   filter(dgp_spec == "g3") %>%
   filter(variable %in% important_vimps_g1) %>%
   filter(type == "ik") %>%
@@ -946,12 +979,24 @@ all_vimp_tidy_df_sam %>%
   geom_tile(aes(x = variable, y = model, fill = importance)) +
   scale_x_discrete(label = g3_labels, breaks = breaks) + 
   theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(axis.text.x = element_text(size = rel(0.8), angle = 90, hjust = 1)) +
+  theme(axis.text.y = element_blank()) + 
+  ylab("") + 
   theme(legend.position = "right") +
-  scale_fill_distiller(palette = "Spectral") +
-  facet_grid(rows = vars(cross_corr))
+  scale_fill_distiller(palette = "Spectral",
+                       limits = c(min(filter(all_vimp_tidy_df_sam, type == "ik")$importance), 
+                                  max(filter(all_vimp_tidy_df_sam, type == "ik")$importance))
+                       ) +
+  theme(legend.position = "right") +
+  facet_grid(rows = vars(cross_corr)) +
+  ggtitle("g3")
 ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g3_vimp_ik.pdf",
        width = 8 * a4_aspect_ratio, height = 6, units = "cm")
+
+g1_vimp_ik_plot + g2_vimp_ik_plot + g3_vimp_ik_plot +
+  plot_layout(guides = 'collect')
+ggsave("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g_vimp_ik.pdf",
+       width = 18, height = 9, units = "cm")
 ```
 
 ```{r hyperparam_functions}

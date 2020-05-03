@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 2.9.7300 64-bit) (preloaded format=pdflatex 2020.2.23)  1 MAY 2020 23:53
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 2.9.7300 64-bit) (preloaded format=pdflatex 2020.2.23)  3 MAY 2020 22:37
 entering extended mode
 **./main_20-04-2020.tex
 (main_20-04-2020.tex
@@ -1279,7 +1279,7 @@ LaTeX Warning: Citation `welch_comprehensive_2008' on page 7 undefined on input
 (../../Results/empirical/empirical_loss_latex_small.tex)
 
 LaTeX Warning: Reference `empirical_study_appendix' on page 8 undefined on inpu
-t line 353.
+t line 352.
 
 [8]
 <../../Results/empirical/empirical_all_sample_vi.pdf, id=286, 511.9125pt x 170.
@@ -1288,128 +1288,128 @@ File: ../../Results/empirical/empirical_all_sample_vi.pdf Graphic file (type pd
 f)
 <use ../../Results/empirical/empirical_all_sample_vi.pdf>
 Package pdftex.def Info: ../../Results/empirical/empirical_all_sample_vi.pdf  u
-sed on input line 363.
+sed on input line 361.
 (pdftex.def)             Requested size: 511.91125pt x 170.63707pt.
 
 
-LaTeX Warning: Reference `ind_factors' on page 9 undefined on input line 365.
+LaTeX Warning: Reference `ind_factors' on page 9 undefined on input line 363.
 
 
-LaTeX Warning: Reference `ind_factors' on page 9 undefined on input line 365.
+LaTeX Warning: Reference `ind_factors' on page 9 undefined on input line 363.
 
 
 LaTeX Warning: Citation `gu_empirical_2018' on page 9 undefined on input line 3
-74.
+70.
 
 [9 <../../Results/empirical/empirical_all_sample_vi.pdf>] [10] [11] [12]
-LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 6
-02.
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 5
+98.
 
 ("C:\Program Files\MiKTeX 2.9\tex/latex/psnfss\ts1ptm.fd"
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 ) [13] [14]
 
 LaTeX Warning: Citation `zou_regularization_2005' on page 15 undefined on input
- line 719.
+ line 715.
 
 
 LaTeX Warning: Citation `zou_regularization_2005' on page 15 undefined on input
- line 725.
+ line 721.
 
 [15]
-Underfull \hbox (badness 10000) in paragraph at lines 781--791
+Underfull \hbox (badness 10000) in paragraph at lines 777--787
 \T1/ptm/m/n/9 (+20) of the fu-ture of each time se-ries $\OT1/cmr/m/n/9 [\OML/c
 mm/m/it/9 z[]; z[]; [] ; z[]\OT1/cmr/m/n/9 ] := \OT1/cmr/bx/n/9 z[]$ \T1/ptm/m/
 n/9 (+20) given its
  []
 
 
-Underfull \hbox (badness 1158) in paragraph at lines 781--791
+Underfull \hbox (badness 1158) in paragraph at lines 777--787
 []\T1/ptm/m/n/9 (+20) , where $\OML/cmm/m/it/9 t[]$ \T1/ptm/m/n/9 (+20) de-note
 s the time point from which we as-sume
  []
 
 
 LaTeX Warning: Reference `fig:encoderdecoder' on page 16 undefined on input lin
-e 794.
+e 790.
 
 
-LaTeX Warning: Citation `graves2013' on page 16 undefined on input line 795.
+LaTeX Warning: Citation `graves2013' on page 16 undefined on input line 791.
 
 
-LaTeX Warning: Citation `sutskever2014' on page 16 undefined on input line 795.
+LaTeX Warning: Citation `sutskever2014' on page 16 undefined on input line 791.
 
 
 [16]pdfTeX warning (ext4): destination with the same identifier (name{appendix.
 A}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.839 ...on{Additional details: simulation design}
+l.835 ...on{Additional details: simulation design}
                                                   pdfTeX warning (ext4): destin
 ation with the same identifier (name{subsection.A.1}) has been already used, du
 plicate ignored
 <to be read again> 
                    \relax 
-l.842 \subsection{Simulation Design}
+l.838 \subsection{Simulation Design}
                                     
 
 LaTeX Warning: Citation `gu_empirical_2018' on page 17 undefined on input line 
-894.
+890.
 
 
-LaTeX Warning: Reference `sample_split' on page 17 undefined on input line 900.
+LaTeX Warning: Reference `sample_split' on page 17 undefined on input line 896.
 
 
 [17]
-Overfull \hbox (5.26526pt too wide) in paragraph at lines 915--917
+Overfull \hbox (5.26526pt too wide) in paragraph at lines 911--913
 []|\T1/ptm/m/n/10 (-20) NA| 
  []
 
 
-Overfull \hbox (5.26526pt too wide) in paragraph at lines 919--919
+Overfull \hbox (5.26526pt too wide) in paragraph at lines 915--915
 []|\T1/ptm/m/n/10 (-20) NA| 
  []
 
 
-Overfull \hbox (5.26526pt too wide) in paragraph at lines 919--920
+Overfull \hbox (5.26526pt too wide) in paragraph at lines 915--916
 []|\T1/ptm/m/n/10 (-20) NA| 
  []
 
 
-Overfull \hbox (1.26408pt too wide) in paragraph at lines 921--921
+Overfull \hbox (1.26408pt too wide) in paragraph at lines 917--917
 []|\T1/ptm/m/n/10 (-20) 10| 
  []
 
 
-Overfull \hbox (1.26408pt too wide) in paragraph at lines 921--921
+Overfull \hbox (1.26408pt too wide) in paragraph at lines 917--917
 []|\T1/ptm/m/n/10 (-20) 11| 
  []
 
 
-Overfull \hbox (1.26408pt too wide) in paragraph at lines 921--921
+Overfull \hbox (1.26408pt too wide) in paragraph at lines 917--917
 []|\T1/ptm/m/n/10 (-20) 12| 
  []
 
 
-Overfull \hbox (1.26408pt too wide) in paragraph at lines 921--921
+Overfull \hbox (1.26408pt too wide) in paragraph at lines 917--917
 []|\T1/ptm/m/n/10 (-20) 13| 
  []
 
 
-Overfull \hbox (1.26408pt too wide) in paragraph at lines 921--921
+Overfull \hbox (1.26408pt too wide) in paragraph at lines 917--917
 []|\T1/ptm/m/n/10 (-20) 14| 
  []
 
 
-Overfull \hbox (1.26408pt too wide) in paragraph at lines 921--922
+Overfull \hbox (1.26408pt too wide) in paragraph at lines 917--918
 []|\T1/ptm/m/n/10 (-20) 15| 
  []
 
-pdfTeX warning (ext4): destination with the same identifier (name{subsection.A.
-2}) has been already used, duplicate ignored
+[18]pdfTeX warning (ext4): destination with the same identifier (name{subsectio
+n.A.2}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.942 \subsection{Simulation Study Results}
+l.940 \subsection{Simulation Study Results}
                                            
 (../../Results/simulation/test_loss_latex.tex
 Overfull \hbox (20.51045pt too wide) in alignment at lines 3--10
@@ -1446,291 +1446,180 @@ Overfull \hbox (20.51045pt too wide) in alignment at lines 101--141
  [] [] [] [] [] [] [] [] [] [] [] 
  []
 
-[18]
+
 Overfull \hbox (20.51045pt too wide) in alignment at lines 141--147
  [] [] [] [] [] [] [] [] [] [] [] 
  []
 
-)pdfTeX warning (ext4): destination with the same identifier (name{subsection.A
-.3}) has been already used, duplicate ignored
+[19])pdfTeX warning (ext4): destination with the same identifier (name{subsecti
+on.A.3}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
 l.950 \subsection{Random Forest VIMPs}
-                                       [19]
-<../../Results/simulation/graphics/simulation_g1_vimp_bc.pdf, id=398, 318.18875
-pt x 170.6375pt>
-File: ../../Results/simulation/graphics/simulation_g1_vimp_bc.pdf Graphic file 
-(type pdf)
-<use ../../Results/simulation/graphics/simulation_g1_vimp_bc.pdf>
-Package pdftex.def Info: ../../Results/simulation/graphics/simulation_g1_vimp_b
-c.pdf  used on input line 957.
-(pdftex.def)             Requested size: 318.18796pt x 170.63707pt.
-<../../Results/simulation/graphics/simulation_g2_vimp_bc.pdf, id=399, 318.18875
-pt x 170.6375pt>
-File: ../../Results/simulation/graphics/simulation_g2_vimp_bc.pdf Graphic file 
-(type pdf)
-<use ../../Results/simulation/graphics/simulation_g2_vimp_bc.pdf>
-Package pdftex.def Info: ../../Results/simulation/graphics/simulation_g2_vimp_b
-c.pdf  used on input line 962.
-(pdftex.def)             Requested size: 318.18796pt x 170.63707pt.
-<../../Results/simulation/graphics/simulation_g3_vimp_bc.pdf, id=400, 318.18875
-pt x 170.6375pt>
-File: ../../Results/simulation/graphics/simulation_g3_vimp_bc.pdf Graphic file 
-(type pdf)
-<use ../../Results/simulation/graphics/simulation_g3_vimp_bc.pdf>
-Package pdftex.def Info: ../../Results/simulation/graphics/simulation_g3_vimp_b
-c.pdf  used on input line 967.
-(pdftex.def)             Requested size: 318.18796pt x 170.63707pt.
-<../../Results/simulation/graphics/simulation_g1_vimp_ik.pdf, id=401, 318.18875
-pt x 170.6375pt>
-File: ../../Results/simulation/graphics/simulation_g1_vimp_ik.pdf Graphic file 
-(type pdf)
-<use ../../Results/simulation/graphics/simulation_g1_vimp_ik.pdf>
-Package pdftex.def Info: ../../Results/simulation/graphics/simulation_g1_vimp_i
-k.pdf  used on input line 974.
-(pdftex.def)             Requested size: 318.18796pt x 170.63707pt.
-<../../Results/simulation/graphics/simulation_g2_vimp_ik.pdf, id=402, 318.18875
-pt x 170.6375pt>
-File: ../../Results/simulation/graphics/simulation_g2_vimp_ik.pdf Graphic file 
-(type pdf)
-<use ../../Results/simulation/graphics/simulation_g2_vimp_ik.pdf>
-Package pdftex.def Info: ../../Results/simulation/graphics/simulation_g2_vimp_i
-k.pdf  used on input line 979.
-(pdftex.def)             Requested size: 318.18796pt x 170.63707pt.
-<../../Results/simulation/graphics/simulation_g3_vimp_ik.pdf, id=403, 318.18875
-pt x 170.6375pt>
-File: ../../Results/simulation/graphics/simulation_g3_vimp_ik.pdf Graphic file 
-(type pdf)
-<use ../../Results/simulation/graphics/simulation_g3_vimp_ik.pdf>
-Package pdftex.def Info: ../../Results/simulation/graphics/simulation_g3_vimp_i
-k.pdf  used on input line 984.
-(pdftex.def)             Requested size: 318.18796pt x 170.63707pt.
- [20 <../../Results/simulation/graphics/simulation_g1_vimp_bc.pdf> <../../Resul
-ts/simulation/graphics/simulation_g2_vimp_bc.pdf>] [21 <../../Results/simulatio
-n/graphics/simulation_g3_vimp_bc.pdf> <../../Results/simulation/graphics/simula
-tion_g1_vimp_ik.pdf> <../../Results/simulation/graphics/simulation_g2_vimp_ik.p
-df>]pdfTeX warning (ext4): destination with the same identifier (name{appendix.
-A}) has been already used, duplicate ignored
+                                      
+<../../Results/simulation/graphics/simulation_g_vimp_bc.pdf, id=398, 511.9125pt
+ x 255.95625pt>
+File: ../../Results/simulation/graphics/simulation_g_vimp_bc.pdf Graphic file (
+type pdf)
+<use ../../Results/simulation/graphics/simulation_g_vimp_bc.pdf>
+Package pdftex.def Info: ../../Results/simulation/graphics/simulation_g_vimp_bc
+.pdf  used on input line 957.
+(pdftex.def)             Requested size: 511.91125pt x 255.95561pt.
+<../../Results/simulation/graphics/simulation_g_vimp_ik.pdf, id=399, 511.9125pt
+ x 255.95625pt>
+File: ../../Results/simulation/graphics/simulation_g_vimp_ik.pdf Graphic file (
+type pdf)
+<use ../../Results/simulation/graphics/simulation_g_vimp_ik.pdf>
+Package pdftex.def Info: ../../Results/simulation/graphics/simulation_g_vimp_ik
+.pdf  used on input line 964.
+(pdftex.def)             Requested size: 511.91125pt x 255.95561pt.
+ [20 <../../Results/simulation/graphics/simulation_g_vimp_bc.pdf>]pdfTeX warnin
+g (ext4): destination with the same identifier (name{appendix.A}) has been alre
+ady used, duplicate ignored
 <to be read again> 
                    \relax 
-l.992 ...n{Additional details: Empirical analysis}
+l.972 ...n{Additional details: Empirical analysis}
                                                   pdfTeX warning (ext4): destin
 ation with the same identifier (name{subsection.A.1}) has been already used, du
 plicate ignored
 <to be read again> 
                    \relax 
-l.994 \subsection{Data \& cleaning}
+l.974 \subsection{Data \& cleaning}
                                    
 
+LaTeX Warning: Citation `gu_empirical_2018' on page 21 undefined on input line 
+976.
+
+[21 <../../Results/simulation/graphics/simulation_g_vimp_ik.pdf>]
+
 LaTeX Warning: Citation `gu_empirical_2018' on page 22 undefined on input line 
-996.
-
-[22 <../../Results/simulation/graphics/simulation_g3_vimp_ik.pdf>]
-
-LaTeX Warning: Citation `gu_empirical_2018' on page 23 undefined on input line 
-1012.
+990.
 
 
-LaTeX Warning: Citation `welch_comprehensive_2008' on page 23 undefined on inpu
-t line 1012.
+LaTeX Warning: Citation `welch_comprehensive_2008' on page 22 undefined on inpu
+t line 990.
 
 
-LaTeX Warning: Citation `welch_comprehensive_2008' on page 23 undefined on inpu
-t line 1015.
+LaTeX Warning: Citation `welch_comprehensive_2008' on page 22 undefined on inpu
+t line 993.
 
 
-Overfull \hbox (6.12646pt too wide) in paragraph at lines 1069--1069
+Overfull \hbox (6.12646pt too wide) in paragraph at lines 1047--1047
 []|\T1/ptm/m/n/10 (-20) 93Q3| 
  []
 
 
-Overfull \hbox (6.12646pt too wide) in paragraph at lines 1069--1069
+Overfull \hbox (6.12646pt too wide) in paragraph at lines 1047--1047
 []|\T1/ptm/m/n/10 (-20) 93Q4| 
  []
 
-[23]pdfTeX warning (ext4): destination with the same identifier (name{subsectio
+[22]pdfTeX warning (ext4): destination with the same identifier (name{subsectio
 n.A.2}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.1089 ...ction{Empirical study robustness checks}
+l.1067 ...ical study robustness checks \& results}
                                                   pdfTeX warning (ext4): destin
 ation with the same identifier (name{subsection.A.3}) has been already used, du
 plicate ignored
 <to be read again> 
                    \relax 
-l.1102 \subsection{Empirical Data Results}
+l.1080 \subsection{Empirical Data Results}
                                           
 (../../Results/empirical/empirical_loss_latex.tex)
-<../../Results/empirical/empirical_all_sample_vi_ind.pdf, id=473, 341.275pt x 1
-41.52875pt>
-File: ../../Results/empirical/empirical_all_sample_vi_ind.pdf Graphic file (typ
-e pdf)
-<use ../../Results/empirical/empirical_all_sample_vi_ind.pdf>
-Package pdftex.def Info: ../../Results/empirical/empirical_all_sample_vi_ind.pd
-f  used on input line 1115.
-(pdftex.def)             Requested size: 341.27415pt x 141.5284pt.
-<../../Results/empirical/empirical_sample_all_vi_macro.pdf, id=474, 397.485pt x
- 284.06125pt>
-File: ../../Results/empirical/empirical_sample_all_vi_macro.pdf Graphic file (t
-ype pdf)
-<use ../../Results/empirical/empirical_sample_all_vi_macro.pdf>
-Package pdftex.def Info: ../../Results/empirical/empirical_sample_all_vi_macro.
-pdf  used on input line 1120.
-(pdftex.def)             Requested size: 397.48402pt x 284.06053pt.
-<../../Results/empirical/empirical_vimp.pdf, id=475, 477.785pt x 341.275pt>
+<../../Results/empirical/empirical_vimp.pdf, id=433, 511.9125pt x 226.8475pt>
 File: ../../Results/empirical/empirical_vimp.pdf Graphic file (type pdf)
 <use ../../Results/empirical/empirical_vimp.pdf>
 Package pdftex.def Info: ../../Results/empirical/empirical_vimp.pdf  used on in
-put line 1127.
-(pdftex.def)             Requested size: 477.78383pt x 341.27415pt.
+put line 1091.
+(pdftex.def)             Requested size: 511.91125pt x 226.84694pt.
 
-Overfull \hbox (80.29884pt too wide) in paragraph at lines 1127--1128
- [][] 
- []
-
-(../../Results/empirical_missing_threshold/empirical_loss_latex.tex) [24 <../..
-/Results/empirical/empirical_all_sample_vi_ind.pdf>] [25 <../../Results/empiric
-al/empirical_sample_all_vi_macro.pdf>]
-<../../Results/empirical_missing_threshold/empirical_all_sample_vi_ind.pdf, id=
-501, 397.485pt x 284.06125pt>
-File: ../../Results/empirical_missing_threshold/empirical_all_sample_vi_ind.pdf
- Graphic file (type pdf)
-<use ../../Results/empirical_missing_threshold/empirical_all_sample_vi_ind.pdf>
-
+(../../Results/empirical_missing_threshold/empirical_loss_latex.tex) [23 <../..
+/Results/empirical/empirical_vimp.pdf>]
+<../../Results/empirical_missing_threshold/empirical_all_sample_vi.pdf, id=446,
+ 511.9125pt x 255.95625pt>
+File: ../../Results/empirical_missing_threshold/empirical_all_sample_vi.pdf Gra
+phic file (type pdf)
+<use ../../Results/empirical_missing_threshold/empirical_all_sample_vi.pdf>
 Package pdftex.def Info: ../../Results/empirical_missing_threshold/empirical_al
-l_sample_vi_ind.pdf  used on input line 1141.
-(pdftex.def)             Requested size: 397.48402pt x 284.06053pt.
-<../../Results/empirical_missing_threshold/empirical_sample_all_vi_macro.pdf, i
-d=502, 397.485pt x 284.06125pt>
-File: ../../Results/empirical_missing_threshold/empirical_sample_all_vi_macro.p
-df Graphic file (type pdf)
-<use ../../Results/empirical_missing_threshold/empirical_sample_all_vi_macro.pd
-f>
-Package pdftex.def Info: ../../Results/empirical_missing_threshold/empirical_sa
-mple_all_vi_macro.pdf  used on input line 1146.
-(pdftex.def)             Requested size: 397.48402pt x 284.06053pt.
-<../../Results/empirical_missing_threshold/empirical_vimp.pdf, id=503, 477.785p
-t x 341.275pt>
+l_sample_vi.pdf  used on input line 1106.
+(pdftex.def)             Requested size: 511.91125pt x 255.95561pt.
+<../../Results/empirical_missing_threshold/empirical_vimp.pdf, id=447, 511.9125
+pt x 226.8475pt>
 File: ../../Results/empirical_missing_threshold/empirical_vimp.pdf Graphic file
  (type pdf)
 <use ../../Results/empirical_missing_threshold/empirical_vimp.pdf>
 Package pdftex.def Info: ../../Results/empirical_missing_threshold/empirical_vi
-mp.pdf  used on input line 1153.
-(pdftex.def)             Requested size: 477.78383pt x 341.27415pt.
-
-Overfull \hbox (80.29884pt too wide) in paragraph at lines 1153--1154
- [][] 
- []
-
-(../../Results/empirical_train_valid_1/empirical_loss_latex.tex) [26 <../../Res
-ults/empirical/empirical_vimp.pdf>] [27 <../../Results/empirical_missing_thresh
-old/empirical_all_sample_vi_ind.pdf> <../../Results/empirical_missing_threshold
-/empirical_sample_all_vi_macro.pdf>]
-<../../Results/empirical_train_valid_1/empirical_all_sample_vi_ind.pdf, id=534,
- 397.485pt x 284.06125pt>
-File: ../../Results/empirical_train_valid_1/empirical_all_sample_vi_ind.pdf Gra
-phic file (type pdf)
-<use ../../Results/empirical_train_valid_1/empirical_all_sample_vi_ind.pdf>
+mp.pdf  used on input line 1113.
+(pdftex.def)             Requested size: 511.91125pt x 226.84694pt.
+ [24 <../../Results/empirical_missing_threshold/empirical_all_sample_vi.pdf> <.
+./../Results/empirical_missing_threshold/empirical_vimp.pdf>]
+(../../Results/empirical_train_valid_1/empirical_loss_latex.tex)
+<../../Results/empirical_train_valid_1/empirical_all_sample_vi.pdf, id=467, 511
+.9125pt x 255.95625pt>
+File: ../../Results/empirical_train_valid_1/empirical_all_sample_vi.pdf Graphic
+ file (type pdf)
+<use ../../Results/empirical_train_valid_1/empirical_all_sample_vi.pdf>
 Package pdftex.def Info: ../../Results/empirical_train_valid_1/empirical_all_sa
-mple_vi_ind.pdf  used on input line 1170.
-(pdftex.def)             Requested size: 397.48402pt x 284.06053pt.
-<../../Results/empirical_train_valid_1/empirical_sample_all_vi_macro.pdf, id=53
-5, 397.485pt x 284.06125pt>
-File: ../../Results/empirical_train_valid_1/empirical_sample_all_vi_macro.pdf G
-raphic file (type pdf)
-<use ../../Results/empirical_train_valid_1/empirical_sample_all_vi_macro.pdf>
-Package pdftex.def Info: ../../Results/empirical_train_valid_1/empirical_sample
-_all_vi_macro.pdf  used on input line 1175.
-(pdftex.def)             Requested size: 397.48402pt x 284.06053pt.
-<../../Results/empirical_train_valid_1/empirical_vimp.pdf, id=536, 477.785pt x 
-341.275pt>
+mple_vi.pdf  used on input line 1130.
+(pdftex.def)             Requested size: 511.91125pt x 255.95561pt.
+<../../Results/empirical_train_valid_1/empirical_vimp.pdf, id=468, 511.9125pt x
+ 226.8475pt>
 File: ../../Results/empirical_train_valid_1/empirical_vimp.pdf Graphic file (ty
 pe pdf)
 <use ../../Results/empirical_train_valid_1/empirical_vimp.pdf>
 Package pdftex.def Info: ../../Results/empirical_train_valid_1/empirical_vimp.p
-df  used on input line 1182.
-(pdftex.def)             Requested size: 477.78383pt x 341.27415pt.
+df  used on input line 1137.
+(pdftex.def)             Requested size: 511.91125pt x 226.84694pt.
+ [25
 
-Overfull \hbox (80.29884pt too wide) in paragraph at lines 1182--1183
- [][] 
- []
-
-(../../Results/empirical_train_valid_2/empirical_loss_latex.tex) [28 <../../Res
-ults/empirical_missing_threshold/empirical_vimp.pdf>] [29 <../../Results/empiri
-cal_train_valid_1/empirical_all_sample_vi_ind.pdf> <../../Results/empirical_tra
-in_valid_1/empirical_sample_all_vi_macro.pdf>]
-<../../Results/empirical_train_valid_2/empirical_all_sample_vi_ind.pdf, id=567,
- 397.485pt x 284.06125pt>
-File: ../../Results/empirical_train_valid_2/empirical_all_sample_vi_ind.pdf Gra
-phic file (type pdf)
-<use ../../Results/empirical_train_valid_2/empirical_all_sample_vi_ind.pdf>
+ <../../Results/empirical_train_valid_1/empirical_all_sample_vi.pdf>]
+(../../Results/empirical_train_valid_2/empirical_loss_latex.tex)
+<../../Results/empirical_train_valid_2/empirical_all_sample_vi.pdf, id=482, 511
+.9125pt x 255.95625pt>
+File: ../../Results/empirical_train_valid_2/empirical_all_sample_vi.pdf Graphic
+ file (type pdf)
+<use ../../Results/empirical_train_valid_2/empirical_all_sample_vi.pdf>
 Package pdftex.def Info: ../../Results/empirical_train_valid_2/empirical_all_sa
-mple_vi_ind.pdf  used on input line 1199.
-(pdftex.def)             Requested size: 397.48402pt x 284.06053pt.
-<../../Results/empirical_train_valid_2/empirical_sample_all_vi_macro.pdf, id=56
-8, 397.485pt x 284.06125pt>
-File: ../../Results/empirical_train_valid_2/empirical_sample_all_vi_macro.pdf G
-raphic file (type pdf)
-<use ../../Results/empirical_train_valid_2/empirical_sample_all_vi_macro.pdf>
-Package pdftex.def Info: ../../Results/empirical_train_valid_2/empirical_sample
-_all_vi_macro.pdf  used on input line 1204.
-(pdftex.def)             Requested size: 397.48402pt x 284.06053pt.
-<../../Results/empirical_train_valid_2/empirical_vimp.pdf, id=569, 477.785pt x 
-341.275pt>
+mple_vi.pdf  used on input line 1153.
+(pdftex.def)             Requested size: 511.91125pt x 255.95561pt.
+<../../Results/empirical_train_valid_2/empirical_vimp.pdf, id=483, 511.9125pt x
+ 226.8475pt>
 File: ../../Results/empirical_train_valid_2/empirical_vimp.pdf Graphic file (ty
 pe pdf)
 <use ../../Results/empirical_train_valid_2/empirical_vimp.pdf>
 Package pdftex.def Info: ../../Results/empirical_train_valid_2/empirical_vimp.p
-df  used on input line 1211.
-(pdftex.def)             Requested size: 477.78383pt x 341.27415pt.
-
-Overfull \hbox (80.29884pt too wide) in paragraph at lines 1211--1212
- [][] 
- []
-
-(../../Results/empirical_ff/empirical_loss_latex.tex) [30 <../../Results/empiri
-cal_train_valid_1/empirical_vimp.pdf>] [31 <../../Results/empirical_train_valid
-_2/empirical_all_sample_vi_ind.pdf> <../../Results/empirical_train_valid_2/empi
-rical_sample_all_vi_macro.pdf>]
-<../../Results/empirical_ff/empirical_all_sample_vi_ind.pdf, id=601, 397.485pt 
-x 284.06125pt>
-File: ../../Results/empirical_ff/empirical_all_sample_vi_ind.pdf Graphic file (
-type pdf)
-<use ../../Results/empirical_ff/empirical_all_sample_vi_ind.pdf>
-Package pdftex.def Info: ../../Results/empirical_ff/empirical_all_sample_vi_ind
-.pdf  used on input line 1228.
-(pdftex.def)             Requested size: 397.48402pt x 284.06053pt.
-<../../Results/empirical_ff/empirical_sample_all_vi_macro.pdf, id=602, 397.485p
-t x 284.06125pt>
-File: ../../Results/empirical_ff/empirical_sample_all_vi_macro.pdf Graphic file
- (type pdf)
-<use ../../Results/empirical_ff/empirical_sample_all_vi_macro.pdf>
-Package pdftex.def Info: ../../Results/empirical_ff/empirical_sample_all_vi_mac
-ro.pdf  used on input line 1233.
-(pdftex.def)             Requested size: 397.48402pt x 284.06053pt.
-<../../Results/empirical_ff/empirical_vimp.pdf, id=603, 477.785pt x 341.275pt>
+df  used on input line 1160.
+(pdftex.def)             Requested size: 511.91125pt x 226.84694pt.
+ [26 <../../Results/empirical_train_valid_1/empirical_vimp.pdf> <../../Results/
+empirical_train_valid_2/empirical_all_sample_vi.pdf>]
+(../../Results/empirical_ff/empirical_loss_latex.tex)
+<../../Results/empirical_ff/empirical_all_sample_vi.pdf, id=503, 511.9125pt x 2
+55.95625pt>
+File: ../../Results/empirical_ff/empirical_all_sample_vi.pdf Graphic file (type
+ pdf)
+<use ../../Results/empirical_ff/empirical_all_sample_vi.pdf>
+Package pdftex.def Info: ../../Results/empirical_ff/empirical_all_sample_vi.pdf
+  used on input line 1176.
+(pdftex.def)             Requested size: 511.91125pt x 255.95561pt.
+<../../Results/empirical_ff/empirical_vimp.pdf, id=504, 511.9125pt x 226.8475pt
+>
 File: ../../Results/empirical_ff/empirical_vimp.pdf Graphic file (type pdf)
 <use ../../Results/empirical_ff/empirical_vimp.pdf>
 Package pdftex.def Info: ../../Results/empirical_ff/empirical_vimp.pdf  used on
- input line 1240.
-(pdftex.def)             Requested size: 477.78383pt x 341.27415pt.
+ input line 1183.
+(pdftex.def)             Requested size: 511.91125pt x 226.84694pt.
+ [27 <../../Results/empirical_train_valid_2/empirical_vimp.pdf> <../../Results/
+empirical_ff/empirical_all_sample_vi.pdf>] [28 <../../Results/empirical_ff/empi
+rical_vimp.pdf>]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1187.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1187.
 
-Overfull \hbox (80.29884pt too wide) in paragraph at lines 1240--1241
- [][] 
- []
-
-[32 <../../Results/empirical_train_valid_2/empirical_vimp.pdf>] [33 <../../Resu
-lts/empirical_ff/empirical_all_sample_vi_ind.pdf> <../../Results/empirical_ff/e
-mpirical_sample_all_vi_macro.pdf>] [34 <../../Results/empirical_ff/empirical_vi
-mp.pdf>]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1244.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1244.
- (main_20-04-2020.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1244.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1244.
+(main_20-04-2020.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1187.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1187.
 
 Package rerunfilecheck Info: File `main_20-04-2020.out' has not changed.
-(rerunfilecheck)             Checksum: FC4D284E86BE6F6E84A5471A28737D13;2848.
+(rerunfilecheck)             Checksum: 411A906500473D2C0AC68DE5DB0C7946;2861.
 
 
 LaTeX Warning: There were undefined references.
@@ -1738,14 +1627,14 @@ LaTeX Warning: There were undefined references.
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1244.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1187.
  ) 
 Here is how much of TeX's memory you used:
- 33312 strings out of 481522
- 759033 string characters out of 2922315
- 1189195 words of memory out of 3000000
- 47441 multiletter control sequences out of 15000+200000
- 593226 words of font info for 256 fonts, out of 3000000 for 9000
+ 33237 strings out of 481522
+ 755047 string characters out of 2922315
+ 1179193 words of memory out of 3000000
+ 47391 multiletter control sequences out of 15000+200000
+ 593096 words of font info for 254 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
  63i,11n,98p,1479b,609s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/base/8r.enc} <C:\Users\Zeyu Zhon
@@ -1769,9 +1658,9 @@ sbm10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/helvetic/uhvr8a.pfb><C:/
 Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmb8a.pfb><C:/Program Files/MiK
 TeX 2.9/fonts/type1/urw/times/utmr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/typ
 e1/urw/times/utmri8a.pfb>
-Output written on main_20-04-2020.pdf (34 pages, 544967 bytes).
+Output written on main_20-04-2020.pdf (28 pages, 489803 bytes).
 PDF statistics:
- 805 PDF objects out of 1000 (max. 8388607)
- 176 named destinations out of 1000 (max. 500000)
- 31192 words of extra memory for PDF output out of 35830 (max. 10000000)
+ 693 PDF objects out of 1000 (max. 8388607)
+ 160 named destinations out of 1000 (max. 500000)
+ 31142 words of extra memory for PDF output out of 35830 (max. 10000000)
 

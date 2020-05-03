@@ -344,7 +344,6 @@ We mimic the sample splitting procedure used in the simulation study: the datase
 In general, the empirical results are in remarkable agreement with the those obtained in the simulation study: the penalized linear models general perform the best, with the random forest models offering slightly worse performance. Machine learning models fitted with respect to median quantile loss were similarly observed to typically offer improvements across all machine learning models across all loss metrics. 
 
 \paragraph{Prediction Accuracy}
-
 In general the results of the simulation study were repeated: the elastic net models perform the best, followed by the random forests, then the DFNs, and finally the linear models. We note that the differences between each model using the MSE and MAE loss metrics are much more pronounced on empirical data. Even so, the predictive performance between the elastic net models and the quantile random forests is not particularly large, and we observe the quantile random forests outperforming the elastic nets in the first data sample. We similarly see that machine learning models perform better when fitted with respect to quantile loss instead of MSE. Most notably, we start to see the neural network models performing poorly on the empirical data, a direct contradiction to what has been reported in the literature.
 
 %% Change this to be much smaller, fixed!
@@ -355,7 +354,6 @@ The non-robustness of DFNs is amplified on the empirical dataset. This was obser
 % Interestingly, we do not observe worsening performance as the training sample increases as we did in the simulation study. This suggests that the simulation design may have been too volatile when compared to the specific empirical time periods examined.
 
 \paragraph{Factor Importance}
-
 As the data generating process for empirical returns is unknown, the variable importance results cannot be directly compared with those of the simulation study. Even so, we see similar results: the elastic net and random forest models tend to agree on the same subset of predictors, but the random forest struggles to discern between highly correlated regressors. Similar to the prediction performance results, neural networks perform poorly.
 
 \begin{figure}[!htb]
@@ -365,13 +363,11 @@ As the data generating process for empirical returns is unknown, the variable im
 	\floatfoot{Individual factors shown on x axis (see Table \ref{ind_factors} in Appendix for definitions)}
 \end{figure}
 
-The two top performing models of elastic net and random forest consistently pick out the 1 month and 6 month momentum factors out of the individual characteristics as important, and the book-to-market and default yield spread factors out of the macroeconomic factors are important. In general, the variable importance metrics are less consistent for the random forests, and it should be noted in particular that the random forest tends to determine factors highly correlated with momentum as important, such as change in momentum, dollar trading volume and return volatility. Within the macroeconomic factors, penalized linear models tend to identify the average book to market ratio and the default spread as the most important. The random forests were inconsistent with the elastic nets, and tended to assign very similar variable importance metrics to most macroeconomic factors.
-
-The neural networks tended to believe that the market value factor was the most important among the individual factors, a result not repeated by any of the other models considered. Within the macroeconomic factors, the neural networks identified the dividend-price ratio and earnings-price ratio as the most important among the macroeconomic factors, though these results were non-robust.
+The elastic net, random forest and to a lesser extent DFNs tend to pick out the max return and 1 month momentum factors out of the individual characteristics as important, and the book-to-market factor out of the macroeconomic factors are important. In general, the variable importance metrics are less consistent for the random forests, and it should be noted in particular that the random forest tends to determine factors highly correlated with momentum as important, such as change in momentum, dollar trading volume and return volatility. Within the macroeconomic factors, penalized linear models tend to identify the average book to market ratio and the default spread as the most important. The random forests were inconsistent with the elastic nets, and tended to assign very similar variable importance metrics to most macroeconomic factors.
 
 Interestingly, the linear models assign the controversial dividend price ratio macroeconomic factor as highly important, a result mirrored only with the neural networks. Their variable importance for individual factors across different training samples is non-robust, with the important variables almost completely changing year to year. The linear models consistently identified the controversial dividend-price ratio as important, a result that was somewhat consistent with the neural networks. 
 
-The overall results again contradict the results of \cite{gu_empirical_2018}, who conclude that all of the machine methods agree on the same subset of important factors. Indeed, we only see consistency in variable importance between the elastic nets and random forests on the individual factors only - all other variable importance metrics were either inconsistent between different models, or non-robust.
+The overall results again contradict the results of \cite{gu_empirical_2018}, who conclude that all of the machine methods agree on the same subset of important factors. Indeed, we only see mild consistency in variable importance between the elastic nets and random forests on the individual factors only - all other variable importance metrics were either inconsistent between different models, or non-robust.
 
 %All models considered typically preferred sparse parameterizations. That is, most if not all of the individual factors had little to no importance across all models.\footnote{Note that because the variable importance here was not evaluated explicitly for each pairwise interaction term, some of the individual factors appear as slightly important. This is because setting an individual factor to zero also sets some of the macroeconomic pairwise terms to zero, increasing its apparent importance.}
 
@@ -936,7 +932,9 @@ If viewed as monthly periods, $T = 180$ corresponds to 15 years. A data splittin
 	\label{sample_split_diag}
 \end{figure}
 
-Other schemes in the forecasting literature such as using an ``inner" rolling window validation loop to find the best hyperparameters on average, finally aggregating them in an ``outer" loop for a more robust error were considered but not implemented for a variety of reasons. Firstly, many of the models were computationally too intensive for this to be feasible. More importantly, during the model fitting process it was observed that the optimal hyperparameters for the different rolling windows were highly unstable. Thus, this would have made the selection of the best hyperparameters on average across all windows significantly less meaningful.
+Other schemes in the forecasting literature such as using an ``inner" rolling window validation loop to find the best hyperparameters on average, finally aggregating them in an ``outer" loop for a more robust error were considered but not implemented due to a) computational feasibility and b) the relative instability of optimal hyperparameters across different different windows.
+
+\newpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Simulation Study Results}
@@ -947,42 +945,24 @@ Other schemes in the forecasting literature such as using an ``inner" rolling wi
 %% May need to resize/re-generate this table so that it fits better
 \input{../../Results/simulation/test_loss_latex.tex}
 
+\FloatBarrier
+
 \subsection{Random Forest VIMPs}
 
-We note that random forest methods typically have their own built-in ways to calculate variable importance which are different to the variable importance metric presented in the main body of the paper. Here we provide two popular schemes of calculating random forest variable importance metrics - Breiman-cutler VIMP (traditional) and Ishwarlan-Kogalur VIMP. Importantly, the overall conclusion regarding factor selection does not change with respect to which vimp methodology employed.
+We note that random forest methods typically have their own methodologies to calculate variable importance which are different to the variable importance metric presented in the main body of the paper. Here we provide two popular schemes of calculating random forest variable importance metrics - Breiman-cutler VIMP (traditional) and Ishwaran-Kogalur VIMP, and show that importantly, the overall conclusion regarding factor selection does not change with respect to which vimp methodology employed.
 
 %% Re-generate or resize these graphs
 
 \begin{figure}
-	\includegraphics[]{../../Results/simulation/graphics/simulation_g1_vimp_bc.pdf}
-	\caption{g1 BC VIMP}
-\end{figure}
-
-\begin{figure}
-	\includegraphics[]{../../Results/simulation/graphics/simulation_g2_vimp_bc.pdf}
-	\caption{g2 BC VIMP}
-\end{figure}
-
-\begin{figure}
-	\includegraphics[]{../../Results/simulation/graphics/simulation_g3_vimp_bc.pdf}
-	\caption{g3 BC VIMP}
+	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/simulation/graphics/simulation_g_vimp_bc.pdf}
+	\caption{Simulation Breiman-Cutler vimps}
 \end{figure}
 
 %%IK
 
 \begin{figure}
-	\includegraphics[]{../../Results/simulation/graphics/simulation_g1_vimp_ik.pdf}
-	\caption{g1 IK VIMP}
-\end{figure}
-
-\begin{figure}
-	\includegraphics[]{../../Results/simulation/graphics/simulation_g2_vimp_ik.pdf}
-	\caption{g2 IK VIMP}
-\end{figure}
-
-\begin{figure}
-	\includegraphics[]{../../Results/simulation/graphics/simulation_g3_vimp_ik.pdf}
-	\caption{g3 IK VIMP}
+	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/simulation/graphics/simulation_g_vimp_ik.pdf}
+	\caption{Simulation Ishwaran-Kogalur vimps}
 \end{figure}
 
 \newpage
@@ -993,21 +973,19 @@ We note that random forest methods typically have their own built-in ways to cal
 
 \subsection{Data \& cleaning}
 
-We begin by obtaining monthly individual price data from CRSP for all firms listed in the NYSE, AMEX and NASDAQ, starting from 1957 (starting date of the S\&P 500) and ending in December 2016, totalling 60 years. To build individual factors, we construct a factor set based on the cross section of returns literature. This data was sourced from and is the same data used in \cite{gu_empirical_2018}. Like our initial returns sample, it begins in March 1957 and ends in December 2016, totalling 60 years. It contains 94 stock level characteristics: 61 updated annually, 13 updated quarterly and 20 updated monthly, in addition to 74 industry dummies corresponding the the first two digits of the Standard Industrial Classification (SIC) codes. It is noted that this dataset so far contains all securities traded, including those with a CRSP share code other than 10 or 11 and thus includes instruments such as REITs and mutual funds, and those with a share price of less than \$5.
+We begin by obtaining monthly individual price data from CRSP for all firms listed in the NYSE, AMEX and NASDAQ, starting from 1957 (starting date of the S\&P 500) and ending in December 2016, totalling 60 years. To build individual factors, we construct a factor set based on the cross section of returns literature. This data was sourced from and is the same data used in \cite{gu_empirical_2018}. Like our initial returns sample, it begins in March 1957 and ends in December 2016, totalling 60 years. It contains 94 stock level characteristics: 61 updated annually, 13 updated quarterly and 20 updated monthly, in addition to 74 industry dummies corresponding the the first two digits of the Standard Industrial Classification (SIC) codes. The dataset so far contains all securities traded, including those with a CRSP share code other than 10 or 11 and thus includes instruments such as REITs and mutual funds, and those with a share price of less than \$5.
 
 % Begin Cleaning
 
-To reduce the size of the dataset and increase feasibility, the dataset was filtered such that only stocks traded primarily on NASDAQ were included (using the PRIMEXCH variable from WRDS). Then, penny stocks (also referred to as microcaps in the literature) with a stock price of less than \$5 were filtered out, as is commonly done in the literature to reduce variability. Stocks without a share code of 10 or 11 (referring to equities) were filtered out, so that securities that are not equities were not included (such as REITs and trust funds). The dataset is provided in a monthly format, which means that many of the factors which are updated only quarterly or annually have very low levels of variability, which can lead to misleading results in the model fitting process. To achieve a balance between having a dataset with enough data points and variability among factors, the dataset was converted to a quarterly format. Quarterly returns were then constructed using the PRC variable according to actual returns (ie not logged differences):
-
+To reduce the size of the dataset and increase feasibility, the dataset was filtered such that only stocks traded primarily on NASDAQ were included (using the PRIMEXCH variable from WRDS). Then, penny stocks (also referred to as microcaps in the literature) with a stock price of less than \$5 were filtered out, as is commonly done in the literature to reduce variability. Stocks without a share code of 10 or 11 (referring to equities) were filtered out, so that securities that are not equities were not included (such as REITs and trust funds). The monthly updated dataset was then converted to a quarterly format, to achieve a balance between having a dataset with enough data points and variability among factors. Quarterly returns were then constructed using the PRC variable according to actual returns:
 \begin{equation}
-RET_t = \frac{PRC_t - PRC_{t-1}}{PRC_{t-1}}
+RET_t = (PRC_t - PRC_{t-1})/PRC_{t-1}
 \end{equation}
-
 We allow all stocks which have a quarterly return to enter the dataset, even if they disappear from the dataset for certain periods, as opposed to only keeping stocks which appear continuously throughout the entire period. This was primarily done to reduce survivorship bias in the dataset, which can be very prevalent in financial data, and also allows for stocks which were unlisted and relisted again to feature in the dataset. 
 
-The sic2 variable, corresponding to the stocks' Standard Industrial Classification (SIC) codes was also dropped. The SIC code system suffers from inconsistent logic in classifying companies, and as a system built for pre-1970s traditional industries has been slow in recognizing new and emerging industries. Indeed, WRDS explicitly cautions the use of SIC codes beyond the use of rough grouping of industries, warning that SIC codes are not strictly enforced by government agencies for accuracy, in addition to most large companies belonging to multiple SIC codes over time. Because of this latter point in particular, there can be inconsistencies on the correct SIC code for the same company depending on the data source. Dropping the sic2 variable also reduced the dimensionality of the dataset by 74 columns, significant increasing computational feasibility.
+The sic2 variable, corresponding to the stocks' Standard Industrial Classification (SIC) codes was dropped. The SIC code system suffers from inconsistent logic in classifying companies, and as a system built for pre-1970s traditional industries has been slow in recognizing new and emerging industries. Indeed, WRDS explicitly cautions the use of SIC codes beyond the use of rough grouping of industries, warning that SIC codes are not strictly enforced by government agencies for accuracy, in addition to most large companies belonging to multiple SIC codes over time. Because of this latter point in particular, there can be inconsistencies on the correct SIC code for the same company depending on the data source. Dropping the sic2 variable also reduced the dimensionality of the dataset by 74 columns, significantly increasing computational feasibility.
 
-There existed a significant amount of missing data in the dataset. The dataset's columns were first examined, and any characteristics that had over 20\% of their data were removed. However, as the amount of missing data increases dramatically going further back in time, a balance between using more periods at the cost of removing more characteristics versus using less periods but keeping more characteristics was needed. 1993 Q3 was determined to be a reasonable time frame to begin the dataset, as there was a noticeable increase in data availability and quality after this time.  Missing characteristics were then imputed using their cross sectional medians for each year. 
+There existed a significant amount of missing data in the dataset. For the main empirical study, any characteristics that had over 20\% of their data were removed, and remaining missing data points were then imputed with their cross sectional medians. However, as the amount of missing data increases dramatically going further back in time, a balance between using more periods at the cost of removing more characteristics versus using less periods but keeping more characteristics was needed. 1993 Q3 was determined to be a reasonable time frame to begin the dataset due to a noticeable increase in data quality.
 
 We then follow \cite{gu_empirical_2018} and construct eight macroeconomic factors following the variable definitions in \cite{welch_comprehensive_2008}. These factors were lagged by one period so as to be used to predict one period ahead quarterly returns. The treasury bill rate was also used from this source to proxy for the risk free rate in order to construct excess quarterly returns. 
 
@@ -1086,7 +1064,7 @@ We mimic the procedure used in the simulation study. For the sample splitting pr
 
 \newpage
 
-\subsection{Empirical study robustness checks}
+\subsection{Empirical study robustness checks \& results}
 
 In addition to the main study, we provide four additional robustness checks for our empirical study, with regards to different training/validation splitting schemes, missing data imputation and additional regressors. Importantly, our overall results are consistent across all checks.
 
@@ -1100,8 +1078,6 @@ We consider changing the missing data threshold to be 10\% - that is, any regres
 We finally consider supplementing our macroeconomic regressor set with the five Fama-French factors. 
 
 \subsection{Empirical Data Results}
-
-%% Tables look a little strange - need to investigate
 %% Need to redo graphs as they are currently too big
 
 \subsubsection{Prediction Accuracy}
@@ -1109,48 +1085,32 @@ We finally consider supplementing our macroeconomic regressor set with the five 
 %% Comprehensive Results
 \input{../../Results/empirical/empirical_loss_latex.tex}
 
-%% Factor Importance
-
-\begin{figure}
-	\includegraphics[]{../../Results/empirical/empirical_all_sample_vi_ind.pdf}
-	\caption{Individual Factor Importance}
-\end{figure}
-
-\begin{figure}
-	\includegraphics[]{../../Results/empirical/empirical_sample_all_vi_macro.pdf}
-	\caption{Macroeconomic Factor Importance}
-\end{figure}
-
 %% RF Vimps
-
+%% Redo this graph
 \begin{figure}
-	\includegraphics[]{../../Results/empirical/empirical_vimp.pdf}
-	\caption{Robustness Check RF VIMP}
+	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical/empirical_vimp.pdf}
+	\caption{Empirical study random forest vimps}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Missing Data Threshold Robustness Check
 % Loss Stats
+\FloatBarrier
 \input{../../Results/empirical_missing_threshold/empirical_loss_latex.tex}
-
 \FloatBarrier
 
 %% Factor Importance
+%% Redo these
 
 \begin{figure}
-	\includegraphics[]{../../Results/empirical_missing_threshold/empirical_all_sample_vi_ind.pdf}
+	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_missing_threshold/empirical_all_sample_vi.pdf}
 	\caption{Missing Data Threshold Robustness Check Individual Factor Importance}
-\end{figure}
-
-\begin{figure}
-	\includegraphics[]{../../Results/empirical_missing_threshold/empirical_sample_all_vi_macro.pdf}
-	\caption{Missing Data Threshold Robustness Check Macroeconomic Factor Importance}
 \end{figure}
 
 %% RF Vimps
 
 \begin{figure}
-	\includegraphics[]{../../Results/empirical_missing_threshold/empirical_vimp.pdf}
+	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_missing_threshold/empirical_vimp.pdf}
 	\caption{Missing Data Threshold Robustness Check RF VIMP}
 \end{figure}
 
@@ -1160,26 +1120,21 @@ We finally consider supplementing our macroeconomic regressor set with the five 
 
 %% Loss Stats
 
+\FloatBarrier
 \input{../../Results/empirical_train_valid_1/empirical_loss_latex.tex}
-
 \FloatBarrier
 
 %% Factor Importance
 
 \begin{figure}
-	\includegraphics[]{../../Results/empirical_train_valid_1/empirical_all_sample_vi_ind.pdf}
+	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_train_valid_1/empirical_all_sample_vi.pdf}
 	\caption{{Train:Validation = 1:1 Robustness Check Individual Factor Importance}}
-\end{figure}
-
-\begin{figure}
-	\includegraphics[]{../../Results/empirical_train_valid_1/empirical_sample_all_vi_macro.pdf}
-	\caption{{Train:Validation = 1:1 Robustness Check Macroeconomic Factor Importance}}
 \end{figure}
 
 %% RF Vimps
 
 \begin{figure}
-	\includegraphics[]{../../Results/empirical_train_valid_1/empirical_vimp.pdf}
+	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_train_valid_1/empirical_vimp.pdf}
 	\caption{{Train:Validation = 1:1 Robustness Check RF VIMP}}
 \end{figure}
 
@@ -1188,27 +1143,21 @@ We finally consider supplementing our macroeconomic regressor set with the five 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Loss Stats
-
+\FloatBarrier
 \input{../../Results/empirical_train_valid_2/empirical_loss_latex.tex}
-
 \FloatBarrier
 
 %% Factor Importance
 
 \begin{figure}
-	\includegraphics[]{../../Results/empirical_train_valid_2/empirical_all_sample_vi_ind.pdf}
+	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_train_valid_2/empirical_all_sample_vi.pdf}
 	\caption{Train:Validation = 2:1 Robustness Check Individual Factor Importance}
-\end{figure}
-
-\begin{figure}
-	\includegraphics[]{../../Results/empirical_train_valid_2/empirical_sample_all_vi_macro.pdf}
-	\caption{Train:Validation = 2:1 Robustness Check Macroeconomic Factor Importance}
 \end{figure}
 
 %% RF Vimps
 
 \begin{figure}
-	\includegraphics[]{../../Results/empirical_train_valid_2/empirical_vimp.pdf}
+	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_train_valid_2/empirical_vimp.pdf}
 	\caption{Train:Validation = 2:1 Robustness Check RF VIMP}
 \end{figure}
 
@@ -1217,27 +1166,21 @@ We finally consider supplementing our macroeconomic regressor set with the five 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Loss Stats
-
+\FloatBarrier
 \input{../../Results/empirical_ff/empirical_loss_latex.tex}
-
 \FloatBarrier
 
 %% Factor Importance
 
 \begin{figure}
-	\includegraphics[]{../../Results/empirical_ff/empirical_all_sample_vi_ind.pdf}
+	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_ff/empirical_all_sample_vi.pdf}
 	\caption{Fama French Factors Robustness Check Individual Factor Importance}
-\end{figure}
-
-\begin{figure}
-	\includegraphics[]{../../Results/empirical_ff/empirical_sample_all_vi_macro.pdf}
-	\caption{Fama French Factors Robustness Check Macroeconomic Factor Importance}
 \end{figure}
 
 %% RF Vimps
 
 \begin{figure}
-	\includegraphics[]{../../Results/empirical_ff/empirical_vimp.pdf}
+	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_ff/empirical_vimp.pdf}
 	\caption{Fama French Factors Robustness Check RF VIMP}
 \end{figure}
 

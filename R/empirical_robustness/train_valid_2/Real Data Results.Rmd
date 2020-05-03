@@ -381,8 +381,6 @@ write.csv(empirical_tidy_vi_macro, file = "~/GitHub/Evaluation-of-Machine-Learni
 ```
 
 ```{r vi_plots}
-## Plot this
-
 ## A4 aspect ratio
 
 a4_aspect_ratio <- 1.4
@@ -398,8 +396,11 @@ top_variables <- empirical_tidy_vi_ind %>%
   pull() %>%
   as.vector()
 
+top_models <- c("ELN_MAE", "RF_MAE", "NN5_MAE", "NN4_MAE", "NN3_MAE")
+
 ## All sample variable importance
-empirical_tidy_vi_ind %>%
+empirical_vi_ind_plot <- empirical_tidy_vi_ind %>%
+  #filter(model %in% top_models) %>%
   # Average importance over all training samples
   group_by(model, variable) %>%
   summarise(importance = mean(importance)) %>%
@@ -408,30 +409,40 @@ empirical_tidy_vi_ind %>%
   ggplot() +
   geom_tile(aes(x = variable, y = model, fill = importance)) +
   theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(axis.text.x = element_text(size = rel(0.9), angle = 90, hjust = 1)) +
+  theme(axis.text.y = element_text(size = rel(0.9))) +
   theme(legend.position = "right") +
-  scale_fill_distiller(palette = "Spectral")
+  scale_fill_distiller(palette = "Spectral",
+                       limits = c(min(empirical_tidy_vi_all$importance), 
+                                  max(empirical_tidy_vi_all$importance))) +
+  ggtitle("Individual factors")
 ggsave(filename= "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_train_valid_2/empirical_all_sample_vi_ind.pdf", 
-       width = 10 * a4_aspect_ratio, height = 10, units = "cm")
-
-```
-
-```{r vi_macro_plots}
-a4_aspect_ratio <- 1.4
+       width = 12, height = 5, units = "cm")
 
 ## All sample variable importance
-empirical_tidy_vi_macro %>%
+empirical_vi_macro_plot <- empirical_tidy_vi_macro %>%
+  #filter(model %in% top_models) %>%
   # Average importance over all training samples
   group_by(model, variable) %>%
   summarise(importance = mean(importance)) %>%
   ggplot() +
   geom_tile(aes(x = variable, y = model, fill = importance)) +
   theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(axis.text.x = element_text(size = rel(0.9), angle = 90, hjust = 1)) +
+  theme(axis.text.y = element_text(size = rel(0.9))) +
   theme(legend.position = "right") +
-  scale_fill_distiller(palette = "Spectral")
-ggsave(filename= "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_train_valid_2/empirical_sample_all_vi_macro.pdf", 
-       width = 10  * a4_aspect_ratio, height = 10, units = "cm")
+  scale_fill_distiller(palette = "Spectral",
+                       limits = c(min(empirical_tidy_vi_all$importance), 
+                                  max(empirical_tidy_vi_all$importance))) +
+  ggtitle("Macro factors")
+ggsave(filename= "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_train_valid_2/empirical_all_sample_vi_macro.pdf", 
+       width = 8, height = 5, units = "cm")
+
+empirical_vi_ind_plot + empirical_vi_macro_plot +
+  plot_layout(guides = 'collect') +
+  plot_layout(widths = c(2, 1))
+ggsave(filename= "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_train_valid_2/empirical_all_sample_vi.pdf", width = 18, height = 9, units = "cm")
+
 ```
 
 ```{r}
@@ -484,12 +495,12 @@ tidy_vimp_df_sam %>%
   ggplot() +
   geom_tile(aes(x = variable, y = model, fill = importance)) +
   theme_bw() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  theme(axis.text.x = element_text(size = rel(0.9), angle = 90, hjust = 1)) +
   theme(legend.position = "right") +
   scale_fill_distiller(palette = "Spectral") +
   facet_grid(rows = vars(type))
 ggsave(filename= "~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/Results/empirical_train_valid_2/empirical_vimp.pdf", 
-       width = 12 * a4_aspect_ratio, height = 12, units = "cm")
+       width = 18, height = 8, units = "cm")
 
 ###########################
 ## Latex Table Approach
