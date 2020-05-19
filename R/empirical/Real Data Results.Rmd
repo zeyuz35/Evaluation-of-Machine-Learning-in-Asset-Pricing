@@ -147,7 +147,7 @@ empirical_loss_latex <- cbind(empirical_results_model,
                               empirical_results_df_sam_1, 
                               empirical_results_df_sam_2, 
                               empirical_results_df_sam_3) %>%
-  kable(align = "c", format = "latex", booktabs = T, 
+  kable(align = "c", format = "latex", booktabs = T, linesep = "",
         escape = F, digits = 6,
         caption = "Empirical Study Loss Statistics") %>%
   add_header_above(c(" " = 1, "Sample 1" = 3, "Sample 2" = 3, "Sample 3" = 3)) %>%
@@ -210,7 +210,7 @@ empirical_loss_latex <- cbind(top_models_fix,
                               empirical_results_df_sam_1, 
                               empirical_results_df_sam_2, 
                               empirical_results_df_sam_3) %>%
-  kable(align = "c", format = "latex", booktabs = T, 
+  kable(align = "c", format = "latex", booktabs = T, linesep = "",
         escape = F, digits = 6,
         caption = "Top 5 models in empirical study") %>%
   add_header_above(c(" " = 1, "Sample 1" = 3, "Sample 2" = 3, "Sample 3" = 3)) %>%
@@ -557,7 +557,7 @@ tidy_vimp_df_sam %>%
   ggplot() +
   geom_tile(aes(x = variable, y = model, fill = importance)) +
   theme_bw() +
-  theme(axis.text.x = element_text(size = rel(0.9), angle = 90, hjust = 1)) +
+  theme(axis.text.x = element_text(size = rel(0.8), angle = 90, hjust = 1)) +
   theme(legend.position = "right") +
   scale_fill_distiller(palette = "Spectral") +
   facet_grid(rows = vars(type))
