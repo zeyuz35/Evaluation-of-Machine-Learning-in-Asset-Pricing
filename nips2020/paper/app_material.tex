@@ -1,0 +1,919 @@
+\documentclass{article}
+% if you need to pass options to natbib, use, e.g.:
+\PassOptionsToPackage{numbers, compress}{natbib}
+% before loading neurips_2020
+
+% ready for submission
+% \usepackage{neurips_2020}
+
+% to compile a preprint version, e.g., for submission to arXiv, add add the
+% [preprint] option:
+%     \usepackage[preprint]{neurips_2020}
+
+% to compile a camera-ready version, add the [final] option, e.g.:
+%     \usepackage[final]{neurips_2020}
+
+% to avoid loading the natbib package, add option nonatbib:
+\usepackage[nonatbib]{neurips_2020}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{amssymb}
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{amsmath}
+%Graphs
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage[export]{adjustbox}
+\usepackage{xcolor,colortbl}
+\usepackage[capposition=top]{floatrow}
+\hypersetup{
+	colorlinks,
+	linkcolor = {red!50!black},
+	citecolor = {blue!50!black},
+	urlcolor = {blue!80!black}
+}
+
+\usepackage{lscape}
+\usepackage{longtable}
+\usepackage{placeins}
+\usepackage{floatrow}
+
+\title{Evaluation of Machine Learning in Empirical Asset Pricing}
+
+% The \author macro works with any number of authors. There are two commands
+% used to separate the names and addresses of multiple authors: \And and \AND.
+%
+% Using \And between authors leaves it to LaTeX to determine where to break the
+% lines. Using \AND forces a line break at that point. So, if LaTeX puts 3 of 4
+% authors names on the first line, and the last on the second line, try using
+% \AND instead of \And before the third author name.
+
+\author{%
+	David S.~Hippocampus\thanks{Use footnote for providing further information
+		about author (webpage, alternative address)---\emph{not} for acknowledging
+		funding agencies.} \\
+	Department of Computer Science\\
+	Cranberry-Lemon University\\
+	Pittsburgh, PA 15213 \\
+	\texttt{hippo@cs.cranberry-lemon.edu} \\
+	% examples of more authors
+	% \And
+	% Coauthor \\
+	% Affiliation \\
+	% Address \\
+	% \texttt{email} \\
+	% \AND
+	% Coauthor \\
+	% Affiliation \\
+	% Address \\
+	% \texttt{email} \\
+	% \And
+	% Coauthor \\
+	% Affiliation \\
+	% Address \\
+	% \texttt{email} \\
+	% \And
+	% Coauthor \\
+	% Affiliation \\
+	% Address \\
+	% \texttt{email} \\
+}
+
+%Graphs
+\usepackage{tikz}
+\usepackage[export]{adjustbox}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{booktabs}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+
+%% Macros
+\newcommand{\z}[2]{z_{#1, #2}}
+\newcommand{\xbf}{\mathbf{x}}
+\newcommand{\zVec}[3]{\mathbf{z}_{#1, #2:#3}}
+\newcommand{\xVec}[3]{\mathbf{x}_{#1, #2:#3}}
+\newcommand{\hVec}{\mathbf{h}}
+
+\begin{document}
+	
+	\maketitle
+\newpage
+
+\subsection{Retrieval of style files}
+
+The style files for NeurIPS and other conference information are available on
+the World Wide Web at
+\begin{center}
+  \url{http://www.neurips.cc/}
+\end{center}
+The file \verb+neurips_2020.pdf+ contains these instructions and illustrates the
+various formatting requirements your NeurIPS paper must satisfy.
+
+The only supported style file for NeurIPS 2020 is \verb+neurips_2020.sty+,
+rewritten for \LaTeXe{}.  \textbf{Previous style files for \LaTeX{} 2.09,
+  Microsoft Word, and RTF are no longer supported!}
+
+The \LaTeX{} style file contains three optional arguments: \verb+final+, which
+creates a camera-ready copy, \verb+preprint+, which creates a preprint for
+submission to, e.g., arXiv, and \verb+nonatbib+, which will not load the
+\verb+natbib+ package for you in case of package clash.
+
+\paragraph{Preprint option}
+If you wish to post a preprint of your work online, e.g., on arXiv, using the
+NeurIPS style, please use the \verb+preprint+ option. This will create a
+nonanonymized version of your work with the text ``Preprint. Work in progress.''
+in the footer. This version may be distributed as you see fit. Please \textbf{do
+  not} use the \verb+final+ option, which should \textbf{only} be used for
+papers accepted to NeurIPS.
+
+At submission time, please omit the \verb+final+ and \verb+preprint+
+options. This will anonymize your submission and add line numbers to aid
+review. Please do \emph{not} refer to these line numbers in your paper as they
+will be removed during generation of camera-ready copies.
+
+The file \verb+neurips_2020.tex+ may be used as a ``shell'' for writing your
+paper. All you have to do is replace the author, title, abstract, and text of
+the paper with your own.
+
+The formatting instructions contained in these style files are summarized in
+Sections \ref{gen_inst}, \ref{headings}, and \ref{others} below.
+
+\section{General formatting instructions}
+\label{gen_inst}
+
+The text must be confined within a rectangle 5.5~inches (33~picas) wide and
+9~inches (54~picas) long. The left margin is 1.5~inch (9~picas).  Use 10~point
+type with a vertical spacing (leading) of 11~points.  Times New Roman is the
+preferred typeface throughout, and will be selected for you by default.
+Paragraphs are separated by \nicefrac{1}{2}~line space (5.5 points), with no
+indentation.
+
+The paper title should be 17~point, initial caps/lower case, bold, centered
+between two horizontal rules. The top rule should be 4~points thick and the
+bottom rule should be 1~point thick. Allow \nicefrac{1}{4}~inch space above and
+below the title to rules. All pages should start at 1~inch (6~picas) from the
+top of the page.
+
+For the final version, authors' names are set in boldface, and each name is
+centered above the corresponding address. The lead author's name is to be listed
+first (left-most), and the co-authors' names (if different address) are set to
+follow. If there is only one co-author, list both author and co-author side by
+side.
+
+Please pay special attention to the instructions in Section \ref{others}
+regarding figures, tables, acknowledgments, and references.
+
+\section{Headings: first level}
+\label{headings}
+
+All headings should be lower case (except for first word and proper nouns),
+flush left, and bold.
+
+First-level headings should be in 12-point type.
+
+\subsection{Headings: second level}
+
+Second-level headings should be in 10-point type.
+
+\subsubsection{Headings: third level}
+
+Third-level headings should be in 10-point type.
+
+\paragraph{Paragraphs}
+
+There is also a \verb+\paragraph+ command available, which sets the heading in
+bold, flush left, and inline with the text, with the heading followed by 1\,em
+of space.
+
+\section{Citations, figures, tables, references}
+\label{others}
+
+These instructions apply to everyone.
+
+\subsection{Citations within the text}
+
+The \verb+natbib+ package will be loaded for you by default.  Citations may be
+author/year or numeric, as long as you maintain internal consistency.  As to the
+format of the references themselves, any style is acceptable as long as it is
+used consistently.
+
+The documentation for \verb+natbib+ may be found at
+\begin{center}
+  \url{http://mirrors.ctan.org/macros/latex/contrib/natbib/natnotes.pdf}
+\end{center}
+Of note is the command \verb+\citet+, which produces citations appropriate for
+use in inline text.  For example,
+\begin{verbatim}
+   \citet{hasselmo} investigated\dots
+\end{verbatim}
+produces
+\begin{quote}
+  Hasselmo, et al.\ (1995) investigated\dots
+\end{quote}
+
+If you wish to load the \verb+natbib+ package with options, you may add the
+following before loading the \verb+neurips_2020+ package:
+\begin{verbatim}
+   \PassOptionsToPackage{options}{natbib}
+\end{verbatim}
+
+If \verb+natbib+ clashes with another package you load, you can add the optional
+argument \verb+nonatbib+ when loading the style file:
+\begin{verbatim}
+   \usepackage[nonatbib]{neurips_2020}
+\end{verbatim}
+
+As submission is double blind, refer to your own published work in the third
+person. That is, use ``In the previous work of Jones et al.\ [4],'' not ``In our
+previous work [4].'' If you cite your other papers that are not widely available
+(e.g., a journal paper under review), use anonymous author names in the
+citation, e.g., an author of the form ``A.\ Anonymous.''
+
+\subsection{Footnotes}
+
+Footnotes should be used sparingly.  If you do require a footnote, indicate
+footnotes with a number\footnote{Sample of the first footnote.} in the
+text. Place the footnotes at the bottom of the page on which they appear.
+Precede the footnote with a horizontal rule of 2~inches (12~picas).
+
+Note that footnotes are properly typeset \emph{after} punctuation
+marks.\footnote{As in this example.}
+
+\subsection{Figures}
+
+\begin{figure}
+  \centering
+  \fbox{\rule[-.5cm]{0cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
+  \caption{Sample figure caption.}
+\end{figure}
+
+All artwork must be neat, clean, and legible. Lines should be dark enough for
+purposes of reproduction. The figure number and caption always appear after the
+figure. Place one line space before the figure caption and one line space after
+the figure. The figure caption should be lower case (except for first word and
+proper nouns); figures are numbered consecutively.
+
+You may use color figures.  However, it is best for the figure captions and the
+paper body to be legible if the paper is printed in either black/white or in
+color.
+
+\subsection{Tables}
+
+All tables must be centered, neat, clean and legible.  The table number and
+title always appear before the table.  See Table~\ref{sample-table}.
+
+Place one line space before the table title, one line space after the
+table title, and one line space after the table. The table title must
+be lower case (except for first word and proper nouns); tables are
+numbered consecutively.
+
+Note that publication-quality tables \emph{do not contain vertical rules.} We
+strongly suggest the use of the \verb+booktabs+ package, which allows for
+typesetting high-quality, professional tables:
+\begin{center}
+  \url{https://www.ctan.org/pkg/booktabs}
+\end{center}
+This package was used to typeset Table~\ref{sample-table}.
+
+\begin{table}
+  \caption{Sample table title}
+  \label{sample-table}
+  \centering
+  \begin{tabular}{lll}
+    \toprule
+    \multicolumn{2}{c}{Part}                   \\
+    \cmidrule(r){1-2}
+    Name     & Description     & Size ($\mu$m) \\
+    \midrule
+    Dendrite & Input terminal  & $\sim$100     \\
+    Axon     & Output terminal & $\sim$10      \\
+    Soma     & Cell body       & up to $10^6$  \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{Final instructions}
+
+Do not change any aspects of the formatting parameters in the style files.  In
+particular, do not modify the width or length of the rectangle the text should
+fit into, and do not change font sizes (except perhaps in the
+\textbf{References} section; see below). Please note that pages should be
+numbered.
+
+\section{Preparing PDF files}
+
+Please prepare submission files with paper size ``US Letter,'' and not, for
+example, ``A4.''
+
+Fonts were the main cause of problems in the past years. Your PDF file must only
+contain Type 1 or Embedded TrueType fonts. Here are a few instructions to
+achieve this.
+
+\begin{itemize}
+
+\item You should directly generate PDF files using \verb+pdflatex+.
+
+\item You can check which fonts a PDF files uses.  In Acrobat Reader, select the
+  menu Files$>$Document Properties$>$Fonts and select Show All Fonts. You can
+  also use the program \verb+pdffonts+ which comes with \verb+xpdf+ and is
+  available out-of-the-box on most Linux machines.
+
+\item The IEEE has recommendations for generating PDF files whose fonts are also
+  acceptable for NeurIPS. Please see
+  \url{http://www.emfield.org/icuwb2010/downloads/IEEE-PDF-SpecV32.pdf}
+
+\item \verb+xfig+ "patterned" shapes are implemented with bitmap fonts.  Use
+  "solid" shapes instead.
+
+\item The \verb+\bbold+ package almost always uses bitmap fonts.  You should use
+  the equivalent AMS Fonts:
+\begin{verbatim}
+   \usepackage{amsfonts}
+\end{verbatim}
+followed by, e.g., \verb+\mathbb{R}+, \verb+\mathbb{N}+, or \verb+\mathbb{C}+
+for $\mathbb{R}$, $\mathbb{N}$ or $\mathbb{C}$.  You can also use the following
+workaround for reals, natural and complex:
+\begin{verbatim}
+   \newcommand{\RR}{I\!\!R} %real numbers
+   \newcommand{\Nat}{I\!\!N} %natural numbers
+   \newcommand{\CC}{I\!\!\!\!C} %complex numbers
+\end{verbatim}
+Note that \verb+amsfonts+ is automatically loaded by the \verb+amssymb+ package.
+
+\end{itemize}
+
+If your file contains type 3 fonts or non embedded TrueType fonts, we will ask
+you to fix it.
+
+\subsection{Margins in \LaTeX{}}
+
+Most of the margin problems come from figures positioned by hand using
+\verb+\special+ or other commands. We suggest using the command
+\verb+\includegraphics+ from the \verb+graphicx+ package. Always specify the
+figure width as a multiple of the line width as in the example below:
+\begin{verbatim}
+   \usepackage[pdftex]{graphicx} ...
+   \includegraphics[width=0.8\linewidth]{myfile.pdf}
+\end{verbatim}
+See Section 4.4 in the graphics bundle documentation
+(\url{http://mirrors.ctan.org/macros/latex/required/graphics/grfguide.pdf})
+
+A number of width problems arise when \LaTeX{} cannot properly hyphenate a
+line. Please give LaTeX hyphenation hints using the \verb+\-+ command when
+necessary.
+
+
+\section*{Broader Impact}
+
+Authors are required to include a statement of the broader impact of their work, including its ethical aspects and future societal consequences. 
+Authors should discuss both positive and negative outcomes, if any. For instance, authors should discuss a) 
+who may benefit from this research, b) who may be put at disadvantage from this research, c) what are the consequences of failure of the system, and d) whether the task/method leverages
+biases in the data. If authors believe this is not applicable to them, authors can simply state this.
+
+Use unnumbered first level headings for this section, which should go at the end of the paper. {\bf Note that this section does not count towards the eight pages of content that are allowed.}
+
+\begin{ack}
+Use unnumbered first level headings for the acknowledgments. All acknowledgments
+go at the end of the paper before the list of references. Moreover, you are required to declare 
+funding (financial activities supporting the submitted work) and competing interests (related financial activities outside the submitted work). 
+More information about this disclosure can be found at: \url{https://neurips.cc/Conferences/2020/PaperInformation/FundingDisclosure}.
+
+
+Do {\bf not} include this section in the anonymized submission, only in the final paper. You can use the \texttt{ack} environment provided in the style file to autmoatically hide this section in the anonymized submission.
+\end{ack}
+
+\section*{References}
+
+References follow the acknowledgments. Use unnumbered first-level heading for
+the references. Any choice of citation style is acceptable as long as you are
+consistent. It is permissible to reduce the font size to \verb+small+ (9 point)
+when listing the references.
+{\bf Note that the Reference section does not count towards the eight pages of content that are allowed.}
+\medskip
+
+\small
+
+[1] Alexander, J.A.\ \& Mozer, M.C.\ (1995) Template-based algorithms for
+connectionist rule extraction. In G.\ Tesauro, D.S.\ Touretzky and T.K.\ Leen
+(eds.), {\it Advances in Neural Information Processing Systems 7},
+pp.\ 609--616. Cambridge, MA: MIT Press.
+
+[2] Bower, J.M.\ \& Beeman, D.\ (1995) {\it The Book of GENESIS: Exploring
+  Realistic Neural Models with the General NEural SImulation System.}  New York:
+TELOS/Springer--Verlag.
+
+[3] Hasselmo, M.E., Schnell, E.\ \& Barkai, E.\ (1995) Dynamics of learning and
+recall at excitatory recurrent synapses and cholinergic modulation in rat
+hippocampal region CA3. {\it Journal of Neuroscience} {\bf 15}(7):5249-5262.
+
+
+\appendix
+
+\newpage
+
+\section{Additional details: models}
+In this section, we give a brief overview of all the models considered in the simulation and empirical study.
+
+\subsection{Linear models}
+Linear models model the conditional expectation \( g^*(z_{i, t}) \) as a linear function of the predictors and the parameter vector \( \theta \):
+\begin{equation}
+g(z_{i, t};\theta) = z_{i, t}' \theta
+\end{equation}
+This yields the OLS estimator when optimized w.r.t. MSE, and the LAD estimator when optimized w.r.t. MAE.
+
+\subsection{Elastic nets}
+Elastic Nets are similar to linear models but differ via the addition of a penalty term in the loss function:
+\begin{equation}
+\mathcal{L(\theta;.)} = 
+\underset{\text{Loss Function}}{\underbrace{\mathcal{L(\theta)}}} + 
+\underset{\text{Penalty Term}}{\underbrace{\phi(\theta;.)}}
+\end{equation}
+where the elastic net penalty \cite{zou_regularization_2005} is:
+\begin{equation}
+\phi(\theta;\lambda,\rho) = 
+\lambda(1-\rho) \sum_{j = 1}^{P}|\theta_j| +
+\frac{1}{2} \lambda \rho \sum_{j = 1}^{P}\theta_j^2
+\end{equation}
+Further details are given in \cite{zou_regularization_2005}.
+
+\subsection{Random forests}
+
+Further details are given in cite().
+
+\subsection{Feed forward neural networks}
+
+
+For our application, we considered the following grid of hyperparameters:
+
+
+
+Further details are given in cite().
+
+\subsection{Long short term memory networks}
+Long short term memory (LSTM) networks are 
+
+For our application, we considered the following grid of hyperparameters:
+
+Further details are given in cite().
+
+\subsection{FFORMA}
+Feature-based Forecast Model Averaging, cite() is an automated method for obtaining weighted forecast combinations for time series. We provide a brief overview of the two phases in this methodology.
+
+We follow cite()'s selection of time series features as inputs to the meta-learner. 
+
+To incorporate all regressors in each individual time series model, we applied dimensional reduction techniques of PCA and UMAP to generate new feature mappings for use in GARCH (1, 1) models (generally the best performing of the constituent models). It was noted that none of the new external regressors as generated by these feature mappings improved fit, however.
+
+The constituent models we considered are:
+\begin{itemize}
+	\item Naive
+	\item Random walk with drift
+	\item Theta method
+	\item ARIMA
+	\item ETS
+	\item TBATS
+	\item Neural network auto-regressive model
+	\item ARMA (1, 1) with g.e.d. GARCH(1, 1) errors
+	\item ARMA (1, 1) with g.e.d. GARCH(1, 1) errors and UMAP external regressors
+\end{itemize}
+
+The time series features used to train the meta-model are detailed in cite(), with the addition of realized volatility.
+
+Note that because financial returns data does not typically exhibit seasonality, features and constituent models related which utilized seasonality were omitted.
+
+\subsection{DeepAR}
+DeepAR is a generalization of traditional Auto Regressive (AR) models to include additional layers into order to introduce non-linearities into the model.
+
+%% This is directly plonked from deepar arxiv paper, change this so this isn't plagiarism!
+%% DeepAR does not require inputs from the entire cross section to produce forecasts!
+
+DeepAR aims to model the conditional distribution of the 
+\begin{equation*}
+P(\zVec{i}{t_0}{T} | \zVec{i}{1}{t_0-1}, \xVec{i}{1}{T})
+\label{eq:condDist}
+\end{equation*}
+of the future of each
+time series $[\z{i}{t_0}, \z{i}{t_0 + 1}, \ldots, \z{i}{T}] := \zVec{i}{t_0}{T}$ given its 
+\hbox{past $[\z{i}{1}, \ldots, \z{i}{t_0-2}, \z{i}{t_0-1}] := \zVec{i}{1}{t_0-1}$},
+where $t_0$ denotes the time point from which we assume $\z{i}{t}$ to be unknown at prediction time,
+and $\xVec{i}{1}{T}$ are covariates that are assumed to be known for all time points. To prevent
+confusion we avoid the ambiguous terms ``past'' and ``future'' and will refer to time ranges $[1, t_0-1]$ and $[t_0, T]$ as the conditioning range and 
+prediction range, respectively. During training, both ranges have to lie in the past so that the $\z{i}{t}$ are observed, but during prediction $\z{i}{t}$
+is only available in the conditioning range. Note that the time index $t$ is relative, i.e.\ $t=1$ can correspond to a different actual
+time period for each $i$. 
+
+\newcommand{\modelDist}{Q_\Theta(\zVec{i}{t_0}{T} | \zVec{i}{1}{t_0-1}, \xVec{i}{1}{T})}
+
+Our model, summarized in Fig.~\ref{fig:encoderdecoder}, is based on an autoregressive recurrent network
+architecture \cite{graves2013,sutskever2014}.
+We assume that our model distribution $\modelDist$
+consists of a product of likelihood factors
+\begin{align*}
+\modelDist &= \prod\nolimits_{t=t_0}^T Q_\Theta(z_{i,t}|\mathbf{z}_{i,1:t-1}, \xVec{i}{1}{T}) = \prod\nolimits_{t=t_0}^T \ell(\z{i}{t} | \theta(\hVec_{i, t}, \Theta))
+\end{align*}
+parametrized by the output $\hVec_{i, t}$ of an autoregressive recurrent network
+\begin{equation}
+\hVec_{i, t} = h\left(\hVec_{i, t-1}, \z{i}{t-1}, \xbf_{i, t}, \Theta\right) \,,
+\label{eq:recurrence}
+\end{equation}
+where $h$ is a function implemented by a multi-layer recurrent neural network with LSTM cells.% 
+\footnote{Details of the architecture and hyper-parameters are given in the supplementary material.}
+The model is autoregressive, in the sense that it consumes the observation at the last time step $\z{i}{t-1}$ as an input,
+as well as recurrent, i.e.\ the previous output of the network $\hVec_{i,t-1}$ is fed back as an input at the next time step.
+The likelihood $\ell(\z{i}{t}|\theta(\hVec_{i,t}))$ is a fixed distribution
+whose parameters are given by a function $\theta(\hVec_{i,t}, \Theta)$ of the network output $\hVec_{i, t}$ (see below).
+
+Information about the observations in the conditioning range $\zVec{i}{1}{t_0 -1}$ is transferred to the
+prediction range through the initial state $\hVec_{i, t_0-1}$. In the sequence-to-sequence setup, this initial state is
+the output of an \emph{encoder network}. While in general this encoder network can have a different architecture, in our 
+experiments we opt for using the
+same architecture for the model in the conditioning range and the prediction range (corresponding to the \emph{encoder} and \emph{decoder} in
+a sequence-to-sequence model). Further, we share weights between them, so that the initial state
+for the decoder $\hVec_{i, t_0 - 1}$ is
+obtained by computing \eqref{eq:recurrence} for $t = 1, \ldots, t_0 - 1$, where all required quantities are observed.
+The initial state of the encoder $\hVec_{i, 0}$ as well as $\z{i}{0}$ are initialized to zero.
+
+Given the model parameters $\Theta$, we can directly obtain joint samples
+$\tilde{\mathbf{z}}_{i, t_0:T} \sim \modelDist$ through ancestral sampling:
+First, we obtain $\hVec_{i, t_0-1}$ by computing \eqref{eq:recurrence} for $t=1,\ldots, t_0$.
+For $t=t_0, t_0+1, \ldots, T$ we sample $\tilde{z}_{i, t} \sim \ell(\cdot | \theta(\tilde{\mathbf{h}}_{i,t}, \Theta))$
+where $\tilde{\mathbf{h}}_{i, t} = h\left(\hVec_{i, t-1}, \tilde{z}_{i, t-1}, \xbf_{i, t}, \Theta\right)$
+initialized with $\tilde{\mathbf{h}}_{i, t_0-1} = \hVec_{i, t_0-1}$ and $\tilde{z}_{i, t_0 -1} = \z{i}{t_0 - 1}$.
+Samples from the model obtained in this way can then be used to compute quantities
+of interest, e.g.\ quantiles of the distribution of the sum of values for some
+time range in the future.
+
+Further details are given in cite().
+
+\appendix
+
+\newpage
+
+\section{Additional details: simulation design}
+In this section, we give additional features of the simulation design required to implenent our results. All code and data can be found at XXXX. 
+
+\subsection{Simulation Design}
+
+We begin with the simulation study as a way to explore how machine learning performs with regards to the stylized facts of empirical returns in a controlled environment. We simulate according to a design which incorporates low signal to noise ratio, stochastic volatility in errors, persistence and cross sectional correlation in regressors. Our specification is a latent factor model for excess returns $r_{t+1}$, for $t=1, \dots, T$:
+\begin{align}
+r_{i, t+1} &= 
+g\left(z_{i, t}\right) + \beta_{i,t+1}v_{t+1} + e_{i, t+1}; 
+\enspace z_{i, t} = \left(1, x_{t}\right)^{\prime} \otimes c_{i, t}, 
+\enspace \beta_{i, t} = \left(c_{i 1, t}, c_{i 2, t}, c_{i 3, t}\right) \\ 
+e_{i, t+1} &= 
+\sigma_{i, t+1} \varepsilon_{i, t+1}; \\
+\operatorname{log} (\sigma^2_{i,t+1}) &= 
+\omega + \gamma \operatorname{log} (\sigma^2_{t}) + \sigma_{u}u;
+\quad u \sim N(0, 1)
+\end{align}
+where $v_{t+1}$ is a $3\times 1$ vector of errors, $w_{t+1} \sim N(0, 1)$,  $\varepsilon_{i,t+1} \sim N(0, 1)$ scalar error terms, matrix $C_t$ is an $N\times P_c$ matrix of latent factors, where the first three columns correspond to $\beta_{i,t}$, across the $1\leq i\leq N$ dimensions, while the remaining $P_c-3$ factors do not enter the return equation. The $P_x\times1$ vector $x_t$ is a $3 \times 1$ multivariate time series, and $\varepsilon_{t+1}$ is a $N\times 1$ vector of idiosyncratic errors. The parameters of these were tuned such that the annualized volatility of each return series was approximately 22\%, as is often observed empirically.
+%%%%%%%%%%%%%%%%%%%%%
+\paragraph{Simulating characteristics}
+We build in correlation across time among factors by drawing normal random numbers for each $1\leq i\leq N$ and $1\leq j\leq P_{c}$, according to :
+\begin{equation}
+\overline{c}_{i j, t} = \rho_{j} \overline{c}_{i j, t-1}+\epsilon_{i j, t} ;
+\quad \rho_{j} \sim \mathcal{U} \left( 0.5, 1 \right) 
+\end{equation}
+We then build in cross sectional correlation:
+\begin{align}
+\widehat{C}_{t}&=L\overline{C}_{t} ; \quad B = LL' \\
+B:&=\Lambda\Lambda' + 0.1\mathbb{I}_{n}, \quad
+\Lambda_i = (\lambda_{i1}, \dots, \lambda_{i4}), \quad
+\lambda_{ik}\sim N(0, \lambda_{sd}), \; k=1, \dots, 4
+\end{align}
+where $B$ serves as a variance covariance matrix with $\lambda_{sd}$ its density, and $L$ represents the lower triangle matrix of $B$ via the Cholesky decomposition. $\lambda_{sd}$ values of 0.01, 0.1 and 1 were used to explore increasing degrees of cross sectional correlation.
+Characteristics are then normalized to be within $[-1, 1]$ for each $1\leq i\leq N$ and for $j=1, \dots, P_{c}$ via:
+\begin{equation}
+c_{i j, t} = \frac{2}{n+1} \operatorname{rank}\left(\hat{c}_{i j, t}\right) - 1.
+\end{equation}
+%%%%%%%%%%%%%%%%%%%%%%
+\paragraph{Simulating macroeconomic series}
+We consider a Vector Autoregression (VAR) model for $x_{t}$, a $3 \times 1$ multivariate time series \footnote{More complex specifications for $A$ were briefly explored, but these did not have a significant impact on results.}:
+\begin{flalign*}
+x_{t} = Ax_{t-1}+u_t; 
+\quad A = 0.95 I_3;
+\quad u_t \sim N\left( \mu = (0, 0, 0)' , \Sigma = I_3
+\right) 
+\end{flalign*}
+\paragraph{Simulating return series}
+We consider three different functions for $g(z_{i, t})$:
+\begin{align}
+(1)\; & g_1 \left(z_{i, t}\right)=\left(c_{i 1, t}, c_{i 2, t}, c_{i 3, t} \times x_{t}'[3,]\right) \theta_{0} \\
+(2)\; & g_2 \left(z_{i, t}\right)=\left(c_{i 1, t}^{2}, c_{i 1, t} \times c_{i 2, t}, \operatorname{sgn}\left(c_{i 3, t} \times  x_{t}'[3,]\right)\right) \theta_{0} \\
+(3)\; & g_3 \left(z_{i, t}\right) = \left(1[c_{i3,t}>0],c_{i 2, t}^{3}, c_{i 1, t} \times c_{i 2, t}\times 1[c_{i3,t}>0], \text{logit}\left({c}_{i3, t} \right)\right) \theta_{0}
+\end{align}
+where $x_{t}'[3,]$ denotes the third element of the $x_{t}'$ vector.
+%%%%%%%%%%%%%%%%%%%%%%%%%
+$g_1 \left(z_{i, t}\right)$ allows the characteristics to enter the return equation linearly, and $g_2 \left(z_{i, t}\right)$ and $g_3 \left(z_{i, t}\right)$ allow the characteristics to enter the return equation interactively and non-linearly. \footnote{($g_1, g_2$ correspond to the simulation design used by \cite{gu_empirical_2018}.)} $\theta^0$ was tuned such that the predictive $R^2$ was approximately 5\%.
+
+The simulation design results in $3 \times 3 = 9$ different simulated datasets, each with $N = 200$ stocks, $T = 180$ periods and $P_c = 100$ characteristics. Each design was simulated 10 times to assess the robustness of machine learning algorithms, with the number of simulations kept low for computational feasibility. We employ the hybrid data splitting approach with a training:validation length ratio of approximately 1.5 and a test set that is 1 year in length. 
+
+\subsubsection{Sample Splitting}
+
+If viewed as monthly periods, $T = 180$ corresponds to 15 years. A data splitting scheme similar to the scheme to be used in the empirical data study was used: a training:validation length ratio of approximately 1.5 to begin, and a test set that is 1 year in length. We employ the hybrid growing window approach as described earlier in section \ref{sample_split} (see Figure \ref{sample_split_diag} for a graphical representation).
+
+\begin{figure}[!htb]
+	\begin{center}
+		\begin{tabular}{|c|p{0.30cm}p{0.30cm}p{0.30cm}p{0.30cm}p{0.30cm}p{0.30cm}p{0.30cm}p{0.30cm}p{0.30cm}p{0.30cm}p{0.30cm}p{0.30cm}p{0.30cm}p{0.30cm}p{0.30cm}|}
+			\hline
+			Set No. &&&&&&&&&&&&&&& \\
+			\hline
+			%%%%%%%%
+			3 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
+			\cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & 	
+			\cellcolor{olive} \\
+			%%%%%%%%
+			2 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
+			\cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & 	
+			\cellcolor{olive} & NA  \\
+			%%%%%%%%
+			1 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} &
+			\cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & 	
+			\cellcolor{olive} & NA & NA \\
+			\hline
+			Year & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15\\
+			\hline
+		\end{tabular}
+		\medskip
+		\begin{tabular}{|c|p{0.30cm}|}
+			\hline
+			Training & \cellcolor{cyan} \\
+			\hline
+			Validation & \cellcolor{pink} \\
+			\hline
+			Test & \cellcolor{olive} \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\caption{Sample Splitting Procedure}
+	\label{sample_split_diag}
+\end{figure}
+
+Other schemes in the forecasting literature such as using an ``inner" rolling window validation loop to find the best hyperparameters on average, finally aggregating them in an ``outer" loop for a more robust error were considered but not implemented due to a) computational feasibility and b) the relative instability of optimal hyperparameters across different different windows.
+
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Simulation Study Results}
+
+\subsubsection{Prediction Performance}
+
+%% Put in comprehensive tables here
+%% May need to resize/re-generate this table so that it fits better
+\input{../../Results/simulation/test_loss_latex.tex}
+
+\FloatBarrier
+
+\subsection{Random Forest VIMPs}
+
+We note that random forest methods typically have their own methodologies to calculate variable importance which are different to the variable importance metric presented in the main body of the paper. Here we provide two popular schemes of calculating random forest variable importance metrics - Breiman-cutler VIMP (traditional) and Ishwaran-Kogalur VIMP, and show that importantly, the overall conclusion regarding factor selection does not change with respect to which vimp methodology employed.
+
+%% Re-generate or resize these graphs
+
+\begin{figure}
+	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/simulation/graphics/simulation_g_vimp_bc.pdf}
+	\caption{Simulation Breiman-Cutler vimps}
+\end{figure}
+
+%%IK
+
+\begin{figure}
+	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/simulation/graphics/simulation_g_vimp_ik.pdf}
+	\caption{Simulation Ishwaran-Kogalur vimps}
+\end{figure}
+
+\newpage
+
+\appendix
+
+\section{Additional details: Empirical analysis}
+
+\subsection{Data \& cleaning}
+
+We begin by obtaining monthly individual price data from CRSP for all firms listed in the NYSE, AMEX and NASDAQ, starting from 1957 (starting date of the S\&P 500) and ending in December 2016, totalling 60 years. To build individual factors, we construct a factor set based on the cross section of returns literature. This data was sourced from and is the same data used in \cite{gu_empirical_2018}. Like our initial returns sample, it begins in March 1957 and ends in December 2016, totalling 60 years. It contains 94 stock level characteristics: 61 updated annually, 13 updated quarterly and 20 updated monthly, in addition to 74 industry dummies corresponding the the first two digits of the Standard Industrial Classification (SIC) codes. The dataset so far contains all securities traded, including those with a CRSP share code other than 10 or 11 and thus includes instruments such as REITs and mutual funds, and those with a share price of less than \$5.
+
+% Begin Cleaning
+
+To reduce the size of the dataset and increase feasibility, the dataset was filtered such that only stocks traded primarily on NASDAQ were included (using the PRIMEXCH variable from WRDS). Then, penny stocks (also referred to as microcaps in the literature) with a stock price of less than \$5 were filtered out, as is commonly done in the literature to reduce variability. Stocks without a share code of 10 or 11 (referring to equities) were filtered out, so that securities that are not equities were not included (such as REITs and trust funds). The monthly updated dataset was then converted to a quarterly format, to achieve a balance between having a dataset with enough data points and variability among factors. Quarterly returns were then constructed using the PRC variable according to actual returns:
+\begin{equation}
+RET_t = (PRC_t - PRC_{t-1})/PRC_{t-1}
+\end{equation}
+We allow all stocks which have a quarterly return to enter the dataset, even if they disappear from the dataset for certain periods, as opposed to only keeping stocks which appear continuously throughout the entire period. This was primarily done to reduce survivorship bias in the dataset, which can be very prevalent in financial data, and also allows for stocks which were unlisted and relisted again to feature in the dataset. 
+
+The sic2 variable, corresponding to the stocks' Standard Industrial Classification (SIC) codes was dropped. The SIC code system suffers from inconsistent logic in classifying companies, and as a system built for pre-1970s traditional industries has been slow in recognizing new and emerging industries. Indeed, WRDS explicitly cautions the use of SIC codes beyond the use of rough grouping of industries, warning that SIC codes are not strictly enforced by government agencies for accuracy, in addition to most large companies belonging to multiple SIC codes over time. Because of this latter point in particular, there can be inconsistencies on the correct SIC code for the same company depending on the data source. Dropping the sic2 variable also reduced the dimensionality of the dataset by 74 columns, significantly increasing computational feasibility.
+
+There existed a significant amount of missing data in the dataset. For the main empirical study, any characteristics that had over 20\% of their data were removed, and remaining missing data points were then imputed with their cross sectional medians. However, as the amount of missing data increases dramatically going further back in time, a balance between using more periods at the cost of removing more characteristics versus using less periods but keeping more characteristics was needed. 1993 Q3 was determined to be a reasonable time frame to begin the dataset due to a noticeable increase in data quality.
+
+We then follow \cite{gu_empirical_2018} and construct eight macroeconomic factors following the variable definitions in \cite{welch_comprehensive_2008}. These factors were lagged by one period so as to be used to predict one period ahead quarterly returns. The treasury bill rate was also used from this source to proxy for the risk free rate in order to construct excess quarterly returns. 
+
+\begin{table}
+	\caption{Macroeconomic Factors, (\cite{welch_comprehensive_2008})}
+	\label{macro_factors}
+	\begin{center}
+		\begin{tabular}{lccc} \hline
+			No. & Acronym & Macroeconomic Factor \\ \hline
+			1 & macro\_dp & Dividend Price Ratio \\
+			2 & macro\_ep & Earnings Price Ratio \\
+			3 & macro\_bm & Book to Market Ratio \\
+			4 & macro\_ntis & Net Equity Expansion \\
+			5 & macro\_tbl & Treasury Bill Rate \\
+			6 & macro\_tms & Term Spread \\
+			7 & macro\_dfy & Default Spread \\
+			8 & macro\_svar & Stock Variance \\ \hline
+		\end{tabular}
+	\end{center}
+\end{table}
+
+The two sets of factors were then combined to form a baseline set of covariates, which we define throughout all methods and analysis as:
+
+\begin{equation}
+z_{i,t} = (1, x_t)' \otimes c_{i, t}
+\end{equation}
+
+where $c_{i,t}$ is a $P_c$ matrix of characteristics for each stock $i$, and $(1, x_t)'$ is a $P_x \times 1$ vector of macroeconomic predictors, , and $\otimes$ represents the Kronecker product. $z_{i,t}$ is therefore a $P_x P_c$ vector of features for predicting individual stock returns and includes interactions between stock level characteristics and macroeconomic variables. The total number of covariates in this baseline set is $61 \times (8 + 1) = 549$\footnote{As the individual and macroeconomic factors can have similar names, individual and macroeconomic factors were prefixed with ind\_ and macro\_ respectively.}.
+
+% Splitting Scheme
+% Similar splitting scheme to simulation study used
+% Training:Validation size ratio of 1.5, growing and moving forwards by 1 year
+% To maintain feasibility, only 3 samples were conducted
+
+The dataset was not normalized for all methods, as only penalized regression and neural networks are sensitive to normalization. For these two methods, the dataset was normalized such that each predictor column had 0 mean and 1 variance.
+
+The final dataset spanned from 1993 Q3 to 2016 Q4 with 202, 066 individual observations.
+
+We mimic the procedure used in the simulation study. For the sample splitting procedure, the dataset was split such that the training and validation sets were split such that the training set was approximately 1.5 times the length of the validation set, in order to predict a test set that is one year in length.
+
+\begin{figure}[!htb]
+	\begin{center}
+		\begin{tabular}{|c|p{0.55cm}p{0.55cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}|}
+			\hline
+			Set No. &&&&&&&&&&& \\
+			\hline
+			%%%%%%%%
+			3 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & 
+			\cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} &  \cellcolor{olive} \\
+			%%%%%%%%
+			2 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & 
+			\cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & 	
+			\cellcolor{olive} & NA \\
+			%%%%%%%%
+			1 & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & \cellcolor{cyan} & 
+			\cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} & \cellcolor{pink} &
+			\cellcolor{olive} & NA & NA \\
+			\hline
+			Time & 93Q3 & 93Q4 & 94 & ... & 06 & 07 & 08 & ... & 14 & 15 & 16 \\
+			\hline
+		\end{tabular}
+		\medskip
+		\begin{tabular}{|c|p{0.55cm}|}
+			\hline
+			Training & \cellcolor{cyan} \\
+			\hline
+			Validation & \cellcolor{pink} \\
+			\hline
+			Test & \cellcolor{olive} \\
+			\hline
+		\end{tabular}
+	\end{center}
+	\caption{Empirical Data Sample Splitting Procedure}
+	\label{emp_sample_split_diag}
+\end{figure}
+
+\newpage
+
+\subsection{Empirical study robustness checks \& results}
+
+In addition to the main study, we provide four additional robustness checks for our empirical study, with regards to different training/validation splitting schemes, missing data imputation and additional regressors. Importantly, our overall results are consistent across all checks.
+
+%% Train/validation schemes
+We consider training:validation length ratios of 1:1 and 1:2 in addition to 1:1.5 in the main study.
+
+%% Missing Threshold
+We consider changing the missing data threshold to be 10\% - that is, any regressors with over 10\% missing data were omitted before being imputed.
+
+%% Fama French factors
+We finally consider supplementing our macroeconomic regressor set with the five Fama-French factors. 
+
+\subsection{Empirical Data Results}
+%% Need to redo graphs as they are currently too big
+
+\subsubsection{Prediction Accuracy}
+%% Main Study
+%% Comprehensive Results
+\input{../../Results/empirical/empirical_loss_latex.tex}
+
+%% RF Vimps
+%% Redo this graph
+\begin{figure}
+	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical/empirical_vimp.pdf}
+	\caption{Empirical study random forest vimps}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Missing Data Threshold Robustness Check
+% Loss Stats
+\FloatBarrier
+\input{../../Results/empirical_missing_threshold/empirical_loss_latex.tex}
+\FloatBarrier
+
+%% Factor Importance
+%% Redo these
+
+\begin{figure}
+	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_missing_threshold/empirical_all_sample_vi.pdf}
+	\caption{Missing Data Threshold Robustness Check Individual Factor Importance}
+\end{figure}
+
+%% RF Vimps
+
+\begin{figure}
+	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_missing_threshold/empirical_vimp.pdf}
+	\caption{Missing Data Threshold Robustness Check RF VIMP}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Train:Validation 1:1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Loss Stats
+
+\FloatBarrier
+\input{../../Results/empirical_train_valid_1/empirical_loss_latex.tex}
+\FloatBarrier
+
+%% Factor Importance
+
+\begin{figure}
+	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_train_valid_1/empirical_all_sample_vi.pdf}
+	\caption{{Train:Validation = 1:1 Robustness Check Individual Factor Importance}}
+\end{figure}
+
+%% RF Vimps
+
+\begin{figure}
+	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_train_valid_1/empirical_vimp.pdf}
+	\caption{{Train:Validation = 1:1 Robustness Check RF VIMP}}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Train:Validation 2:1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Loss Stats
+\FloatBarrier
+\input{../../Results/empirical_train_valid_2/empirical_loss_latex.tex}
+\FloatBarrier
+
+%% Factor Importance
+
+\begin{figure}
+	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_train_valid_2/empirical_all_sample_vi.pdf}
+	\caption{Train:Validation = 2:1 Robustness Check Individual Factor Importance}
+\end{figure}
+
+%% RF Vimps
+
+\begin{figure}
+	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_train_valid_2/empirical_vimp.pdf}
+	\caption{Train:Validation = 2:1 Robustness Check RF VIMP}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Fama French Factors
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Loss Stats
+\FloatBarrier
+\input{../../Results/empirical_ff/empirical_loss_latex.tex}
+\FloatBarrier
+
+%% Factor Importance
+
+\begin{figure}
+	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_ff/empirical_all_sample_vi.pdf}
+	\caption{Fama French Factors Robustness Check Individual Factor Importance}
+\end{figure}
+
+%% RF Vimps
+
+\begin{figure}
+	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_ff/empirical_vimp.pdf}
+	\caption{Fama French Factors Robustness Check RF VIMP}
+\end{figure}
+
+\end{document}

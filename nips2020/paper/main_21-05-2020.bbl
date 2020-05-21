@@ -1,0 +1,91 @@
+\begin{thebibliography}{}
+
+\bibitem[Bengio et~al., 1994]{bengio_learning_1994}
+Bengio, Y., Simard, P., and Frasconi, P. (1994).
+\newblock Learning long-term dependencies with gradient descent is difficult.
+\newblock {\em IEEE transactions on neural networks}, 5(2):157--166.
+
+\bibitem[Breiman, 2001]{breiman_random_2001}
+Breiman, L. (2001).
+\newblock Random forests.
+\newblock {\em Machine learning}, 45(1):5--32.
+
+\bibitem[Feng et~al., 2019]{feng_taming_2019}
+Feng, G., Giglio, S., and Xiu, D. (2019).
+\newblock Taming the {Factor} {Zoo}: {A} {Test} of {New} {Factors}.
+\newblock Technical Report w25481, National Bureau of Economic Research,
+  Cambridge, MA.
+
+\bibitem[Feng et~al., 2018]{feng_deep_2018}
+Feng, G., He, J., and Polson, N.~G. (2018).
+\newblock Deep {Learning} for {Predicting} {Asset} {Returns}.
+\newblock {\em arXiv:1804.09314 [cs, econ, stat]}.
+\newblock arXiv: 1804.09314.
+
+\bibitem[Freyberger et~al., 2017]{freyberger_dissecting_2017}
+Freyberger, J., Neuhierl, A., and Weber, M. (2017).
+\newblock Dissecting characteristics nonparametrically.
+\newblock Technical report, National Bureau of Economic Research.
+
+\bibitem[Gu et~al., 2018]{gu_empirical_2018}
+Gu, S., Kelly, B., and Xiu, D. (2018).
+\newblock Empirical asset pricing via machine learning.
+\newblock Technical report, National Bureau of Economic Research.
+
+\bibitem[Harvey and Liu, 2019]{harvey_census_2019}
+Harvey, C.~R. and Liu, Y. (2019).
+\newblock A {Census} of the {Factor} {Zoo}.
+\newblock {\em Social Science Research Network}, page~7.
+
+\bibitem[Hsu and Kalesnik, 2014]{hsu_finding_2014}
+Hsu, J. and Kalesnik, V. (2014).
+\newblock Finding smart beta in the factor zoo.
+\newblock {\em Research Affiliates (July)}.
+
+\bibitem[Kozak et~al., 2017]{kozak_shrinking_2017}
+Kozak, S., Nagel, S., and Santosh, S. (2017).
+\newblock Shrinking the cross section.
+\newblock Technical report, National Bureau of Economic Research.
+
+\bibitem[Messmer, 2017]{messmer2017deep}
+Messmer, M. (2017).
+\newblock Deep learning and the cross-section of expected returns.
+\newblock {\em Available at SSRN 3081555}.
+
+\bibitem[Montero-Manso et~al., 2020]{montero2020fforma}
+Montero-Manso, P., Athanasopoulos, G., Hyndman, R.~J., and Talagala, T.~S.
+  (2020).
+\newblock Fforma: Feature-based forecast model averaging.
+\newblock {\em International Journal of Forecasting}, 36(1):86--92.
+
+\bibitem[Moritz and Zimmermann, 2016]{moritz2016tree}
+Moritz, B. and Zimmermann, T. (2016).
+\newblock Tree-based conditional portfolio sorts: The relation between past and
+  future stock returns.
+\newblock {\em Available at SSRN 2740751}.
+
+\bibitem[Rapach and Zhou, 2013]{rapach_forecasting_2013}
+Rapach, D. and Zhou, G. (2013).
+\newblock Forecasting {Stock} {Returns}.
+\newblock In {\em Handbook of {Economic} {Forecasting}}, volume~2, pages
+  328--383. Elsevier.
+
+\bibitem[Salinas et~al., 2019]{salinas2019deepar}
+Salinas, D., Flunkert, V., Gasthaus, J., and Januschowski, T. (2019).
+\newblock Deepar: Probabilistic forecasting with autoregressive recurrent
+  networks.
+\newblock {\em International Journal of Forecasting}.
+
+\bibitem[Welch and Goyal, 2008]{welch_comprehensive_2008}
+Welch, I. and Goyal, A. (2008).
+\newblock A {Comprehensive} {Look} at {The} {Empirical} {Performance} of
+  {Equity} {Premium} {Prediction}.
+\newblock {\em Review of Financial Studies}, 21(4):1455--1508.
+
+\bibitem[Zou and Hastie, 2005]{zou_regularization_2005}
+Zou, H. and Hastie, T. (2005).
+\newblock Regularization and variable selection via the {Elastic} {Net}.
+\newblock {\em Journal of the Royal Statistical Society, Series B},
+  67:301--320.
+
+\end{thebibliography}

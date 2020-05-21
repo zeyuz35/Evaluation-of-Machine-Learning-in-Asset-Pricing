@@ -1,0 +1,1598 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 2.9.7440 64-bit) (preloaded format=pdflatex 2020.5.21)  21 MAY 2020 14:40
+entering extended mode
+**./main_21-05-2020.tex
+(main_21-05-2020.tex
+LaTeX2e <2020-02-02> patch level 5
+L3 programming layer <2020-05-15>
+("C:\Program Files\MiKTeX 2.9\tex/latex/base\article.cls"
+Document Class: article 2019/12/20 v1.4l Standard LaTeX document class
+("C:\Program Files\MiKTeX 2.9\tex/latex/base\size10.clo"
+File: size10.clo 2019/12/20 v1.4l Standard LaTeX file (size option)
+)
+\c@part=\count167
+\c@section=\count168
+\c@subsection=\count169
+\c@subsubsection=\count170
+\c@paragraph=\count171
+\c@subparagraph=\count172
+\c@figure=\count173
+\c@table=\count174
+\abovecaptionskip=\skip47
+\belowcaptionskip=\skip48
+\bibindent=\dimen134
+) (neurips_2020.sty
+Package: neurips_2020 2020/01/31 NeurIPS 2020 submission/camera-ready style fil
+e
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/environ\environ.sty
+Package: environ 2014/05/04 v0.3 A new way to define environments
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/trimspaces\trimspaces.s
+ty
+Package: trimspaces 2009/09/17 v1.1 Trim spaces around a token list
+)
+\@envbody=\toks15
+) (C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/lineno\lineno.sty
+Package: lineno 2005/11/02 line numbers on paragraphs v4.41
+\linenopenalty=\count175
+\output=\toks16
+\linenoprevgraf=\count176
+\linenumbersep=\dimen135
+\linenumberwidth=\dimen136
+\c@linenumber=\count177
+\c@pagewiselinenumber=\count178
+\c@LN@truepage=\count179
+\c@internallinenumber=\count180
+\c@internallinenumbers=\count181
+\quotelinenumbersep=\dimen137
+\bframerule=\dimen138
+\bframesep=\dimen139
+\bframebox=\box45
+LaTeX Info: Redefining \\ on input line 3056.
+) (C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/natbib\natbib.sty
+Package: natbib 2010/09/13 8.31b (PWD, AO)
+\bibhang=\skip49
+\bibsep=\skip50
+LaTeX Info: Redefining \cite on input line 694.
+\c@NAT@ctr=\count182
+)
+("C:\Program Files\MiKTeX 2.9\tex/latex/geometry\geometry.sty"
+Package: geometry 2020/01/02 v5.9 Page Geometry
+
+("C:\Program Files\MiKTeX 2.9\tex/latex/graphics\keyval.sty"
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks17
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/iftex\ifvtex.sty
+Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/iftex\iftex.sty
+Package: iftex 2020/03/06 v1.0d TeX engine tests
+))
+\Gm@cnth=\count183
+\Gm@cntv=\count184
+\c@Gm@tempcnt=\count185
+\Gm@bindingoffset=\dimen140
+\Gm@wd@mp=\dimen141
+\Gm@odd@mp=\dimen142
+\Gm@even@mp=\dimen143
+\Gm@layoutwidth=\dimen144
+\Gm@layoutheight=\dimen145
+\Gm@layouthoffset=\dimen146
+\Gm@layoutvoffset=\dimen147
+\Gm@dimlist=\toks18
+
+("C:\Program Files\MiKTeX 2.9\tex/latex/geometry\geometry.cfg"))
+\@neuripsabovecaptionskip=\skip51
+\@neuripsbelowcaptionskip=\skip52
+)
+("C:\Program Files\MiKTeX 2.9\tex/latex/base\inputenc.sty"
+Package: inputenc 2018/08/11 v1.3c Input encoding file
+\inpenc@prehook=\toks19
+\inpenc@posthook=\toks20
+)
+("C:\Program Files\MiKTeX 2.9\tex/latex/base\fontenc.sty"
+Package: fontenc 2020/02/11 v2.0o Standard LaTeX package
+LaTeX Font Info:    Trying to load font information for T1+ptm on input line 11
+2.
+
+("C:\Program Files\MiKTeX 2.9\tex/latex/psnfss\t1ptm.fd"
+File: t1ptm.fd 2001/06/04 font definitions for T1/ptm.
+))
+("C:\Program Files\MiKTeX 2.9\tex/latex/hyperref\hyperref.sty"
+Package: hyperref 2020-05-15 v7.00e Hypertext links for LaTeX
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/ltxcmds\ltxcmds.sty
+Package: ltxcmds 2019/12/15 v1.24 LaTeX kernel commands for general use (HO)
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/pdftexcmds\pdftexcmds.s
+ty
+Package: pdftexcmds 2019/11/24 v0.31 Utility functions of pdfTeX for LuaTeX (HO
+)
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/infwarerr\infwarerr.s
+ty
+Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
+)
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/kvsetkeys\kvsetkeys.s
+ty
+Package: kvsetkeys 2019/12/15 v1.18 Key value parser (HO)
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/kvdefinekeys\kvdefine
+keys.sty
+Package: kvdefinekeys 2019-12-19 v1.6 Define keys (HO)
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pdfescape\pdfescape.s
+ty
+Package: pdfescape 2019/12/09 v1.15 Implements pdfTeX's escape features (HO)
+) (C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/hycolor\hycolor.sty
+Package: hycolor 2020-01-27 v1.10 Color options for hyperref/bookmark (HO)
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/letltxmacro\letltxmacro
+.sty
+Package: letltxmacro 2019/12/03 v1.6 Let assignment for LaTeX macros (HO)
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/auxhook\auxhook.sty
+Package: auxhook 2019-12-17 v1.6 Hooks for auxiliary files (HO)
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/kvoptions\kvoptions.sty
+Package: kvoptions 2019/11/29 v3.13 Key value format for package options (HO)
+)
+\@linkdim=\dimen148
+\Hy@linkcounter=\count186
+\Hy@pagecounter=\count187
+ ("C:\Program Files\MiKTeX 2.9\tex/latex/hyperref\pd1enc.def"
+File: pd1enc.def 2020-05-15 v7.00e Hyperref: PDFDocEncoding definition (HO)
+Now handling font encoding PD1 ...
+... no UTF-8 mapping file for font encoding PD1
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/intcalc\intcalc.sty
+Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/etexcmds\etexcmds.sty
+Package: etexcmds 2019/12/15 v1.7 Avoid name clashes with e-TeX commands (HO)
+)
+\Hy@SavedSpaceFactor=\count188
+Package hyperref Info: Hyper figures OFF on input line 4464.
+Package hyperref Info: Link nesting OFF on input line 4469.
+Package hyperref Info: Hyper index ON on input line 4472.
+Package hyperref Info: Plain pages OFF on input line 4479.
+Package hyperref Info: Backreferencing OFF on input line 4484.
+Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
+Package hyperref Info: Bookmarks ON on input line 4717.
+\c@Hy@tempcnt=\count189
+ (C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/url\url.sty
+\Urlmuskip=\muskip16
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
+)
+LaTeX Info: Redefining \url on input line 5076.
+\XeTeXLinkMargin=\dimen149
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/bitset\bitset.sty
+Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/bigintcalc\bigintcalc
+.sty
+Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO
+)
+))
+\Fld@menulength=\count190
+\Field@Width=\dimen150
+\Fld@charsize=\dimen151
+Package hyperref Info: Hyper figures OFF on input line 6347.
+Package hyperref Info: Link nesting OFF on input line 6352.
+Package hyperref Info: Hyper index ON on input line 6355.
+Package hyperref Info: backreferencing OFF on input line 6362.
+Package hyperref Info: Link coloring OFF on input line 6367.
+Package hyperref Info: Link coloring with OCG OFF on input line 6372.
+Package hyperref Info: PDF/A mode OFF on input line 6377.
+LaTeX Info: Redefining \ref on input line 6417.
+LaTeX Info: Redefining \pageref on input line 6421.
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/atbegshi\atbegshi.sty
+Package: atbegshi 2019/12/05 v1.19 At begin shipout hook (HO)
+)
+\Hy@abspage=\count191
+\c@Item=\count192
+\c@Hfootnote=\count193
+)
+Package hyperref Info: Driver (autodetected): hpdftex.
+ ("C:\Program Files\MiKTeX 2.9\tex/latex/hyperref\hpdftex.def"
+File: hpdftex.def 2020-05-15 v7.00e Hyperref driver for pdfTeX
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/atveryend\atveryend.sty
+Package: atveryend 2019-12-11 v1.11 Hooks at the very end of document (HO)
+Package atveryend Info: \enddocument detected (standard20110627).
+)
+\Fld@listcount=\count194
+\c@bookmark@seq@number=\count195
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/rerunfilecheck\rerunfil
+echeck.sty
+Package: rerunfilecheck 2019/12/05 v1.9 Rerun checks for auxiliary files (HO)
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/uniquecounter\uniquec
+ounter.sty
+Package: uniquecounter 2019/12/15 v1.4 Provide unlimited unique counter (HO)
+)
+Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
+86.
+)
+\Hy@SectionHShift=\skip53
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/booktabs\booktabs.sty
+Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
+\heavyrulewidth=\dimen152
+\lightrulewidth=\dimen153
+\cmidrulewidth=\dimen154
+\belowrulesep=\dimen155
+\belowbottomsep=\dimen156
+\aboverulesep=\dimen157
+\abovetopsep=\dimen158
+\cmidrulesep=\dimen159
+\cmidrulekern=\dimen160
+\defaultaddspace=\dimen161
+\@cmidla=\count196
+\@cmidlb=\count197
+\@aboverulesep=\dimen162
+\@belowrulesep=\dimen163
+\@thisruleclass=\count198
+\@lastruleclass=\count199
+\@thisrulewidth=\dimen164
+)
+("C:\Program Files\MiKTeX 2.9\tex/latex/amsfonts\amsfonts.sty"
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\@emptytoks=\toks21
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+)
+("C:\Program Files\MiKTeX 2.9\tex/latex/amsfonts\amssymb.sty"
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/units\nicefrac.sty
+Package: nicefrac 1998/08/04 v0.9b Nice fractions
+\L@UnitsRaiseDisplaystyle=\skip54
+\L@UnitsRaiseTextstyle=\skip55
+\L@UnitsRaiseScriptstyle=\skip56
+
+("C:\Program Files\MiKTeX 2.9\tex/latex/base\ifthen.sty"
+Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
+))
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/microtype\microtype.sty
+Package: microtype 2019/11/18 v2.7d Micro-typographical refinements (RS)
+\MT@toks=\toks22
+\MT@count=\count266
+LaTeX Info: Redefining \textls on input line 790.
+\MT@outer@kern=\dimen165
+LaTeX Info: Redefining \textmicrotypecontext on input line 1354.
+\MT@listname@count=\count267
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/microtype\microtype-pdf
+tex.def
+File: microtype-pdftex.def 2019/11/18 v2.7d Definitions specific to pdftex (RS)
+
+LaTeX Info: Redefining \lsstyle on input line 914.
+LaTeX Info: Redefining \lslig on input line 914.
+\MT@outer@space=\skip57
+)
+Package microtype Info: Loading configuration file microtype.cfg.
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/microtype\microtype.cfg
+File: microtype.cfg 2019/11/18 v2.7d microtype main configuration file (RS)
+)) ("C:\Program Files\MiKTeX 2.9\tex/latex/amsmath\amsmath.sty"
+Package: amsmath 2020/01/20 v2.17e AMS math features
+\@mathmargin=\skip58
+
+For additional information on amsmath, use the `?' option.
+("C:\Program Files\MiKTeX 2.9\tex/latex/amsmath\amstext.sty"
+Package: amstext 2000/06/29 v2.01 AMS text
+
+("C:\Program Files\MiKTeX 2.9\tex/latex/amsmath\amsgen.sty"
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks23
+\ex@=\dimen166
+))
+("C:\Program Files\MiKTeX 2.9\tex/latex/amsmath\amsbsy.sty"
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen167
+)
+("C:\Program Files\MiKTeX 2.9\tex/latex/amsmath\amsopn.sty"
+Package: amsopn 2016/03/08 v2.02 operator names
+)
+\inf@bad=\count268
+LaTeX Info: Redefining \frac on input line 227.
+\uproot@=\count269
+\leftroot@=\count270
+LaTeX Info: Redefining \overline on input line 389.
+\classnum@=\count271
+\DOTSCASE@=\count272
+LaTeX Info: Redefining \ldots on input line 486.
+LaTeX Info: Redefining \dots on input line 489.
+LaTeX Info: Redefining \cdots on input line 610.
+\Mathstrutbox@=\box46
+\strutbox@=\box47
+\big@size=\dimen168
+LaTeX Font Info:    Redeclaring font encoding OML on input line 733.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 734.
+\macc@depth=\count273
+\c@MaxMatrixCols=\count274
+\dotsspace@=\muskip17
+\c@parentequation=\count275
+\dspbrk@lvl=\count276
+\tag@help=\toks24
+\row@=\count277
+\column@=\count278
+\maxfields@=\count279
+\andhelp@=\toks25
+\eqnshift@=\dimen169
+\alignsep@=\dimen170
+\tagshift@=\dimen171
+\tagwidth@=\dimen172
+\totwidth@=\dimen173
+\lineht@=\dimen174
+\@envbody=\toks26
+\multlinegap=\skip59
+\multlinetaggap=\skip60
+\mathdisplay@stack=\toks27
+LaTeX Info: Redefining \[ on input line 2859.
+LaTeX Info: Redefining \] on input line 2860.
+)
+("C:\Program Files\MiKTeX 2.9\tex/latex/multirow\multirow.sty"
+Package: multirow 2019/05/31 v2.5 Span multiple rows of a table
+\multirow@colwidth=\skip61
+\multirow@cntb=\count280
+\multirow@dima=\skip62
+\bigstrutjot=\dimen175
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/pgf/frontendlayer\tikz.
+sty
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/pgf/basiclayer\pgf.sty
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/pgf/utilities\pgfrcs.st
+y
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/utilities\pgfutil
+-common.tex
+\pgfutil@everybye=\toks28
+\pgfutil@tempdima=\dimen176
+\pgfutil@tempdimb=\dimen177
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/utilities\pgfutil
+-common-lists.tex))
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/utilities\pgfutil
+-latex.def
+\pgfutil@abb=\box48
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/ms\everyshi.sty
+Package: everyshi 2001/05/15 v3.00 EveryShipout Package (MS)
+))
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/utilities\pgfrcs.
+code.tex
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf\pgf.revision.tex)
+Package: pgfrcs 2020/01/08 v3.1.5b (3.1.5b)
+))
+Package: pgf 2020/01/08 v3.1.5b (3.1.5b)
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/pgf/basiclayer\pgfcore.
+sty ("C:\Program Files\MiKTeX 2.9\tex/latex/graphics\graphicx.sty"
+Package: graphicx 2019/11/30 v1.2a Enhanced LaTeX Graphics (DPC,SPQR)
+
+("C:\Program Files\MiKTeX 2.9\tex/latex/graphics\graphics.sty"
+Package: graphics 2019/11/30 v1.4a Standard LaTeX Graphics (DPC,SPQR)
+
+("C:\Program Files\MiKTeX 2.9\tex/latex/graphics\trig.sty"
+Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
+)
+("C:\Program Files\MiKTeX 2.9\tex/latex/graphics-cfg\graphics.cfg"
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: pdftex.def on input line 105.
+
+("C:\Program Files\MiKTeX 2.9\tex/latex/graphics-def\pdftex.def"
+File: pdftex.def 2018/01/08 v1.0l Graphics/color driver for pdftex
+))
+\Gin@req@height=\dimen178
+\Gin@req@width=\dimen179
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/pgf/systemlayer\pgfsys.
+sty
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/systemlayer\pgfsy
+s.code.tex
+Package: pgfsys 2020/01/08 v3.1.5b (3.1.5b)
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/utilities\pgfkeys
+.code.tex
+\pgfkeys@pathtoks=\toks29
+\pgfkeys@temptoks=\toks30
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/utilities\pgfkeys
+filtered.code.tex
+\pgfkeys@tmptoks=\toks31
+))
+\pgf@x=\dimen180
+\pgf@y=\dimen181
+\pgf@xa=\dimen182
+\pgf@ya=\dimen183
+\pgf@xb=\dimen184
+\pgf@yb=\dimen185
+\pgf@xc=\dimen186
+\pgf@yc=\dimen187
+\pgf@xd=\dimen188
+\pgf@yd=\dimen189
+\w@pgf@writea=\write3
+\r@pgf@reada=\read2
+\c@pgf@counta=\count281
+\c@pgf@countb=\count282
+\c@pgf@countc=\count283
+\c@pgf@countd=\count284
+\t@pgf@toka=\toks32
+\t@pgf@tokb=\toks33
+\t@pgf@tokc=\toks34
+\pgf@sys@id@count=\count285
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/systemlayer\pgf.c
+fg
+File: pgf.cfg 2020/01/08 v3.1.5b (3.1.5b)
+)
+Driver file for pgf: pgfsys-pdftex.def
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/systemlayer\pgfsy
+s-pdftex.def
+File: pgfsys-pdftex.def 2020/01/08 v3.1.5b (3.1.5b)
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/systemlayer\pgfsy
+s-common-pdf.def
+File: pgfsys-common-pdf.def 2020/01/08 v3.1.5b (3.1.5b)
+)))
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/systemlayer\pgfsy
+ssoftpath.code.tex
+File: pgfsyssoftpath.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgfsyssoftpath@smallbuffer@items=\count286
+\pgfsyssoftpath@bigbuffer@items=\count287
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/systemlayer\pgfsy
+sprotocol.code.tex
+File: pgfsysprotocol.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+))
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/xcolor\xcolor.sty
+Package: xcolor 2016/05/11 v2.12 LaTeX color extensions (UK)
+
+("C:\Program Files\MiKTeX 2.9\tex/latex/graphics-cfg\color.cfg"
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package xcolor Info: Driver file: pdftex.def on input line 225.
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1348.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1352.
+Package xcolor Info: Model `RGB' extended on input line 1364.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1366.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1367.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1368.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1369.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1370.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1371.
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/basiclayer\pgfcor
+e.code.tex
+Package: pgfcore 2020/01/08 v3.1.5b (3.1.5b)
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/math\pgfmath.code
+.tex
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/math\pgfmathcalc.
+code.tex
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/math\pgfmathutil.
+code.tex)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/math\pgfmathparse
+r.code.tex
+\pgfmath@dimen=\dimen190
+\pgfmath@count=\count288
+\pgfmath@box=\box49
+\pgfmath@toks=\toks35
+\pgfmath@stack@operand=\toks36
+\pgfmath@stack@operation=\toks37
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/math\pgfmathfunct
+ions.code.tex
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/math\pgfmathfunct
+ions.basic.code.tex)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/math\pgfmathfunct
+ions.trigonometric.code.tex)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/math\pgfmathfunct
+ions.random.code.tex)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/math\pgfmathfunct
+ions.comparison.code.tex)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/math\pgfmathfunct
+ions.base.code.tex)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/math\pgfmathfunct
+ions.round.code.tex)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/math\pgfmathfunct
+ions.misc.code.tex)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/math\pgfmathfunct
+ions.integerarithmetics.code.tex)))
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/math\pgfmathfloat
+.code.tex
+\c@pgfmathroundto@lastzeros=\count289
+))
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/math\pgfint.code.
+tex)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/basiclayer\pgfcor
+epoints.code.tex
+File: pgfcorepoints.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgf@picminx=\dimen191
+\pgf@picmaxx=\dimen192
+\pgf@picminy=\dimen193
+\pgf@picmaxy=\dimen194
+\pgf@pathminx=\dimen195
+\pgf@pathmaxx=\dimen196
+\pgf@pathminy=\dimen197
+\pgf@pathmaxy=\dimen198
+\pgf@xx=\dimen199
+\pgf@xy=\dimen256
+\pgf@yx=\dimen257
+\pgf@yy=\dimen258
+\pgf@zx=\dimen259
+\pgf@zy=\dimen260
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/basiclayer\pgfcor
+epathconstruct.code.tex
+File: pgfcorepathconstruct.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgf@path@lastx=\dimen261
+\pgf@path@lasty=\dimen262
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/basiclayer\pgfcor
+epathusage.code.tex
+File: pgfcorepathusage.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgf@shorten@end@additional=\dimen263
+\pgf@shorten@start@additional=\dimen264
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/basiclayer\pgfcor
+escopes.code.tex
+File: pgfcorescopes.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgfpic=\box50
+\pgf@hbox=\box51
+\pgf@layerbox@main=\box52
+\pgf@picture@serial@count=\count290
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/basiclayer\pgfcor
+egraphicstate.code.tex
+File: pgfcoregraphicstate.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgflinewidth=\dimen265
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/basiclayer\pgfcor
+etransformations.code.tex
+File: pgfcoretransformations.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgf@pt@x=\dimen266
+\pgf@pt@y=\dimen267
+\pgf@pt@temp=\dimen268
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/basiclayer\pgfcor
+equick.code.tex
+File: pgfcorequick.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/basiclayer\pgfcor
+eobjects.code.tex
+File: pgfcoreobjects.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/basiclayer\pgfcor
+epathprocessing.code.tex
+File: pgfcorepathprocessing.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/basiclayer\pgfcor
+earrows.code.tex
+File: pgfcorearrows.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgfarrowsep=\dimen269
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/basiclayer\pgfcor
+eshade.code.tex
+File: pgfcoreshade.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgf@max=\dimen270
+\pgf@sys@shading@range@num=\count291
+\pgf@shadingcount=\count292
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/basiclayer\pgfcor
+eimage.code.tex
+File: pgfcoreimage.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/basiclayer\pgfcor
+eexternal.code.tex
+File: pgfcoreexternal.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgfexternal@startupbox=\box53
+))
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/basiclayer\pgfcor
+elayers.code.tex
+File: pgfcorelayers.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/basiclayer\pgfcor
+etransparency.code.tex
+File: pgfcoretransparency.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/basiclayer\pgfcor
+epatterns.code.tex
+File: pgfcorepatterns.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/basiclayer\pgfcor
+erdf.code.tex
+File: pgfcorerdf.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+)))
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/modules\pgfmodule
+shapes.code.tex
+File: pgfmoduleshapes.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgfnodeparttextbox=\box54
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/modules\pgfmodule
+plot.code.tex
+File: pgfmoduleplot.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/pgf/compatibility\pgfco
+mp-version-0-65.sty
+Package: pgfcomp-version-0-65 2020/01/08 v3.1.5b (3.1.5b)
+\pgf@nodesepstart=\dimen271
+\pgf@nodesepend=\dimen272
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/pgf/compatibility\pgfco
+mp-version-1-18.sty
+Package: pgfcomp-version-1-18 2020/01/08 v3.1.5b (3.1.5b)
+))
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/pgf/utilities\pgffor.st
+y
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/pgf/utilities\pgfkeys.s
+ty
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/utilities\pgfkeys
+.code.tex))
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/pgf/math\pgfmath.sty
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/math\pgfmath.code
+.tex))
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/utilities\pgffor.
+code.tex
+Package: pgffor 2020/01/08 v3.1.5b (3.1.5b)
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/math\pgfmath.code
+.tex)
+\pgffor@iter=\dimen273
+\pgffor@skip=\dimen274
+\pgffor@stack=\toks38
+\pgffor@toks=\toks39
+))
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/frontendlayer/tik
+z\tikz.code.tex
+Package: tikz 2020/01/08 v3.1.5b (3.1.5b)
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/libraries\pgflibr
+aryplothandlers.code.tex
+File: pgflibraryplothandlers.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgf@plot@mark@count=\count293
+\pgfplotmarksize=\dimen275
+)
+\tikz@lastx=\dimen276
+\tikz@lasty=\dimen277
+\tikz@lastxsaved=\dimen278
+\tikz@lastysaved=\dimen279
+\tikz@lastmovetox=\dimen280
+\tikz@lastmovetoy=\dimen281
+\tikzleveldistance=\dimen282
+\tikzsiblingdistance=\dimen283
+\tikz@figbox=\box55
+\tikz@figbox@bg=\box56
+\tikz@tempbox=\box57
+\tikz@tempbox@bg=\box58
+\tikztreelevel=\count294
+\tikznumberofchildren=\count295
+\tikznumberofcurrentchild=\count296
+\tikz@fig@count=\count297
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/modules\pgfmodule
+matrix.code.tex
+File: pgfmodulematrix.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+\pgfmatrixcurrentrow=\count298
+\pgfmatrixcurrentcolumn=\count299
+\pgf@matrix@numberofcolumns=\count300
+)
+\tikz@expandcount=\count301
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/frontendlayer/tik
+z/libraries\tikzlibrarytopaths.code.tex
+File: tikzlibrarytopaths.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+)))
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/pgfplots\pgfplots.sty
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgfplots\pgfplots.rev
+ision.tex)
+Package: pgfplots 2020/02/29 v1.17 Data Visualization (1.17)
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgfplots\pgfplots.cod
+e.tex
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgfplots\pgfplotscore
+.code.tex
+\t@pgfplots@toka=\toks40
+\t@pgfplots@tokb=\toks41
+\t@pgfplots@tokc=\toks42
+\pgfplots@tmpa=\dimen284
+\c@pgfplots@coordindex=\count302
+\c@pgfplots@scanlineindex=\count303
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgfplots/sys\pgfplots
+sysgeneric.code.tex))
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgfplots/libs\pgfplot
+slibrary.code.tex)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgfplots/oldpgfcompat
+ib\pgfplotsoldpgfsupp_loader.code.tex
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/libraries\pgflibr
+aryfpu.code.tex))
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgfplots/util\pgfplot
+sutil.code.tex
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgfplots/liststructur
+e\pgfplotsliststructure.code.tex)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgfplots/liststructur
+e\pgfplotsliststructureext.code.tex)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgfplots/liststructur
+e\pgfplotsarray.code.tex
+\c@pgfplotsarray@tmp=\count304
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgfplots/liststructur
+e\pgfplotsmatrix.code.tex)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgfplots/numtable\pgf
+plotstableshared.code.tex
+\c@pgfplotstable@counta=\count305
+\t@pgfplotstable@a=\toks43
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgfplots/liststructur
+e\pgfplotsdeque.code.tex)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgfplots/util\pgfplot
+sbinary.code.tex
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgfplots/util\pgfplot
+sbinary.data.code.tex))
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgfplots/util\pgfplot
+sutil.verb.code.tex)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgfplots/libs\pgflibr
+arypgfplots.surfshading.code.tex
+\c@pgfplotslibrarysurf@no=\count306
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgfplots/sys\pgflibra
+rypgfplots.surfshading.pgfsys-pdftex.def)))
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgfplots/util\pgfplot
+scolormap.code.tex
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgfplots/util\pgfplot
+scolor.code.tex))
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgfplots\pgfplotsstac
+kedplots.code.tex)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgfplots\pgfplotsplot
+handlers.code.tex
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgfplots\pgfplotsmesh
+plothandler.code.tex
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgfplots\pgfplotsmesh
+plotimage.code.tex)))
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgfplots\pgfplots.sca
+ling.code.tex)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgfplots\pgfplotscoor
+dprocessing.code.tex)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgfplots\pgfplots.err
+orbars.code.tex)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgfplots\pgfplots.mar
+kers.code.tex)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgfplots\pgfplotstick
+s.code.tex)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgfplots\pgfplots.pat
+hs.code.tex)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/frontendlayer/tik
+z/libraries\tikzlibrarydecorations.code.tex
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/modules\pgfmodule
+decorations.code.tex
+\pgfdecoratedcompleteddistance=\dimen285
+\pgfdecoratedremainingdistance=\dimen286
+\pgfdecoratedinputsegmentcompleteddistance=\dimen287
+\pgfdecoratedinputsegmentremainingdistance=\dimen288
+\pgf@decorate@distancetomove=\dimen289
+\pgf@decorate@repeatstate=\count307
+\pgfdecorationsegmentamplitude=\dimen290
+\pgfdecorationsegmentlength=\dimen291
+)
+\tikz@lib@dec@box=\box59
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/frontendlayer/tik
+z/libraries\tikzlibrarydecorations.pathmorphing.code.tex
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/libraries/decorat
+ions\pgflibrarydecorations.pathmorphing.code.tex))
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/frontendlayer/tik
+z/libraries\tikzlibrarydecorations.pathreplacing.code.tex
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/libraries/decorat
+ions\pgflibrarydecorations.pathreplacing.code.tex))
+\pgfplots@numplots=\count308
+\pgfplots@xmin@reg=\dimen292
+\pgfplots@xmax@reg=\dimen293
+\pgfplots@ymin@reg=\dimen294
+\pgfplots@ymax@reg=\dimen295
+\pgfplots@zmin@reg=\dimen296
+\pgfplots@zmax@reg=\dimen297
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/frontendlayer/tik
+z/libraries\tikzlibraryplotmarks.code.tex
+File: tikzlibraryplotmarks.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/pgf/libraries\pgflibr
+aryplotmarks.code.tex
+File: pgflibraryplotmarks.code.tex 2020/01/08 v3.1.5b (3.1.5b)
+)))
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/adjustbox\adjustbox.sty
+Package: adjustbox 2019/01/04 v1.2 Adjusting TeX boxes (trim, clip, ...)
+("C:\Program Files\MiKTeX 2.9\tex/latex/xkeyval\xkeyval.sty"
+Package: xkeyval 2014/12/03 v2.7a package option processing (HA)
+
+("C:\Program Files\MiKTeX 2.9\tex/generic/xkeyval\xkeyval.tex"
+("C:\Program Files\MiKTeX 2.9\tex/generic/xkeyval\xkvutils.tex"
+\XKV@toks=\toks44
+\XKV@tempa@toks=\toks45
+)
+\XKV@depth=\count309
+File: xkeyval.tex 2014/12/03 v2.7a key=value parser (HA)
+))
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/adjustbox\adjcalc.sty
+Package: adjcalc 2012/05/16 v1.1 Provides advanced setlength with multiple back
+-ends (calc, etex, pgfmath)
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/adjustbox\trimclip.sty
+Package: trimclip 2018/04/08 v1.1 Trim and clip general TeX material
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/collectbox\collectbox.s
+ty
+Package: collectbox 2012/05/17 v0.4b Collect macro arguments as boxes
+\collectedbox=\box60
+)
+\tc@llx=\dimen298
+\tc@lly=\dimen299
+\tc@urx=\dimen300
+\tc@ury=\dimen301
+Package trimclip Info: Using driver 'tc-pdftex.def'.
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/adjustbox\tc-pdftex.def
+File: tc-pdftex.def 2019/01/04 v2.2 Clipping driver for pdftex
+))
+\adjbox@Width=\dimen302
+\adjbox@Height=\dimen303
+\adjbox@Depth=\dimen304
+\adjbox@Totalheight=\dimen305
+\adjbox@pwidth=\dimen306
+\adjbox@pheight=\dimen307
+\adjbox@pdepth=\dimen308
+\adjbox@ptotalheight=\dimen309
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/ifoddpage\ifoddpage.sty
+Package: ifoddpage 2016/04/23 v1.1 Conditionals for odd/even page detection
+\c@checkoddpage=\count310
+) (C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/varwidth\varwidth.sty
+Package: varwidth 2009/03/30 ver 0.92;  Variable-width minipages
+\@vwid@box=\box61
+\sift@deathcycles=\count311
+\@vwid@loff=\dimen310
+\@vwid@roff=\dimen311
+))
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/colortbl\colortbl.sty
+Package: colortbl 2020/01/04 v1.0e Color table columns (DPC)
+
+("C:\Program Files\MiKTeX 2.9\tex/latex/tools\array.sty"
+Package: array 2019/08/31 v2.4l Tabular extension package (FMi)
+\col@sep=\dimen312
+\ar@mcellbox=\box62
+\extrarowheight=\dimen313
+\NC@list=\toks46
+\extratabsurround=\skip63
+\backup@length=\skip64
+\ar@cellbox=\box63
+)
+\everycr=\toks47
+\minrowclearance=\skip65
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/floatrow\floatrow.sty
+Package: floatrow 2008/08/02 v0.3b floatrow: float package extension
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/caption\caption3.sty
+Package: caption3 2020/05/10 v1.11 caption3 kernel (AR)
+Package caption3 Info: TeX engine: e-TeX on input line 61.
+\captionmargin=\dimen314
+\captionmargin@=\dimen315
+\captionwidth=\dimen316
+\caption@tempdima=\dimen317
+\caption@indent=\dimen318
+\caption@parindent=\dimen319
+\caption@hangindent=\dimen320
+Package caption Info: Standard document class detected.
+)
+\c@float@type=\count312
+\float@exts=\toks48
+\float@box=\box64
+\@floatcapt=\box65
+Package floatrow Info: Modified float package code loaded on input line 455.
+Package floatrow Info: Modified rotfloat package code loaded on input line 473.
+
+\FR@everyfloat=\toks49
+\flrow@foot=\insert252
+\FB@wd=\dimen321
+\FBo@wd=\dimen322
+\FBc@wd=\dimen323
+\FBo@ht=\skip66
+\FBc@ht=\skip67
+\FBf@ht=\skip68
+\FBo@max=\skip69
+\FBc@max=\skip70
+\FBf@max=\skip71
+\c@FBl@b=\count313
+\floatbox@depth=\count314
+\c@FRobj=\count315
+\c@FRsobj=\count316
+\Xhsize=\skip72
+\sXhsize=\skip73
+\Zhsize=\skip74
+\sZhsize=\skip75
+\flrow@rowbox=\box66
+\FR@Zunitlength=\dimen324
+\c@FBcnt=\count317
+\FPOScnt=\count318
+\LTleft=\skip76
+\LTright=\skip77
+\LTleft=\skip78
+\LTright=\skip79
+\flrow@types=\toks50
+)
+Package hyperref Info: Option `colorlinks' set `true' on input line 41.
+
+("C:\Program Files\MiKTeX 2.9\tex/latex/graphics\lscape.sty"
+Package: lscape 2000/10/22 v3.01 Landscape Pages (DPC)
+)
+("C:\Program Files\MiKTeX 2.9\tex/latex/tools\longtable.sty"
+Package: longtable 2020/01/07 v4.13 Multi-page Table package (DPC)
+\LTleft=\skip80
+\LTright=\skip81
+\LTpre=\skip82
+\LTpost=\skip83
+\LTchunksize=\count319
+\LTcapwidth=\dimen325
+\LT@head=\box67
+\LT@firsthead=\box68
+\LT@foot=\box69
+\LT@lastfoot=\box70
+\LT@cols=\count320
+\LT@rows=\count321
+\c@LT@tables=\count322
+\c@LT@chunks=\count323
+\LT@p@ftn=\toks51
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/placeins\placeins.sty
+Package: placeins 2005/04/18  v 2.2
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/l3backend\l3backend-pdf
+mode.def
+File: l3backend-pdfmode.def 2020-05-05 L3 backend support: PDF mode
+\l__kernel_color_stack_int=\count324
+\l__pdf_internal_box=\box71
+) (main_21-05-2020.aux
+
+LaTeX Warning: Label `tab:' multiply defined.
+
+
+LaTeX Warning: Label `tab:' multiply defined.
+
+
+LaTeX Warning: Label `tab:' multiply defined.
+
+
+LaTeX Warning: Label `tab:' multiply defined.
+
+
+LaTeX Warning: Label `tab:' multiply defined.
+
+
+LaTeX Warning: Label `tab:' multiply defined.
+
+
+LaTeX Warning: Label `tab:' multiply defined.
+
+)
+\openout1 = `main_21-05-2020.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 97.
+LaTeX Font Info:    ... okay on input line 97.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 97.
+LaTeX Font Info:    ... okay on input line 97.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 97.
+LaTeX Font Info:    ... okay on input line 97.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 97.
+LaTeX Font Info:    ... okay on input line 97.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 97.
+LaTeX Font Info:    ... okay on input line 97.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 97.
+LaTeX Font Info:    ... okay on input line 97.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 97.
+LaTeX Font Info:    ... okay on input line 97.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 97.
+LaTeX Font Info:    ... okay on input line 97.
+
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+*geometry* verbose mode - [ preamble ] result:
+* driver: pdftex
+* paper: letterpaper
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: 
+* h-part:(L,W,R)=(92.14519pt, 430.00462pt, 92.14519pt)
+* v-part:(T,H,B)=(95.39737pt, 556.47656pt, 143.09605pt)
+* \paperwidth=614.295pt
+* \paperheight=794.96999pt
+* \textwidth=430.00462pt
+* \textheight=556.47656pt
+* \oddsidemargin=19.8752pt
+* \evensidemargin=19.8752pt
+* \topmargin=-13.87262pt
+* \headheight=12.0pt
+* \headsep=25.0pt
+* \topskip=10.0pt
+* \footskip=30.0pt
+* \marginparwidth=65.0pt
+* \marginparsep=11.0pt
+* \columnsep=10.0pt
+* \skip\footins=9.0pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidefalse
+* \@mparswitchfalse
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+*geometry* verbose mode - [ newgeometry ] result:
+* driver: pdftex
+* paper: letterpaper
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: 
+* h-part:(L,W,R)=(108.405pt, 397.48499pt, 108.40501pt)
+* v-part:(T,H,B)=(72.26999pt, 650.43pt, 72.27pt)
+* \paperwidth=614.295pt
+* \paperheight=794.96999pt
+* \textwidth=397.48499pt
+* \textheight=650.43pt
+* \oddsidemargin=36.13501pt
+* \evensidemargin=36.13501pt
+* \topmargin=-37.0pt
+* \headheight=12.0pt
+* \headsep=25.0pt
+* \topskip=10.0pt
+* \footskip=30.0pt
+* \marginparwidth=65.0pt
+* \marginparsep=11.0pt
+* \columnsep=10.0pt
+* \skip\footins=9.0pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidefalse
+* \@mparswitchfalse
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+\AtBeginShipoutBox=\box72
+Package hyperref Info: Link coloring ON on input line 97.
+("C:\Program Files\MiKTeX 2.9\tex/latex/hyperref\nameref.sty"
+Package: nameref 2019/09/16 v2.46 Cross-referencing by name of section
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/refcount\refcount.sty
+Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/generic/gettitlestring\gettit
+lestring.sty
+Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
+)
+\c@section@level=\count325
+)
+LaTeX Info: Redefining \ref on input line 97.
+LaTeX Info: Redefining \pageref on input line 97.
+LaTeX Info: Redefining \nameref on input line 97.
+ (main_21-05-2020.out) (main_21-05-2020.out)
+\@outlinefile=\write4
+\openout4 = `main_21-05-2020.out'.
+
+LaTeX Info: Redefining \microtypecontext on input line 97.
+Package microtype Info: Generating PDF output.
+Package microtype Info: Character protrusion enabled (level 2).
+Package microtype Info: Using default protrusion set `alltext'.
+Package microtype Info: Automatic font expansion enabled (level 2),
+(microtype)             stretch: 20, shrink: 20, step: 1, non-selected.
+Package microtype Info: Using default expansion set `basictext'.
+LaTeX Info: Redefining \showhyphens on input line 97.
+Package microtype Info: No adjustment of tracking.
+Package microtype Info: No adjustment of interword spacing.
+Package microtype Info: No adjustment of character kerning.
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/microtype\mt-ptm.cfg
+File: mt-ptm.cfg 2006/04/20 v1.7 microtype config. file: Times (RS)
+)
+ABD: EveryShipout initializing macros
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/context/base/mkii\supp-pdf.mk
+ii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count326
+\scratchdimen=\dimen326
+\scratchbox=\box73
+\nofMPsegments=\count327
+\nofMParguments=\count328
+\everyMPshowfont=\toks52
+\MPscratchCnt=\count329
+\MPscratchDim=\dimen327
+\MPnumerator=\count330
+\makeMPintoPDFobject=\count331
+\everyMPtoPDFconversion=\toks53
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/epstopdf-pkg\epstopdf-b
+ase.sty
+Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
+85.
+)
+
+Package pgfplots Warning: running in backwards compatibility mode (unsuitable t
+ick labels; missing features). Consider writing \pgfplotsset{compat=1.17} into 
+your preamble.
+ on input line 97.
+
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: End \AtBeginDocument code.
+
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/floatrow\fr-longtable.s
+ty
+Package: fr-longtable 2007/11/28 v0.1b (beta) floatrow: additions for longtable
+
+\flrow@LT@lasthead=\box74
+\flrow@LT@prelastfoot=\box75
+\c@FBLTpage=\count332
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/microtype\mt-cmr.cfg
+File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman 
+(RS)
+)
+LaTeX Font Info:    Trying to load font information for U+msa on input line 100
+.
+
+("C:\Program Files\MiKTeX 2.9\tex/latex/amsfonts\umsa.fd"
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/microtype\mt-msa.cfg
+File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 100
+.
+
+("C:\Program Files\MiKTeX 2.9\tex/latex/amsfonts\umsb.fd"
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
+(C:\Users\dfrazier\AppData\Roaming\MiKTeX\2.9\tex/latex/microtype\mt-msb.cfg
+File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
+)
+LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 1
+00.
+
+("C:\Program Files\MiKTeX 2.9\tex/latex/base\t1cmtt.fd"
+File: t1cmtt.fd 2019/12/16 v2.5j Standard LaTeX font definitions
+)
+Package microtype Info: Loading generic protrusion settings for font family
+(microtype)             `cmtt' (encoding: T1).
+(microtype)             For optimal results, create family-specific settings.
+(microtype)             See the microtype manual for details.
+LaTeX Font Info:    Trying to load font information for T1+phv on input line 10
+3.
+
+("C:\Program Files\MiKTeX 2.9\tex/latex/psnfss\t1phv.fd"
+File: t1phv.fd 2020/03/25 scalable font definitions for T1/phv.
+)
+Package microtype Info: Loading generic protrusion settings for font family
+(microtype)             `phv' (encoding: T1).
+(microtype)             For optimal results, create family-specific settings.
+(microtype)             See the microtype manual for details.
+ [1
+
+
+{C:/Users/dfrazier/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}] [2] [3] 
+[4]
+(../../Results/simulation/test_small_latex.tex)
+
+LaTeX Warning: Reference `fig:rf_sim_vi' on page 5 undefined on input line 244.
+
+
+
+LaTeX Warning: Reference `fig:nn_sim_vi' on page 5 undefined on input line 244.
+
+
+<../../Results/simulation/graphics/simulation_all_g_vi.pdf, id=226, 511.9125pt 
+x 255.95625pt>
+File: ../../Results/simulation/graphics/simulation_all_g_vi.pdf Graphic file (t
+ype pdf)
+<use ../../Results/simulation/graphics/simulation_all_g_vi.pdf>
+Package pdftex.def Info: ../../Results/simulation/graphics/simulation_all_g_vi.
+pdf  used on input line 252.
+(pdftex.def)             Requested size: 511.91125pt x 255.95561pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 269--269
+[]\T1/ptm/m/n/10 (+20) It pre-vi-ously
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 269--269
+\T1/ptm/m/n/10 (+20) said monthly
+ []
+
+
+Underfull \hbox (badness 1540) in paragraph at lines 269--269
+\T1/ptm/m/n/10 (+20) re-turns but be-
+ []
+
+
+Underfull \hbox (badness 1127) in paragraph at lines 269--269
+\T1/ptm/m/n/10 (+20) about quar-terly
+ []
+
+
+Underfull \hbox (badness 7451) in paragraph at lines 269--269
+\T1/ptm/m/n/10 (+20) re-turns. So,
+ []
+
+
+Underfull \hbox (badness 3449) in paragraph at lines 269--269
+\T1/ptm/m/n/10 (+20) I've taken the
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 269--269
+\T1/ptm/m/n/10 (+20) Please make
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 269--269
+\T1/ptm/m/n/10 (+20) sure that is
+ []
+
+
+Underfull \hbox (badness 7888) in paragraph at lines 270--270
+[]\T1/ptm/m/n/10 (+20) What do you
+ []
+
+
+Underfull \hbox (badness 8056) in paragraph at lines 270--270
+\T1/ptm/m/n/10 (+20) mean by this
+ []
+
+
+Underfull \hbox (badness 1168) in paragraph at lines 270--270
+\T1/ptm/m/n/10 (+20) fac-tors, the re-
+ []
+
+
+Underfull \hbox (badness 2591) in paragraph at lines 270--270
+\T1/ptm/m/n/10 (+20) turns or both?
+ []
+
+
+Underfull \hbox (badness 3098) in paragraph at lines 270--270
+\T1/ptm/m/n/10 (+20) In ei-ther case,
+ []
+
+
+LaTeX Warning: Marginpar on page 5 moved.
+
+[5]
+Underfull \hbox (badness 10000) in paragraph at lines 275--275
+[]\T1/ptm/m/n/10 (+20) What ma-tu-rity
+ []
+
+
+Underfull \hbox (badness 1960) in paragraph at lines 275--275
+\T1/ptm/m/n/10 (+20) is the T-Bill??
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 275--275
+\T1/ptm/m/n/10 (+20) 3-month, one
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 275--275
+[]\T1/ptm/m/n/10 (+20) This foot-note
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 275--275
+\T1/ptm/m/n/10 (+20) needs to be
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 275--275
+\T1/ptm/m/n/10 (+20) moved to
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 275--275
+\T1/ptm/m/n/10 (+20) the vari-able
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 275--275
+\T1/ptm/m/n/10 (+20) im-por-tance
+ []
+
+
+LaTeX Warning: Marginpar on page 6 moved.
+
+(../../Results/empirical/empirical_loss_latex_small.tex)
+
+LaTeX Warning: Reference `empirical_study_appendix' on page 6 undefined on inpu
+t line 293.
+
+[6 <../../Results/simulation/graphics/simulation_all_g_vi.pdf>]
+<../../Results/empirical/empirical_all_sample_vi.pdf, id=267, 511.9125pt x 170.
+6375pt>
+File: ../../Results/empirical/empirical_all_sample_vi.pdf Graphic file (type pd
+f)
+<use ../../Results/empirical/empirical_all_sample_vi.pdf>
+Package pdftex.def Info: ../../Results/empirical/empirical_all_sample_vi.pdf  u
+sed on input line 302.
+(pdftex.def)             Requested size: 511.91125pt x 170.63707pt.
+
+
+LaTeX Warning: Reference `ind_factors' on page 7 undefined on input line 304.
+
+
+LaTeX Warning: Reference `ind_factors' on page 7 undefined on input line 304.
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [7 <../../Results/empirical/empirical_all_sample_vi.pdf>] (main_21-05-2020.bbl
+ [8])
+[9]
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 3
+91.
+ ("C:\Program Files\MiKTeX 2.9\tex/latex/psnfss\ts1ptm.fd"
+File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
+)
+Underfull \hbox (badness 10000) in paragraph at lines 416--426
+\T1/ptm/m/n/10 (+20) of the fu-ture of each time se-ries $\OT1/cmr/m/n/10 [\OML
+/cmm/m/it/10 z[]; z[]; [] ; z[]\OT1/cmr/m/n/10 ] := \OT1/cmr/bx/n/10 z[]$ \T1/p
+tm/m/n/10 (+20) given its
+ []
+
+
+LaTeX Warning: Reference `fig:encoderdecoder' on page 10 undefined on input lin
+e 429.
+
+
+Package natbib Warning: Citation `graves2013' on page 10 undefined on input lin
+e 430.
+
+
+Package natbib Warning: Citation `sutskever2014' on page 10 undefined on input 
+line 430.
+
+[10]
+Underfull \hbox (badness 7186) in paragraph at lines 458--467
+[]\T1/ptm/m/n/10 (+20) Given the model pa-ram-e-ters $\OT1/cmr/m/n/10 $\T1/ptm
+/m/n/10 (+20) , we can di-rectly ob-tain joint sam-ples $[] \OMS/cmsy/m/n/10 
+ []
+
+[11] [12]
+
+LaTeX Warning: Reference `sample_split' on page 13 undefined on input line 533.
+
+
+
+LaTeX Warning: Reference `sample_split_diag' on page 13 undefined on input line
+ 533.
+
+[13] (../../Results/simulation/test_loss_latex.tex
+Overfull \hbox (20.51045pt too wide) in alignment at lines 3--10
+ [] [] [] [] [] [] [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (20.51045pt too wide) in alignment at lines 10--17
+ [] [] [] [] [] [] [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (20.51045pt too wide) in alignment at lines 17--19
+ [] [] [] [] [] [] [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (20.51045pt too wide) in alignment at lines 19--21
+ [] [] [] [] [] [] [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (20.51045pt too wide) in alignment at lines 21--61
+ [] [] [] [] [] [] [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (20.51045pt too wide) in alignment at lines 61--101
+ [] [] [] [] [] [] [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (20.51045pt too wide) in alignment at lines 101--141
+ [] [] [] [] [] [] [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (20.51045pt too wide) in alignment at lines 141--147
+ [] [] [] [] [] [] [] [] [] [] [] 
+ []
+
+[14])
+<../../Results/simulation/graphics/simulation_g_vimp_bc.pdf, id=345, 511.9125pt
+ x 255.95625pt>
+File: ../../Results/simulation/graphics/simulation_g_vimp_bc.pdf Graphic file (
+type pdf)
+<use ../../Results/simulation/graphics/simulation_g_vimp_bc.pdf>
+Package pdftex.def Info: ../../Results/simulation/graphics/simulation_g_vimp_bc
+.pdf  used on input line 594.
+(pdftex.def)             Requested size: 511.91125pt x 255.95561pt.
+<../../Results/simulation/graphics/simulation_g_vimp_ik.pdf, id=346, 511.9125pt
+ x 255.95625pt>
+File: ../../Results/simulation/graphics/simulation_g_vimp_ik.pdf Graphic file (
+type pdf)
+<use ../../Results/simulation/graphics/simulation_g_vimp_ik.pdf>
+Package pdftex.def Info: ../../Results/simulation/graphics/simulation_g_vimp_ik
+.pdf  used on input line 601.
+(pdftex.def)             Requested size: 511.91125pt x 255.95561pt.
+ [15 <../../Results/simulation/graphics/simulation_g_vimp_bc.pdf>]
+[16 <../../Results/simulation/graphics/simulation_g_vimp_ik.pdf>]
+Overfull \hbox (6.12646pt too wide) in paragraph at lines 683--683
+[]|\T1/ptm/m/n/10 (-20) 93Q3| 
+ []
+
+
+Overfull \hbox (6.12646pt too wide) in paragraph at lines 683--683
+[]|\T1/ptm/m/n/10 (-20) 93Q4| 
+ []
+
+[17] (../../Results/empirical/empirical_loss_latex.tex)
+<../../Results/empirical/empirical_vimp.pdf, id=383, 511.9125pt x 226.8475pt>
+File: ../../Results/empirical/empirical_vimp.pdf Graphic file (type pdf)
+<use ../../Results/empirical/empirical_vimp.pdf>
+Package pdftex.def Info: ../../Results/empirical/empirical_vimp.pdf  used on in
+put line 727.
+(pdftex.def)             Requested size: 511.91125pt x 226.84694pt.
+ [18]
+(../../Results/empirical_missing_threshold/empirical_loss_latex.tex) [19 <../..
+/Results/empirical/empirical_vimp.pdf>]
+<../../Results/empirical_missing_threshold/empirical_all_sample_vi.pdf, id=403,
+ 511.9125pt x 255.95625pt>
+File: ../../Results/empirical_missing_threshold/empirical_all_sample_vi.pdf Gra
+phic file (type pdf)
+<use ../../Results/empirical_missing_threshold/empirical_all_sample_vi.pdf>
+Package pdftex.def Info: ../../Results/empirical_missing_threshold/empirical_al
+l_sample_vi.pdf  used on input line 742.
+(pdftex.def)             Requested size: 511.91125pt x 255.95561pt.
+<../../Results/empirical_missing_threshold/empirical_vimp.pdf, id=404, 511.9125
+pt x 226.8475pt>
+File: ../../Results/empirical_missing_threshold/empirical_vimp.pdf Graphic file
+ (type pdf)
+<use ../../Results/empirical_missing_threshold/empirical_vimp.pdf>
+Package pdftex.def Info: ../../Results/empirical_missing_threshold/empirical_vi
+mp.pdf  used on input line 749.
+(pdftex.def)             Requested size: 511.91125pt x 226.84694pt.
+ [20 <../../Results/empirical_missing_threshold/empirical_all_sample_vi.pdf> <.
+./../Results/empirical_missing_threshold/empirical_vimp.pdf>]
+(../../Results/empirical_train_valid_1/empirical_loss_latex.tex)
+<../../Results/empirical_train_valid_1/empirical_all_sample_vi.pdf, id=423, 511
+.9125pt x 255.95625pt>
+File: ../../Results/empirical_train_valid_1/empirical_all_sample_vi.pdf Graphic
+ file (type pdf)
+<use ../../Results/empirical_train_valid_1/empirical_all_sample_vi.pdf>
+Package pdftex.def Info: ../../Results/empirical_train_valid_1/empirical_all_sa
+mple_vi.pdf  used on input line 766.
+(pdftex.def)             Requested size: 511.91125pt x 255.95561pt.
+<../../Results/empirical_train_valid_1/empirical_vimp.pdf, id=424, 511.9125pt x
+ 226.8475pt>
+File: ../../Results/empirical_train_valid_1/empirical_vimp.pdf Graphic file (ty
+pe pdf)
+<use ../../Results/empirical_train_valid_1/empirical_vimp.pdf>
+Package pdftex.def Info: ../../Results/empirical_train_valid_1/empirical_vimp.p
+df  used on input line 773.
+(pdftex.def)             Requested size: 511.91125pt x 226.84694pt.
+ [21
+
+
+ <../../Results/empirical_train_valid_1/empirical_all_sample_vi.pdf>]
+(../../Results/empirical_train_valid_2/empirical_loss_latex.tex)
+<../../Results/empirical_train_valid_2/empirical_all_sample_vi.pdf, id=437, 511
+.9125pt x 255.95625pt>
+File: ../../Results/empirical_train_valid_2/empirical_all_sample_vi.pdf Graphic
+ file (type pdf)
+<use ../../Results/empirical_train_valid_2/empirical_all_sample_vi.pdf>
+Package pdftex.def Info: ../../Results/empirical_train_valid_2/empirical_all_sa
+mple_vi.pdf  used on input line 789.
+(pdftex.def)             Requested size: 511.91125pt x 255.95561pt.
+<../../Results/empirical_train_valid_2/empirical_vimp.pdf, id=438, 511.9125pt x
+ 226.8475pt>
+File: ../../Results/empirical_train_valid_2/empirical_vimp.pdf Graphic file (ty
+pe pdf)
+<use ../../Results/empirical_train_valid_2/empirical_vimp.pdf>
+Package pdftex.def Info: ../../Results/empirical_train_valid_2/empirical_vimp.p
+df  used on input line 796.
+(pdftex.def)             Requested size: 511.91125pt x 226.84694pt.
+ [22 <../../Results/empirical_train_valid_1/empirical_vimp.pdf> <../../Results/
+empirical_train_valid_2/empirical_all_sample_vi.pdf>]
+(../../Results/empirical_ff/empirical_loss_latex.tex)
+<../../Results/empirical_ff/empirical_all_sample_vi.pdf, id=458, 511.9125pt x 2
+55.95625pt>
+File: ../../Results/empirical_ff/empirical_all_sample_vi.pdf Graphic file (type
+ pdf)
+<use ../../Results/empirical_ff/empirical_all_sample_vi.pdf>
+Package pdftex.def Info: ../../Results/empirical_ff/empirical_all_sample_vi.pdf
+  used on input line 812.
+(pdftex.def)             Requested size: 511.91125pt x 255.95561pt.
+<../../Results/empirical_ff/empirical_vimp.pdf, id=459, 511.9125pt x 226.8475pt
+>
+File: ../../Results/empirical_ff/empirical_vimp.pdf Graphic file (type pdf)
+<use ../../Results/empirical_ff/empirical_vimp.pdf>
+Package pdftex.def Info: ../../Results/empirical_ff/empirical_vimp.pdf  used on
+ input line 819.
+(pdftex.def)             Requested size: 511.91125pt x 226.84694pt.
+
+
+Package natbib Warning: There were undefined citations.
+
+[23 <../../Results/empirical_train_valid_2/empirical_vimp.pdf> <../../Results/e
+mpirical_ff/empirical_all_sample_vi.pdf>] [24 <../../Results/empirical_ff/empir
+ical_vimp.pdf>]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 823.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 823.
+ (main_21-05-2020.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 823.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 823.
+Package rerunfilecheck Info: File `main_21-05-2020.out' has not changed.
+(rerunfilecheck)             Checksum: 3C350272C47093606B2D173A30833680;2014.
+
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: There were multiply-defined labels.
+
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 823.
+ ) 
+Here is how much of TeX's memory you used:
+ 32603 strings out of 480765
+ 756371 string characters out of 2904100
+ 1184385 words of memory out of 3000000
+ 47651 multiletter control sequences out of 15000+200000
+ 582520 words of font info for 186 fonts, out of 3000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 63i,11n,98p,1121b,609s stack positions out of 5000i,500n,10000p,200000b,50000s
+{C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/base/8r.enc} <C:\Users\dfrazier\
+AppData\Local\MiKTeX\2.9\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1000.pk><C:/Pro
+gram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Program Fil
+es/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Program Files/MiKTe
+X 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files/MiKTeX 2.9/fo
+nts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1
+/public/amsfonts/cm/cmmi7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/a
+msfonts/cm/cmmi9.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/c
+m/cmr10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr5.pf
+b><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Prog
+ram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Program Files/
+MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr9.pfb><C:/Program Files/MiKTeX 2.9
+/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files/MiKTeX 2.9/fonts/t
+ype1/public/amsfonts/cm/cmsy7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/publ
+ic/amsfonts/symbols/msbm10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/hel
+vetic/uhvr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmb8a.pfb>
+<C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmr8a.pfb><C:/Program Files
+/MiKTeX 2.9/fonts/type1/urw/times/utmri8a.pfb>
+Output written on main_21-05-2020.pdf (24 pages, 413810 bytes).
+PDF statistics:
+ 586 PDF objects out of 1000 (max. 8388607)
+ 144 named destinations out of 1000 (max. 500000)
+ 25918 words of extra memory for PDF output out of 29859 (max. 10000000)
+

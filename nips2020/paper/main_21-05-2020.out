@@ -1,0 +1,30 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{Model and Methods}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Statistical Model}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{Methods to be compared}{section.2}% 4
+\BOOKMARK [2][-]{subsection.2.3}{Model evaluation measures}{section.2}% 5
+\BOOKMARK [1][-]{section.3}{Preliminary Results}{}% 6
+\BOOKMARK [2][-]{subsection.3.1}{Simulation Study Results}{section.3}% 7
+\BOOKMARK [1][-]{section.4}{Empirical analysis}{}% 8
+\BOOKMARK [2][-]{subsection.4.1}{Data}{section.4}% 9
+\BOOKMARK [2][-]{subsection.4.2}{Results}{section.4}% 10
+\BOOKMARK [1][-]{section.5}{Conclusion}{}% 11
+\BOOKMARK [1][-]{appendix.A}{Additional details: models}{}% 12
+\BOOKMARK [2][-]{subsection.A.1}{Linear models}{appendix.A}% 13
+\BOOKMARK [2][-]{subsection.A.2}{Elastic nets}{appendix.A}% 14
+\BOOKMARK [2][-]{subsection.A.3}{Random forests}{appendix.A}% 15
+\BOOKMARK [2][-]{subsection.A.4}{Feed forward neural networks}{appendix.A}% 16
+\BOOKMARK [2][-]{subsection.A.5}{Long short term memory networks}{appendix.A}% 17
+\BOOKMARK [2][-]{subsection.A.6}{FFORMA}{appendix.A}% 18
+\BOOKMARK [2][-]{subsection.A.7}{DeepAR}{appendix.A}% 19
+\BOOKMARK [1][-]{appendix.B}{Additional details: simulation design}{}% 20
+\BOOKMARK [2][-]{subsection.B.1}{Simulation Design}{appendix.B}% 21
+\BOOKMARK [3][-]{subsubsection.B.1.1}{Sample Splitting}{subsection.B.1}% 22
+\BOOKMARK [2][-]{subsection.B.2}{Simulation Study Results}{appendix.B}% 23
+\BOOKMARK [3][-]{subsubsection.B.2.1}{Prediction Performance}{subsection.B.2}% 24
+\BOOKMARK [2][-]{subsection.B.3}{Random Forest VIMPs}{appendix.B}% 25
+\BOOKMARK [1][-]{appendix.C}{Additional details: Empirical analysis}{}% 26
+\BOOKMARK [2][-]{subsection.C.1}{Data \046 cleaning}{appendix.C}% 27
+\BOOKMARK [2][-]{subsection.C.2}{Empirical study robustness checks \046 results}{appendix.C}% 28
+\BOOKMARK [2][-]{subsection.C.3}{Empirical Data Results}{appendix.C}% 29
+\BOOKMARK [3][-]{subsubsection.C.3.1}{Prediction Accuracy}{subsection.C.3}% 30
