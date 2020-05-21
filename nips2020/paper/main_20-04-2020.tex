@@ -718,18 +718,43 @@ where the elastic net penalty \cite{zou_regularization_2005} is:
 \lambda(1-\rho) \sum_{j = 1}^{P}|\theta_j| +
 \frac{1}{2} \lambda \rho \sum_{j = 1}^{P}\theta_j^2
 \end{equation}
-Further details are given in \cite{zou_regularization_2005}.
+where the hyperparameter $\lambda$ controls the overall magnitude of the loss, and hyperparameter $\rho$ controls the shape of the penalization. $\rho = 1$ corresponds to ridge regression proposed by \cite{hoerl_ridge_1970}, which uses $l_2$ penalty that shrinks all coefficients closer to 0, but not to 0. $\rho = 0$ case corresponds to the popular LASSO and uses absolute ($l_1$) parameter penalization proposed by \cite{tibshirani_regression_1996}, which geometrically allows the coefficients to be shrunk to 0. For \(0 < \rho < 1\), the elastic net aims to produce parsimonious models through both shrinkage and selection by combining the properties of LASSO and ridge regression.
 
 \subsection{Random forests}
+%% Explain CART first
+
+Random Forests are an extension of Classification and Regression Trees (CART) proposed by \cite{breiman_random_2001}. CART are fully non-parametric models that can capture complex multi-way interactions. A tree "grows" in a series of iterations. With each iteration, a split ("branch") is made along one predictor such that it is the best split available at that stage with respect to minimizing the loss function. These steps are continued until each observation is its own node, or more commonly until the stopping criterion is met. The eventual model slices the predictor space into rectangular partitions, and predicts the unknown function $g^*(z_{i,t})$ with the average value of the outcome variable in each partition. The prediction of a tree, $\mathcal{T}$, with \(K\) "leaves" (terminal nodes), and depth $L$ is
+\begin{equation}
+g(z_{i,t};\theta,K,L) = \sum_{k=1}^{K}\theta_k\textbf{1}_{z_{i,t}\in C_k(L)}
+\end{equation}
+where $C_k(L)$ is one of the $K$ partitions in the model. For this study, only recursive binary trees were considered. Though trees were originally proposed and fit with respect to minimizing MSE, they can be grown with respect to a variety of loss functions, including MAE, where the loss within each C partition is denoted by $H(\theta, C)$: 
+\begin{equation}
+H(\theta, C) = \frac{1}{|C|} \sum_{z_{i,t} \in C} L(r_{i,t+1} - \theta)
+\end{equation} 
+where $|C|$ denotes the number of observations in set C (partition). Given $C$, it is clear that the optimal choice for minimising MSE is simply $\theta = \frac{1}{|C|} \sum_{z_{io,t}\in C}^{ }r_{i,t+1}$ i.e. the average of the partition, and the median of the partition when minimising MAE.
+
+Trees, grown to a deep enough level, are highly unbiased and flexible, as each partition can potentially predict a single, or low number of observations. The trade-off is their high variance and instability. 
 
 Further details are given in cite().
 
 \subsection{Feed forward neural networks}
+More specifically, a neural network consists of layers denoted by $l = 0, 1, \dots, L$, with $l = 0$ denoting the input layer and $l = L$ denoting the output layer. The input layer is defined by the scaled predictor set, $x^{(0)} = (1, z_1, \dots, z_N)'$. The model adds complexity through the use of one or more hidden layer, each containing $K^{(l)}$ "neurons". Each neuron linearly aggregates the values of the previous layer, and applies some non-linear "activation function" which we denote as $\alpha$ to its aggregated signal before sending its output to the next layer. The output of neuron $k$ in layer $l$ is then $x_k^{(l)}$. Next, define the vector of outputs for this layer as $x^{(l)} = (1, x_1^{(l)}, \dots, x_{K^(l)}^{(l)})'$.  The recursive output formula for the neural network at each neuron in layer $l > 0$ is then:
+\begin{equation}
+x_k^{(l)} = \alpha(x^{(l-1)'}\theta_k^{l-1}),
+\end{equation}
+where $\alpha()$ represents the activation function for that layer with the final output \footnote{Note that the specification of a constant ``1" at the beginning of each layer is the same as specifying a bias term as is popular in other parametrizations. }
+\begin{equation}
+g(z;\theta) = x^{(L-1)'}\theta^{L-1}
+\end{equation}
+The neural network's weight and bias parameters for each layer are estimated by minimizing the loss function with respect to the parameters, i.e. by calculating the partial derivative with respect to a specific weight or bias element. 
 
+Due to the complexity and hence non-existent analytical form for this solution, this is typically found via backpropagation, an algorithm which exploits the chain rule of the partial derivative and iteratively finds a local optimum using a first order gradient based algorithm, also known as "gradient descent." The gradient descent algorithm minimizes some function (such as the loss function in the context of machine learning) by iteratively moving in the direction of steepest descent, defined as the negative gradient. Formally, for a loss function $L(x)$ that is defined and has a gradient defined in the neighbourhood of the parameter set $a$, the updating algorithm is:
+\begin{equation}
+a_{n+1} = a_n - \gamma \Delta F(a_n)
+\end{equation}
+where $\gamma$ controls the size of each update. This $\gamma$ parameter is known as the learning rate in neural network training, and controlling this is critical for good performance. As the loss functions of neural networks can be very complex with many local minima, the learning rate should be high enough such that the parameter updates are large enough to skip or jump over them. Too large of a learning rate however, and the neural may fail to converge to a solution at all. Due to computational limitations, we tune the learning rate manually, and consider a variety of different ``optimizers", or algorithms which adapt the learning rate in different ways (see Appendix for computational details).
 
 For our application, we considered the following grid of hyperparameters:
-
-
 
 Further details are given in cite().
 
@@ -738,14 +763,21 @@ Long short term memory (LSTM) networks are
 
 For our application, we considered the following grid of hyperparameters:
 
+\begin{itemize}
+	\item 
+\end{itemize}
+
 Further details are given in cite().
 
 \subsection{FFORMA}
 Feature-based Forecast Model Averaging, cite() is an automated method for obtaining weighted forecast combinations for time series. We provide a brief overview of the two phases in this methodology.
 
-We follow cite()'s selection of time series features as inputs to the meta-learner. 
+Phase one involves training the meta learning model. Let $\mathbf{y_1}, \mathbf{y_2}, \dots, \mathbf{y_N}$ denote the different times series of excess returns, $F$ denote the set of functions for calculating time series features, and $M$ the set of constituent models considered for each times series. For each time series $\mathbf{y_n}$, split $\mathbf{y_n}$ into training, validation and test sets, calculate the set of features $f_n \in F$ over the training period, fit each constituent model $m \in M$ over the training period and generate forecasts over the validation and test periods, and calculate validation losses $L_{nm}$. Finally, train the meta-learning model by minimizing:
+\begin{equation}
+\underset{w}{\text{argmin}} \sum_{n = 1}^{N} \sum_{m = 1}^{M} w(f_n)_m L_{nm}
+\end{equation}
 
-To incorporate all regressors in each individual time series model, we applied dimensional reduction techniques of PCA and UMAP to generate new feature mappings for use in GARCH (1, 1) models (generally the best performing of the constituent models). It was noted that none of the new external regressors as generated by these feature mappings improved fit, however.
+To incorporate all regressors in each individual time series model, we applied dimensional reduction techniques of PCA and UMAP to generate new feature mappings for use in GARCH (1, 1) models (generally the best performing of the constituent models). None of the new external regressors as generated by these feature mappings improved performance, however.
 
 The constituent models we considered are:
 \begin{itemize}
@@ -759,10 +791,9 @@ The constituent models we considered are:
 	\item ARMA (1, 1) with g.e.d. GARCH(1, 1) errors
 	\item ARMA (1, 1) with g.e.d. GARCH(1, 1) errors and UMAP external regressors
 \end{itemize}
+We follow cite()'s selection of time series features as inputs to the meta-learner. The time series features used to train the meta-model are detailed in cite(), with the addition of realized volatility. Note that because financial returns data does not typically exhibit seasonality, features and constituent models related which utilized seasonality were omitted.
 
-The time series features used to train the meta-model are detailed in cite(), with the addition of realized volatility.
-
-Note that because financial returns data does not typically exhibit seasonality, features and constituent models related which utilized seasonality were omitted.
+Phase two uses the learning model from phase one to produce new, combined forecasts for each time series. For each $\mathbf{y_n}$, calculate the features $f_{new}$ by applying $F$, use the meta-learner to produce $w(f_{new})$ an $M$ vector of weights, compute the forecasts from each constituent model in $M$, then finally combine them into a final forecast using weights $w$.
 
 \subsection{DeepAR}
 DeepAR is a generalization of traditional Auto Regressive (AR) models to include additional layers into order to introduce non-linearities into the model.
@@ -775,22 +806,13 @@ DeepAR aims to model the conditional distribution of the
 P(\zVec{i}{t_0}{T} | \zVec{i}{1}{t_0-1}, \xVec{i}{1}{T})
 \label{eq:condDist}
 \end{equation*}
-of the future of each
-time series $[\z{i}{t_0}, \z{i}{t_0 + 1}, \ldots, \z{i}{T}] := \zVec{i}{t_0}{T}$ given its 
-\hbox{past $[\z{i}{1}, \ldots, \z{i}{t_0-2}, \z{i}{t_0-1}] := \zVec{i}{1}{t_0-1}$},
-where $t_0$ denotes the time point from which we assume $\z{i}{t}$ to be unknown at prediction time,
-and $\xVec{i}{1}{T}$ are covariates that are assumed to be known for all time points. To prevent
-confusion we avoid the ambiguous terms ``past'' and ``future'' and will refer to time ranges $[1, t_0-1]$ and $[t_0, T]$ as the conditioning range and 
-prediction range, respectively. During training, both ranges have to lie in the past so that the $\z{i}{t}$ are observed, but during prediction $\z{i}{t}$
-is only available in the conditioning range. Note that the time index $t$ is relative, i.e.\ $t=1$ can correspond to a different actual
-time period for each $i$. 
+of the future of each time series $[\z{i}{t_0}, \z{i}{t_0 + 1}, \ldots, \z{i}{T}] := \zVec{i}{t_0}{T}$ given its \hbox{past $[\z{i}{1}, \ldots, \z{i}{t_0-2}, \z{i}{t_0-1}] := \zVec{i}{1}{t_0-1}$}, where $t_0$ denotes the time point from which we assume $\z{i}{t}$ to be unknown at prediction time, and $\xVec{i}{1}{T}$ are covariates that are assumed to be known for all time points. To prevent confusion we avoid the ambiguous terms ``past'' and ``future'' and will refer to time ranges $[1, t_0-1]$ and $[t_0, T]$ as the conditioning range and 
+prediction range, respectively. During training, both ranges have to lie in the past so that the $\z{i}{t}$ are observed, but during prediction $\z{i}{t}$ is only available in the conditioning range. Note that the time index $t$ is relative, i.e.\ $t=1$ can correspond to a different actual time period for each $i$. 
 
 \newcommand{\modelDist}{Q_\Theta(\zVec{i}{t_0}{T} | \zVec{i}{1}{t_0-1}, \xVec{i}{1}{T})}
 
-Our model, summarized in Fig.~\ref{fig:encoderdecoder}, is based on an autoregressive recurrent network
-architecture \cite{graves2013,sutskever2014}.
-We assume that our model distribution $\modelDist$
-consists of a product of likelihood factors
+Our model, summarized in Fig.~\ref{fig:encoderdecoder}, is based on an autoregressive recurrent network architecture \cite{graves2013,sutskever2014}.
+We assume that our model distribution $\modelDist$ consists of a product of likelihood factors
 \begin{align*}
 \modelDist &= \prod\nolimits_{t=t_0}^T Q_\Theta(z_{i,t}|\mathbf{z}_{i,1:t-1}, \xVec{i}{1}{T}) = \prod\nolimits_{t=t_0}^T \ell(\z{i}{t} | \theta(\hVec_{i, t}, \Theta))
 \end{align*}
@@ -806,18 +828,12 @@ as well as recurrent, i.e.\ the previous output of the network $\hVec_{i,t-1}$ i
 The likelihood $\ell(\z{i}{t}|\theta(\hVec_{i,t}))$ is a fixed distribution
 whose parameters are given by a function $\theta(\hVec_{i,t}, \Theta)$ of the network output $\hVec_{i, t}$ (see below).
 
-Information about the observations in the conditioning range $\zVec{i}{1}{t_0 -1}$ is transferred to the
-prediction range through the initial state $\hVec_{i, t_0-1}$. In the sequence-to-sequence setup, this initial state is
-the output of an \emph{encoder network}. While in general this encoder network can have a different architecture, in our 
-experiments we opt for using the
-same architecture for the model in the conditioning range and the prediction range (corresponding to the \emph{encoder} and \emph{decoder} in
+Information about the observations in the conditioning range $\zVec{i}{1}{t_0 -1}$ is transferred to the prediction range through the initial state $\hVec_{i, t_0-1}$. In the sequence-to-sequence setup, this initial state is the output of an \emph{encoder network}. While in general this encoder network can have a different architecture, in our 
+experiments we opt for using the same architecture for the model in the conditioning range and the prediction range (corresponding to the \emph{encoder} and \emph{decoder} in
 a sequence-to-sequence model). Further, we share weights between them, so that the initial state
-for the decoder $\hVec_{i, t_0 - 1}$ is
-obtained by computing \eqref{eq:recurrence} for $t = 1, \ldots, t_0 - 1$, where all required quantities are observed.
-The initial state of the encoder $\hVec_{i, 0}$ as well as $\z{i}{0}$ are initialized to zero.
+for the decoder $\hVec_{i, t_0 - 1}$ is obtained by computing \eqref{eq:recurrence} for $t = 1, \ldots, t_0 - 1$, where all required quantities are observed. The initial state of the encoder $\hVec_{i, 0}$ as well as $\z{i}{0}$ are initialized to zero.
 
-Given the model parameters $\Theta$, we can directly obtain joint samples
-$\tilde{\mathbf{z}}_{i, t_0:T} \sim \modelDist$ through ancestral sampling:
+Given the model parameters $\Theta$, we can directly obtain joint samples $\tilde{\mathbf{z}}_{i, t_0:T} \sim \modelDist$ through ancestral sampling:
 First, we obtain $\hVec_{i, t_0-1}$ by computing \eqref{eq:recurrence} for $t=1,\ldots, t_0$.
 For $t=t_0, t_0+1, \ldots, T$ we sample $\tilde{z}_{i, t} \sim \ell(\cdot | \theta(\tilde{\mathbf{h}}_{i,t}, \Theta))$
 where $\tilde{\mathbf{h}}_{i, t} = h\left(\hVec_{i, t-1}, \tilde{z}_{i, t-1}, \xbf_{i, t}, \Theta\right)$
@@ -1064,124 +1080,103 @@ We mimic the procedure used in the simulation study. For the sample splitting pr
 
 \newpage
 
-\subsection{Empirical study robustness checks \& results}
-
+\subsection{Empirical study results \& robustness checks}
 In addition to the main study, we provide four additional robustness checks for our empirical study, with regards to different training/validation splitting schemes, missing data imputation and additional regressors. Importantly, our overall results are consistent across all checks.
-
-%% Train/validation schemes
-We consider training:validation length ratios of 1:1 and 1:2 in addition to 1:1.5 in the main study.
-
-%% Missing Threshold
-We consider changing the missing data threshold to be 10\% - that is, any regressors with over 10\% missing data were omitted before being imputed.
-
-%% Fama French factors
-We finally consider supplementing our macroeconomic regressor set with the five Fama-French factors. 
-
-\subsection{Empirical Data Results}
+\paragraph{Empirical study results}
+Here we present the full set of results for our empirical study.
+\FloatBarrier
 %% Need to redo graphs as they are currently too big
-
-\subsubsection{Prediction Accuracy}
 %% Main Study
 %% Comprehensive Results
 \input{../../Results/empirical/empirical_loss_latex.tex}
-
 %% RF Vimps
 %% Redo this graph
 \begin{figure}
 	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical/empirical_vimp.pdf}
 	\caption{Empirical study random forest vimps}
 \end{figure}
-
+\FloatBarrier
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Missing Data Threshold Robustness Check
 % Loss Stats
+
+\paragraph{Missing threshold} We consider changing the missing data threshold to be 10\% - that is, any regressors with over 10\% missing data were omitted before being imputed.
 \FloatBarrier
 \input{../../Results/empirical_missing_threshold/empirical_loss_latex.tex}
 \FloatBarrier
-
 %% Factor Importance
-%% Redo these
-
 \begin{figure}
 	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_missing_threshold/empirical_all_sample_vi.pdf}
-	\caption{Missing Data Threshold Robustness Check Individual Factor Importance}
+	\caption{Missing Data Threshold Robustness Check Factor Importance}
 \end{figure}
 
 %% RF Vimps
-
 \begin{figure}
 	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_missing_threshold/empirical_vimp.pdf}
 	\caption{Missing Data Threshold Robustness Check RF VIMP}
 \end{figure}
-
+\FloatBarrier
+\paragraph{Train/validation schemes}%% 
+We consider training:validation length ratios of 1:1 and 1:2 in addition to 1.5:1 in the main study.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Train:Validation 1:1
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% Loss Stats
-
 \FloatBarrier
 \input{../../Results/empirical_train_valid_1/empirical_loss_latex.tex}
 \FloatBarrier
 
 %% Factor Importance
-
 \begin{figure}
 	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_train_valid_1/empirical_all_sample_vi.pdf}
-	\caption{{Train:Validation = 1:1 Robustness Check Individual Factor Importance}}
+	\caption{{Train:Validation = 1:1 Robustness Check Factor Importance}}
 \end{figure}
 
 %% RF Vimps
-
 \begin{figure}
 	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_train_valid_1/empirical_vimp.pdf}
 	\caption{{Train:Validation = 1:1 Robustness Check RF VIMP}}
 \end{figure}
-
+\FloatBarrier
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Train:Validation 2:1
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 %% Loss Stats
 \FloatBarrier
 \input{../../Results/empirical_train_valid_2/empirical_loss_latex.tex}
 \FloatBarrier
-
 %% Factor Importance
-
 \begin{figure}
 	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_train_valid_2/empirical_all_sample_vi.pdf}
-	\caption{Train:Validation = 2:1 Robustness Check Individual Factor Importance}
+	\caption{Train:Validation = 2:1 Robustness Check Factor Importance}
 \end{figure}
-
 %% RF Vimps
-
 \begin{figure}
 	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_train_valid_2/empirical_vimp.pdf}
 	\caption{Train:Validation = 2:1 Robustness Check RF VIMP}
 \end{figure}
-
+\FloatBarrier
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Fama French Factors
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+\paragraph{Fama French factors} 
+We finally consider supplementing our macroeconomic regressor set with the five Fama-French factors. 
 %% Loss Stats
 \FloatBarrier
 \input{../../Results/empirical_ff/empirical_loss_latex.tex}
 \FloatBarrier
 
 %% Factor Importance
-
 \begin{figure}
 	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_ff/empirical_all_sample_vi.pdf}
-	\caption{Fama French Factors Robustness Check Individual Factor Importance}
+	\caption{Fama French Factors Robustness Check Factor Importance}
 \end{figure}
 
 %% RF Vimps
-
 \begin{figure}
 	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_ff/empirical_vimp.pdf}
 	\caption{Fama French Factors Robustness Check RF VIMP}
 \end{figure}
-
+\FloatBarrier
 \end{document}

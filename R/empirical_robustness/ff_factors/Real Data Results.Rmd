@@ -146,7 +146,7 @@ empirical_loss_latex <- cbind(empirical_results_model,
                               empirical_results_df_sam_1, 
                               empirical_results_df_sam_2, 
                               empirical_results_df_sam_3) %>%
-  kable(align = "c", format = "latex", booktabs = T, 
+  kable(align = "c", format = "latex", booktabs = T, linesep = "",
         escape = F, digits = 6, longtable = T,
         caption = "Fama French Factor Robustness Check Loss Statistics") %>%
   add_header_above(c(" " = 1, "Sample 1" = 3, "Sample 2" = 3, "Sample 3" = 3)) %>%
