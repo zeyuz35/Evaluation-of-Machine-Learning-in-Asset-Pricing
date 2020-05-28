@@ -47,34 +47,11 @@ Kozak, S., Nagel, S., and Santosh, S. (2017).
 \newblock Shrinking the cross section.
 \newblock Technical report, National Bureau of Economic Research.
 
-\bibitem[Messmer, 2017]{messmer2017deep}
-Messmer, M. (2017).
-\newblock Deep learning and the cross-section of expected returns.
-\newblock {\em Available at SSRN 3081555}.
-
-\bibitem[Montero-Manso et~al., 2020]{montero2020fforma}
-Montero-Manso, P., Athanasopoulos, G., Hyndman, R.~J., and Talagala, T.~S.
-  (2020).
-\newblock Fforma: Feature-based forecast model averaging.
-\newblock {\em International Journal of Forecasting}, 36(1):86--92.
-
-\bibitem[Moritz and Zimmermann, 2016]{moritz2016tree}
-Moritz, B. and Zimmermann, T. (2016).
-\newblock Tree-based conditional portfolio sorts: The relation between past and
-  future stock returns.
-\newblock {\em Available at SSRN 2740751}.
-
 \bibitem[Rapach and Zhou, 2013]{rapach_forecasting_2013}
 Rapach, D. and Zhou, G. (2013).
 \newblock Forecasting {Stock} {Returns}.
 \newblock In {\em Handbook of {Economic} {Forecasting}}, volume~2, pages
   328--383. Elsevier.
-
-\bibitem[Salinas et~al., 2019]{salinas2019deepar}
-Salinas, D., Flunkert, V., Gasthaus, J., and Januschowski, T. (2019).
-\newblock Deepar: Probabilistic forecasting with autoregressive recurrent
-  networks.
-\newblock {\em International Journal of Forecasting}.
 
 \bibitem[Welch and Goyal, 2008]{welch_comprehensive_2008}
 Welch, I. and Goyal, A. (2008).

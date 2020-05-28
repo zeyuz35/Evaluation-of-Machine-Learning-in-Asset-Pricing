@@ -1,51 +1,10 @@
-This is BibTeX, Version 0.99d
-Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
-The top-level auxiliary file: main_21-05-2020.aux
-Reallocating 'name_of_file' (item size: 1) to 13 items.
-Reallocating 'name_of_file' (item size: 1) to 8 items.
+This is BibTeX, Version 0.99dThe top-level auxiliary file: main_21-05-2020.aux
 The style file: apalike.bst
 Database file #1: Bibliography.bib
+Warning--I didn't find a database entry for "moritz2016tree"
+Warning--I didn't find a database entry for "messmer2017deep"
+Warning--I didn't find a database entry for "salinas2019deepar"
+Warning--I didn't find a database entry for "montero2020fforma"
 Warning--I didn't find a database entry for "graves2013"
 Warning--I didn't find a database entry for "sutskever2014"
-You've used 16 entries,
-            1935 wiz_defined-function locations,
-            560 strings with 6041 characters,
-and the built_in function-call counts, 5883 in all, are:
-= -- 582
-> -- 246
-< -- 12
-+ -- 84
-- -- 80
-* -- 478
-:= -- 1062
-add.period$ -- 50
-call.type$ -- 16
-change.case$ -- 123
-chr.to.int$ -- 16
-cite$ -- 16
-duplicate$ -- 224
-empty$ -- 387
-format.name$ -- 108
-if$ -- 1131
-int.to.chr$ -- 1
-int.to.str$ -- 0
-missing$ -- 12
-newline$ -- 84
-num.names$ -- 48
-pop$ -- 99
-preamble$ -- 1
-purify$ -- 120
-quote$ -- 0
-skip$ -- 175
-stack$ -- 0
-substring$ -- 346
-swap$ -- 26
-text.length$ -- 4
-text.prefix$ -- 0
-top$ -- 0
-type$ -- 96
-warning$ -- 0
-while$ -- 46
-width$ -- 0
-write$ -- 210
-(There were 2 warnings)
+(There were 6 warnings)
