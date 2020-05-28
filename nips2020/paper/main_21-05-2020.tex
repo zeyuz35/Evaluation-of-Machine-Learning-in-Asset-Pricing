@@ -105,27 +105,25 @@
 \section{Introduction}
 The dominance of machine learning (hereafter, ML) methods in terms of predictive accuracy has begun to filter into the empirical asset pricing literature. Arguably, the most common applications of ML methods in empirical finance are for portfolio construction, asset price prediction, and factor selection. 
 
-Several studies have now used ML techniques to analyze the cross-section of asset returns and produce portfolios that can capture nonlinear information in the cross-section of asset returns. \cite{moritz2016tree} use tree-based methods to understand which firm-level characteristics best predict the cross-section of stock returns, and use this information to help mitigate portfolio risk. Similarly, \cite{messmer2017deep} uses deep feedforward neural nets (DFNs) to construct portfolios and predict the returns across a cross-sections of US asset returns. However, while \cite{messmer2017deep} demonstrates that DFNs can better capture nonlinear information, no claim is made that deep learning methods are the best approach to exploit this information. 
+Several studies have now used ML techniques to analyze the cross-section of asset returns and produce portfolios that can capture nonlinear information in the cross-section of asset returns. \cite{moritz_tree-based_2016} use tree-based methods to understand which firm-level characteristics best predict the cross-section of stock returns, and use this information to help mitigate portfolio risk. Similarly, \cite{messmer_deep_2017} uses deep feedforward neural nets (DFNs) to construct portfolios and predict the returns across a cross-sections of US asset returns. However, while \cite{messmer_deep_2017} demonstrates that DFNs can better capture nonlinear information, no claim is made that deep learning methods are the best approach to exploit this information. 
 
-Several studies have now suggested that ML methods can produce better predictions of asset returns (\cite{gu_empirical_2018}, \cite{hsu_finding_2014} and \cite{feng_deep_2018}). The results of \cite{gu_empirical_2018} suggest that, in terms of predictive performance, as measured by an out-of-sample $R^2$,  tree-based methods and shallow neural nets can provide superior predictive accuracy over other ML methods and simpler model-based approaches. %This finding is born out both in terms of simulated data, and an empirical example with monthly returns data from 1957 to 2016. \cite{gu_empirical_2018} attribute this to ML's ability to evaluate and consider non-linear complexities among factors that cannot be feasibly achieved using traditional techniques. 
+Several studies have now suggested that ML methods can produce better predictions of asset returns (\cite{gu_empirical_2019}, \cite{hsu_finding_2014} and \cite{feng_deep_2018}). The results of \cite{gu_empirical_2019} suggest that, in terms of predictive performance, as measured by an out-of-sample $R^2$,  tree-based methods and shallow neural nets can provide superior predictive accuracy over other ML methods and simpler model-based approaches. %This finding is born out both in terms of simulated data, and an empirical example with monthly returns data from 1957 to 2016. \cite{gu_empirical_2019} attribute this to ML's ability to evaluate and consider non-linear complexities among factors that cannot be feasibly achieved using traditional techniques. 
 
-Similarly, \cite{kozak_shrinking_2017}, \cite{freyberger_dissecting_2017}, \cite{feng_taming_2019} and \cite{rapach_forecasting_2013} demonstrate that ML methods can ``systematically evaluate the contribution to asset pricing of any new factor'' used within an existing linear asset pricing structure. %In addition, \cite{gu_empirical_2018} use variable importance metrics to quantify the differential impact of factors across a large set of possible factors available for asset pricing. 
+Similarly, \cite{kozak_shrinking_2017}, \cite{freyberger_dissecting_2017}, \cite{feng_taming_2019} and \cite{rapach_forecasting_2013} demonstrate that ML methods can ``systematically evaluate the contribution to asset pricing of any new factor'' used within an existing linear asset pricing structure. %In addition, \cite{gu_empirical_2019} use variable importance metrics to quantify the differential impact of factors across a large set of possible factors available for asset pricing. 
 As such, these authors argue that ML can be used, \textit{en masse}, to consistently evaluate the ability of various factors to help price portfolio risk. Such work is particularly pertinent given the literature's obsession with constructing such factors: as of 2014, quantitative trading firms were using 81 factor models (\cite{hsu_finding_2014}), while \cite{harvey_census_2019} currently document that well over 600 different factors have been suggested in the literature. 
 
 The above studies all demonstrate the potential benefits of ML methods within empirical finance. However, it is unclear if the above findings generalize to different training and validation periods; different sampling frequencies; and different loss-measures of predictive accuracy. The answer to such questions in the realm of empirical finance are particularly pertinent given that certain ML methods, have known difficulties in dealing with data that display the stylized facts of asset returns, e.g., weak and nonlinear dependence, low signal-to-noise and a lack of conditional independence/sparsity. Moreover, training even standard types of neural networks, such as DFNs, becomes particularly difficult when data displays strong, or nonlinear, dependence (\cite{bengio_learning_1994}). 
 
-In many ways, existing applications of ML to empirical finance have either over-looked, downplayed, or simply ignored the importance of the above  issues. \cite{messmer2017deep} and \cite{feng_deep_2018} use cross validation as part of their model building procedures, destroying the temporal ordering of data. \cite{gu_empirical_2018} and \cite{messmer2017deep} produce models using training samples that end much earlier than the data sets which they ultimately produce forecasts. %for: in the case of Messemer (2017), the training period ends in 1981, and forecasts are produced for the most recent 30 years of data; in  \cite{gu_empirical_2018}, the training set ends in the 1970s, with predictions ultimately produced only for the period of returns from 1987-2016.  
+In many ways, existing applications of ML to empirical finance have either over-looked, downplayed, or simply ignored the importance of the above  issues. \cite{messmer_deep_2017} and \cite{feng_deep_2018} use cross validation as part of their model building procedures, destroying the temporal ordering of data. \cite{gu_empirical_2019} and \cite{messmer_deep_2017} produce models using training samples that end much earlier than the data sets which they ultimately produce forecasts. %for: in the case of Messemer (2017), the training period ends in 1981, and forecasts are produced for the most recent 30 years of data; in  \cite{gu_empirical_2019}, the training set ends in the 1970s, with predictions ultimately produced only for the period of returns from 1987-2016.  
 This is particularly worrying as the factors driving returns can be starkly different across different time periods. %However, both papers suggest that their training/validation split does not impact the test set results. 
 
 The goal of this paper is to provide a systematic, and reproducible study on the ability of ML methods to 1) accurately detect significant factors; and 2) accurately predict returns according to a range of loss measures. It is our belief that any such study is necessary in order for practitioners to reliably apply these methods in their problems of interest. 
 
-After giving the general setup in Section two, in Section three we conduct a rigorous study that gives an in-depth comparison of several ML methods used in the empirical finance literature. The analysis demonstrates that persistence in features, and different complexities of the return generating process affect ML method's ability to: 1) accurately predict future returns across a range of loss measures; and 2) correctly identify the significant factors driving returns. In contrast to existing findings, in this realistic simulation design, we find that neural network procedures, such as feedforward nets, LSTM, and DeepAR models (\cite{salinas2019deepar}), are among the worst performing methods, while simpler tree-based methods and elastic net are among the best performing methods. %This result is consistent across various levels of volatility, cross-sectional correlation, return signal, and different loss functions. Elastic net and tree-based methods also outperform other methods in correctly identifying significant factors.     
+After giving the general setup in Section two, in Section three we conduct a rigorous study that gives an in-depth comparison of several ML methods used in the empirical finance literature. The analysis demonstrates that persistence in features, and different complexities of the return generating process affect ML method's ability to: 1) accurately predict future returns across a range of loss measures; and 2) correctly identify the significant factors driving returns. In contrast to existing findings, in this realistic simulation design, we find that neural network procedures, such as feedforward nets, LSTM, and DeepAR models (\cite{salinas_deepar_2019}), are among the worst performing methods, while simpler tree-based methods and elastic net are among the best performing methods. %This result is consistent across various levels of volatility, cross-sectional correlation, return signal, and different loss functions. Elastic net and tree-based methods also outperform other methods in correctly identifying significant factors.     
 
 In Section four, the above findings are validated in an empirical exercise that considers individual returns data from CRSP for all firms listed in the NYSE, AMEX and NASDAQ over a 60 year period, where a set of 549 possible factors are used to explain the cross-section of returns. Careful attention is given to the training and test split, with only use the last fourteen years of returns data used to evaluate the different ML methods. Across all ML methods considered, neural net based procedure perform the worst, while tree-based methods and elastic net perform the best. 
 
-
 Our results suggest that the efficacy of ML methods in empirical finance depends on several features of the underlying problem, such as sampling frequency, the particular training test split, and the data period under analysis. As such, while potentially useful, ML methods are not a panacea for predicting, or understanding the factors that drive financial returns. 
-
 
 \section{Model and Methods}
 \subsection{Statistical Model}
@@ -166,7 +164,7 @@ To ensure the results of ML different methods will be comparable, we fix both th
 
 %This schema is chosen as it strikes a reasonable balance between computational complexity, and predictive accuracy, while allowing newer information to enter into, and have reasonable weight within, the subsequent predictions.  
 
-\paragraph{Models} In what follows we compare a host of different ML models including elastic net (\cite{zou_regularization_2005}, random forest (\cite{breiman_random_2001}), feed-forward neural nets, LSTM, FFORMA (\cite{montero2020fforma}) and DeepAR models (\cite{salinas2019deepar}). Details on each model and certain features of its implementation used in this work are given in Appendix \ref{app:models}. For each of the different methods, we consider two variants, one based on the MAE loss and one based on the MSE loss. 
+\paragraph{Models} In what follows we compare a host of different ML models including elastic net (\cite{zou_regularization_2005}, random forest (\cite{breiman_random_2001}), feed-forward neural nets, LSTM, FFORMA (\cite{montero-manso_fforma_2020}) and DeepAR models (\cite{salinas_deepar_2019}). Details on each model and certain features of its implementation used in this work are given in Appendix \ref{app:models}. For each of the different methods, we consider two variants, one based on the MAE loss and one based on the MSE loss. 
 
 \subsection{Model evaluation measures}
 \paragraph{Predictive accuracy}
@@ -178,9 +176,9 @@ R^2_{OOS} &= 1 - \frac{\sum_{(i, t)\in\mathcal{T}_3}(r_{i, t+1} - \widehat{r}_{i
 \end{align}
 where $\mathcal{T}_3$ indicates that the fits are only assessed on the test sub-sample, which is never used for training or tuning.
 
-Since $R^2$ is based on in-sample-fit of a linear model, this measure is less meaningful for most of the ML methods considered in in this paper. However, we report this measure since this measure has also been considered in other applications of ML to empirical finance (see, e.g., \cite{gu_empirical_2018}). 
+Since $R^2$ is based on in-sample-fit of a linear model, this measure is less meaningful for most of the ML methods considered in in this paper. However, we report this measure since this measure has also been considered in other applications of ML to empirical finance (see, e.g., \cite{gu_empirical_2019}). 
 \paragraph{Factor Selection}
-An important aspect of empirical finance is the knowledge of which features drive risk, i.e., which features are explicitly represented within $z_{i,t}$. To this end, we follow \cite{gu_empirical_2018}  and construct a variable importance (VI) measure to compare the different ML methods. The importance of variable $j$, $VI_j$, is defined as the reduction in predictive $R^2$ from setting all values of predictor $j$ to 0, while holding the remaining model estimates fixed. Each $VI_j$ is then normalized to sum to 1. 
+An important aspect of empirical finance is the knowledge of which features drive risk, i.e., which features are explicitly represented within $z_{i,t}$. To this end, we follow \cite{gu_empirical_2019}  and construct a variable importance (VI) measure to compare the different ML methods. The importance of variable $j$, $VI_j$, is defined as the reduction in predictive $R^2$ from setting all values of predictor $j$ to 0, while holding the remaining model estimates fixed. Each $VI_j$ is then normalized to sum to 1. 
 
 However, as $VI_j$ can sometimes be negative, we shift $VI_j$ by the smallest $VI_j$ plus a small constant, then dividing by this sum to alleviate numerical issues\footnote{This mechanism was chosen because the other popular normalization mechanism ``softmax" was observed to be unable to preserve the distances between each original $VI_j$, making discernment between each $VI_j$ difficult.}. The resulting VI measure is then:
 \begin{equation}
@@ -212,11 +210,10 @@ We consider three different functions for $g(z_{i, t})$:
 \end{align*}
 where $x_{t}'[3,]$ denotes the third element of the $x_{t}'$ vector.
 %%%%%%%%%%%%%%%%%%%%%%%%%
-$g_1 \left(z_{i, t}\right)$ allows the characteristics to enter the return equation linearly, and $g_2 \left(z_{i, t}\right)$ and $g_3 \left(z_{i, t}\right)$ allow the characteristics to enter the return equation interactively and non-linearly. \footnote{($g_1, g_2$ correspond to the simulation design used by \cite{gu_empirical_2018}.)} $\theta^0$ was tuned such that the predictive $R^2$ was approximately 5\%.
-
+$g_1 \left(z_{i, t}\right)$ allows the characteristics to enter the return equation linearly, and $g_2 \left(z_{i, t}\right)$ and $g_3 \left(z_{i, t}\right)$ allow the characteristics to enter the return equation interactively and non-linearly. \footnote{($g_1, g_2$ correspond to the simulation design used by \cite{gu_empirical_2019}.)} $\theta^0$ was tuned such that the predictive $R^2$ was approximately 5\%.
 
 %%%%%%%%%%%%%%%%%%%%%
-We consider two different levels of cross-sectional correlation for the $N$ factors, $c_{i,t}$, which correspond to a small amount of $0.10$ and a large amount, $1.0$, or cross-sectional correlation. The specific details regarding the level of cross-sectional correlation, and how it is introduced, is given in Appendix \ref{app:simDesign}. The macroeconomic factors, $x_t$, a $3 \times 1$ vector, is generated according to a stationary Vector Autoregression (VAR) model with a high-degree of persistence (0.95 for each series) and a diagonal coefficient matrix. See Appendix \ref{app:simDesign} for more details.  
+We consider two different levels of cross-sectional correlation for the $N$ factors, $c_{i,t}$, which correspond to a small amount of $0.01$ and a large amount, $1.0$, or cross-sectional correlation. The specific details regarding the level of cross-sectional correlation, and how it is introduced, is given in Appendix \ref{app:simDesign}. The macroeconomic factors, $x_t$, a $3 \times 1$ vector, is generated according to a stationary Vector Autoregression (VAR) model with a high-degree of persistence (0.95 for each series) and a diagonal coefficient matrix. See Appendix \ref{app:simDesign} for more details.  
 
 The simulation design results in $9$ different data generating process (DGP). For each DGP we fix with $N = 200$ stocks, $T = 180$ time periods and $P_c = 100$ characteristics. Each DGP was simulated 10 times to assess the robustness of ML algorithms, with the number of simulations kept low for computational feasibility. We employ the hybrid data splitting approach with a training:validation length ratio of approximately 1.5 and a test set that is 1 year in length. 
 
@@ -233,7 +230,7 @@ Generally, ML models fitted with respect to minimizing MAE (quantile loss) gener
 
 % Across all specifications with a stochastic volatility component, we observe a decrease in prediction performance as the sample size increased according to the expanding window approach implemented. This is likely due a larger sample having a higher chance to experiences external shocks due to the stochastic volatility process, and thus a higher chance to experience large outliers in the training sample, leading to worse prediction performance. This indicates that ML performs poorly when the training data supplied contains more large outliers, and is still sensitive to such outliers even with the use of regularization and robust loss functions.
 
-% Focusing on the neural networks, we clearly see that they do not outperform any of the other ML models, even when the underlying data generating process is non-linear. This directly contradicts the result which \cite{gu_empirical_2018} find, even when considering the design with no cross sectional correlation and stochastic volatility (top row in graphs), which corresponds to their exact specification but with a multivariate macroeconomic series. We also find consistent evidence that deeper architectures provide better prediction performance, another result which contradicts \cite{gu_empirical_2018}'s conclusions that shallow learning may be better.
+% Focusing on the neural networks, we clearly see that they do not outperform any of the other ML models, even when the underlying data generating process is non-linear. This directly contradicts the result which \cite{gu_empirical_2019} find, even when considering the design with no cross sectional correlation and stochastic volatility (top row in graphs), which corresponds to their exact specification but with a multivariate macroeconomic series. We also find consistent evidence that deeper architectures provide better prediction performance, another result which contradicts \cite{gu_empirical_2019}'s conclusions that shallow learning may be better.
 
 \paragraph{Factor Importance}
 The factor importance results are presented graphically in Figure \ref{fig:VIs}, and demonstrates that overall elastic net outperforms all other models consistently in terms of assigning the correct relative importance to the true underlying features.\footnote{($c_1.\text{constant}$, $c_2.\text{constant}$ and $c_3.x_3$ for $g1$ and $g_2$ specifications, and $c_1.\text{constant}$, $c_2.\text{constant}$ and $c_3.\text{constant}$ for $g_3$)}. However, the performance of elastic net does degrade as the data generating process becomes more non-linear.% On more difficult specifications, the elastic net models are conservative and typically identify a single regressor as importance - most apparent on the $g_2$ specification. Occasionally, the elastic nets identified the incorrect covariates, assigned them low relative importance.
@@ -263,12 +260,12 @@ Random forests, and to a lesser extent the neural networks, also correctly ident
 We now investigate the performance of ML methods across a large sample of returns. As we shall see later, the results obtained in Section \ref{sec:sims} are largely borne out in this empirical exercise. 
 
 \subsection{Data}
-We use the universe of firms listed in the NYSE, AMEX and NASDAQ, starting from 1957 (starting date of the S\&P 500) and ending in December 2016, totaling 60 years, that have a quarterly return over this period.\marginpar{It previously said monthly returns but below you talked about quarterly returns. So, I've taken the lower frequency. Please make sure that is correct. } This approach allows firms to enter and exit the dataset and helps alleviate the problem of survivorship bias in the dataset. Individual cross-sectional factors, $c_{i,t}$, are constructed following the approach of \cite{gu_empirical_2018}. \textbf{We restrict our dataset to begin from 1993 Q3 and end on 2016 Q4 to alleviate data quality issues.}\marginpar{What do you mean by this statement? Do you restrict the factors, the returns or both? In either case, this needs to be clarified and the above paragraph changed accordingly.} Our individual factor set contains 94 characteristics: 61 updated annually, 13 updated quarterly and 20 updated monthly.\footnote{The dataset also included 74 Standard Industrial Classification (SIC) codes, but these were omitted due to their inconsistency, and inadequateness at classifying companies, as noted by WRDS}\footnote{To deal with missing data, any characteristics that had over 20\% of their data missing were omitted. Remaining missing data were then imputed using their cross sectional medians for each year. See Appendix for more details.} Complete details of the data and the cleaning procedures employed are detailed in Appendix \ref{app:clean}.
+We use the universe of firms listed in the NYSE, AMEX and NASDAQ, starting from 1957 (starting date of the S\&P 500) and ending in December 2016, totaling 60 years, that have a quarterly return over this period.\marginpar{It previously said monthly returns but below you talked about quarterly returns. So, I've taken the lower frequency. Please make sure that is correct. } This approach allows firms to enter and exit the dataset and helps alleviate the problem of survivorship bias in the dataset. Individual cross-sectional factors, $c_{i,t}$, are constructed following the approach of \cite{gu_empirical_2019}. \textbf{We restrict our dataset to begin from 1993 Q3 and end on 2016 Q4 to alleviate data quality issues.}\marginpar{What do you mean by this statement? Do you restrict the factors, the returns or both? In either case, this needs to be clarified and the above paragraph changed accordingly.} Our individual factor set contains 94 characteristics: 61 updated annually, 13 updated quarterly and 20 updated monthly.\footnote{The dataset also included 74 Standard Industrial Classification (SIC) codes, but these were omitted due to their inconsistency, and inadequateness at classifying companies, as noted by WRDS}\footnote{To deal with missing data, any characteristics that had over 20\% of their data missing were omitted. Remaining missing data were then imputed using their cross sectional medians for each year. See Appendix for more details.} Complete details of the data and the cleaning procedures employed are detailed in Appendix \ref{app:clean}.
 
 % Begin Cleaning
 
 % the dataset was filtered such that only stocks traded primarily on NASDAQ were included (using the PRIMEXCH variable from WRDS). Then, penny stocks (also referred to as microcaps in the literature) with a stock price of less than \$5 were filtered out, as is commonly done in the literature to reduce variability. Stocks without a share code of 10 or 11 (referring to equities) were filtered out, so that securities that are not equities were not included (such as REITs and trust funds). The dataset is provided in a monthly format, which means that many of the factors which are updated only quarterly or annually have very low levels of variability, which can lead to misleading results in the model fitting process. 
-Following \cite{welch_comprehensive_2008} (see Table \ref{macro_factors}) we consider eight macroeconomic factors. These factors were lagged by one period so as to be used to predict one period ahead quarterly returns. The treasury bill rate was also used from this source to proxy for the risk-free rate in order to construct excess quarterly returns. \marginpar{What maturity is the T-Bill?? 3-month, one year?} The two sets of factors, $c_{i, t}$ and $x_t$, are then used to build the baseline set of factors, which we defined as in equation \eqref{kronecker_equation}; i.e., $z_{i, t}= (1, x_t')' \otimes c_{i, t}$. The total number of features in this baseline set is $61 \times (8 + 1) = 549$\footnote{As the individual and macroeconomic factors can have similar names, individual and macroeconomic factors were prefixed with ind\_ and macro\_ respectively.}.\marginpar{This footnote needs to be moved to the variable importance section...} 
+Following \cite{welch_comprehensive_2008} (see Table \ref{macro_factors}) we consider eight macroeconomic factors. These factors were lagged by one period so as to be used to predict one period ahead quarterly returns. The The 3-month Treasury Bill rate was also used from this source to proxy for the risk-free rate in order to construct excess quarterly returns. The two sets of factors, $c_{i, t}$ and $x_t$, are then used to build the baseline set of factors, which we defined as in equation \eqref{kronecker_equation}; i.e., $z_{i, t}= (1, x_t')' \otimes c_{i, t}$. The total number of features in this baseline set is $61 \times (8 + 1) = 549$.
 
 The final dataset contains 202, 066 individual observations. We note that due to data quality issues, LSTMs, FFORMA and DeepAR are not feasible on empirical data, though the results of the simulation study suggest that even if were to be used, their performance would be underwhelming. \footnote{The dataset was not normalized for all methods, as only penalized regression and neural networks are sensitive to normalization. For these two methods, the dataset was normalized such that each predictor column had mean zero and unit variance.}
 
@@ -302,12 +299,10 @@ As the data generating process for empirical returns is unknown, the variable im
 
 The elastic net, random forest and to a lesser extent DFNs tend to pick out the max return and 1 month momentum factors out of the individual characteristics as important, and the book-to-market factor out of the macroeconomic factors are important. In general, the variable importance metrics are less consistent for the random forests, and it should be noted in particular that the random forest tends to determine factors highly correlated with momentum as important, such as change in momentum, dollar trading volume and return volatility. Within the macroeconomic factors, penalized linear models tend to identify the average book to market ratio and the default spread as the most important. The random forests were inconsistent with the elastic nets, and tended to assign very similar variable importance metrics to most macroeconomic factors.
 
-The overall results of this analysis again question existing results already reported in the literature, which conclude that all ML methods tend to agree on the same subset of important factors (see, e.g., \cite{gu_empirical_2018}). In our context, we see, at best, only mild agreement between the various ML methods in regards to individual factor selection.
-
+The overall results of this analysis again question existing results already reported in the literature, which conclude that all ML methods tend to agree on the same subset of important factors (see, e.g., \cite{gu_empirical_2019}). In our context, we see, at best, only mild agreement between the various ML methods in regards to individual factor selection.
 
 Interestingly, the linear models assign the controversial dividend price ratio macroeconomic factor as highly important, a result mirrored only with the neural networks. Their variable importance for individual factors across different training samples is non-robust, with the important variables almost completely changing year to year. The linear models consistently identified the controversial dividend-price ratio as important, a result that was somewhat consistent with the neural networks. 
 
- 
 %All models considered typically preferred sparse parameterizations. That is, most if not all of the individual factors had little to no importance across all models.\footnote{Note that because the variable importance here was not evaluated explicitly for each pairwise interaction term, some of the individual factors appear as slightly important. This is because setting an individual factor to zero also sets some of the macroeconomic pairwise terms to zero, increasing its apparent importance.}
 
 \section{Conclusion}
@@ -338,7 +333,7 @@ Linear models model the conditional expectation \( g^*(z_{i, t}) \) as a linear 
 \begin{equation}
 g(z_{i, t};\theta) = z_{i, t}' \theta
 \end{equation}
-This yields the OLS estimator when optimized w.r.t. MSE, and the LAD estimator when optimized w.r.t. MAE.
+This yields the OLS estimator when optimized with respect to MSE, and the LAD estimator when optimized with respect to MAE.
 
 \subsection{Elastic nets}
 Elastic Nets are similar to linear models but differ via the addition of a penalty term in the loss function:
@@ -356,27 +351,70 @@ where the elastic net penalty \cite{zou_regularization_2005} is:
 Further details are given in \cite{zou_regularization_2005}.
 
 \subsection{Random forests}
-
-Further details are given in cite().
+Random Forests are an extension of Classification and Regression Trees (CART) proposed by \cite{breiman_random_2001} (see for more comprehensive details). CART are fully non-parametric models that can capture complex multi-way interactions. A tree "grows" in a series of iterations. With each iteration, a split ("branch") is made along one predictor such that it is the best split available at that stage with respect to minimizing the loss function. These steps are continued until each observation is its own node, or more commonly until the stopping criterion is met. The eventual model slices the predictor space into rectangular partitions, and predicts the unknown function $g^*(z_{i,t})$ with the average value of the outcome variable in each partition. The prediction of a tree, $\mathcal{T}$, with \(K\) "leaves" (terminal nodes), and depth $L$ is
+\begin{equation}
+g(z_{i,t};\theta,K,L) = \sum_{k=1}^{K}\theta_k\textbf{1}_{z_{i,t}\in C_k(L)}
+\end{equation}
+where $C_k(L)$ is one of the $K$ partitions in the model. For this study, only recursive binary trees were considered. Though trees were originally proposed and fit with respect to minimizing MSE, they can be grown with respect to a variety of loss functions, where the loss within each C partition is denoted by $H(\theta, C)$: 
+\begin{equation}
+H(\theta, C) = \frac{1}{|C|} \sum_{z_{i,t} \in C} L(r_{i,t+1} - \theta)
+\end{equation} 
+where $|C|$ denotes the number of observations in set C (partition). Given $C$, it is clear that the optimal choice for minimising the loss is simply the average of the partition for MSE, and the median of the partition for MAE.
 
 \subsection{Feed forward neural networks}
+A feed forward neural network consists of layers denoted by $l = 0, 1, \dots, L$, with $l = 0$ denoting the input layer and $l = L$ denoting the output layer. The input layer is defined by the scaled predictor set, $x^{(0)} = (1, z_1, \dots, z_N)'$. The model adds complexity through the use of one or more hidden layer, each containing $K^{(l)}$ "neurons". Each neuron linearly aggregates the values of the previous layer, and applies some non-linear "activation function" which we denote as $\alpha$ to its aggregated signal before sending its output to the next layer. The output of neuron $k$ in layer $l$ is then $x_k^{(l)}$. Next, define the vector of outputs for this layer as $x^{(l)} = (1, x_1^{(l)}, \dots, x_{K^(l)}^{(l)})'$.  The recursive output formula for the neural network at each neuron in layer $l > 0$ is then:
+\begin{equation}
+x_k^{(l)} = \alpha(x^{(l-1)'}\theta_k^{l-1}),
+\end{equation}
+where $\alpha()$ represents the activation function for that layer with the final output \footnote{Note that the specification of a constant ``1" at the beginning of each layer is the same as specifying a bias term as is popular in other parametrizations. }
+\begin{equation}
+g(z;\theta) = x^{(L-1)'}\theta^{L-1}
+\end{equation}
+The neural network's weight and bias parameters for each layer are estimated by minimizing the loss function with respect to the parameters, i.e. by calculating the partial derivative with respect to a specific weight or bias element. 
 
+Due to the complexity and hence non-existent analytical form for this solution, this is typically found via backpropagation, an algorithm which exploits the chain rule of the partial derivative and iteratively finds a local optimum using a first order gradient based algorithm, also known as "gradient descent." The gradient descent algorithm minimizes some function (such as the loss function in the context of machine learning) by iteratively moving in the direction of steepest descent, defined as the negative gradient. Formally, for a loss function $L(x)$ that is defined and has a gradient defined in the neighbourhood of the parameter set $a$, the updating algorithm is:
+\begin{equation}
+a_{n+1} = a_n - \gamma \Delta F(a_n)
+\end{equation}
+where $\gamma$ controls the size of each update. This $\gamma$ parameter is known as the learning rate in neural network training, and controlling this is critical for good performance. As the loss functions of neural networks can be very complex with many local minima, the learning rate should be high enough such that the parameter updates are large enough to skip or jump over them. Too large of a learning rate however, and the neural may fail to converge to a solution at all. Due to computational limitations, we tune the learning rate manually, and consider a variety of different ``optimizers", or algorithms which adapt the learning rate in different ways (see Appendix for computational details).
 
 For our application, we considered the following grid of hyperparameters:
-
-
-
-Further details are given in cite().
+\begin{table}[!htb]
+	\begin{tabular}{|ll|}
+		\hline
+		Hyperparameter & Grid \\ \hline
+		Activation Function & ReLU, Leaky ReLU, tanh \\
+		Optimizer & ADAM, NADAM, SGD, RMSPROP \\
+		Learning Rate & (0.1, 0.01, 0.001, 0.0001)\\
+		$L_1$ Penalty & (1, 0.1, 0.01, 0.001) \\
+		$L_2$ Penalty & (1, 0.1, 0.01, 0.001) \\
+		Batch Size & (32, 64, 128, 256, 512, 1024, 2048) \\
+		Early Stopping Patience & (10, 20, 30, 40, 50) \\ \hline
+	\end{tabular}
+	\caption{Hyperparameters considered for feed forward neural networks}
+\end{table}
 
 \subsection{Long short term memory networks}
-Long short term memory (LSTM) networks are 
+Long short term memory (LSTM) networks are , initially proposed by \cite{hochreiter_long_1997} (see for more comprehensive details). The general model setup for an LSTM is as follows:
 
 For our application, we considered the following grid of hyperparameters:
-
-Further details are given in cite().
+\begin{table}[!htb]
+	\begin{tabular}{|ll|}
+		\hline
+		Hyperparameter & Grid \\ \hline
+		Activation Function & ReLU, Leaky ReLU, tanh \\
+		Optimizer & ADAM, NADAM, SGD, RMSPROP \\
+		Learning Rate & (0.1, 0.01, 0.001, 0.0001)\\
+		$L_1$ Penalty & (1, 0.1, 0.01, 0.001) \\
+		$L_2$ Penalty & (1, 0.1, 0.01, 0.001) \\
+		Batch Size & (32, 64, 128, 256, 512, 1024, 2048) \\
+		Early Stopping Patience & (10, 20, 30, 40, 50) \\ \hline
+	\end{tabular}
+	\caption{Hyperparameters considered for LSTMs}
+\end{table}
 
 \subsection{FFORMA}
-Feature-based Forecast Model Averaging, cite() is an automated method for obtaining weighted forecast combinations for time series. We provide a brief overview of the two phases in this methodology.
+Feature-based Forecast Model Averaging, (\cite{montero-manso_fforma_2020}) is an automated method for obtaining weighted forecast combinations for time series. We provide a brief overview of the two phases in this methodology.
 
 We follow cite()'s selection of time series features as inputs to the meta-learner. 
 
@@ -391,8 +429,8 @@ The constituent models we considered are:
 	\item ETS
 	\item TBATS
 	\item Neural network auto-regressive model
-	\item ARMA (1, 1) with g.e.d. GARCH(1, 1) errors
-	\item ARMA (1, 1) with g.e.d. GARCH(1, 1) errors and UMAP external regressors
+	\item ARMA (1, 1) with Generalized Error Distribution GARCH(1, 1) errors
+	\item ARMA (1, 1) with Generalized Error Distribution GARCH(1, 1) errors and UMAP external regressors
 \end{itemize}
 
 The time series features used to train the meta-model are detailed in cite(), with the addition of realized volatility.
@@ -400,7 +438,7 @@ The time series features used to train the meta-model are detailed in cite(), wi
 Note that because financial returns data does not typically exhibit seasonality, features and constituent models related which utilized seasonality were omitted.
 
 \subsection{DeepAR}
-DeepAR is a generalization of traditional Auto Regressive (AR) models to include additional layers into order to introduce non-linearities into the model.
+DeepAR is a generalization of traditional Auto Regressive (AR) models to include additional layers into order to introduce non-linearities into the model. We provide the general formulation here - for full details see \cite{salinas_deepar_2019}.
 
 %% This is directly plonked from deepar arxiv paper, change this so this isn't plagiarism!
 %% DeepAR does not require inputs from the entire cross section to produce forecasts!
@@ -422,8 +460,6 @@ time period for each $i$.
 
 \newcommand{\modelDist}{Q_\Theta(\zVec{i}{t_0}{T} | \zVec{i}{1}{t_0-1}, \xVec{i}{1}{T})}
 
-Our model, summarized in Fig.~\ref{fig:encoderdecoder}, is based on an autoregressive recurrent network
-architecture \cite{graves2013,sutskever2014}.
 We assume that our model distribution $\modelDist$
 consists of a product of likelihood factors
 \begin{align*}
@@ -461,12 +497,29 @@ Samples from the model obtained in this way can then be used to compute quantiti
 of interest, e.g.\ quantiles of the distribution of the sum of values for some
 time range in the future.
 
-Further details are given in cite().
+For our application, we considered the following grid of hyperparameters:
+\begin{table}[!htb]
+	\begin{tabular}{|ll|}
+		\hline
+		Hyperparameter & Grid \\ \hline
+		Context Length & \\
+		Dropout Rate & \\
+		Early Stopping Patience & \\
+		Learning rate & \\
+		Likelihood & Gaussian, student-T \\
+		Mini batch size & \\
+		Number of Cells & \\
+		Number of Layers & 
+	\end{tabular}
+	\caption{Hyperparameters considered for DeepAR}
+\end{table}
 
 \newpage
 
 \section{Additional details: simulation design}
-In this section, we give additional features of the simulation design required to implenent our results. All code and data can be found at XXXX. 
+In this section, we give additional features of the simulation design required to implenent our results. All code and data can be found at:
+
+\url{https://github.com/Meron35/Evaluation-of-Machine-Learning-in-Asset-Pricing}.
 
 \subsection{Simulation Design}\label{app:simDesign}
 
@@ -520,13 +573,9 @@ We consider three different functions for $g(z_{i, t})$:
 \end{align}
 where $x_{t}'[3,]$ denotes the third element of the $x_{t}'$ vector.
 %%%%%%%%%%%%%%%%%%%%%%%%%
-$g_1 \left(z_{i, t}\right)$ allows the characteristics to enter the return equation linearly, and $g_2 \left(z_{i, t}\right)$ and $g_3 \left(z_{i, t}\right)$ allow the characteristics to enter the return equation interactively and non-linearly. \footnote{($g_1, g_2$ correspond to the simulation design used by \cite{gu_empirical_2018}.)} $\theta^0$ was tuned such that the predictive $R^2$ was approximately 5\%.
+$g_1 \left(z_{i, t}\right)$ allows the characteristics to enter the return equation linearly, and $g_2 \left(z_{i, t}\right)$ and $g_3 \left(z_{i, t}\right)$ allow the characteristics to enter the return equation interactively and non-linearly. \footnote{($g_1, g_2$ correspond to the simulation design used by \cite{gu_empirical_2019}.)} $\theta^0$ was tuned such that the predictive $R^2$ was approximately 5\%.
 
-The simulation design results in $3 \times 3 = 9$ different simulated datasets, each with $N = 200$ stocks, $T = 180$ periods and $P_c = 100$ characteristics. Each design was simulated 10 times to assess the robustness of ML algorithms, with the number of simulations kept low for computational feasibility. We employ the hybrid data splitting approach with a training:validation length ratio of approximately 1.5 and a test set that is 1 year in length. 
-
-\subsubsection{Sample Splitting}
-
-If viewed as monthly periods, $T = 180$ corresponds to 15 years. A data splitting scheme similar to the scheme to be used in the empirical data study was used: a training:validation length ratio of approximately 1.5 to begin, and a test set that is 1 year in length. We employ the hybrid growing window approach as described earlier in section \ref{sample_split} (see Figure \ref{sample_split_diag} for a graphical representation).
+The simulation design results in $3 \times 3 = 9$ different simulated datasets, each with $N = 200$ stocks, $T = 180$ periods and $P_c = 100$ characteristics. Each design was simulated 10 times to assess the robustness of machine learning algorithms, with the number of simulations kept low for computational feasibility. We employ the hybrid data splitting approach with a training:validation length ratio of approximately 1.5 and a test set that is 1 year in length. Other schemes in the forecasting literature such as using an ``inner" rolling window validation loop to find the best hyperparameters on average, finally aggregating them in an ``outer" loop for a more robust error were considered but not implemented due to a) computational feasibility and b) the relative instability of optimal hyperparameters across different different windows.
 
 %\begin{figure}[!htb]
 %	\begin{center}
@@ -565,61 +614,59 @@ If viewed as monthly periods, $T = 180$ corresponds to 15 years. A data splittin
 %	\label{sample_split_diag}
 %\end{figure}
 
-Other schemes in the forecasting literature such as using an ``inner" rolling window validation loop to find the best hyperparameters on average, finally aggregating them in an ``outer" loop for a more robust error were considered but not implemented due to a) computational feasibility and b) the relative instability of optimal hyperparameters across different different windows.
-
 \newpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Simulation Study Results}\label{app:simResults}
 
 \subsubsection{Prediction Performance}
-
 %% Put in comprehensive tables here
 %% May need to resize/re-generate this table so that it fits better
 \input{../../Results/simulation/test_loss_latex.tex}
-
 \FloatBarrier
 
 \subsection{Random Forest VIMPs}
-
-We note that random forest methods typically have their own methodologies to calculate variable importance which are different to the variable importance metric presented in the main body of the paper. Here we provide two popular schemes of calculating random forest variable importance metrics - Breiman-cutler VIMP (traditional) and Ishwaran-Kogalur VIMP, and show that importantly, the overall conclusion regarding factor selection does not change with respect to which vimp methodology employed.
+We note that random forest methods typically have their own methodologies to calculate variable importance (VIMP) which are different to the VIMP metric presented in the main body of the paper. We provide two popular schemes of calculating random forest VIMP - Breiman-cutler VIMP, (\cite{breiman_random_2001}) and Ishwaran-Kogalur VIMP , (\cite{ishwaran_random_2008}), and show that importantly, the overall conclusion regarding factor selection does not change with respect to which methodology employed.
 
 %% Re-generate or resize these graphs
-
+%% BC Vimps
 \begin{figure}
-	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/simulation/graphics/simulation_g_vimp_bc.pdf}
-	\caption{Simulation Breiman-Cutler vimps}
+	\includegraphics[max size = {\textwidth}{0.35\textheight}]{../../Results/simulation/graphics/simulation_g_vimp_bc.pdf}
+	\caption{Simulation Breiman-Cutler VIMP}
 \end{figure}
 
-%%IK
-
+%% IK
 \begin{figure}
-	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/simulation/graphics/simulation_g_vimp_ik.pdf}
-	\caption{Simulation Ishwaran-Kogalur vimps}
+	\includegraphics[max size = {\textwidth}{0.35\textheight}]{../../Results/simulation/graphics/simulation_g_vimp_ik.pdf}
+	\caption{Simulation Ishwaran-Kogalur VIMP}
 \end{figure}
 
 \newpage
-
 
 \section{Additional details: Empirical analysis}
 
 \subsection{Data \& cleaning}\label{app:clean}
 
-We begin by obtaining monthly individual price data from CRSP for all firms listed in the NYSE, AMEX and NASDAQ, starting from 1957 (starting date of the S\&P 500) and ending in December 2016, totalling 60 years. To build individual factors, we construct a factor set based on the cross section of returns literature. This data was sourced from and is the same data used in \cite{gu_empirical_2018}. Like our initial returns sample, it begins in March 1957 and ends in December 2016, totalling 60 years. It contains 94 stock level characteristics: 61 updated annually, 13 updated quarterly and 20 updated monthly, in addition to 74 industry dummies corresponding the the first two digits of the Standard Industrial Classification (SIC) codes. The dataset so far contains all securities traded, including those with a CRSP share code other than 10 or 11 and thus includes instruments such as REITs and mutual funds, and those with a share price of less than \$5.
+We begin by obtaining monthly individual price data from CRSP for all firms listed in the NYSE, AMEX and NASDAQ, starting from 1957 (starting date of the S\&P 500) and ending in December 2016, totalling 60 years. To build individual factors, we construct a factor set based on the cross section of returns literature. This is the same data used in \cite{gu_empirical_2019}. We restrict our dataset to begin from 1993 Q3 and end on 2016 Q4 to alleviate data quality issues. Our individual factor set contains 94 characteristics: 61 updated annually, 13 updated quarterly and 20 updated monthly \footnote{The dataset also included 74 Standard Industrial Classification (SIC) codes, but these were omitted due to their inconsistency, and inadequateness at classifying companies, as noted by WRDS}.
 
 % Begin Cleaning
 
-To reduce the size of the dataset and increase feasibility, the dataset was filtered such that only stocks traded primarily on NASDAQ were included (using the PRIMEXCH variable from WRDS). Then, penny stocks (also referred to as microcaps in the literature) with a stock price of less than \$5 were filtered out, as is commonly done in the literature to reduce variability. Stocks without a share code of 10 or 11 (referring to equities) were filtered out, so that securities that are not equities were not included (such as REITs and trust funds). The monthly updated dataset was then converted to a quarterly format, to achieve a balance between having a dataset with enough data points and variability among factors. Quarterly returns were then constructed using the PRC variable according to actual returns:
+% the dataset was filtered such that only stocks traded primarily on NASDAQ were included (using the PRIMEXCH variable from WRDS). Then, penny stocks (also referred to as microcaps in the literature) with a stock price of less than \$5 were filtered out, as is commonly done in the literature to reduce variability. Stocks without a share code of 10 or 11 (referring to equities) were filtered out, so that securities that are not equities were not included (such as REITs and trust funds). The dataset is provided in a monthly format, which means that many of the factors which are updated only quarterly or annually have very low levels of variability, which can lead to misleading results in the model fitting process. 
+
+We detail our cleaning procedure of this dataset. To reduce the size of the dataset and increase feasibility, we only consider equities with a share price larger than \$5 traded primarily on the NASDAQ. To achieve a balance between having a dataset with enough data points and variability among factors, the dataset was converted to a quarterly format. Quarterly returns were then constructed using the PRC variable according to:
 \begin{equation}
 RET_t = (PRC_t - PRC_{t-1})/PRC_{t-1}
 \end{equation}
-We allow all stocks which have a quarterly return to enter the dataset, even if they disappear from the dataset for certain periods, as opposed to only keeping stocks which appear continuously throughout the entire period. This was primarily done to reduce survivorship bias in the dataset, which can be very prevalent in financial data, and also allows for stocks which were unlisted and relisted again to feature in the dataset. 
+We allow all stocks which have a quarterly return to enter the dataset, even if they disappear from the dataset for certain periods. To deal with missing data, any characteristics that had over 20\% of their data missing were omitted. Remaining missing data were then imputed using their cross sectional medians for each year. 
 
-The sic2 variable, corresponding to the stocks' Standard Industrial Classification (SIC) codes was dropped. The SIC code system suffers from inconsistent logic in classifying companies, and as a system built for pre-1970s traditional industries has been slow in recognizing new and emerging industries. Indeed, WRDS explicitly cautions the use of SIC codes beyond the use of rough grouping of industries, warning that SIC codes are not strictly enforced by government agencies for accuracy, in addition to most large companies belonging to multiple SIC codes over time. Because of this latter point in particular, there can be inconsistencies on the correct SIC code for the same company depending on the data source. Dropping the sic2 variable also reduced the dimensionality of the dataset by 74 columns, significantly increasing computational feasibility.
+%% Gu et al has the missing data part as a footnote - trying that approach here
 
-There existed a significant amount of missing data in the dataset. For the main empirical study, any characteristics that had over 20\% of their data were removed, and remaining missing data points were then imputed with their cross sectional medians. However, as the amount of missing data increases dramatically going further back in time, a balance between using more periods at the cost of removing more characteristics versus using less periods but keeping more characteristics was needed. 1993 Q3 was determined to be a reasonable time frame to begin the dataset due to a noticeable increase in data quality.
+% This has the obvious drawback of introducing some bias in the dataset, as attrition in the dataset is likely to be non-random and correlated with the stocks' returns. 
 
-We then follow \cite{gu_empirical_2018} and construct eight macroeconomic factors following the variable definitions in \cite{welch_comprehensive_2008}. These factors were lagged by one period so as to be used to predict one period ahead quarterly returns. The treasury bill rate was also used from this source to proxy for the risk free rate in order to construct excess quarterly returns. 
+% The sic2 variable, corresponding to the stocks' Standard Industrial Classification (SIC) codes was also dropped. The SIC code system suffers from inconsistent logic in classifying companies, and as a system built for pre-1970s traditional industries has been slow in recognizing new and emerging industries. Indeed, WRDS explicitly cautions the use of SIC codes beyond the use of rough grouping of industries, warning that SIC codes are not strictly enforced by government agencies for accuracy, in addition to most large companies belonging to multiple SIC codes over time. Because of this latter point in particular, there can be inconsistencies on the correct SIC code for the same company depending on the data source. Dropping the sic2 variable also reduced the dimensionality of the dataset by 74 columns, significant increasing computational feasibility.
+
+%% Refer to table in appendix
+We then follow \cite{gu_empirical_2019} and construct eight macroeconomic factors following the variable definitions in \cite{welch_comprehensive_2008} (see Table \ref{macro_factors}). These factors were lagged by one period so as to be used to predict one period ahead quarterly returns. The 3-month Treasury Bill rate was also used from this source to proxy for the risk free rate in order to construct excess quarterly returns. 
 
 \begin{table}
 	\caption{Macroeconomic Factors, (\cite{welch_comprehensive_2008})}
@@ -640,23 +687,12 @@ We then follow \cite{gu_empirical_2018} and construct eight macroeconomic factor
 \end{table}
 
 The two sets of factors were then combined to form a baseline set of covariates, which we define throughout all methods and analysis as:
-
 \begin{equation}
 z_{i,t} = (1, x_t)' \otimes c_{i, t}
 \end{equation}
+where $c_{i,t}$ is a $P_c$ matrix of characteristics for each stock $i$, and $(1, x_t)'$ is a $P_x \times 1$ vector of macroeconomic predictors, , and $\otimes$ represents the Kronecker product. $z_{i,t}$ is therefore a $P_x P_c$ vector of features for predicting individual stock returns and includes interactions between stock level characteristics and macroeconomic variables. The total number of covariates in this baseline set is $61 \times (8 + 1) = 549$\footnote{As the individual and macroeconomic factors can have similar names, individual and macroeconomic factors were prefixed with ind\_ and macro\_ respectively.}. The final dataset contains 202, 066 individual observations. 
 
-where $c_{i,t}$ is a $P_c$ matrix of characteristics for each stock $i$, and $(1, x_t)'$ is a $P_x \times 1$ vector of macroeconomic predictors, , and $\otimes$ represents the Kronecker product. $z_{i,t}$ is therefore a $P_x P_c$ vector of features for predicting individual stock returns and includes interactions between stock level characteristics and macroeconomic variables. The total number of covariates in this baseline set is $61 \times (8 + 1) = 549$\footnote{As the individual and macroeconomic factors can have similar names, individual and macroeconomic factors were prefixed with ind\_ and macro\_ respectively.}.
-
-% Splitting Scheme
-% Similar splitting scheme to simulation study used
-% Training:Validation size ratio of 1.5, growing and moving forwards by 1 year
-% To maintain feasibility, only 3 samples were conducted
-
-The dataset was not normalized for all methods, as only penalized regression and neural networks are sensitive to normalization. For these two methods, the dataset was normalized such that each predictor column had 0 mean and 1 variance.
-
-The final dataset spanned from 1993 Q3 to 2016 Q4 with 202, 066 individual observations.
-
-We mimic the procedure used in the simulation study. For the sample splitting procedure, the dataset was split such that the training and validation sets were split such that the training set was approximately 1.5 times the length of the validation set, in order to predict a test set that is one year in length.
+We mimic the sample splitting procedure used in the simulation study: the dataset was split such that the training and validation sets were split such that the training set was approximately 1.5 times the length of the validation set, in order to predict a test set that is one year in length (see Figure \ref{emp_sample_split_diag}).
 
 \begin{figure}[!htb]
 	\begin{center}
@@ -720,7 +756,7 @@ We finally consider supplementing our macroeconomic regressor set with the five 
 %% RF Vimps
 %% Redo this graph
 \begin{figure}
-	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical/empirical_vimp.pdf}
+	\includegraphics[max size = {\textwidth}{0.25\textheight}]{../../Results/empirical/empirical_vimp.pdf}
 	\caption{Empirical study random forest vimps}
 \end{figure}
 
@@ -730,92 +766,71 @@ We finally consider supplementing our macroeconomic regressor set with the five 
 \FloatBarrier
 \input{../../Results/empirical_missing_threshold/empirical_loss_latex.tex}
 \FloatBarrier
-
-%% Factor Importance
-%% Redo these
-
 \begin{figure}
-	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_missing_threshold/empirical_all_sample_vi.pdf}
+	\includegraphics[max size = {\textwidth}{0.25\textheight}]{../../Results/empirical_missing_threshold/empirical_all_sample_vi.pdf}
 	\caption{Missing Data Threshold Robustness Check Individual Factor Importance}
 \end{figure}
 
 %% RF Vimps
-
 \begin{figure}
-	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_missing_threshold/empirical_vimp.pdf}
+	\includegraphics[max size = {\textwidth}{0.25\textheight}]{../../Results/empirical_missing_threshold/empirical_vimp.pdf}
 	\caption{Missing Data Threshold Robustness Check RF VIMP}
 \end{figure}
+\FloatBarrier
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Train:Validation 1:1
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 %% Loss Stats
-
-\FloatBarrier
 \input{../../Results/empirical_train_valid_1/empirical_loss_latex.tex}
-\FloatBarrier
 
 %% Factor Importance
-
 \begin{figure}
-	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_train_valid_1/empirical_all_sample_vi.pdf}
-	\caption{{Train:Validation = 1:1 Robustness Check Individual Factor Importance}}
+	\includegraphics[max size = {\textwidth}{0.25\textheight}]{../../Results/empirical_train_valid_1/empirical_all_sample_vi.pdf}
+	\caption{Train:Validation = 1:1 Robustness Check Individual Factor Importance}
 \end{figure}
 
 %% RF Vimps
-
 \begin{figure}
-	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_train_valid_1/empirical_vimp.pdf}
-	\caption{{Train:Validation = 1:1 Robustness Check RF VIMP}}
+	\includegraphics[max size = {\textwidth}{0.25\textheight}]{../../Results/empirical_train_valid_1/empirical_vimp.pdf}
+	\caption{Train:Validation = 1:1 Robustness Check RF VIMP}
 \end{figure}
+\FloatBarrier
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Train:Validation 2:1
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 %% Loss Stats
-\FloatBarrier
 \input{../../Results/empirical_train_valid_2/empirical_loss_latex.tex}
-\FloatBarrier
 
 %% Factor Importance
-
 \begin{figure}
-	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_train_valid_2/empirical_all_sample_vi.pdf}
+	\includegraphics[max size = {\textwidth}{0.25\textheight}]{../../Results/empirical_train_valid_2/empirical_all_sample_vi.pdf}
 	\caption{Train:Validation = 2:1 Robustness Check Individual Factor Importance}
 \end{figure}
 
 %% RF Vimps
-
 \begin{figure}
-	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_train_valid_2/empirical_vimp.pdf}
+	\includegraphics[max size = {\textwidth}{0.25\textheight}]{../../Results/empirical_train_valid_2/empirical_vimp.pdf}
 	\caption{Train:Validation = 2:1 Robustness Check RF VIMP}
 \end{figure}
-
+\FloatBarrier
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Fama French Factors
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 %% Loss Stats
-\FloatBarrier
 \input{../../Results/empirical_ff/empirical_loss_latex.tex}
-\FloatBarrier
 
 %% Factor Importance
-
 \begin{figure}
-	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_ff/empirical_all_sample_vi.pdf}
+	\includegraphics[max size = {\textwidth}{0.25\textheight}]{../../Results/empirical_ff/empirical_all_sample_vi.pdf}
 	\caption{Fama French Factors Robustness Check Individual Factor Importance}
 \end{figure}
 
 %% RF Vimps
-
 \begin{figure}
-	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_ff/empirical_vimp.pdf}
+	\includegraphics[max size = {\textwidth}{0.25\textheight}]{../../Results/empirical_ff/empirical_vimp.pdf}
 	\caption{Fama French Factors Robustness Check RF VIMP}
 \end{figure}
-
-\end{document}
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}

@@ -308,7 +308,7 @@ We conduct an empirical study as a final way to corroborate the findings of the 
 Importantly, we find that our findings from the simulation study are largely corroborated for empirical returns data.
 
 \subsection{Data}
-We begin by obtaining monthly individual price data from CRSP for all firms listed in the NYSE, AMEX and NASDAQ, starting from 1957 (starting date of the S\&P 500) and ending in December 2016, totalling 60 years. To build individual factors, we construct a factor set based on the cross section of returns literature. This data was sourced from and is the same data used in \cite{gu_empirical_2018}. We restrict our dataset to begin from 1993 Q3 and end on 2016 Q4 to alleviate data quality issues. Our individual factor set contains 94 characteristics: 61 updated annually, 13 updated quarterly and 20 updated monthly \footnote{The dataset also included 74 Standard Industrial Classification (SIC) codes, but these were omitted due to their inconsistency, and inadequateness at classifying companies, as noted by WRDS}.
+We begin by obtaining monthly individual price data from CRSP for all firms listed in the NYSE, AMEX and NASDAQ, starting from 1957 (starting date of the S\&P 500) and ending in December 2016, totalling 60 years. To build individual factors, we construct a factor set based on the cross section of returns literature. This is the same data used in \cite{gu_empirical_2018}. We restrict our dataset to begin from 1993 Q3 and end on 2016 Q4 to alleviate data quality issues. Our individual factor set contains 94 characteristics: 61 updated annually, 13 updated quarterly and 20 updated monthly \footnote{The dataset also included 74 Standard Industrial Classification (SIC) codes, but these were omitted due to their inconsistency, and inadequateness at classifying companies, as noted by WRDS}.
 
 % Begin Cleaning
 
@@ -1092,7 +1092,7 @@ Here we present the full set of results for our empirical study.
 %% RF Vimps
 %% Redo this graph
 \begin{figure}
-	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical/empirical_vimp.pdf}
+	\includegraphics[max size = {\textwidth}{0.35\textheight}]{../../Results/empirical/empirical_vimp.pdf}
 	\caption{Empirical study random forest vimps}
 \end{figure}
 \FloatBarrier
@@ -1106,13 +1106,13 @@ Here we present the full set of results for our empirical study.
 \FloatBarrier
 %% Factor Importance
 \begin{figure}
-	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_missing_threshold/empirical_all_sample_vi.pdf}
+	\includegraphics[max size = {\textwidth}{0.35\textheight}]{../../Results/empirical_missing_threshold/empirical_all_sample_vi.pdf}
 	\caption{Missing Data Threshold Robustness Check Factor Importance}
 \end{figure}
 
 %% RF Vimps
 \begin{figure}
-	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_missing_threshold/empirical_vimp.pdf}
+	\includegraphics[max size = {\textwidth}{0.35\textheight}]{../../Results/empirical_missing_threshold/empirical_vimp.pdf}
 	\caption{Missing Data Threshold Robustness Check RF VIMP}
 \end{figure}
 \FloatBarrier
@@ -1129,13 +1129,13 @@ We consider training:validation length ratios of 1:1 and 1:2 in addition to 1.5:
 
 %% Factor Importance
 \begin{figure}
-	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_train_valid_1/empirical_all_sample_vi.pdf}
+	\includegraphics[max size = {\textwidth}{0.35\textheight}]{../../Results/empirical_train_valid_1/empirical_all_sample_vi.pdf}
 	\caption{{Train:Validation = 1:1 Robustness Check Factor Importance}}
 \end{figure}
 
 %% RF Vimps
 \begin{figure}
-	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_train_valid_1/empirical_vimp.pdf}
+	\includegraphics[max size = {\textwidth}{0.35\textheight}]{../../Results/empirical_train_valid_1/empirical_vimp.pdf}
 	\caption{{Train:Validation = 1:1 Robustness Check RF VIMP}}
 \end{figure}
 \FloatBarrier
@@ -1148,12 +1148,12 @@ We consider training:validation length ratios of 1:1 and 1:2 in addition to 1.5:
 \FloatBarrier
 %% Factor Importance
 \begin{figure}
-	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_train_valid_2/empirical_all_sample_vi.pdf}
+	\includegraphics[max size = {\textwidth}{0.35\textheight}]{../../Results/empirical_train_valid_2/empirical_all_sample_vi.pdf}
 	\caption{Train:Validation = 2:1 Robustness Check Factor Importance}
 \end{figure}
 %% RF Vimps
 \begin{figure}
-	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_train_valid_2/empirical_vimp.pdf}
+	\includegraphics[max size = {\textwidth}{0.35\textheight}]{../../Results/empirical_train_valid_2/empirical_vimp.pdf}
 	\caption{Train:Validation = 2:1 Robustness Check RF VIMP}
 \end{figure}
 \FloatBarrier
@@ -1169,13 +1169,13 @@ We finally consider supplementing our macroeconomic regressor set with the five 
 
 %% Factor Importance
 \begin{figure}
-	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_ff/empirical_all_sample_vi.pdf}
+	\includegraphics[max size = {\textwidth}{0.35\textheight}]{../../Results/empirical_ff/empirical_all_sample_vi.pdf}
 	\caption{Fama French Factors Robustness Check Factor Importance}
 \end{figure}
 
 %% RF Vimps
 \begin{figure}
-	\includegraphics[max size = {\textwidth}{0.4\textheight}]{../../Results/empirical_ff/empirical_vimp.pdf}
+	\includegraphics[max size = {\textwidth}{0.35\textheight}]{../../Results/empirical_ff/empirical_vimp.pdf}
 	\caption{Fama French Factors Robustness Check RF VIMP}
 \end{figure}
 \FloatBarrier

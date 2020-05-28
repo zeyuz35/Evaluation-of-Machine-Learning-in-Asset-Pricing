@@ -27,31 +27,67 @@ Freyberger, J., Neuhierl, A., and Weber, M. (2017).
 \newblock Dissecting characteristics nonparametrically.
 \newblock Technical report, National Bureau of Economic Research.
 
-\bibitem[Gu et~al., 2018]{gu_empirical_2018}
-Gu, S., Kelly, B., and Xiu, D. (2018).
-\newblock Empirical asset pricing via machine learning.
-\newblock Technical report, National Bureau of Economic Research.
+\bibitem[Gu et~al., 2019]{gu_empirical_2019}
+Gu, S., Kelly, B.~T., and Xiu, D. (2019).
+\newblock Empirical {Asset} {Pricing} via {Machine} {Learning}.
+\newblock {SSRN} {Scholarly} {Paper} ID 3159577, Social Science Research
+  Network, Rochester, NY.
 
 \bibitem[Harvey and Liu, 2019]{harvey_census_2019}
 Harvey, C.~R. and Liu, Y. (2019).
 \newblock A {Census} of the {Factor} {Zoo}.
 \newblock {\em Social Science Research Network}, page~7.
 
+\bibitem[Hochreiter and Schmidhuber, 1997]{hochreiter_long_1997}
+Hochreiter, S. and Schmidhuber, J. (1997).
+\newblock Long {Short}-{Term} {Memory}.
+\newblock {\em Neural Computation}, 9(8):1735--1780.
+
 \bibitem[Hsu and Kalesnik, 2014]{hsu_finding_2014}
 Hsu, J. and Kalesnik, V. (2014).
 \newblock Finding smart beta in the factor zoo.
 \newblock {\em Research Affiliates (July)}.
+
+\bibitem[Ishwaran et~al., 2008]{ishwaran_random_2008}
+Ishwaran, H., Kogalur, U.~B., Blackstone, E.~H., and Lauer, M.~S. (2008).
+\newblock Random survival forests.
+\newblock {\em Annals of Applied Statistics}, 2(3):841--860.
 
 \bibitem[Kozak et~al., 2017]{kozak_shrinking_2017}
 Kozak, S., Nagel, S., and Santosh, S. (2017).
 \newblock Shrinking the cross section.
 \newblock Technical report, National Bureau of Economic Research.
 
+\bibitem[Messmer, 2017]{messmer_deep_2017}
+Messmer, M. (2017).
+\newblock Deep {Learning} and the {Cross}-{Section} of {Expected} {Returns}.
+\newblock {SSRN} {Scholarly} {Paper} ID 3081555, Social Science Research
+  Network, Rochester, NY.
+
+\bibitem[Montero-Manso et~al., 2020]{montero-manso_fforma_2020}
+Montero-Manso, P., Athanasopoulos, G., Hyndman, R.~J., and Talagala, T.~S.
+  (2020).
+\newblock {FFORMA}: {Feature}-based forecast model averaging.
+\newblock {\em International Journal of Forecasting}, 36(1):86--92.
+
+\bibitem[Moritz and Zimmermann, 2016]{moritz_tree-based_2016}
+Moritz, B. and Zimmermann, T. (2016).
+\newblock Tree-{Based} {Conditional} {Portfolio} {Sorts}: {The} {Relation}
+  between {Past} and {Future} {Stock} {Returns}.
+\newblock {SSRN} {Scholarly} {Paper} ID 2740751, Social Science Research
+  Network, Rochester, NY.
+
 \bibitem[Rapach and Zhou, 2013]{rapach_forecasting_2013}
 Rapach, D. and Zhou, G. (2013).
 \newblock Forecasting {Stock} {Returns}.
 \newblock In {\em Handbook of {Economic} {Forecasting}}, volume~2, pages
   328--383. Elsevier.
+
+\bibitem[Salinas et~al., 2019]{salinas_deepar_2019}
+Salinas, D., Flunkert, V., Gasthaus, J., and Januschowski, T. (2019).
+\newblock {DeepAR}: {Probabilistic} forecasting with autoregressive recurrent
+  networks.
+\newblock {\em International Journal of Forecasting}.
 
 \bibitem[Welch and Goyal, 2008]{welch_comprehensive_2008}
 Welch, I. and Goyal, A. (2008).

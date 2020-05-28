@@ -1,24 +1,14 @@
-\begingroup\fontsize{6}{8}\selectfont
+\begin{table}
 
-\begin{longtable}[t]{cccccccccc}
-\caption{\label{tab:}Train:Validation 1:1 Robustness Check Loss Statistics}\\
+\caption{\label{tab:}Train:Validation 1:1 Robustness Check Loss Statistics}
+\centering
+\fontsize{6}{8}\selectfont
+\begin{tabular}[t]{cccccccccc}
 \toprule
 \multicolumn{1}{c}{ } & \multicolumn{3}{c}{Sample 1} & \multicolumn{3}{c}{Sample 2} & \multicolumn{3}{c}{Sample 3} \\
 \cmidrule(l{3pt}r{3pt}){2-4} \cmidrule(l{3pt}r{3pt}){5-7} \cmidrule(l{3pt}r{3pt}){8-10}
 model & Test MAE & Test MSE & Test $R^2$ & Test MAE & Test MSE & Test $R^2$ & Test MAE & Test MSE & Test $R^2$\\
 \midrule
-\endfirsthead
-\caption[]{Train:Validation 1:1 Robustness Check Loss Statistics }\\
-\toprule
-\multicolumn{1}{c}{ } & \multicolumn{3}{c}{Sample 1} & \multicolumn{3}{c}{Sample 2} & \multicolumn{3}{c}{Sample 3} \\
-\cmidrule(l{3pt}r{3pt}){2-4} \cmidrule(l{3pt}r{3pt}){5-7} \cmidrule(l{3pt}r{3pt}){8-10}
-model & Test MAE & Test MSE & Test $R^2$ & Test MAE & Test MSE & Test $R^2$ & Test MAE & Test MSE & Test $R^2$\\
-\midrule
-\endhead
-\
-\endfoot
-\bottomrule
-\endlastfoot
 LM.MSE & 0.915703 & 2.495094 & -59.401029 & 0.717 & 1.553454 & -35.419641 & 0.451206 & 0.375505 & -7.299459\\
 LM.MAE & 0.751551 & 1.583265 & -37.32754 & 0.469831 & 0.524686 & -11.300895 & 0.675112 & 1.105759 & -23.43964\\
 ELN.MSE & 0.134609 & \textbf{0.040072} & \textbf{0.029933} & 0.141434 & 0.043169 & -0.012055 & \textbf{0.144375} & \textbf{0.043705} & \textbf{0.034019}\\
@@ -34,6 +24,7 @@ NN3.MAE & 0.191596 & 0.066926 & -0.620138 & 0.176555 & 0.060022 & -0.407183 & 0.
 NN4.MSE & 0.191361 & 0.07068 & -0.71101 & 0.175311 & 0.059253 & -0.389136 & 0.18148 & 0.061718 & -0.364096\\
 NN4.MAE & 0.139659 & 0.041096 & 0.005158 & 0.179318 & 0.05976 & -0.401027 & 0.188921 & 0.066144 & -0.461932\\
 NN5.MSE & 0.17209 & 0.056982 & -0.379418 & 0.164756 & 0.054398 & -0.275325 & 0.202012 & 0.074051 & -0.636691\\
-NN5.MAE & 0.170945 & 0.056029 & -0.356356 & 0.180669 & 0.059697 & -0.399552 & 0.189149 & 0.065921 & -0.456988\\*
-\end{longtable}
-\endgroup{}
+NN5.MAE & 0.170945 & 0.056029 & -0.356356 & 0.180669 & 0.059697 & -0.399552 & 0.189149 & 0.065921 & -0.456988\\
+\bottomrule
+\end{tabular}
+\end{table}

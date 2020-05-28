@@ -19,12 +19,11 @@
 \BOOKMARK [2][-]{subsection.A.7}{DeepAR}{appendix.A}% 19
 \BOOKMARK [1][-]{appendix.B}{Additional details: simulation design}{}% 20
 \BOOKMARK [2][-]{subsection.B.1}{Simulation Design}{appendix.B}% 21
-\BOOKMARK [3][-]{subsubsection.B.1.1}{Sample Splitting}{subsection.B.1}% 22
-\BOOKMARK [2][-]{subsection.B.2}{Simulation Study Results}{appendix.B}% 23
-\BOOKMARK [3][-]{subsubsection.B.2.1}{Prediction Performance}{subsection.B.2}% 24
-\BOOKMARK [2][-]{subsection.B.3}{Random Forest VIMPs}{appendix.B}% 25
-\BOOKMARK [1][-]{appendix.C}{Additional details: Empirical analysis}{}% 26
-\BOOKMARK [2][-]{subsection.C.1}{Data \046 cleaning}{appendix.C}% 27
-\BOOKMARK [2][-]{subsection.C.2}{Empirical study robustness checks \046 results}{appendix.C}% 28
-\BOOKMARK [2][-]{subsection.C.3}{Empirical Data Results}{appendix.C}% 29
-\BOOKMARK [3][-]{subsubsection.C.3.1}{Prediction Accuracy}{subsection.C.3}% 30
+\BOOKMARK [2][-]{subsection.B.2}{Simulation Study Results}{appendix.B}% 22
+\BOOKMARK [3][-]{subsubsection.B.2.1}{Prediction Performance}{subsection.B.2}% 23
+\BOOKMARK [2][-]{subsection.B.3}{Random Forest VIMPs}{appendix.B}% 24
+\BOOKMARK [1][-]{appendix.C}{Additional details: Empirical analysis}{}% 25
+\BOOKMARK [2][-]{subsection.C.1}{Data \046 cleaning}{appendix.C}% 26
+\BOOKMARK [2][-]{subsection.C.2}{Empirical study robustness checks \046 results}{appendix.C}% 27
+\BOOKMARK [2][-]{subsection.C.3}{Empirical Data Results}{appendix.C}% 28
+\BOOKMARK [3][-]{subsubsection.C.3.1}{Prediction Accuracy}{subsection.C.3}% 29

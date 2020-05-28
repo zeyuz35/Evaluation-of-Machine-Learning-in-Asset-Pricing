@@ -1,24 +1,14 @@
-\begingroup\fontsize{6}{8}\selectfont
+\begin{table}
 
-\begin{longtable}[t]{cccccccccc}
-\caption{\label{tab:}Fama French Factor Robustness Check Loss Statistics}\\
+\caption{\label{tab:}Fama French Factor Robustness Check Loss Statistics}
+\centering
+\fontsize{6}{8}\selectfont
+\begin{tabular}[t]{cccccccccc}
 \toprule
 \multicolumn{1}{c}{ } & \multicolumn{3}{c}{Sample 1} & \multicolumn{3}{c}{Sample 2} & \multicolumn{3}{c}{Sample 3} \\
 \cmidrule(l{3pt}r{3pt}){2-4} \cmidrule(l{3pt}r{3pt}){5-7} \cmidrule(l{3pt}r{3pt}){8-10}
 model & Test MAE & Test MSE & Test $R^2$ & Test MAE & Test MSE & Test $R^2$ & Test MAE & Test MSE & Test $R^2$\\
 \midrule
-\endfirsthead
-\caption[]{Fama French Factor Robustness Check Loss Statistics }\\
-\toprule
-\multicolumn{1}{c}{ } & \multicolumn{3}{c}{Sample 1} & \multicolumn{3}{c}{Sample 2} & \multicolumn{3}{c}{Sample 3} \\
-\cmidrule(l{3pt}r{3pt}){2-4} \cmidrule(l{3pt}r{3pt}){5-7} \cmidrule(l{3pt}r{3pt}){8-10}
-model & Test MAE & Test MSE & Test $R^2$ & Test MAE & Test MSE & Test $R^2$ & Test MAE & Test MSE & Test $R^2$\\
-\midrule
-\endhead
-\
-\endfoot
-\bottomrule
-\endlastfoot
 LM.MSE & 0.288636 & 0.182966 & -3.42923 & 0.367636 & 0.264918 & -5.210825 & 1.101604 & 5.012469 & -109.78624\\
 LM.MAE & 0.280535 & 0.179777 & -3.352038 & 0.376163 & 0.279476 & -5.552114 & 1.25341 & 7.06036 & -155.048996\\
 ELN.MSE & 0.13383 & 0.039956 & 0.032746 & 0.14022 & 0.0427 & -0.00107 & \textbf{0.144472} & \textbf{0.043852} & \textbf{0.030769}\\
@@ -34,6 +24,7 @@ NN3.MAE & 0.161255 & 0.050737 & -0.228237 & 0.191625 & 0.064676 & -0.516291 & 0.
 NN4.MSE & 0.166036 & 0.055575 & -0.345349 & 0.191589 & 0.066207 & -0.552182 & 0.23417 & 0.097348 & -1.151607\\
 NN4.MAE & 0.148375 & 0.045227 & -0.094843 & 0.168623 & 0.054176 & -0.270114 & 0.20837 & 0.077667 & -0.7166\\
 NN5.MSE & 0.147379 & 0.044503 & -0.077315 & 0.166006 & 0.054935 & -0.287914 & 0.20667 & 0.077866 & -0.721013\\
-NN5.MAE & 0.150541 & 0.045723 & -0.106868 & 0.172466 & 0.055402 & -0.298865 & 0.218796 & 0.084938 & -0.877301\\*
-\end{longtable}
-\endgroup{}
+NN5.MAE & 0.150541 & 0.045723 & -0.106868 & 0.172466 & 0.055402 & -0.298865 & 0.218796 & 0.084938 & -0.877301\\
+\bottomrule
+\end{tabular}
+\end{table}

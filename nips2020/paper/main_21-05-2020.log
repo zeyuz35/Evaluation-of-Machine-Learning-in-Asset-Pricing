@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2020.5.28)  28 MAY 2020 09:58
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2020.5.28)  28 MAY 2020 13:49
 entering extended mode
 **main_21-05-2020.tex
 
@@ -1317,126 +1317,91 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             `phv' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
+ [1
 
 
-Package natbib Warning: Citation `moritz2016tree' on page 1 undefined on input 
-line 108.
-
-
-Package natbib Warning: Citation `messmer2017deep' on page 1 undefined on input
- line 108.
-
-
-Package natbib Warning: Citation `messmer2017deep' on page 1 undefined on input
- line 108.
-
-[1
-
-
-{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}]
-
-Package natbib Warning: Citation `messmer2017deep' on page 2 undefined on input
- line 118.
-
-
-Package natbib Warning: Citation `messmer2017deep' on page 2 undefined on input
- line 118.
-
-
-Package natbib Warning: Citation `salinas2019deepar' on page 2 undefined on inp
-ut line 123.
-
-[2]
-
-Package natbib Warning: Citation `montero2020fforma' on page 3 undefined on inp
-ut line 170.
-
-
-Package natbib Warning: Citation `salinas2019deepar' on page 3 undefined on inp
-ut line 170.
-
-[3] [4]
+{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}] [2] [3] [4]
 (\\ad.monash.edu\home\User069\zzho0068\Documents\GitHub\Evaluation-of-Machine-L
 earning-in-Asset-Pricing\Results\simulation\test_small_latex.tex)
 
-LaTeX Warning: Reference `fig:rf_sim_vi' on page 5 undefined on input line 244.
+LaTeX Warning: Reference `fig:rf_sim_vi' on page 5 undefined on input line 238.
 
 
 
-LaTeX Warning: Reference `fig:nn_sim_vi' on page 5 undefined on input line 244.
+LaTeX Warning: Reference `fig:nn_sim_vi' on page 5 undefined on input line 238.
 
 
 
-<../../Results/simulation/graphics/simulation_all_g_vi.pdf, id=214, 511.9125pt 
+<../../Results/simulation/graphics/simulation_all_g_vi.pdf, id=222, 511.9125pt 
 x 255.95625pt>
 File: ../../Results/simulation/graphics/simulation_all_g_vi.pdf Graphic file (t
 ype pdf)
  <use ../../Results/simulation/graphics/simulation_all_g_vi.pdf>
 Package pdftex.def Info: ../../Results/simulation/graphics/simulation_all_g_vi.
-pdf used on input line 252.
+pdf used on input line 246.
 (pdftex.def)             Requested size: 511.91125pt x 255.95561pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 269--269
+Underfull \hbox (badness 10000) in paragraph at lines 263--263
 []\T1/ptm/m/n/10 (+20) It pre-vi-ously
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 269--269
+Underfull \hbox (badness 10000) in paragraph at lines 263--263
 \T1/ptm/m/n/10 (+20) said monthly
  []
 
 
-Underfull \hbox (badness 1540) in paragraph at lines 269--269
+Underfull \hbox (badness 1540) in paragraph at lines 263--263
 \T1/ptm/m/n/10 (+20) re-turns but be-
  []
 
 
-Underfull \hbox (badness 1127) in paragraph at lines 269--269
+Underfull \hbox (badness 1127) in paragraph at lines 263--263
 \T1/ptm/m/n/10 (+20) about quar-terly
  []
 
 
-Underfull \hbox (badness 7451) in paragraph at lines 269--269
+Underfull \hbox (badness 7451) in paragraph at lines 263--263
 \T1/ptm/m/n/10 (+20) re-turns. So,
  []
 
 
-Underfull \hbox (badness 3449) in paragraph at lines 269--269
+Underfull \hbox (badness 3449) in paragraph at lines 263--263
 \T1/ptm/m/n/10 (+20) I've taken the
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 269--269
+Underfull \hbox (badness 10000) in paragraph at lines 263--263
 \T1/ptm/m/n/10 (+20) Please make
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 269--269
+Underfull \hbox (badness 10000) in paragraph at lines 263--263
 \T1/ptm/m/n/10 (+20) sure that is
  []
 
 
-Underfull \hbox (badness 7888) in paragraph at lines 270--270
+Underfull \hbox (badness 7888) in paragraph at lines 263--263
 []\T1/ptm/m/n/10 (+20) What do you
  []
 
 
-Underfull \hbox (badness 8056) in paragraph at lines 270--270
+Underfull \hbox (badness 8056) in paragraph at lines 263--263
 \T1/ptm/m/n/10 (+20) mean by this
  []
 
 
-Underfull \hbox (badness 1168) in paragraph at lines 270--270
+Underfull \hbox (badness 1168) in paragraph at lines 263--263
 \T1/ptm/m/n/10 (+20) fac-tors, the re-
  []
 
 
-Underfull \hbox (badness 2591) in paragraph at lines 270--270
+Underfull \hbox (badness 2591) in paragraph at lines 263--263
 \T1/ptm/m/n/10 (+20) turns or both?
  []
 
 
-Underfull \hbox (badness 3098) in paragraph at lines 270--270
+Underfull \hbox (badness 3098) in paragraph at lines 263--263
 \T1/ptm/m/n/10 (+20) In ei-ther case,
  []
 
@@ -1444,49 +1409,6 @@ Underfull \hbox (badness 3098) in paragraph at lines 270--270
 LaTeX Warning: Marginpar on page 5 moved.
 
 [5]
-Underfull \hbox (badness 10000) in paragraph at lines 275--275
-[]\T1/ptm/m/n/10 (+20) What ma-tu-rity
- []
-
-
-Underfull \hbox (badness 1960) in paragraph at lines 275--275
-\T1/ptm/m/n/10 (+20) is the T-Bill??
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 275--275
-\T1/ptm/m/n/10 (+20) 3-month, one
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 275--275
-[]\T1/ptm/m/n/10 (+20) This foot-note
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 275--275
-\T1/ptm/m/n/10 (+20) needs to be
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 275--275
-\T1/ptm/m/n/10 (+20) moved to
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 275--275
-\T1/ptm/m/n/10 (+20) the vari-able
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 275--275
-\T1/ptm/m/n/10 (+20) im-por-tance
- []
-
-
-LaTeX Warning: Marginpar on page 6 moved.
-
-
 (\\ad.monash.edu\home\User069\zzho0068\Documents\GitHub\Evaluation-of-Machine-L
 earning-in-Asset-Pricing\Results\empirical\empirical_loss_latex_small.tex
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <6> not available
@@ -1494,27 +1416,30 @@ LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <6> not available
 )
 
 LaTeX Warning: Reference `empirical_study_appendix' on page 6 undefined on inpu
-t line 293.
+t line 286.
 
-[6 <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-of-Machin
-e-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_all_g_vi.pdf
->]
-<../../Results/empirical/empirical_all_sample_vi.pdf, id=255, 511.9125pt x 170.
+
+Underfull \vbox (badness 5133) has occurred while \output is active []
+
+ [6 <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-of-Machi
+ne-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_all_g_vi.pd
+f>]
+<../../Results/empirical/empirical_all_sample_vi.pdf, id=261, 511.9125pt x 170.
 6375pt>
 File: ../../Results/empirical/empirical_all_sample_vi.pdf Graphic file (type pd
 f)
  <use ../../Results/empirical/empirical_all_sample_vi.pdf>
 Package pdftex.def Info: ../../Results/empirical/empirical_all_sample_vi.pdf us
-ed on input line 302.
+ed on input line 295.
 (pdftex.def)             Requested size: 511.91125pt x 170.63707pt.
 LaTeX Font Info:    Font shape `T1/ptm/bx/n' in size <9> not available
-(Font)              Font shape `T1/ptm/b/n' tried instead on input line 304.
+(Font)              Font shape `T1/ptm/b/n' tried instead on input line 297.
 
 
-LaTeX Warning: Reference `ind_factors' on page 7 undefined on input line 304.
+LaTeX Warning: Reference `ind_factors' on page 7 undefined on input line 297.
 
 
-LaTeX Warning: Reference `ind_factors' on page 7 undefined on input line 304.
+LaTeX Warning: Reference `ind_factors' on page 7 undefined on input line 297.
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1522,51 +1447,30 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
  [7 <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-of-Machi
 ne-Learning-in-Asset-Pricing/Results/empirical/empirical_all_sample_vi.pdf>]
 (\\ad.monash.edu\home\User069\zzho0068\Documents\GitHub\Evaluation-of-Machine-L
-earning-in-Asset-Pricing\nips2020\paper\main_21-05-2020.bbl) [8]
-LaTeX Font Info:    Try loading font information for OMS+ptm on input line 391.
+earning-in-Asset-Pricing\nips2020\paper\main_21-05-2020.bbl [8]) [9] [10]
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 430.
 
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\omsptm.fd"
 File: omsptm.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 391.
- [9]
-Underfull \hbox (badness 10000) in paragraph at lines 416--426
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 430.
+ [11]
+Underfull \hbox (badness 10000) in paragraph at lines 455--465
 \T1/ptm/m/n/10 (+20) of the fu-ture of each time se-ries $\OT1/cmr/m/n/10 [\OML
 /cmm/m/it/10 z[]; z[]; [] ; z[]\OT1/cmr/m/n/10 ] := \OT1/cmr/bx/n/10 z[]$ \T1/p
 tm/m/n/10 (+20) given its
  []
 
 
-LaTeX Warning: Reference `fig:encoderdecoder' on page 10 undefined on input lin
-e 429.
-
-
-Package natbib Warning: Citation `graves2013' on page 10 undefined on input lin
-e 430.
-
-
-Package natbib Warning: Citation `sutskever2014' on page 10 undefined on input 
-line 430.
-
-
-Underfull \hbox (badness 7186) in paragraph at lines 458--467
+Underfull \hbox (badness 7186) in paragraph at lines 495--504
 []\T1/ptm/m/n/10 (+20) Given the model pa-ram-e-ters $\OT1/cmr/m/n/10 $\T1/ptm
 /m/n/10 (+20) , we can di-rectly ob-tain joint sam-ples $[] \OMS/cmsy/m/n/10 $
 
  []
 
-[10] [11] [12]
-
-LaTeX Warning: Reference `sample_split' on page 13 undefined on input line 533.
-
-
-
-LaTeX Warning: Reference `sample_split_diag' on page 13 undefined on input line
- 533.
-
-[13]
+[12] [13] [14]
 (\\ad.monash.edu\home\User069\zzho0068\Documents\GitHub\Evaluation-of-Machine-L
 earning-in-Asset-Pricing\Results\simulation\test_loss_latex.tex
 Overfull \hbox (20.51045pt too wide) in alignment at lines 3--10
@@ -1608,73 +1512,73 @@ Overfull \hbox (20.51045pt too wide) in alignment at lines 141--147
  [] [] [] [] [] [] [] [] [] [] [] 
  []
 
-[14])
-<../../Results/simulation/graphics/simulation_g_vimp_bc.pdf, id=333, 511.9125pt
+[15])
+<../../Results/simulation/graphics/simulation_g_vimp_bc.pdf, id=363, 511.9125pt
  x 255.95625pt>
 File: ../../Results/simulation/graphics/simulation_g_vimp_bc.pdf Graphic file (
 type pdf)
 
 <use ../../Results/simulation/graphics/simulation_g_vimp_bc.pdf>
 Package pdftex.def Info: ../../Results/simulation/graphics/simulation_g_vimp_bc
-.pdf used on input line 594.
+.pdf used on input line 624.
 (pdftex.def)             Requested size: 511.91125pt x 255.95561pt.
 
-<../../Results/simulation/graphics/simulation_g_vimp_ik.pdf, id=334, 511.9125pt
+<../../Results/simulation/graphics/simulation_g_vimp_ik.pdf, id=364, 511.9125pt
  x 255.95625pt>
 File: ../../Results/simulation/graphics/simulation_g_vimp_ik.pdf Graphic file (
 type pdf)
 
 <use ../../Results/simulation/graphics/simulation_g_vimp_ik.pdf>
 Package pdftex.def Info: ../../Results/simulation/graphics/simulation_g_vimp_ik
-.pdf used on input line 601.
+.pdf used on input line 630.
 (pdftex.def)             Requested size: 511.91125pt x 255.95561pt.
- [15 <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-of-Mach
+ [16 <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-of-Mach
 ine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g_vimp_bc.
-pdf>] [16 <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-of
+pdf>] [17 <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-of
 -Machine-Learning-in-Asset-Pricing/Results/simulation/graphics/simulation_g_vim
 p_ik.pdf>]
-Overfull \hbox (6.12646pt too wide) in paragraph at lines 683--683
+Overfull \hbox (6.12646pt too wide) in paragraph at lines 705--705
 []|\T1/ptm/m/n/10 (-20) 93Q3| 
  []
 
 
-Overfull \hbox (6.12646pt too wide) in paragraph at lines 683--683
+Overfull \hbox (6.12646pt too wide) in paragraph at lines 705--705
 []|\T1/ptm/m/n/10 (-20) 93Q4| 
  []
 
-[17]
+[18]
 (\\ad.monash.edu\home\User069\zzho0068\Documents\GitHub\Evaluation-of-Machine-L
 earning-in-Asset-Pricing\Results\empirical\empirical_loss_latex.tex)
-<../../Results/empirical/empirical_vimp.pdf, id=371, 511.9125pt x 226.8475pt>
+<../../Results/empirical/empirical_vimp.pdf, id=406, 511.9125pt x 226.8475pt>
 File: ../../Results/empirical/empirical_vimp.pdf Graphic file (type pdf)
 
 <use ../../Results/empirical/empirical_vimp.pdf>
 Package pdftex.def Info: ../../Results/empirical/empirical_vimp.pdf used on inp
-ut line 727.
+ut line 749.
 (pdftex.def)             Requested size: 511.91125pt x 226.84694pt.
- [18]
+
 (\\ad.monash.edu\home\User069\zzho0068\Documents\GitHub\Evaluation-of-Machine-L
 earning-in-Asset-Pricing\Results\empirical_missing_threshold\empirical_loss_lat
 ex.tex) [19 <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-
 of-Machine-Learning-in-Asset-Pricing/Results/empirical/empirical_vimp.pdf>]
-<../../Results/empirical_missing_threshold/empirical_all_sample_vi.pdf, id=391,
+<../../Results/empirical_missing_threshold/empirical_all_sample_vi.pdf, id=420,
  511.9125pt x 255.95625pt>
 File: ../../Results/empirical_missing_threshold/empirical_all_sample_vi.pdf Gra
 phic file (type pdf)
 
 <use ../../Results/empirical_missing_threshold/empirical_all_sample_vi.pdf>
 Package pdftex.def Info: ../../Results/empirical_missing_threshold/empirical_al
-l_sample_vi.pdf used on input line 742.
+l_sample_vi.pdf used on input line 760.
 (pdftex.def)             Requested size: 511.91125pt x 255.95561pt.
 
-<../../Results/empirical_missing_threshold/empirical_vimp.pdf, id=392, 511.9125
+<../../Results/empirical_missing_threshold/empirical_vimp.pdf, id=421, 511.9125
 pt x 226.8475pt>
 File: ../../Results/empirical_missing_threshold/empirical_vimp.pdf Graphic file
  (type pdf)
 
 <use ../../Results/empirical_missing_threshold/empirical_vimp.pdf>
 Package pdftex.def Info: ../../Results/empirical_missing_threshold/empirical_vi
-mp.pdf used on input line 749.
+mp.pdf used on input line 766.
 (pdftex.def)             Requested size: 511.91125pt x 226.84694pt.
  [20 <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-of-Mach
 ine-Learning-in-Asset-Pricing/Results/empirical_missing_threshold/empirical_all
@@ -1684,96 +1588,88 @@ pirical_vimp.pdf>]
 (\\ad.monash.edu\home\User069\zzho0068\Documents\GitHub\Evaluation-of-Machine-L
 earning-in-Asset-Pricing\Results\empirical_train_valid_1\empirical_loss_latex.t
 ex)
-<../../Results/empirical_train_valid_1/empirical_all_sample_vi.pdf, id=411, 511
+<../../Results/empirical_train_valid_1/empirical_all_sample_vi.pdf, id=441, 511
 .9125pt x 255.95625pt>
 File: ../../Results/empirical_train_valid_1/empirical_all_sample_vi.pdf Graphic
  file (type pdf)
 
 <use ../../Results/empirical_train_valid_1/empirical_all_sample_vi.pdf>
 Package pdftex.def Info: ../../Results/empirical_train_valid_1/empirical_all_sa
-mple_vi.pdf used on input line 766.
+mple_vi.pdf used on input line 779.
 (pdftex.def)             Requested size: 511.91125pt x 255.95561pt.
 
-<../../Results/empirical_train_valid_1/empirical_vimp.pdf, id=412, 511.9125pt x
+<../../Results/empirical_train_valid_1/empirical_vimp.pdf, id=442, 511.9125pt x
  226.8475pt>
 File: ../../Results/empirical_train_valid_1/empirical_vimp.pdf Graphic file (ty
 pe pdf)
  <use ../../Results/empirical_train_valid_1/empirical_vimp.pdf>
 Package pdftex.def Info: ../../Results/empirical_train_valid_1/empirical_vimp.p
-df used on input line 773.
+df used on input line 785.
 (pdftex.def)             Requested size: 511.91125pt x 226.84694pt.
 
-[21
-
-
- <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-of-Machine-
-Learning-in-Asset-Pricing/Results/empirical_train_valid_1/empirical_all_sample_
-vi.pdf>]
+[21 <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-of-Machi
+ne-Learning-in-Asset-Pricing/Results/empirical_train_valid_1/empirical_all_samp
+le_vi.pdf> <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-o
+f-Machine-Learning-in-Asset-Pricing/Results/empirical_train_valid_1/empirical_v
+imp.pdf>]
 (\\ad.monash.edu\home\User069\zzho0068\Documents\GitHub\Evaluation-of-Machine-L
 earning-in-Asset-Pricing\Results\empirical_train_valid_2\empirical_loss_latex.t
 ex)
-<../../Results/empirical_train_valid_2/empirical_all_sample_vi.pdf, id=425, 511
+<../../Results/empirical_train_valid_2/empirical_all_sample_vi.pdf, id=462, 511
 .9125pt x 255.95625pt>
 File: ../../Results/empirical_train_valid_2/empirical_all_sample_vi.pdf Graphic
  file (type pdf)
 
 <use ../../Results/empirical_train_valid_2/empirical_all_sample_vi.pdf>
 Package pdftex.def Info: ../../Results/empirical_train_valid_2/empirical_all_sa
-mple_vi.pdf used on input line 789.
+mple_vi.pdf used on input line 798.
 (pdftex.def)             Requested size: 511.91125pt x 255.95561pt.
 
-<../../Results/empirical_train_valid_2/empirical_vimp.pdf, id=426, 511.9125pt x
+<../../Results/empirical_train_valid_2/empirical_vimp.pdf, id=463, 511.9125pt x
  226.8475pt>
 File: ../../Results/empirical_train_valid_2/empirical_vimp.pdf Graphic file (ty
 pe pdf)
  <use ../../Results/empirical_train_valid_2/empirical_vimp.pdf>
 Package pdftex.def Info: ../../Results/empirical_train_valid_2/empirical_vimp.p
-df used on input line 796.
+df used on input line 804.
 (pdftex.def)             Requested size: 511.91125pt x 226.84694pt.
 
 [22 <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-of-Machi
-ne-Learning-in-Asset-Pricing/Results/empirical_train_valid_1/empirical_vimp.pdf
-> <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-of-Machine
--Learning-in-Asset-Pricing/Results/empirical_train_valid_2/empirical_all_sample
-_vi.pdf>]
+ne-Learning-in-Asset-Pricing/Results/empirical_train_valid_2/empirical_all_samp
+le_vi.pdf> <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-o
+f-Machine-Learning-in-Asset-Pricing/Results/empirical_train_valid_2/empirical_v
+imp.pdf>]
 (\\ad.monash.edu\home\User069\zzho0068\Documents\GitHub\Evaluation-of-Machine-L
 earning-in-Asset-Pricing\Results\empirical_ff\empirical_loss_latex.tex)
-<../../Results/empirical_ff/empirical_all_sample_vi.pdf, id=446, 511.9125pt x 2
+<../../Results/empirical_ff/empirical_all_sample_vi.pdf, id=483, 511.9125pt x 2
 55.95625pt>
 File: ../../Results/empirical_ff/empirical_all_sample_vi.pdf Graphic file (type
  pdf)
  <use ../../Results/empirical_ff/empirical_all_sample_vi.pdf>
 Package pdftex.def Info: ../../Results/empirical_ff/empirical_all_sample_vi.pdf
- used on input line 812.
+ used on input line 816.
 (pdftex.def)             Requested size: 511.91125pt x 255.95561pt.
 
-<../../Results/empirical_ff/empirical_vimp.pdf, id=447, 511.9125pt x 226.8475pt
+<../../Results/empirical_ff/empirical_vimp.pdf, id=484, 511.9125pt x 226.8475pt
 >
 File: ../../Results/empirical_ff/empirical_vimp.pdf Graphic file (type pdf)
  <use ../../Results/empirical_ff/empirical_vimp.pdf>
 Package pdftex.def Info: ../../Results/empirical_ff/empirical_vimp.pdf used on 
-input line 819.
+input line 822.
 (pdftex.def)             Requested size: 511.91125pt x 226.84694pt.
-
-
-Package natbib Warning: There were undefined citations.
-
-[23 <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-of-Machi
-ne-Learning-in-Asset-Pricing/Results/empirical_train_valid_2/empirical_vimp.pdf
-> <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-of-Machine
--Learning-in-Asset-Pricing/Results/empirical_ff/empirical_all_sample_vi.pdf>]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 823.
-
-[24 <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-of-Machi
-ne-Learning-in-Asset-Pricing/Results/empirical_ff/empirical_vimp.pdf>]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 823.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 826.
+ [23 <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-of-Mach
+ine-Learning-in-Asset-Pricing/Results/empirical_ff/empirical_all_sample_vi.pdf>
+ <//ad.monash.edu/home/User069/zzho0068/Documents/GitHub/Evaluation-of-Machine-
+Learning-in-Asset-Pricing/Results/empirical_ff/empirical_vimp.pdf>]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 826.
 
 (\\ad.monash.edu\home\User069\zzho0068\Documents\GitHub\Evaluation-of-Machine-L
 earning-in-Asset-Pricing\nips2020\paper\main_21-05-2020.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 823.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 823.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 826.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 826.
 Package rerunfilecheck Info: File `main_21-05-2020.out' has not changed.
-(rerunfilecheck)             Checksum: F74FB96EFDADF54299E15127915789C7;2044.
+(rerunfilecheck)             Checksum: 537D2FE47AEA45091B92AFB2DA2F1F01;1967.
 
 
 LaTeX Warning: There were undefined references.
@@ -1781,38 +1677,40 @@ LaTeX Warning: There were undefined references.
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 823.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 826.
  ) 
 Here is how much of TeX's memory you used:
- 30036 strings out of 493705
- 676666 string characters out of 3144561
+ 30057 strings out of 493705
+ 677293 string characters out of 3144561
  918422 words of memory out of 3000000
- 32449 multiletter control sequences out of 15000+200000
- 54271 words of font info for 176 fonts, out of 3000000 for 9000
+ 32458 multiletter control sequences out of 15000+200000
+ 57663 words of font info for 178 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
- 55i,11n,92p,1119b,609s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 55i,11n,92p,1619b,609s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/Program Files/MiKTeX 2.9/fonts/enc/dvips/fontname/8r.enc}{C:/Program File
 s/MiKTeX 2.9/fonts/enc/dvips/cm-super/cm-super-t1.enc}<C:/Program Files/MiKTeX 
 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Program Files/MiKTeX 2.9/font
 s/type1/public/amsfonts/cm/cmex10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/
 public/amsfonts/cm/cmmi10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/a
-msfonts/cm/cmmi6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/c
-m/cmmi7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi9.p
-fb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Pr
-ogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr5.pfb><C:/Program File
-s/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Program Files/MiKTeX 2
-.9/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Program Files/MiKTeX 2.9/fonts/t
-ype1/public/amsfonts/cm/cmr9.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/publi
-c/amsfonts/cm/cmsy10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfon
-ts/cm/cmsy7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/symbol
-s/msbm10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/cm-super/sftt1000.
-pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/helvetic/uhvr8a.pfb><C:/Progra
-m Files/MiKTeX 2.9/fonts/type1/urw/times/utmb8a.pfb><C:/Program Files/MiKTeX 2.
-9/fonts/type1/urw/times/utmr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw
-/times/utmri8a.pfb>
-Output written on main_21-05-2020.pdf (24 pages, 427036 bytes).
+msfonts/cm/cmmi5.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/c
+m/cmmi6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.p
+fb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi9.pfb><C:/Pr
+ogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Fil
+es/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr5.pfb><C:/Program Files/MiKTeX 
+2.9/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Program Files/MiKTeX 2.9/fonts/
+type1/public/amsfonts/cm/cmr7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/publ
+ic/amsfonts/cm/cmr9.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfont
+s/cm/cmsy10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cms
+y5.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C
+:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/symbols/msbm10.pfb><C:/P
+rogram Files/MiKTeX 2.9/fonts/type1/public/cm-super/sftt1000.pfb><C:/Program Fi
+les/MiKTeX 2.9/fonts/type1/urw/helvetic/uhvr8a.pfb><C:/Program Files/MiKTeX 2.9
+/fonts/type1/urw/times/utmb8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/
+times/utmr8a.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/urw/times/utmri8a.pfb
+>
+Output written on main_21-05-2020.pdf (23 pages, 468679 bytes).
 PDF statistics:
- 570 PDF objects out of 1000 (max. 8388607)
- 140 named destinations out of 1000 (max. 500000)
- 25406 words of extra memory for PDF output out of 29859 (max. 10000000)
+ 605 PDF objects out of 1000 (max. 8388607)
+ 152 named destinations out of 1000 (max. 500000)
+ 26422 words of extra memory for PDF output out of 29859 (max. 10000000)
 
