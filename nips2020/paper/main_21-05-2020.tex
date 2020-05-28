@@ -301,7 +301,7 @@ The elastic net, random forest and to a lesser extent DFNs tend to pick out the 
 
 The overall results of this analysis again question existing results already reported in the literature, which conclude that all ML methods tend to agree on the same subset of important factors (see, e.g., \cite{gu_empirical_2019}). In our context, we see, at best, only mild agreement between the various ML methods in regards to individual factor selection.
 
-Interestingly, the linear models assign the controversial dividend price ratio macroeconomic factor as highly important, a result mirrored only with the neural networks. Their variable importance for individual factors across different training samples is non-robust, with the important variables almost completely changing year to year. The linear models consistently identified the controversial dividend-price ratio as important, a result that was somewhat consistent with the neural networks. 
+Interestingly, the linear models assign the controversial dividend price ratio macroeconomic factor as highly important, a result which was somewhat mirrored only with the neural networks. Their variable importance for individual factors across different training samples is non-robust, with the important variables almost completely changing year to year. 
 
 %All models considered typically preferred sparse parameterizations. That is, most if not all of the individual factors had little to no importance across all models.\footnote{Note that because the variable importance here was not evaluated explicitly for each pairwise interaction term, some of the individual factors appear as slightly important. This is because setting an individual factor to zero also sets some of the macroeconomic pairwise terms to zero, increasing its apparent importance.}
 
@@ -394,6 +394,7 @@ For our application, we considered the following grid of hyperparameters:
 	\caption{Hyperparameters considered for feed forward neural networks}
 \end{table}
 
+\FloatBarrier
 \subsection{Long short term memory networks}
 Long short term memory (LSTM) networks are , initially proposed by \cite{hochreiter_long_1997} (see for more comprehensive details). The general model setup for an LSTM is as follows:
 
@@ -404,15 +405,18 @@ For our application, we considered the following grid of hyperparameters:
 		Hyperparameter & Grid \\ \hline
 		Activation Function & ReLU, Leaky ReLU, tanh \\
 		Optimizer & ADAM, NADAM, SGD, RMSPROP \\
-		Learning Rate & (0.1, 0.01, 0.001, 0.0001)\\
+		Learning Rate & (0.1, 0.01, 0.001, 0.0001) \\
 		$L_1$ Penalty & (1, 0.1, 0.01, 0.001) \\
 		$L_2$ Penalty & (1, 0.1, 0.01, 0.001) \\
 		Batch Size & (32, 64, 128, 256, 512, 1024, 2048) \\
-		Early Stopping Patience & (10, 20, 30, 40, 50) \\ \hline
+		Early Stopping Patience & (10, 20, 30, 40, 50) \\ 
+		Layer 1 Units & (1, 2, 4, 8) \\
+		Layer 2 Units & (1, 2, 4, 8) \\ \hline
 	\end{tabular}
 	\caption{Hyperparameters considered for LSTMs}
 \end{table}
 
+\FloatBarrier
 \subsection{FFORMA}
 Feature-based Forecast Model Averaging, (\cite{montero-manso_fforma_2020}) is an automated method for obtaining weighted forecast combinations for time series. We provide a brief overview of the two phases in this methodology.
 
@@ -437,22 +441,19 @@ The time series features used to train the meta-model are detailed in cite(), wi
 
 Note that because financial returns data does not typically exhibit seasonality, features and constituent models related which utilized seasonality were omitted.
 
+\FloatBarrier
 \subsection{DeepAR}
 DeepAR is a generalization of traditional Auto Regressive (AR) models to include additional layers into order to introduce non-linearities into the model. We provide the general formulation here - for full details see \cite{salinas_deepar_2019}.
 
 %% This is directly plonked from deepar arxiv paper, change this so this isn't plagiarism!
 %% DeepAR does not require inputs from the entire cross section to produce forecasts!
 
-DeepAR aims to model the conditional distribution of the 
+DeepAR aims to model the conditional distribution 
 \begin{equation*}
 P(\zVec{i}{t_0}{T} | \zVec{i}{1}{t_0-1}, \xVec{i}{1}{T})
 \label{eq:condDist}
-\end{equation*}
-of the future of each
-time series $[\z{i}{t_0}, \z{i}{t_0 + 1}, \ldots, \z{i}{T}] := \zVec{i}{t_0}{T}$ given its 
-\hbox{past $[\z{i}{1}, \ldots, \z{i}{t_0-2}, \z{i}{t_0-1}] := \zVec{i}{1}{t_0-1}$},
-where $t_0$ denotes the time point from which we assume $\z{i}{t}$ to be unknown at prediction time,
-and $\xVec{i}{1}{T}$ are covariates that are assumed to be known for all time points. To prevent
+\end{equation*} 
+of the future of each time series $[\z{i}{t_0}, \z{i}{t_0 + 1}, \ldots, \z{i}{T}] := \zVec{i}{t_0}{T}$ given its \hbox{past $[\z{i}{1}, \ldots, \z{i}{t_0-2}, \z{i}{t_0-1}] := \zVec{i}{1}{t_0-1}$}, where $t_0$ denotes the time point from which we assume $\z{i}{t}$ to be unknown at prediction time, and $\xVec{i}{1}{T}$ are covariates that are assumed to be known for all time points. To prevent
 confusion we avoid the ambiguous terms ``past'' and ``future'' and will refer to time ranges $[1, t_0-1]$ and $[t_0, T]$ as the conditioning range and 
 prediction range, respectively. During training, both ranges have to lie in the past so that the $\z{i}{t}$ are observed, but during prediction $\z{i}{t}$
 is only available in the conditioning range. Note that the time index $t$ is relative, i.e.\ $t=1$ can correspond to a different actual
@@ -460,8 +461,7 @@ time period for each $i$.
 
 \newcommand{\modelDist}{Q_\Theta(\zVec{i}{t_0}{T} | \zVec{i}{1}{t_0-1}, \xVec{i}{1}{T})}
 
-We assume that our model distribution $\modelDist$
-consists of a product of likelihood factors
+DeepAR assumes that the model distribution $\modelDist$ consists of a product of likelihood factors
 \begin{align*}
 \modelDist &= \prod\nolimits_{t=t_0}^T Q_\Theta(z_{i,t}|\mathbf{z}_{i,1:t-1}, \xVec{i}{1}{T}) = \prod\nolimits_{t=t_0}^T \ell(\z{i}{t} | \theta(\hVec_{i, t}, \Theta))
 \end{align*}
@@ -470,49 +470,34 @@ parametrized by the output $\hVec_{i, t}$ of an autoregressive recurrent network
 \hVec_{i, t} = h\left(\hVec_{i, t-1}, \z{i}{t-1}, \xbf_{i, t}, \Theta\right) \,,
 \label{eq:recurrence}
 \end{equation}
-where $h$ is a function implemented by a multi-layer recurrent neural network with LSTM cells.% 
-\footnote{Details of the architecture and hyper-parameters are given in the supplementary material.}
-The model is autoregressive, in the sense that it consumes the observation at the last time step $\z{i}{t-1}$ as an input,
-as well as recurrent, i.e.\ the previous output of the network $\hVec_{i,t-1}$ is fed back as an input at the next time step.
-The likelihood $\ell(\z{i}{t}|\theta(\hVec_{i,t}))$ is a fixed distribution
-whose parameters are given by a function $\theta(\hVec_{i,t}, \Theta)$ of the network output $\hVec_{i, t}$ (see below).
+where $h$ is a function implemented by a multi-layer recurrent neural network with LSTM cells. The model is autoregressive, in the sense that it consumes the observation at the last time step $\z{i}{t-1}$ as an input, as well as recurrent, i.e.\ the previous output of the network $\hVec_{i,t-1}$ is fed back as an input at the next time step. The likelihood $\ell(\z{i}{t}|\theta(\hVec_{i,t}))$ is a fixed distribution whose parameters are given by a function $\theta(\hVec_{i,t}, \Theta)$ of the network output $\hVec_{i, t}$ (see below).
 
-Information about the observations in the conditioning range $\zVec{i}{1}{t_0 -1}$ is transferred to the
-prediction range through the initial state $\hVec_{i, t_0-1}$. In the sequence-to-sequence setup, this initial state is
-the output of an \emph{encoder network}. While in general this encoder network can have a different architecture, in our 
-experiments we opt for using the
-same architecture for the model in the conditioning range and the prediction range (corresponding to the \emph{encoder} and \emph{decoder} in
-a sequence-to-sequence model). Further, we share weights between them, so that the initial state
-for the decoder $\hVec_{i, t_0 - 1}$ is
-obtained by computing \eqref{eq:recurrence} for $t = 1, \ldots, t_0 - 1$, where all required quantities are observed.
-The initial state of the encoder $\hVec_{i, 0}$ as well as $\z{i}{0}$ are initialized to zero.
+Information about the observations in the conditioning range $\zVec{i}{1}{t_0 -1}$ is transferred to the prediction range through the initial state $\hVec_{i, t_0-1}$. In the sequence-to-sequence setup, this initial state is the output of an \emph{encoder network}. While in general this encoder network can have a different architecture, in our  experiments we opt for using the same architecture for the model in the conditioning range and the prediction range (corresponding to the \emph{encoder} and \emph{decoder} in a sequence-to-sequence model). Further, we share weights between them, so that the initial state for the decoder $\hVec_{i, t_0 - 1}$ is obtained by computing \eqref{eq:recurrence} for $t = 1, \ldots, t_0 - 1$, where all required quantities are observed. The initial state of the encoder $\hVec_{i, 0}$ as well as $\z{i}{0}$ are initialized to zero.
 
 Given the model parameters $\Theta$, we can directly obtain joint samples
 $\tilde{\mathbf{z}}_{i, t_0:T} \sim \modelDist$ through ancestral sampling:
-First, we obtain $\hVec_{i, t_0-1}$ by computing \eqref{eq:recurrence} for $t=1,\ldots, t_0$.
-For $t=t_0, t_0+1, \ldots, T$ we sample $\tilde{z}_{i, t} \sim \ell(\cdot | \theta(\tilde{\mathbf{h}}_{i,t}, \Theta))$
-where $\tilde{\mathbf{h}}_{i, t} = h\left(\hVec_{i, t-1}, \tilde{z}_{i, t-1}, \xbf_{i, t}, \Theta\right)$
-initialized with $\tilde{\mathbf{h}}_{i, t_0-1} = \hVec_{i, t_0-1}$ and $\tilde{z}_{i, t_0 -1} = \z{i}{t_0 - 1}$.
-Samples from the model obtained in this way can then be used to compute quantities
-of interest, e.g.\ quantiles of the distribution of the sum of values for some
-time range in the future.
+First, we obtain $\hVec_{i, t_0-1}$ by computing \eqref{eq:recurrence} for $t=1,\ldots, t_0$. For $t=t_0, t_0+1, \ldots, T$ we sample $\tilde{z}_{i, t} \sim \ell(\cdot | \theta(\tilde{\mathbf{h}}_{i,t}, \Theta))$ where $\tilde{\mathbf{h}}_{i, t} = h\left(\hVec_{i, t-1}, \tilde{z}_{i, t-1}, \xbf_{i, t}, \Theta\right)$ initialized with $\tilde{\mathbf{h}}_{i, t_0-1} = \hVec_{i, t_0-1}$ and $\tilde{z}_{i, t_0 -1} = \z{i}{t_0 - 1}$.
 
-For our application, we considered the following grid of hyperparameters:
+The parameters of the model denoted by $\Theta$ can be learned given $\zVec{i}{1}{T}$ and associated covariates $\xVec{i}{1}{T}$ by maximizing the log-likelihood:
+\begin{align}
+	\mathcal{L} = \sum_{i = 1}^{N} \sum_{t = t_0}^{T} log(\ell z_{i, t} | \theta(\mathbf{h}_{i, t}))
+\end{align}
+
+For our application, we utilized AWS' Bayesian grid search within the following ranges:
 \begin{table}[!htb]
-	\begin{tabular}{|ll|}
+	\begin{tabular}{|lll|}
 		\hline
-		Hyperparameter & Grid \\ \hline
-		Context Length & \\
-		Dropout Rate & \\
-		Early Stopping Patience & \\
-		Learning rate & \\
-		Likelihood & Gaussian, student-T \\
-		Mini batch size & \\
-		Number of Cells & \\
-		Number of Layers & 
+		Hyperparameter & From & To \\ \hline
+		Dropout Rate & 0 & 0.2\\
+		Learning rate & 0.0001 & 1\\
+		Likelihood & Gaussian & student-T \\
+		Mini batch size & 16 & 128 \\
+		Number of Cells & 10 & 100\\
+		Number of Layers & 1 & 4 \\ \hline
 	\end{tabular}
 	\caption{Hyperparameters considered for DeepAR}
 \end{table}
+\FloatBarrier
 
 \newpage
 
@@ -522,9 +507,8 @@ In this section, we give additional features of the simulation design required t
 \url{https://github.com/Meron35/Evaluation-of-Machine-Learning-in-Asset-Pricing}.
 
 \subsection{Simulation Design}\label{app:simDesign}
-
-We begin with the simulation study as a way to explore how ML performs with regards to the stylized facts of empirical returns in a controlled environment. We simulate according to a design which incorporates low signal to noise ratio, stochastic volatility in errors, persistence and cross sectional correlation in regressors. Our specification is a latent factor model for excess returns $r_{t+1}$, for $t=1, \dots, T$:
-\begin{align}
+Our specification is a latent factor model for excess returns $r_{t+1}$, for $t=1, \dots, T$:
+\begin{align*}
 r_{i, t+1} &= 
 g\left(z_{i, t}\right) + \beta_{i,t+1}v_{t+1} + e_{i, t+1}; 
 \enspace z_{i, t} = \left(1, x_{t}\right)^{\prime} \otimes c_{i, t}, 
@@ -534,8 +518,8 @@ e_{i, t+1} &=
 \operatorname{log} (\sigma^2_{i,t+1}) &= 
 \omega + \gamma \operatorname{log} (\sigma^2_{t}) + \sigma_{u}u;
 \quad u \sim N(0, 1)
-\end{align}
-where $v_{t+1}$ is a $3\times 1$ vector of errors, $w_{t+1} \sim N(0, 1)$,  $\varepsilon_{i,t+1} \sim N(0, 1)$ scalar error terms, matrix $C_t$ is an $N\times P_c$ matrix of latent factors, where the first three columns correspond to $\beta_{i,t}$, across the $1\leq i\leq N$ dimensions, while the remaining $P_c-3$ factors do not enter the return equation. The $P_x\times1$ vector $x_t$ is a $3 \times 1$ multivariate time series, and $\varepsilon_{t+1}$ is a $N\times 1$ vector of idiosyncratic errors. The parameters of these were tuned such that the annualized volatility of each return series was approximately 22\%, as is often observed empirically.
+\end{align*}
+where $v_{t+1}$ is a $3\times 1$ vector of errors, $w_{t+1} \sim N(0, 1)$,  $\varepsilon_{i,t+1} \sim N(0, 1)$ scalar error terms, matrix $C_t$ is an $N\times P_c$ matrix of latent factors, where the first three columns correspond to $\beta_{i,t}$, across the $1\leq i\leq N$ dimensions, while the remaining $P_c-3$ factors do not enter the return equation. The $P_x\times1$ vector $x_t$ is a $3 \times 1$ multivariate time series, and $\varepsilon_{t+1}$ is a $N\times 1$ vector of idiosyncratic errors. The parameters of these were tuned such that the annualized volatility of each return series was approximately 22\% when viewed as monthly returns, as is often observed empirically.
 %%%%%%%%%%%%%%%%%%%%%
 \paragraph{Simulating characteristics}
 We build in correlation across time among factors by drawing normal random numbers for each $1\leq i\leq N$ and $1\leq j\leq P_{c}$, according to :
@@ -646,13 +630,9 @@ We note that random forest methods typically have their own methodologies to cal
 \section{Additional details: Empirical analysis}
 
 \subsection{Data \& cleaning}\label{app:clean}
-
 We begin by obtaining monthly individual price data from CRSP for all firms listed in the NYSE, AMEX and NASDAQ, starting from 1957 (starting date of the S\&P 500) and ending in December 2016, totalling 60 years. To build individual factors, we construct a factor set based on the cross section of returns literature. This is the same data used in \cite{gu_empirical_2019}. We restrict our dataset to begin from 1993 Q3 and end on 2016 Q4 to alleviate data quality issues. Our individual factor set contains 94 characteristics: 61 updated annually, 13 updated quarterly and 20 updated monthly \footnote{The dataset also included 74 Standard Industrial Classification (SIC) codes, but these were omitted due to their inconsistency, and inadequateness at classifying companies, as noted by WRDS}.
-
 % Begin Cleaning
-
 % the dataset was filtered such that only stocks traded primarily on NASDAQ were included (using the PRIMEXCH variable from WRDS). Then, penny stocks (also referred to as microcaps in the literature) with a stock price of less than \$5 were filtered out, as is commonly done in the literature to reduce variability. Stocks without a share code of 10 or 11 (referring to equities) were filtered out, so that securities that are not equities were not included (such as REITs and trust funds). The dataset is provided in a monthly format, which means that many of the factors which are updated only quarterly or annually have very low levels of variability, which can lead to misleading results in the model fitting process. 
-
 We detail our cleaning procedure of this dataset. To reduce the size of the dataset and increase feasibility, we only consider equities with a share price larger than \$5 traded primarily on the NASDAQ. To achieve a balance between having a dataset with enough data points and variability among factors, the dataset was converted to a quarterly format. Quarterly returns were then constructed using the PRC variable according to:
 \begin{equation}
 RET_t = (PRC_t - PRC_{t-1})/PRC_{t-1}
@@ -660,14 +640,11 @@ RET_t = (PRC_t - PRC_{t-1})/PRC_{t-1}
 We allow all stocks which have a quarterly return to enter the dataset, even if they disappear from the dataset for certain periods. To deal with missing data, any characteristics that had over 20\% of their data missing were omitted. Remaining missing data were then imputed using their cross sectional medians for each year. 
 
 %% Gu et al has the missing data part as a footnote - trying that approach here
-
 % This has the obvious drawback of introducing some bias in the dataset, as attrition in the dataset is likely to be non-random and correlated with the stocks' returns. 
-
 % The sic2 variable, corresponding to the stocks' Standard Industrial Classification (SIC) codes was also dropped. The SIC code system suffers from inconsistent logic in classifying companies, and as a system built for pre-1970s traditional industries has been slow in recognizing new and emerging industries. Indeed, WRDS explicitly cautions the use of SIC codes beyond the use of rough grouping of industries, warning that SIC codes are not strictly enforced by government agencies for accuracy, in addition to most large companies belonging to multiple SIC codes over time. Because of this latter point in particular, there can be inconsistencies on the correct SIC code for the same company depending on the data source. Dropping the sic2 variable also reduced the dimensionality of the dataset by 74 columns, significant increasing computational feasibility.
 
 %% Refer to table in appendix
 We then follow \cite{gu_empirical_2019} and construct eight macroeconomic factors following the variable definitions in \cite{welch_comprehensive_2008} (see Table \ref{macro_factors}). These factors were lagged by one period so as to be used to predict one period ahead quarterly returns. The 3-month Treasury Bill rate was also used from this source to proxy for the risk free rate in order to construct excess quarterly returns. 
-
 \begin{table}
 	\caption{Macroeconomic Factors, (\cite{welch_comprehensive_2008})}
 	\label{macro_factors}
@@ -685,16 +662,15 @@ We then follow \cite{gu_empirical_2019} and construct eight macroeconomic factor
 		\end{tabular}
 	\end{center}
 \end{table}
-
 The two sets of factors were then combined to form a baseline set of covariates, which we define throughout all methods and analysis as:
 \begin{equation}
 z_{i,t} = (1, x_t)' \otimes c_{i, t}
 \end{equation}
-where $c_{i,t}$ is a $P_c$ matrix of characteristics for each stock $i$, and $(1, x_t)'$ is a $P_x \times 1$ vector of macroeconomic predictors, , and $\otimes$ represents the Kronecker product. $z_{i,t}$ is therefore a $P_x P_c$ vector of features for predicting individual stock returns and includes interactions between stock level characteristics and macroeconomic variables. The total number of covariates in this baseline set is $61 \times (8 + 1) = 549$\footnote{As the individual and macroeconomic factors can have similar names, individual and macroeconomic factors were prefixed with ind\_ and macro\_ respectively.}. The final dataset contains 202, 066 individual observations. 
+where $c_{i,t}$ is a $P_c$ matrix of characteristics for each stock $i$, and $(1, x_t)'$ is a $P_x \times 1$ vector of macroeconomic predictors, , and $\otimes$ represents the Kronecker product. $z_{i,t}$ is therefore a $P_x P_c$ vector of features for predicting individual stock returns and includes interactions between stock level characteristics and macroeconomic variables. The total number of covariates in this baseline set is $61 \times (8 + 1) = 549$. The final dataset contains 202, 066 individual observations. 
 
 We mimic the sample splitting procedure used in the simulation study: the dataset was split such that the training and validation sets were split such that the training set was approximately 1.5 times the length of the validation set, in order to predict a test set that is one year in length (see Figure \ref{emp_sample_split_diag}).
-
 \begin{figure}[!htb]
+	\fontsize{6}{8}\selectfont
 	\begin{center}
 		\begin{tabular}{|c|p{0.55cm}p{0.55cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}p{0.50cm}|}
 			\hline
@@ -730,23 +706,138 @@ We mimic the sample splitting procedure used in the simulation study: the datase
 	\label{emp_sample_split_diag}
 \end{figure}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Individual factor name table
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	\footnotetext{The factor was included in the original dataset provided by \cite{gu_empirical_2019}, but was not used due to missing data issues}
+	\begin{center}
+		\fontsize{6}{8}\selectfont
+		\label{ind_factors}
+		\begin{longtable}{llll}
+			\caption{Individual Factors} \\ \hline
+			Acronym & Firm Characteristic & Data Source & Frequency \\ \hline
+			ind\_absacc\footnotemark[\value{footnote}] & Absolute Accruals & Compustat & Annual \\
+			ind\_acc\footnotemark[\value{footnote}] & Working capital accruals & Compustat & Annual \\
+			ind\_aeavol & Abnormal earnings announcement volume & Compustat & Quarterly \\
+			ind\_age & \# years since first Compustat coverage  & Compustat & Annual \\
+			ind\_agr & Asset growth & Compustat & Annual \\
+			ind\_baspread & Bid-ask spread & Compustat & Monthly \\
+			ind\_beta & Beta & Compustat & Monthly \\
+			ind\_betasq & Beta squared & Compustat & Monthly \\
+			ind\_bm & Book-to-market & Compustat & Annual \\
+			ind\_bm\_ia & Industry-adjusted book to market & Compustat & Quarterly \\
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			ind\_cash & Cash holdings & Compustat & Annual \\
+			ind\_cashdebt & Cashflow to debt & Compustat & Annual \\
+			ind\_cashpr & Cash productivity & Compustat & Annual \\
+			ind\_cfp\footnotemark[\value{footnote}] & Cashflow to price ratio & Compustat & Annual \\
+			ind\_cfp\_ia\footnotemark[\value{footnote}] & Industry-adjusted cashfow to price ratio & Compustat & Annual \\
+			ind\_chatoia\footnotemark[\value{footnote}] & Industry-adjusted change in asset turnover & Compustat & Annual \\
+			ind\_chcsho & Change in shares outstanding & Compustat & Annual \\
+			ind\_chempia & Industry-adjusted change in employee & Compustat & Annual \\
+			ind\_chinv\footnotemark[\value{footnote}] & Change in inventory & Compustat & Annual \\
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			ind\_chmom & Change in 6-month momentum & Compustat & Monthly \\
+			ind\_chpmia\footnotemark[\value{footnote}] & Industry-adjusted change in profit margin & Compustat & Annual \\
+			ind\_chtx & Change in tax expense & Compustat & Quarterly \\
+			ind\_cinvest & Corporate investment & Compustat & Quarterly \\
+			ind\_convind & Convertible debt indicator & Compustat & Annual \\
+			ind\_currat & Current ratio & Compustat & Annual \\
+			ind\_depr & Depreciation / PP\&E & Compustat & Annual \\
+			ind\_divi & Dividend initiation & Compustat & Annual \\
+			ind\_divo & Dividend omission & Compustat & Annual \\
+			ind\_dolvol & Dollar trading volume & Compustat & Monthly \\
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			ind\_dy & Dividend to price & Compustat & Annual \\
+			ind\_ear & Earnings announcement return & Compustat & Quarterly \\
+			ind\_egr & Growth in common shareholder eq & Compustat & Annual \\
+			ind\_ep & Earnings to price & Compustat & Annual \\
+			ind\_gma & Gross profitability & Compustat & Annual \\
+			ind\_grCAPX\footnotemark[\value{footnote}] & Growth in capital expenditures & Compustat & Annual \\
+			ind\_grltnoa\footnotemark[\value{footnote}] & Growth in long term net operating assets & Compustat & Annual \\
+			ind\_herf & Industry sales concentration & Compustat & Annual \\
+			ind\_hire & Employee growth rate & Compustat & Annual \\
+			ind\_idiovol & Idiosyncratic return volatility & Compustat & Monthly \\
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			ind\_ill & Illiquidity & Compustat & Monthly \\
+			ind\_indmom & Industry momentum & Compustat & Monthly \\
+			ind\_invest\footnotemark[\value{footnote}] & Capital expenditures and inventory & Compustat & Annual \\
+			ind\_lev & Leverage & Compustat & Annual \\
+			ind\_lgr & Growth in long-term debt & Compustat & Annual \\
+			ind\_maxret & Maximum daily return & Compustat & Monthly \\
+			ind\_mom12m & 12-month momentum & Compustat & Monthly \\
+			ind\_mom1 & 1-month momentum & Compustat & Monthly \\
+			ind\_mom36m\footnotemark[\value{footnote}] & 36-month momentum & Compustat & Monthly \\
+			ind\_mom6m & 6-month momentum & Compustat & Monthly \\
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			ind\_ms & Financial statement score & Compustat & Quarterly \\
+			ind\_mvel1 & Size & Compustat & Monthly \\
+			ind\_mve\_ia & Industry-adjusted size & Compustat & Annual \\
+			ind\_nincr & Number of earnings increases & Compustat & Quarterly \\
+			ind\_operprof\footnotemark[\value{footnote}] & Operating profitability & Compustat & Annual \\
+			ind\_orgcap\footnotemark[\value{footnote}] & Organizational capital & Compustat & Annual \\
+			ind\_pchcapx\_ia\footnotemark[\value{footnote}] & Industry adjusted \% change in capital expenditures & Compustat & Annual \\
+			ind\_pchcurrat\footnotemark[\value{footnote}] & \% change in current ratio & Compustat & Annual \\
+			ind\_pchdepr\footnotemark[\value{footnote}] & \% change in depreciation & Compustat & Annual \\
+			ind\_pchgm\_pchsale\footnotemark[\value{footnote}] & \% change in gross margin - \% change in sales & Compustat & Annual \\
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			ind\_pchquick\footnotemark[\value{footnote}] & \% change in quick ratio & Compustat & Annual \\
+			ind\_pchsale\_pchinvt\footnotemark[\value{footnote}] & \% change in sales - \% change in inventory & Compustat & Annual \\
+			ind\_pchsale\_pchrect\footnotemark[\value{footnote}] & \% change in sales - \% change in A/R & Compustat & Annual \\
+			ind\_pchsale\_pchxsga\footnotemark[\value{footnote}] & \% change in sales - \% change in SG & Compustat & Annual \\
+			ind\_pchsaleinv\footnotemark[\value{footnote}] & \% change sales-to-inventory & Compustat & Annual \\
+			ind\_pctacc\footnotemark[\value{footnote}] & Percent accruals & Compustat & Annual \\
+			ind\_pricedelay & Price delay & Compustat & Monthly \\
+			ind\_ps & Financial statements score & Compustat & Annual \\
+			ind\_quick & Quick ratio & Compustat & Annual \\
+			ind\_rd & R\&D increase & Compustat & Annual \\
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			ind\_rd\_mve\footnotemark[\value{footnote}] & R\&D to market capitalization & Compustat & Annual \\
+			ind\_rd\_sale\footnotemark[\value{footnote}] & R\&D to sales & Compustat & Annual \\
+			ind\_realestate\footnotemark[\value{footnote}] & Real estate holdings & Compustat & Annual \\
+			ind\_retvol & Return volatility & Compustat & Monthly \\
+			ind\_roaq & Return on assets & Compustat & Quarterly \\
+			ind\_roavol\footnotemark[\value{footnote}] & Earnings volatility & Compustat & Quarterly \\
+			ind\_roeq & Return on equity & Compustat & Quarterly \\
+			ind\_roic & Return on invested capital & Compustat & Annual \\
+			ind\_rsup & Revenue surprise & Compustat & Quarterly \\
+			ind\_salecash & Sales to cash & Compustat & Annual \\
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			ind\_saleinv\footnotemark[\value{footnote}] & Sales to inventory & Compustat & Annual \\
+			ind\_salerec & Sales to receivables & Compustat & Annual \\
+			ind\_secured\footnotemark[\value{footnote}] & Secured debt & Compustat & Annual \\
+			ind\_securedind & Secured debt indicator & Compustat & Annual \\
+			ind\_sgr\footnotemark[\value{footnote}] & Sales growth & Compustat & Annual \\
+			ind\_sin & Sin stocks & Compustat & Annual \\
+			ind\_sp & Sales to price & Compustat & Annual \\
+			ind\_std\_dolvol & Volatility of liquidity (dollar trading volume) & Compustat & Annual \\
+			ind\_std\_turn & Volatility of liquidity (share turnover) & Compustat & Monthly \\
+			ind\_stdacc\footnotemark[\value{footnote}] & Accrual volatility & Compustat & Monthly \\
+			%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+			ind\_stdcf\footnotemark[\value{footnote}] & Cashflow volatility & Compustat & Quarterly \\
+			ind\_tang & Debt capacity/rm tangibility & Compustat & Quarterly \\
+			ind\_tb\footnotemark[\value{footnote}] & Tax income to book income & Compustat & Annual \\
+			ind\_turn & Share turnover & Compustat & Monthly \\
+			ind\_zerotrade & Zero trading days & Compustat & Monthly \\ \hline	
+		\end{longtable}
+	\end{center}
 \newpage
 
-\subsection{Empirical study robustness checks \& results}\marginpar{\tiny Better description of these is necessary. You can't just present the results here... }
+\FloatBarrier
+\subsection{Empirical study comprehensive results \& robustness checks}\marginpar{\tiny Better description of these is necessary. You can't just present the results here... }
+We provide the comprehensive set of results for the empirical study omitted in the main body of the paper. 
 
-In addition to the main study, we provide four additional robustness checks for our empirical study, with regards to different training/validation splitting schemes, missing data imputation and additional regressors. Importantly, our overall results are consistent across all checks.
+In addition, we provide four additional robustness checks for our empirical study, with regards to different training/validation splitting schemes, missing data imputation and additional regressors. Importantly, our overall results are consistent across all checks.
 
 %% Train/validation schemes
-We consider training:validation length ratios of 1:1 and 1:2 in addition to 1:1.5 in the main study.
+We first consider training:validation length ratios of 1:1 and 1:2 in addition to 1:1.5 in the main study. 
 
 %% Missing Threshold
 We consider changing the missing data threshold to be 10\% - that is, any regressors with over 10\% missing data were omitted before being imputed.
 
 %% Fama French factors
 We finally consider supplementing our macroeconomic regressor set with the five Fama-French factors. 
-
-\subsection{Empirical Data Results}
-%% Need to redo graphs as they are currently too big
 
 \subsubsection{Prediction Accuracy}
 %% Main Study
