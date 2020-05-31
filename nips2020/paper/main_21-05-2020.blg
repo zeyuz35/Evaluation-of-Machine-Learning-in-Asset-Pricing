@@ -1,3 +1,19 @@
-This is BibTeX, Version 0.99dThe top-level auxiliary file: main_21-05-2020.aux
+This is 8-bit Big BibTeX version 0.99d
+Implementation:  Microsoft(R) C/C++ for Win32
+Release version: 3.71 (04 mar 2019)
+
+The 8-bit codepage and sorting file: 88591lat.csf
+The top-level auxiliary file: main_21-05-2020.aux
 The style file: apalike.bst
+Reallocated glb_str_ptr (elt_size=4) to 10 items from 0.
+Reallocated global_strs (elt_size=1001) to 10 items from 0.
+Reallocated glb_str_end (elt_size=4) to 10 items from 0.
 Database file #1: Bibliography.bib
+
+Here's how much of BibTeX's memory you used:
+ Cites:                19 out of 750
+ Fields:              275 out of 5000
+ Hash table:         4827 out of 5000
+ Strings:             580 out of 4000
+ Free string pool:   6529 out of 65000
+ Wizard functions:   1935 out of 3000

@@ -45,6 +45,13 @@
 \usepackage{placeins}
 \usepackage{floatrow}
 
+%% Macros
+\newcommand{\rs}[2]{r_{#1, #2}}
+\newcommand{\xbf}{\mathbf{x}}
+\newcommand{\rVec}[3]{\mathbf{r}_{#1, #2:#3}}
+\newcommand{\xVec}[3]{\mathbf{x}_{#1, #2:#3}}
+\newcommand{\hVec}{\mathbf{h}}
+
 \title{Evaluation of Machine Learning in Empirical Asset Pricing}
 
 % The \author macro works with any number of authors. There are two commands
@@ -85,14 +92,6 @@
   % Address \\
   % \texttt{email} \\
 }
-
-
-%% Macros
-\newcommand{\z}[2]{z_{#1, #2}}
-\newcommand{\xbf}{\mathbf{x}}
-\newcommand{\zVec}[3]{\mathbf{z}_{#1, #2:#3}}
-\newcommand{\xVec}[3]{\mathbf{x}_{#1, #2:#3}}
-\newcommand{\hVec}{\mathbf{h}}
 
 \begin{document}
 
@@ -235,7 +234,7 @@ Generally, ML models fitted with respect to minimizing MAE (quantile loss) gener
 \paragraph{Factor Importance}
 The factor importance results are presented graphically in Figure \ref{fig:VIs}, and demonstrates that overall elastic net outperforms all other models consistently in terms of assigning the correct relative importance to the true underlying features.\footnote{($c_1.\text{constant}$, $c_2.\text{constant}$ and $c_3.x_3$ for $g1$ and $g_2$ specifications, and $c_1.\text{constant}$, $c_2.\text{constant}$ and $c_3.\text{constant}$ for $g_3$)}. However, the performance of elastic net does degrade as the data generating process becomes more non-linear.% On more difficult specifications, the elastic net models are conservative and typically identify a single regressor as importance - most apparent on the $g_2$ specification. Occasionally, the elastic nets identified the incorrect covariates, assigned them low relative importance.
 
-Random forests, and to a lesser extent the neural networks, also correctly identified the correct underlying regressors, but struggled with adequately discerning relative importance among correlated regressors. This behavior becomes more pronounced as the degree of cross-sectional correlation increases (see decreasing relative importance of true underlying regressors in Figures \ref{fig:rf_sim_vi} and \ref{fig:nn_sim_vi} in Appendix ??).\marginpar{\tiny What figures are you referring to here???} 
+Random forests, and to a lesser extent the neural networks, also correctly identified the correct underlying regressors, but struggled with adequately discerning relative importance among correlated regressors. This behavior becomes more pronounced as the degree of cross-sectional correlation increases (see decreasing relative importance of true underlying regressors in Figure \ref{fig:VIs}).
 
 %% Intuitive explanation of why random forests struggle with relative discernment - not sure if necessary
 %In the case of the random forests, this is to be expected, likely due to how the random forest algorithms work. The random forest algorithm is an ensemble of tree models, with each tree model only having access to a subset of all available predictors. If this subset does not include the true data generating predictor, then that particular tree will likely select the predictors which have the highest correlation with the true data generating predictor instead. Thus, the resulting ensemble model is likely to believe that cross sectionally correlated predictors are important, relative to the true underlying regressor. Due to the complexity of the neural networks, there does not exist a similar intuitive explanation for their factor selection ability.
@@ -260,7 +259,7 @@ Random forests, and to a lesser extent the neural networks, also correctly ident
 We now investigate the performance of ML methods across a large sample of returns. As we shall see later, the results obtained in Section \ref{sec:sims} are largely borne out in this empirical exercise. 
 
 \subsection{Data}
-We use the universe of firms listed in the NYSE, AMEX and NASDAQ, starting from 1957 (starting date of the S\&P 500) and ending in December 2016, totaling 60 years, that have a quarterly return over this period.\marginpar{It previously said monthly returns but below you talked about quarterly returns. So, I've taken the lower frequency. Please make sure that is correct. } This approach allows firms to enter and exit the dataset and helps alleviate the problem of survivorship bias in the dataset. Individual cross-sectional factors, $c_{i,t}$, are constructed following the approach of \cite{gu_empirical_2019}. \textbf{We restrict our dataset to begin from 1993 Q3 and end on 2016 Q4 to alleviate data quality issues.}\marginpar{What do you mean by this statement? Do you restrict the factors, the returns or both? In either case, this needs to be clarified and the above paragraph changed accordingly.} Our individual factor set contains 94 characteristics: 61 updated annually, 13 updated quarterly and 20 updated monthly.\footnote{The dataset also included 74 Standard Industrial Classification (SIC) codes, but these were omitted due to their inconsistency, and inadequateness at classifying companies, as noted by WRDS}\footnote{To deal with missing data, any characteristics that had over 20\% of their data missing were omitted. Remaining missing data were then imputed using their cross sectional medians for each year. See Appendix for more details.} Complete details of the data and the cleaning procedures employed are detailed in Appendix \ref{app:clean}.
+We use the universe of firms listed in the NYSE, AMEX and NASDAQ, starting from 1957 (starting date of the S\&P 500) and ending in December 2016, totaling 60 years, that have a quarterly return over this period. This approach allows firms to enter and exit the dataset and helps alleviate the problem of survivorship bias in the dataset. Individual cross-sectional factors, $c_{i,t}$, are constructed following the approach of \cite{gu_empirical_2019}. \textbf{We restrict our dataset for both returns and factors to begin from 1993 Q3 and end on 2016 Q4 to alleviate data quality issues.} Our individual factor set contains 94 characteristics: 61 updated annually, 13 updated quarterly and 20 updated monthly.\footnote{The dataset also included 74 Standard Industrial Classification (SIC) codes, but these were omitted due to their inconsistency, and inadequateness at classifying companies, as noted by WRDS}\footnote{To deal with missing data, any characteristics that had over 20\% of their data missing were omitted. Remaining missing data were then imputed using their cross sectional medians for each year. See Appendix for more details.} Complete details of the data and the cleaning procedures employed are detailed in Appendix \ref{app:clean}.
 
 % Begin Cleaning
 
@@ -283,10 +282,8 @@ The predictive results for the five best methods, according to the various loss 
 %% Change this to be much smaller, fixed!
 \input{../../Results/empirical/empirical_loss_latex_small.tex}
 
-That being said, we do observe some evidence that deeper neural networks perform better, though this result is less apparent due to the lack of robustness of these methods on empirical data (see \ref{empirical_study_appendix} in Appendix XX for results).\marginpar{This refernce is broken, and you need to point to where this is in the appendix... }
-
+That being said, we do observe some evidence that deeper neural networks perform better, though this result is less apparent due to the lack of robustness of these methods on empirical data (see \ref{empirical_study_results} in Appendix \ref{empirical_appendix} for results).
 % Interestingly, we do not observe worsening performance as the training sample increases as we did in the simulation study. This suggests that the simulation design may have been too volatile when compared to the specific empirical time periods examined.
-
 \paragraph{Factor Importance}
 As the data generating process for empirical returns is unknown, the variable importance results cannot be directly compared with those of the simulation study. Even so, we see similar results: the elastic net and random forest models tend to agree on the same subset of predictors, but the random forest struggles to discern between highly correlated regressors. Similar to the prediction performance results, neural networks perform poorly.
 
@@ -396,7 +393,28 @@ For our application, we considered the following grid of hyperparameters:
 
 \FloatBarrier
 \subsection{Long short term memory networks}
-Long short term memory (LSTM) networks are , initially proposed by \cite{hochreiter_long_1997} (see for more comprehensive details). The general model setup for an LSTM is as follows:
+Long short term memory (LSTM) networks are special case of Recurrent Neural Networks (RNNs) which utilize LSTM ``cells" to address some of their shortcomings, initially proposed by \cite{hochreiter_long_1997} (see for more comprehensive details). The general model setup for an RNN introduces intermediate ``latent" states $h_t$ which are simply the output for each time $t$ and adds them as extra features for next period's prediction:
+
+\begin{align}
+	h_t = \sigma_h (U_h x_t + V_h h_{t-1} + b_h)
+\end{align}
+where $U_h$, $V_h$ and $b_h$ are two parameter matrics and bias vectors to be learned, respectively. 
+The resulting output from each time step is therefore:
+\begin{align}
+	y_t = \sigma_y (W_y h_t + b_h)
+\end{align}
+where $W_y$ and $b_h$ are similarly parameter matrics and bias vectors to be learned, respectively.
+
+An LSTM ``cell" is a specific structure of calculating and training latent states and their parameters. Let $h_t$, $C_t$ be hidden layer vectors, $x_t$ the original input vector at each time $t$, $b_f, b_i, b_c$ and $b_o$ be bias vectors, $W_f, W_i, W_c$ and $W_o$ parameter matrices. Then the output for each latent $h_t$ is defined as:
+\begin{align}
+	f_t = \sigma(W_f \cdot [h_{t-1}, x_t] + b_f) \\
+	i_t = \sigma(W_i \cdot [h_{t-1}, x_t] + b_i) \\
+	o_t = \sigma(W_o \cdot [h_{t-1}, x_t] + b_o) \\
+	\tilde{C}_t = tanh(W_c \cdot [h_{t-1}, x_t] + b_c) \\
+	C_t = f_t \bigodot C_{t-1} + i_t \bigodot \tilde{C}_t \\
+	h_t = o_t \bigodot tanh(C_t)
+\end{align}
+where $\bigodot$ denotes the element wise multiplication operator.
 
 For our application, we considered the following grid of hyperparameters:
 \begin{table}[!htb]
@@ -443,44 +461,39 @@ Note that because financial returns data does not typically exhibit seasonality,
 
 \FloatBarrier
 \subsection{DeepAR}
+
 DeepAR is a generalization of traditional Auto Regressive (AR) models to include additional layers into order to introduce non-linearities into the model. We provide the general formulation here - for full details see \cite{salinas_deepar_2019}.
 
 %% This is directly plonked from deepar arxiv paper, change this so this isn't plagiarism!
 %% DeepAR does not require inputs from the entire cross section to produce forecasts!
 
+\newcommand{\modelDist}{Q_\Theta(\rVec{i}{t_0}{T} | \rVec{i}{1}{t_0-1}, \xVec{i}{1}{T})}
+
 DeepAR aims to model the conditional distribution 
 \begin{equation*}
-P(\zVec{i}{t_0}{T} | \zVec{i}{1}{t_0-1}, \xVec{i}{1}{T})
+P(\rVec{i}{t_0}{T} | \rVec{i}{1}{t_0-1}, \xVec{i}{1}{T})
 \label{eq:condDist}
 \end{equation*} 
-of the future of each time series $[\z{i}{t_0}, \z{i}{t_0 + 1}, \ldots, \z{i}{T}] := \zVec{i}{t_0}{T}$ given its \hbox{past $[\z{i}{1}, \ldots, \z{i}{t_0-2}, \z{i}{t_0-1}] := \zVec{i}{1}{t_0-1}$}, where $t_0$ denotes the time point from which we assume $\z{i}{t}$ to be unknown at prediction time, and $\xVec{i}{1}{T}$ are covariates that are assumed to be known for all time points. To prevent
-confusion we avoid the ambiguous terms ``past'' and ``future'' and will refer to time ranges $[1, t_0-1]$ and $[t_0, T]$ as the conditioning range and 
-prediction range, respectively. During training, both ranges have to lie in the past so that the $\z{i}{t}$ are observed, but during prediction $\z{i}{t}$
-is only available in the conditioning range. Note that the time index $t$ is relative, i.e.\ $t=1$ can correspond to a different actual
-time period for each $i$. 
-
-\newcommand{\modelDist}{Q_\Theta(\zVec{i}{t_0}{T} | \zVec{i}{1}{t_0-1}, \xVec{i}{1}{T})}
-
-DeepAR assumes that the model distribution $\modelDist$ consists of a product of likelihood factors
+of the future of each time series $[\rs{i}{t_0}, \rs{i}{t_0 + 1}, \ldots, \rs{i}{T}] := \rVec{i}{t_0}{T}$ given its \hbox{past $[\rs{i}{1}, \ldots, \rs{i}{t_0-2}, \rs{i}{t_0-1}] := \rVec{i}{1}{t_0-1}$}, where $t_0$ denotes the time point from which we assume $\rs{i}{t}$ to be unknown at prediction time, and $\xVec{i}{1}{T}$ are covariates that are assumed to be known for all time points. During training, both ranges have to lie in the past so that the $\rs{i}{t}$ are observed, but during prediction $\rs{i}{t}$ is only available in the conditioning range. DeepAR assumes that the model distribution $\modelDist$ consists of a product of likelihood factors
 \begin{align*}
-\modelDist &= \prod\nolimits_{t=t_0}^T Q_\Theta(z_{i,t}|\mathbf{z}_{i,1:t-1}, \xVec{i}{1}{T}) = \prod\nolimits_{t=t_0}^T \ell(\z{i}{t} | \theta(\hVec_{i, t}, \Theta))
+\modelDist &= \prod\nolimits_{t=t_0}^T Q_\Theta(r_{i,t}|\mathbf{r}_{i,1:t-1}, \xVec{i}{1}{T}) = \prod\nolimits_{t=t_0}^T \ell(\rs{i}{t} | \theta(\hVec_{i, t}, \Theta))
 \end{align*}
-parametrized by the output $\hVec_{i, t}$ of an autoregressive recurrent network
+parametrized by the output $\hVec_{i, t}$ of an autoregressive RNN
 \begin{equation}
-\hVec_{i, t} = h\left(\hVec_{i, t-1}, \z{i}{t-1}, \xbf_{i, t}, \Theta\right) \,,
+\hVec_{i, t} = h\left(\hVec_{i, t-1}, \rs{i}{t-1}, \xbf_{i, t}, \Theta\right) \,,
 \label{eq:recurrence}
 \end{equation}
-where $h$ is a function implemented by a multi-layer recurrent neural network with LSTM cells. The model is autoregressive, in the sense that it consumes the observation at the last time step $\z{i}{t-1}$ as an input, as well as recurrent, i.e.\ the previous output of the network $\hVec_{i,t-1}$ is fed back as an input at the next time step. The likelihood $\ell(\z{i}{t}|\theta(\hVec_{i,t}))$ is a fixed distribution whose parameters are given by a function $\theta(\hVec_{i,t}, \Theta)$ of the network output $\hVec_{i, t}$ (see below).
+where $h$ is a function implemented by a multi-layer recurrent neural network with LSTM cells. The model is autoregressive, in the sense that it consumes the observation at the last time step $\rs{i}{t-1}$ as an input, as well as recurrent, i.e.\ the previous output of the network $\hVec_{i,t-1}$ is fed back as an input at the next time step. The likelihood $\ell(\rs{i}{t}|\theta(\hVec_{i,t}))$ is a fixed distribution whose parameters are given by a function $\theta(\hVec_{i,t}, \Theta)$ of the network output $\hVec_{i, t}$ (see below).
 
-Information about the observations in the conditioning range $\zVec{i}{1}{t_0 -1}$ is transferred to the prediction range through the initial state $\hVec_{i, t_0-1}$. In the sequence-to-sequence setup, this initial state is the output of an \emph{encoder network}. While in general this encoder network can have a different architecture, in our  experiments we opt for using the same architecture for the model in the conditioning range and the prediction range (corresponding to the \emph{encoder} and \emph{decoder} in a sequence-to-sequence model). Further, we share weights between them, so that the initial state for the decoder $\hVec_{i, t_0 - 1}$ is obtained by computing \eqref{eq:recurrence} for $t = 1, \ldots, t_0 - 1$, where all required quantities are observed. The initial state of the encoder $\hVec_{i, 0}$ as well as $\z{i}{0}$ are initialized to zero.
+Information about the observations in the conditioning range $\rVec{i}{1}{t_0 -1}$ is transferred to the prediction range through the initial state $\hVec_{i, t_0-1}$. In the sequence-to-sequence setup, this initial state is the output of an \emph{encoder network}. We follow \cite{salinas_deepar_2019} and opt for using the same architecture for the model in the conditioning range and the prediction range (corresponding to the \emph{encoder} and \emph{decoder} in a sequence-to-sequence model), and share weights between them, so that the initial state for the decoder $\hVec_{i, t_0 - 1}$ is obtained by computing \eqref{eq:recurrence} for $t = 1, \ldots, t_0 - 1$, where all required quantities are observed. The initial state of the encoder $\hVec_{i, 0}$ as well as $\rs{i}{0}$ are initialized to zero.
 
 Given the model parameters $\Theta$, we can directly obtain joint samples
 $\tilde{\mathbf{z}}_{i, t_0:T} \sim \modelDist$ through ancestral sampling:
-First, we obtain $\hVec_{i, t_0-1}$ by computing \eqref{eq:recurrence} for $t=1,\ldots, t_0$. For $t=t_0, t_0+1, \ldots, T$ we sample $\tilde{z}_{i, t} \sim \ell(\cdot | \theta(\tilde{\mathbf{h}}_{i,t}, \Theta))$ where $\tilde{\mathbf{h}}_{i, t} = h\left(\hVec_{i, t-1}, \tilde{z}_{i, t-1}, \xbf_{i, t}, \Theta\right)$ initialized with $\tilde{\mathbf{h}}_{i, t_0-1} = \hVec_{i, t_0-1}$ and $\tilde{z}_{i, t_0 -1} = \z{i}{t_0 - 1}$.
+First, we obtain $\hVec_{i, t_0-1}$ by computing \eqref{eq:recurrence} for $t=1,\ldots, t_0$. For $t=t_0, t_0+1, \ldots, T$ we sample $\tilde{r}_{i, t} \sim \ell(\cdot | \theta(\tilde{\mathbf{h}}_{i,t}, \Theta))$ where $\tilde{\mathbf{h}}_{i, t} = h\left(\hVec_{i, t-1}, \tilde{r}_{i, t-1}, \xbf_{i, t}, \Theta\right)$ initialized with $\tilde{\mathbf{h}}_{i, t_0-1} = \hVec_{i, t_0-1}$ and $\tilde{r}_{i, t_0 -1} = \rs{i}{t_0 - 1}$.
 
-The parameters of the model denoted by $\Theta$ can be learned given $\zVec{i}{1}{T}$ and associated covariates $\xVec{i}{1}{T}$ by maximizing the log-likelihood:
+The parameters of the model denoted by $\Theta$ can be learned given $\rVec{i}{1}{T}$ and associated covariates $\xVec{i}{1}{T}$ by maximizing the log-likelihood:
 \begin{align}
-	\mathcal{L} = \sum_{i = 1}^{N} \sum_{t = t_0}^{T} log(\ell z_{i, t} | \theta(\mathbf{h}_{i, t}))
+	\mathcal{L} = \sum_{i = 1}^{N} \sum_{t = t_0}^{T} log(\ell r_{i, t} | \theta(\mathbf{h}_{i, t}))
 \end{align}
 
 For our application, we utilized AWS' Bayesian grid search within the following ranges:
@@ -610,7 +623,7 @@ The simulation design results in $3 \times 3 = 9$ different simulated datasets, 
 \FloatBarrier
 
 \subsection{Random Forest VIMPs}
-We note that random forest methods typically have their own methodologies to calculate variable importance (VIMP) which are different to the VIMP metric presented in the main body of the paper. We provide two popular schemes of calculating random forest VIMP - Breiman-cutler VIMP, (\cite{breiman_random_2001}) and Ishwaran-Kogalur VIMP , (\cite{ishwaran_random_2008}), and show that importantly, the overall conclusion regarding factor selection does not change with respect to which methodology employed.
+We note that random forest methods typically have their own methodologies to calculate variable importance (VIMP) which are different to the VIMP metric presented in the main body of the paper. We provide two popular schemes of calculating random forest VIMP - Breiman-cutler VIMP, \cite{breiman_random_2001} and Ishwaran-Kogalur VIMP , \cite{ishwaran_random_2008}, and show that importantly, the overall conclusion regarding factor selection does not change with respect to which methodology employed.
 
 %% Re-generate or resize these graphs
 %% BC Vimps
@@ -628,6 +641,7 @@ We note that random forest methods typically have their own methodologies to cal
 \newpage
 
 \section{Additional details: Empirical analysis}
+\label{empirical_appendix}
 
 \subsection{Data \& cleaning}\label{app:clean}
 We begin by obtaining monthly individual price data from CRSP for all firms listed in the NYSE, AMEX and NASDAQ, starting from 1957 (starting date of the S\&P 500) and ending in December 2016, totalling 60 years. To build individual factors, we construct a factor set based on the cross section of returns literature. This is the same data used in \cite{gu_empirical_2019}. We restrict our dataset to begin from 1993 Q3 and end on 2016 Q4 to alleviate data quality issues. Our individual factor set contains 94 characteristics: 61 updated annually, 13 updated quarterly and 20 updated monthly \footnote{The dataset also included 74 Standard Industrial Classification (SIC) codes, but these were omitted due to their inconsistency, and inadequateness at classifying companies, as noted by WRDS}.
@@ -825,19 +839,24 @@ We mimic the sample splitting procedure used in the simulation study: the datase
 \newpage
 
 \FloatBarrier
-\subsection{Empirical study comprehensive results \& robustness checks}\marginpar{\tiny Better description of these is necessary. You can't just present the results here... }
+\subsection{Empirical study comprehensive results \& robustness checks}
+\label{empirical_study_results}
 We provide the comprehensive set of results for the empirical study omitted in the main body of the paper. 
 
 In addition, we provide four additional robustness checks for our empirical study, with regards to different training/validation splitting schemes, missing data imputation and additional regressors. Importantly, our overall results are consistent across all checks.
 
-%% Train/validation schemes
-We first consider training:validation length ratios of 1:1 and 1:2 in addition to 1:1.5 in the main study. 
-
 %% Missing Threshold
-We consider changing the missing data threshold to be 10\% - that is, any regressors with over 10\% missing data were omitted before being imputed.
+We first consider changing the missing data threshold to be 10\% - that is, any regressors with over 10\% missing data were omitted before being imputed. The results here in terms of both prediction performance and factor importance are almost identical to those of the empirical study. If anything, most models seemed to have lower loss, indicating that removing many of the poorer quality factors improves performance.
+
+%% Train/validation schemes
+We then consider training:validation length ratios of 1:1 and 1:2 in addition to 1:1.5 in the main study. 
+
+A training:validation length ratio of 1:1 saw the elastic net models perform the best, with the random forests fitted wrt mean squared loss suffering noticeably in performance. The factor importance results were subdued across all models except for the elastic nets - random forests and neural networks struggled to discern any importance individual factors, and occasionally picked out the dividend price ratio and earnings price ratio macroeconomic factors as important.
+
+A training:validation length ratio of 1:2 produced more similar results to those in the main study - quantile forests performed best in the first sample, and were then beaten by elastic nets. Interestingly, it was noted that quantile elastic nets started to suffer from convergence issues, and hence had very poor performance in the last sample, though their mean squared variant was still the best performing model. 
 
 %% Fama French factors
-We finally consider supplementing our macroeconomic regressor set with the five Fama-French factors. 
+We finally consider supplementing our macroeconomic regressor set with the five Fama-French factors (see \cite{fama_five-factor_2015}). Similarly, elastic net models dominate prediction performance, though their quantile versions were noted to suffer from convergence issues. The tremendous increase in dimensionality made the factor importance results more confusing on the macroeconomic factors, confusing even the elastic nets. 
 
 \subsubsection{Prediction Accuracy}
 %% Main Study

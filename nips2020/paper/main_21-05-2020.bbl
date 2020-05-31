@@ -10,6 +10,11 @@ Breiman, L. (2001).
 \newblock Random forests.
 \newblock {\em Machine learning}, 45(1):5--32.
 
+\bibitem[Fama and French, 2015]{fama_five-factor_2015}
+Fama, E.~F. and French, K.~R. (2015).
+\newblock A five-factor asset pricing model.
+\newblock {\em Journal of financial economics}, 116(1):1--22.
+
 \bibitem[Feng et~al., 2019]{feng_taming_2019}
 Feng, G., Giglio, S., and Xiu, D. (2019).
 \newblock Taming the {Factor} {Zoo}: {A} {Test} of {New} {Factors}.
