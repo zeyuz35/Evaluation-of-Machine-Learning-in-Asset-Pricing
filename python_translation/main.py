@@ -285,269 +285,146 @@ def sim_tune_statistics(sim_panel_list):
 
     return pd.DataFrame(stats_list)
 
-if __name__ == '__main__':
-    print("Translation done, running a small test")
 
-    # small test
-    print("Running small test...")
-    sim_N = 1
-    char_rho_a = 0.5
-    char_rho_b = 1
-    cross_corr = 0
-    cross_corr_degree = 0.01
-    A1 = np.array([
-        [0.95, 0, 0],
-        [0, 0.95, 0],
-        [0, 0, 0.95]
-    ])
-    xt_multi = 1
-    g_function = "g1"
-    theta = np.array([[0.015, 0.015, 0.015]])
-    error_sv = 0
-    error_ep_sd = 0.05
-    error_omega = -0.736
-    error_gamma = 0.9
-    error_w = 0.363
-    error_v_sd = 0.05
-    predictor_format = "kronecker"
-
-    sim_list = sim_panel_data(sim_N, char_rho_a, char_rho_b, cross_corr, cross_corr_degree,
-                       A1, xt_multi, g_function, theta, error_sv, error_ep_sd,
-                       error_omega, error_gamma, error_w, error_v_sd, predictor_format)
-
-    stats_df = sim_tune_statistics(sim_list)
-    print(stats_df)
-    print("Finished test")
-
-# Further models implementation stub
-# The rest of ML models implementation (Random Forest, Neural Networks, Elastic Net, LSTM, etc) goes here
-# Due to the complexity of the original codebase and instructions to "translate all of the functions as a first step", I have focused on translating the fundamental data generation functions which are required across all models.
-
-
-# =========================================================================================
-# Further models implementation stub
-# Translating the full machine learning algorithms (Random Forest, Neural Networks,
-# Elastic Net, LSTM, XGBoost) and the extensive grid search / variable importance
-# procedures to an exact equivalent in python using sklearn/keras exceeds practical
-# time constraints for a first step.
-#
-# I have translated the core simulation methods which are responsible for the
-# data generation process and calculating cross-sectional model fit statistics.
-# This aligns with the "translate all of the functions as a first step" request
-# specifically focusing on the core data generation simulation study itself.
-# =========================================================================================
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.neural_network import MLPRegressor
+from sklearn.linear_model import ElasticNetCV
+from sklearn.model_selection import PredefinedSplit, GridSearchCV
 
 
 def lm_ave_forecast_resids(lm_model, test):
     time_periods = np.unique(test['time'])
     ave_forecast_resids_vector = []
-
     for t in time_periods:
         test_cross_section = test[test['time'] == t]
-
         test_x = test_cross_section.iloc[:, 3:]
         test_x_with_const = sm.add_constant(test_x, has_constant='add')
-
         predictions = lm_model.predict(test_x_with_const)
         residuals = test_cross_section['rt'] - predictions
-
         ave_forecast_resids_vector.append(np.mean(residuals))
-
     return ave_forecast_resids_vector
 
 def eln_ave_forecast_resids(eln_model, test, alpha, lambda_val):
     time_periods = np.unique(test['time'])
     ave_forecast_resids_vector = []
-
     for t in time_periods:
         test_cross_section = test[test['time'] == t]
-
         test_x = test_cross_section.iloc[:, 3:]
-
         predictions = eln_model.predict(test_x)
         residuals = test_cross_section['rt'] - predictions
-
         ave_forecast_resids_vector.append(np.mean(residuals))
-
     return ave_forecast_resids_vector
 
 def rf_ave_forecast_resids(rf_model, test):
     time_periods = np.unique(test['time'])
     ave_forecast_resids_vector = []
-
     for t in time_periods:
         test_cross_section = test[test['time'] == t]
-
         test_x = test_cross_section.iloc[:, 3:]
-
         predictions = rf_model.predict(test_x)
         residuals = test_cross_section['rt'] - predictions
-
         ave_forecast_resids_vector.append(np.mean(residuals))
-
     return ave_forecast_resids_vector
 
 def nnet_ave_forecast_resids(nnet_model, test):
     time_periods = np.unique(test['time'])
     ave_forecast_resids_vector = []
-
     for t in time_periods:
         test_cross_section = test[test['time'] == t]
-
         test_x = test_cross_section.iloc[:, 3:]
-
         predictions = nnet_model.predict(test_x)
         if predictions.ndim == 2:
             predictions = predictions.flatten()
-
         residuals = test_cross_section['rt'] - predictions
-
         ave_forecast_resids_vector.append(np.mean(residuals))
-
     return ave_forecast_resids_vector
 
 def LM_variable_importance(test, lm_model):
     test_x = test.iloc[:, 3:]
     importance_df = []
-
     test_x_with_const = sm.add_constant(test_x, has_constant='add')
     original_predictions = lm_model.predict(test_x_with_const)
-
-    # Custom R2 calculation from R package caret form="traditional"
     y = test['rt']
     ss_tot = np.sum((y - np.mean(y))**2)
     original_ss_res = np.sum((y - original_predictions)**2)
     original_r2 = 1 - (original_ss_res / ss_tot)
-
     for i in range(test_x.shape[1]):
         test_x_zero = test_x.copy()
         test_x_zero.iloc[:, i] = 0
-
         test_x_zero_with_const = sm.add_constant(test_x_zero, has_constant='add')
         new_predictions = lm_model.predict(test_x_zero_with_const)
-
         new_ss_res = np.sum((y - new_predictions)**2)
         new_r2 = 1 - (new_ss_res / ss_tot)
-
         importance = original_r2 - new_r2
-        importance_df.append({
-            'variable': test_x.columns[i],
-            'importance': importance
-        })
-
+        importance_df.append({'variable': test_x.columns[i], 'importance': importance})
     return pd.DataFrame(importance_df)
 
 def ELN_variable_importance(test, eln_model):
     test_x = test.iloc[:, 3:]
     importance_df = []
-
     original_predictions = eln_model.predict(test_x)
-
     y = test['rt']
     ss_tot = np.sum((y - np.mean(y))**2)
     original_ss_res = np.sum((y - original_predictions)**2)
     original_r2 = 1 - (original_ss_res / ss_tot)
-
     for i in range(test_x.shape[1]):
         test_x_zero = test_x.copy()
         test_x_zero.iloc[:, i] = 0
-
         new_predictions = eln_model.predict(test_x_zero)
-
         new_ss_res = np.sum((y - new_predictions)**2)
         new_r2 = 1 - (new_ss_res / ss_tot)
-
         importance = original_r2 - new_r2
-        importance_df.append({
-            'variable': test_x.columns[i],
-            'importance': importance
-        })
-
+        importance_df.append({'variable': test_x.columns[i], 'importance': importance})
     return pd.DataFrame(importance_df)
 
 def RF_variable_importance(test, rf_model):
     test_x = test.iloc[:, 3:]
     importance_df = []
-
     original_predictions = rf_model.predict(test_x)
-
     y = test['rt']
     ss_tot = np.sum((y - np.mean(y))**2)
     original_ss_res = np.sum((y - original_predictions)**2)
     original_r2 = 1 - (original_ss_res / ss_tot)
-
     for i in range(test_x.shape[1]):
         test_x_zero = test_x.copy()
         test_x_zero.iloc[:, i] = 0
-
         new_predictions = rf_model.predict(test_x_zero)
-
         new_ss_res = np.sum((y - new_predictions)**2)
         new_r2 = 1 - (new_ss_res / ss_tot)
-
         importance = original_r2 - new_r2
-        importance_df.append({
-            'variable': test_x.columns[i],
-            'importance': importance
-        })
-
+        importance_df.append({'variable': test_x.columns[i], 'importance': importance})
     return pd.DataFrame(importance_df)
 
 def NNet_variable_importance(test, nnet_model):
     test_x = test.iloc[:, 3:]
     importance_df = []
-
     original_predictions = nnet_model.predict(test_x)
     if original_predictions.ndim == 2:
         original_predictions = original_predictions.flatten()
-
     y = test['rt']
     ss_tot = np.sum((y - np.mean(y))**2)
     original_ss_res = np.sum((y - original_predictions)**2)
     original_r2 = 1 - (original_ss_res / ss_tot)
-
     for i in range(test_x.shape[1]):
         test_x_zero = test_x.copy()
         test_x_zero.iloc[:, i] = 0
-
         new_predictions = nnet_model.predict(test_x_zero)
         if new_predictions.ndim == 2:
             new_predictions = new_predictions.flatten()
-
         new_ss_res = np.sum((y - new_predictions)**2)
         new_r2 = 1 - (new_ss_res / ss_tot)
-
         importance = original_r2 - new_r2
-        importance_df.append({
-            'variable': test_x.columns[i],
-            'importance': importance
-        })
-
+        importance_df.append({'variable': test_x.columns[i], 'importance': importance})
     return pd.DataFrame(importance_df)
-
 
 def customTimeSlices(start, initialWindow, horizon, validation_size, test_size, set_no):
     time_slices = []
-
     for t in range(1, set_no + 1):
-        # Python ranges are 0-indexed and exclusive at the end
-        # R c(start:(initialWindow + (t-1) * horizon + 1))
         train = list(range(start, initialWindow + (t-1) * horizon + 2))
-
-        # c((initialWindow + (t-1) * horizon + 2):((initialWindow + (t-1) * horizon) + validation_size + 1))
         validation = list(range(initialWindow + (t-1) * horizon + 2, (initialWindow + (t-1) * horizon) + validation_size + 2))
-
-        # c((initialWindow + (t-1) * horizon) + validation_size + 2):((initialWindow + (t-1) * horizon) + validation_size + test_size + 1)
         test = list(range((initialWindow + (t-1) * horizon) + validation_size + 2, (initialWindow + (t-1) * horizon) + validation_size + test_size + 2))
-
-        time_slices.append({
-            'train': train,
-            'validation': validation,
-            'test': test
-        })
-
+        time_slices.append({'train': train, 'validation': validation, 'test': test})
     return time_slices
-
 
 def mae(y_true, y_pred):
     return np.mean(np.abs(y_true - y_pred))
@@ -568,75 +445,53 @@ def R2(y_pred, y_true):
 
 def LM_fit(pooled_panel, timeSlices, loss_function, f=None):
     LM_stats = []
-
     for set_idx in range(3):
         time_slice = timeSlices[set_idx]
-
         train = pooled_panel[pooled_panel['time'].isin(time_slice['train'])]
         validation = pooled_panel[pooled_panel['time'].isin(time_slice['validation'])]
         test = pooled_panel[pooled_panel['time'].isin(time_slice['test'])]
-
         train_x = train.iloc[:, 3:]
         train_y = train['rt']
-
         validation_x = validation.iloc[:, 3:]
         validation_y = validation['rt']
-
         test_x = test.iloc[:, 3:]
         test_y = test['rt']
-
-        # Fit model
         train_x_with_const = sm.add_constant(train_x, has_constant='add')
         if loss_function == "mse":
             model = sm.OLS(train_y, train_x_with_const)
             lm = model.fit()
         else:
-            # MAE is equivalent to Quantile Regression with tau=0.5
             model = sm.QuantReg(train_y, train_x_with_const)
             lm = model.fit(q=0.5)
-
         train_predict = lm.predict(train_x_with_const)
-
         validation_x_with_const = sm.add_constant(validation_x, has_constant='add')
         validation_predict = lm.predict(validation_x_with_const)
-
         test_x_with_const = sm.add_constant(test_x, has_constant='add')
         test_predict = lm.predict(test_x_with_const)
-
         loss_stats = {
             'train_MAE': mae(train_y, train_predict),
             'train_MSE': mse(train_y, train_predict),
             'train_RMSE': rmse(train_y, train_predict),
             'train_RSquare': R2(train_predict, train_y),
-
             'validation_MAE': mae(validation_y, validation_predict),
             'validation_MSE': mse(validation_y, validation_predict),
             'validation_RMSE': rmse(validation_y, validation_predict),
             'validation_RSquare': R2(validation_predict, validation_y),
-
             'test_MAE': mae(test_y, test_predict),
             'test_MSE': mse(test_y, test_predict),
             'test_RMSE': rmse(test_y, test_predict),
             'test_RSquare': R2(test_predict, test_y),
         }
-
         forecast_resids = lm_ave_forecast_resids(lm, test)
         variable_importance = LM_variable_importance(test, lm)
-
         LM_stats.append({
             'loss_stats': pd.DataFrame([loss_stats]),
             'forecast_resids': forecast_resids,
             'variable_importance': variable_importance,
             'model': lm
         })
-
     return LM_stats
 
-
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.neural_network import MLPRegressor
-from sklearn.linear_model import ElasticNetCV
-from sklearn.model_selection import PredefinedSplit, GridSearchCV
 
 def ELN_fit_stats(alpha_grid, nlamb, timeSlices, pooled_panel, loss_function):
     ELN_stats = []
@@ -847,7 +702,6 @@ def NNet_fit_stats(pooled_panel, timeSlices, hidden_layers, loss_function, batch
 
     return NNet_stats
 
-
 def fit_all_models(dataset_list, batch_process_range, LM=1, ELN=1, RF=1, NNet=1):
     simulation_results_list = [None] * len(batch_process_range)
 
@@ -870,6 +724,8 @@ def fit_all_models(dataset_list, batch_process_range, LM=1, ELN=1, RF=1, NNet=1)
         }
 
         timeSlices = customTimeSlices(start=2, initialWindow=84, horizon=12, validation_size=60, test_size=12, set_no=3)
+
+        f = None
 
         if LM == 1:
             simulation_results_list[idx]['LM_MSE'] = LM_fit(pooled_panel, timeSlices, loss_function="mse")
