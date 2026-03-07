@@ -104,7 +104,8 @@ gen_W <- function(lambda_degree){
   )
   
   #Use Lambda to create B matrix
-  B <- (Lambda) %*% t(Lambda)
+  # Equivalent: tcrossprod(Lambda) is Lambda %*% t(Lambda) but faster
+  B <- tcrossprod(Lambda)
   B <- B + 1/10*diag(nrow = nrow(B))
   
   # B is now a positive semi definite matrix
