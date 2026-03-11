@@ -63,6 +63,7 @@
 ########################################################################################################
 
 library("reticulate")
+source(here::here("R", "utils_integrity.R"))
 ## Force reticulate to use the right version of anaconda and thus sagemaker modules
 use_condaenv("/home/ubuntu/anaconda3", required = TRUE)
 sagemaker <- import('sagemaker')
@@ -145,7 +146,7 @@ tidy_to_json <- function(data, start) {
     pooled_panel_filter_feature <- pooled_panel_filter %>%
       select(-time, -rt, -stock) %>%
       unname() %>%
-      as.matrix() %>%
+      as_matrix_preserve() %>%
       # Transpose it to get the right format of one feature series per row
       t()
     
@@ -366,7 +367,7 @@ tidy_to_batch_inf <- function(data, start, timeSlices, set) {
       filter(time %in% timeSlices[[set]]$train | time %in% timeSlices[[set]]$validation | time %in% timeSlices[[set]]$test) %>%
       dplyr::select(-time, -rt, -stock) %>%
       unname() %>%
-      as.matrix() %>%
+      as_matrix_preserve() %>%
       # Transpose it to get the right format of one feature series per row
       t()
     
