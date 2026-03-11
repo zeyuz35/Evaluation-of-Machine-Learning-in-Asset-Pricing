@@ -57,20 +57,20 @@ rt <- numeric()
 lnsig2[1] <- a0/(1-a1)
 rt[1] <- mu + exp(lnsig2[1]/2)*eps[1]
 
-for(i in 2:N){
-  lnsig2[i] <- a0 + a1*lnsig2[i-1] + sigv*v[i]
-  rt[i] <- mu + exp(lnsig2[i]/2)*eps[i]
+for(ii in 2:N){
+  lnsig2[ii] <- a0 + a1*lnsig2[ii-1] + sigv*v[ii]
+  rt[ii] <- mu + exp(lnsig2[ii]/2)*eps[ii]
 }
 
 # plot
 
 df <- tibble(day=1:n, logsig2=lnsig2[(N-n+1):N], rt=rt[(N-n+1):N])
-df <- df %>% mutate(sig = exp(logsig2/2), rt2 = rt^2)
+df <- df |> mutate(sig = exp(logsig2/2), rt2 = rt^2)
 
-p1 <- df %>% ggplot(aes(x=day,y=rt)) + geom_line(col="blue") + ggtitle("returns") + ylab(expression(r[t]))
-p2 <- df %>% ggplot(aes(x=day,y=logsig2)) + geom_line(col="blue") + ggtitle("log variance") + ylab(expression(ln(sigma[t]^2)))
-p3 <- df %>% ggplot(aes(x=day,y=sig)) + geom_line(col="blue") + ggtitle("volatility") + ylab(expression(sigma[t]))
-p4 <- df %>% ggplot(aes(x=rt, y=..density..)) + geom_histogram(col="blue",bins=50) + ggtitle("histogram of returns") + ylab(expression(r[t]))
+p1 <- df |> ggplot(aes(x=day,y=rt)) + geom_line(col="blue") + ggtitle("returns") + ylab(expression(r[t]))
+p2 <- df |> ggplot(aes(x=day,y=logsig2)) + geom_line(col="blue") + ggtitle("log variance") + ylab(expression(ln(sigma[t]^2)))
+p3 <- df |> ggplot(aes(x=day,y=sig)) + geom_line(col="blue") + ggtitle("volatility") + ylab(expression(sigma[t]))
+p4 <- df |> ggplot(aes(x=rt, y=..density..)) + geom_histogram(col="blue",bins=50) + ggtitle("histogram of returns") + ylab(expression(r[t]))
 
 grid.arrange(p1, p4, p2, p3, nrow=2)
 
@@ -91,9 +91,9 @@ jb <- function(x){
   return(jb)
   }
 
-tbl <- df %>% summarise(min=min(rt), q25=quantile(rt,0.25),med=quantile(rt,0.5),q75=quantile(rt,0.75), max=max(rt), mean=mean(rt), sd=sd(rt), sk=skewness(rt), kt=kurtosis(rt), JB=jb(rt), pval=pchisq(jb(rt),df=2, lower.tail=FALSE) ) 
+tbl <- df |> summarise(min=min(rt), q25=quantile(rt,0.25),med=quantile(rt,0.5),q75=quantile(rt,0.75), max=max(rt), mean=mean(rt), sd=sd(rt), sk=skewness(rt), kt=kurtosis(rt), JB=jb(rt), pval=pchisq(jb(rt),df=2, lower.tail=FALSE) )
 
-tbl %>% kable() %>% kable_styling()
+tbl |> kable() |> kable_styling()
 ```
 
 
@@ -126,20 +126,20 @@ rt <- numeric()
 lnsig2[1] <- a0/(1-a1)
 rt[1] <- mu + exp(lnsig2[1]/2)*eps[1]
 
-for(i in 2:N){
-  lnsig2[i] <- a0 + a1*lnsig2[i-1] + sigv*v[i]
-  rt[i] <- mu + exp(lnsig2[i]/2)*eps[i]
+for(ii in 2:N){
+  lnsig2[ii] <- a0 + a1*lnsig2[ii-1] + sigv*v[ii]
+  rt[ii] <- mu + exp(lnsig2[ii]/2)*eps[ii]
 }
 
 # plot
 
 df <- tibble(day=1:n, logsig2=lnsig2[(N-n+1):N], rt=rt[(N-n+1):N])
-df <- df %>% mutate(sig = exp(logsig2/2), rt2 = rt^2)
+df <- df |> mutate(sig = exp(logsig2/2), rt2 = rt^2)
 
-p1 <- df %>% ggplot(aes(x=day,y=rt)) + geom_line(col="blue") + ggtitle("returns") + ylab(expression(r[t]))
-p2 <- df %>% ggplot(aes(x=day,y=logsig2)) + geom_line(col="blue") + ggtitle("log variance") + ylab(expression(ln(sigma[t]^2)))
-p3 <- df %>% ggplot(aes(x=day,y=sig)) + geom_line(col="blue") + ggtitle("volatility") + ylab(expression(sigma[t]))
-p4 <- df %>% ggplot(aes(x=rt, y=..density..)) + geom_histogram(col="blue",bins=50) + ggtitle("histogram of returns") + ylab(expression(r[t]))
+p1 <- df |> ggplot(aes(x=day,y=rt)) + geom_line(col="blue") + ggtitle("returns") + ylab(expression(r[t]))
+p2 <- df |> ggplot(aes(x=day,y=logsig2)) + geom_line(col="blue") + ggtitle("log variance") + ylab(expression(ln(sigma[t]^2)))
+p3 <- df |> ggplot(aes(x=day,y=sig)) + geom_line(col="blue") + ggtitle("volatility") + ylab(expression(sigma[t]))
+p4 <- df |> ggplot(aes(x=rt, y=..density..)) + geom_histogram(col="blue",bins=50) + ggtitle("histogram of returns") + ylab(expression(r[t]))
 
 grid.arrange(p1, p4, p2, p3, nrow=2)
 
@@ -148,9 +148,9 @@ grid.arrange(p1, p4, p2, p3, nrow=2)
 ### Descriptive stats
 
 ```{r}
-tbl <- df %>% summarise(min=min(rt), q25=quantile(rt,0.25),med=quantile(rt,0.5),q75=quantile(rt,0.75), max=max(rt), mean=mean(rt), sd=sd(rt), sk=skewness(rt), kt=kurtosis(rt), JB=jb(rt), pval=pchisq(jb(rt),df=2, lower.tail=FALSE) ) 
+tbl <- df |> summarise(min=min(rt), q25=quantile(rt,0.25),med=quantile(rt,0.5),q75=quantile(rt,0.75), max=max(rt), mean=mean(rt), sd=sd(rt), sk=skewness(rt), kt=kurtosis(rt), JB=jb(rt), pval=pchisq(jb(rt),df=2, lower.tail=FALSE) )
  
-tbl %>% kable() %>% kable_styling()
+tbl |> kable() |> kable_styling()
 ```
 
 
@@ -186,20 +186,20 @@ rt <- numeric()
 lnsig2[1] <- a0/(1-a1)
 rt[1] <- mu + exp(lnsig2[1]/2)*eps[1]
 
-for(i in 2:N){
-  lnsig2[i] <- a0 + a1*lnsig2[i-1] + sigv*v[i]
-  rt[i] <- mu + exp(lnsig2[i]/2)*eps[i]
+for(ii in 2:N){
+  lnsig2[ii] <- a0 + a1*lnsig2[ii-1] + sigv*v[ii]
+  rt[ii] <- mu + exp(lnsig2[ii]/2)*eps[ii]
 }
 
 # plot
 
 df <- tibble(day=1:n, logsig2=lnsig2[(N-n+1):N], rt=rt[(N-n+1):N])
-df <- df %>% mutate(sig = exp(logsig2/2), rt2 = rt^2)
+df <- df |> mutate(sig = exp(logsig2/2), rt2 = rt^2)
 
-p1 <- df %>% ggplot(aes(x=day,y=rt)) + geom_line(col="blue") + ggtitle("returns") + ylab(expression(r[t]))
-p2 <- df %>% ggplot(aes(x=day,y=logsig2)) + geom_line(col="blue") + ggtitle("log variance") + ylab(expression(ln(sigma[t]^2)))
-p3 <- df %>% ggplot(aes(x=day,y=sig)) + geom_line(col="blue") + ggtitle("volatility") + ylab(expression(sigma[t]))
-p4 <- df %>% ggplot(aes(x=rt, y=..density..)) + geom_histogram(col="blue",bins=50) + ggtitle("histogram of returns") + ylab(expression(r[t]))
+p1 <- df |> ggplot(aes(x=day,y=rt)) + geom_line(col="blue") + ggtitle("returns") + ylab(expression(r[t]))
+p2 <- df |> ggplot(aes(x=day,y=logsig2)) + geom_line(col="blue") + ggtitle("log variance") + ylab(expression(ln(sigma[t]^2)))
+p3 <- df |> ggplot(aes(x=day,y=sig)) + geom_line(col="blue") + ggtitle("volatility") + ylab(expression(sigma[t]))
+p4 <- df |> ggplot(aes(x=rt, y=..density..)) + geom_histogram(col="blue",bins=50) + ggtitle("histogram of returns") + ylab(expression(r[t]))
 
 grid.arrange(p1, p4, p2, p3, nrow=2)
 
@@ -208,9 +208,9 @@ grid.arrange(p1, p4, p2, p3, nrow=2)
 ### Descriptive statistics for the returns
 
 ```{r}
-tbl <- df %>% summarise(min=min(rt), q25=quantile(rt,0.25),med=quantile(rt,0.5),q75=quantile(rt,0.75), max=max(rt), mean=mean(rt), sd=sd(rt), sk=skewness(rt), kt=kurtosis(rt), JB=jb(rt), pval=pchisq(jb(rt),df=2, lower.tail=FALSE) ) 
+tbl <- df |> summarise(min=min(rt), q25=quantile(rt,0.25),med=quantile(rt,0.5),q75=quantile(rt,0.75), max=max(rt), mean=mean(rt), sd=sd(rt), sk=skewness(rt), kt=kurtosis(rt), JB=jb(rt), pval=pchisq(jb(rt),df=2, lower.tail=FALSE) )
 
-tbl %>% kable() %>% kable_styling()
+tbl |> kable() |> kable_styling()
 ```
 
 
@@ -244,20 +244,20 @@ rt <- numeric()
 lnsig2[1] <- a0/(1-a1)
 rt[1] <- mu + exp(lnsig2[1]/2)*eps[1]
 
-for(i in 2:N){
-  lnsig2[i] <- a0 + a1*lnsig2[i-1] + sigv*v[i]
-  rt[i] <- mu + exp(lnsig2[i]/2)*eps[i]
+for(ii in 2:N){
+  lnsig2[ii] <- a0 + a1*lnsig2[ii-1] + sigv*v[ii]
+  rt[ii] <- mu + exp(lnsig2[ii]/2)*eps[ii]
 }
 
 # plot
 
 df <- tibble(day=1:n, logsig2=lnsig2[(N-n+1):N], rt=rt[(N-n+1):N])
-df <- df %>% mutate(sig = exp(logsig2/2), rt2 = rt^2)
+df <- df |> mutate(sig = exp(logsig2/2), rt2 = rt^2)
 
-p1 <- df %>% ggplot(aes(x=day,y=rt)) + geom_line(col="blue") + ggtitle("returns") + ylab(expression(r[t]))
-p2 <- df %>% ggplot(aes(x=day,y=logsig2)) + geom_line(col="blue") + ggtitle("log variance") + ylab(expression(ln(sigma[t]^2)))
-p3 <- df %>% ggplot(aes(x=day,y=sig)) + geom_line(col="blue") + ggtitle("volatility") + ylab(expression(sigma[t]))
-p4 <- df %>% ggplot(aes(x=rt, y=..density..)) + geom_histogram(col="blue",bins=50) + ggtitle("histogram of returns") + ylab(expression(r[t]))
+p1 <- df |> ggplot(aes(x=day,y=rt)) + geom_line(col="blue") + ggtitle("returns") + ylab(expression(r[t]))
+p2 <- df |> ggplot(aes(x=day,y=logsig2)) + geom_line(col="blue") + ggtitle("log variance") + ylab(expression(ln(sigma[t]^2)))
+p3 <- df |> ggplot(aes(x=day,y=sig)) + geom_line(col="blue") + ggtitle("volatility") + ylab(expression(sigma[t]))
+p4 <- df |> ggplot(aes(x=rt, y=..density..)) + geom_histogram(col="blue",bins=50) + ggtitle("histogram of returns") + ylab(expression(r[t]))
 
 
 grid.arrange(p1, p4, p2, p3, nrow=2)
@@ -267,9 +267,9 @@ grid.arrange(p1, p4, p2, p3, nrow=2)
 ### Descriptive statistics for the returns
 
 ```{r}
-tbl <- df %>% summarise(min=min(rt), q25=quantile(rt,0.25),med=quantile(rt,0.5),q75=quantile(rt,0.75), max=max(rt), mean=mean(rt), sd=sd(rt), sk=skewness(rt), kt=kurtosis(rt), JB=jb(rt), pval=pchisq(jb(rt),df=2, lower.tail=FALSE) ) 
+tbl <- df |> summarise(min=min(rt), q25=quantile(rt,0.25),med=quantile(rt,0.5),q75=quantile(rt,0.75), max=max(rt), mean=mean(rt), sd=sd(rt), sk=skewness(rt), kt=kurtosis(rt), JB=jb(rt), pval=pchisq(jb(rt),df=2, lower.tail=FALSE) )
 
-tbl %>% kable() %>% kable_styling()
+tbl |> kable() |> kable_styling()
 ```
 
 \vspace{.5cm}
