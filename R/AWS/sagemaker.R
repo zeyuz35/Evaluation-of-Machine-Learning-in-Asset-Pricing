@@ -1,8 +1,6 @@
-######################################################################################################
-# INSTRUCTIONS FOR GETTING THIS SETUP WORKING
-######################################################################################################
+# INSTRUCTIONS FOR GETTING THIS SETUP WORKING ----------------------------------
+
 # This is a lot of work, make set up a cloudformation YAML for ease of reproducibility
-######################################################################################################
 #
 # Set up an EC2 instance, doesn't matter too much what's included
 # At least t2.medium is recommend due to RAM constraints on the free tier (this is still fairly cheap)
@@ -58,9 +56,7 @@
 # 
 # Restart Rstudio just to refresh it (doesn't seem to be necessary though)
 # 
-########################################################################################################
-# ACTUAL CODE START
-########################################################################################################
+# ACTUAL CODE START ------------------------------------------------------------
 library(tidyverse)
 library(jsonlite)
 library(Metrics)
@@ -88,9 +84,7 @@ session <- sagemaker$Session()
 
 role_arn <- session$expand_role('sagemaker-service-role')
 
-#######################################
-## Get the image required for deepar ##
-#######################################
+# Get the image required for deepar --------------------------------------------
 
 region <- session$boto_region_name
 
@@ -201,16 +195,12 @@ pooled_panel_validation %>%
 
 session$upload_data("data", s3_bucket, key_prefix = "data")
 
-#####################
-## Train a Model
-#####################
+# Train a Model ----------------------------------------------------------------
 
 # Lags are used in the model building procedure anyway, so context_length doesn't have to be very large
 # Amazon recommends to just set this equal to prediction length
 
-############################################################################
-## HYPERPARAMETER TUNING
-############################################################################
+# HYPERPARAMETER TUNING --------------------------------------------------------
 
 ## NOT RUN, as it seems fairly robust to hyperparameters (ie they don't help much), 
 ## and very costly and time consuming
@@ -240,23 +230,15 @@ session$upload_data("data", s3_bucket, key_prefix = "data")
 # 
 # tuner$fit(list(train = s3_train_input, test = s3_valid_input), include_cls_metadata = FALSE)
 
-##############################################################################################################
-##############################################################################################################
-#### Generating Predictions
-##############################################################################################################
-##############################################################################################################
+# Generating Predictions -------------------------------------------------------
 
-###########################
-## MODEL ENDPOINT APPROACH
-##############################
+# MODEL ENDPOINT APPROACH ------------------------------------------------------
 ## An endpoint is like a server which you can send requests to and receive predictions in real time
 ## Obviously, designed with real use business cases in mind
 ## Downside - quite unintuitive for "normal" usage, and may not work with large number of time series
 ## Implemented anyway, as this is the recommended approach
 
-################
-## DATA PREP
-################
+# DATA PREP --------------------------------------------------------------------
 ## Function that takes a tidy dataframe, and produce a dataframe in the right format
 ## to be converted to the inference JSON format to make predictions
 ## Require the tidy_to_json function from before
@@ -283,9 +265,7 @@ session$upload_data("data", s3_bucket, key_prefix = "data")
 #   dataframe_json %>% json_to_inference_json()
 # }
 # 
-# ####################################
-# ## Set up model endpoint object
-# ####################################
+# Set up model endpoint object -------------------------------------------------
 # 
 # model_endpoint <- estimator$deploy(initial_instance_count = 1L,
 #                                    instance_type = 'ml.t2.medium',
@@ -297,14 +277,11 @@ session$upload_data("data", s3_bucket, key_prefix = "data")
 #   model_endpoint$predict(tidy_df %>% tidy_to_inf_json(start = "2000-01-01 00:00:00"))
 # }
 # 
-# ##################################################
-# ## Delete the endpoint afterwards to save $$$
+# Delete the endpoint afterwards to save $$$ -----------------------------------
 # 
 # session$delete_endpoint(model_endpoint$endpoint)
 
-######################################################
-## BATCH TRANSFORM APPROACH
-######################################################
+# BATCH TRANSFORM APPROACH -----------------------------------------------------
 ## Much more analagous to "normal" functions, this "transforms" input data to output data using a trained sagemaker model
 ## Also seems to be much more straightforward and well suited to large number of time series
 
@@ -349,9 +326,7 @@ tidy_to_batch_inf <- function(data, start, timeSlices, set) {
   pooled_panel_json
 }
 
-######################################################################
-### deepar_fit_stats function
-######################################################################
+# deepar_fit_stats function ----------------------------------------------------
 
 deepar_fit_stats <- function(pooled_panel, timeSlices) {
   ## Initialize
@@ -391,8 +366,7 @@ deepar_fit_stats <- function(pooled_panel, timeSlices) {
     s3$upload_file("./data/pooled_panel_train.json", s3_bucket, "data/pooled_panel_train.json")
     s3$upload_file("./data/pooled_panel_validation.json", s3_bucket, "data/pooled_panel_validation.json")
     
-    #########################################################################################
-    # Define an estimator
+    # Define an estimator --------------------------------------------------------
     
     estimator <- sagemaker$estimator$Estimator(
       sagemaker_session = session,
@@ -435,9 +409,7 @@ deepar_fit_stats <- function(pooled_panel, timeSlices) {
     estimator$fit(inputs = data_channels,
                   job_name = job_name)
     
-    ####################################
-    ## Batch Inference #################
-    ####################################
+    # Batch Inference ------------------------------------------------------------
     
     batch_input <- paste0("s3://", s3_bucket, "/batch/input/batch-inf-test.json")
     batch_output <- paste0("s3://", s3_bucket, "/batch/output")
@@ -490,9 +462,7 @@ deepar_fit_stats <- function(pooled_panel, timeSlices) {
   DEEPAR_stats
 }
 
-#########################
-## DeepAR_fit_all
-#########################
+# DeepAR_fit_all ---------------------------------------------------------------
 
 fit_all_models_deepar <- function(dataset_list, batch_process_range) {
   # Initialize List
@@ -528,7 +498,7 @@ fit_all_models_deepar <- function(dataset_list, batch_process_range) {
 
 batch_process_range <- c(1:5)
 
-############################################################################################
+# Load and fit nosv 0 models ---------------------------------------------------
 s3$download_file(s3_bucket, "data/g1_A1_nosv_0.rds", "./data/g1_A1_nosv_0.rds")
 g1_A1_nosv_0 <- readRDS("./data/g1_A1_nosv_0.rds")
 file.remove("./data/g1_A1_nosv_0.rds")
@@ -549,7 +519,7 @@ file.remove("./data/g3_A1_nosv_0.rds")
 g3_A1_nosv_0_DeepAR_results <- fit_all_models_deepar(g3_A1_nosv_0, batch_process_range)
 saveRDS(g3_A1_nosv_0_DeepAR_results, file = "./Model_results/g3_A1_nosv_0_DeepAR_results")
 rm(g3_A1_nosv_0)
-############################################################################################
+# Load and fit sv 0.01 models --------------------------------------------------
 s3$download_file(s3_bucket, "data/g1_A1_sv_0.01.rds", "./data/g1_A1_sv_0.01.rds")
 g1_A1_sv_0.01 <- readRDS("./data/g1_A1_sv_0.01.rds")
 file.remove("./data/g1_A1_sv_0.01.rds")
@@ -570,7 +540,7 @@ file.remove("./data/g3_A1_sv_0.01.rds")
 g3_A1_sv_0.01_DeepAR_results <- fit_all_models_deepar(g3_A1_sv_0.01, batch_process_range)
 saveRDS(g3_A1_sv_0.01_DeepAR_results, file = "./Model_results/g3_A1_sv_0.01_DeepAR_results")
 rm(g3_A1_sv_0.01)
-############################################################################################
+# Load and fit sv 0.1 models ---------------------------------------------------
 s3$download_file(s3_bucket, "data/g1_A1_sv_0.1.rds", "./data/g1_A1_sv_0.01.rds")
 g1_A1_sv_0.1 <- readRDS("./data/g1_A1_sv_0.1.rds")
 file.remove("./data/g1_A1_sv_0.1.rds")
@@ -591,7 +561,7 @@ file.remove("./data/g3_A1_sv_0.1.rds")
 g3_A1_sv_0.1_DeepAR_results <- fit_all_models_deepar(g3_A1_sv_0.1, batch_process_range)
 saveRDS(g3_A1_sv_0.1_DeepAR_results, file = "./Model_results/g3_A1_sv_0.1_DeepAR_results")
 rm(g3_A1_sv_0.1)
-#############################################################################################
+# Load and fit sv 1 models -----------------------------------------------------
 s3$download_file(s3_bucket, "data/g1_A1_sv_1.rds", "./data/g1_A1_sv_1.rds")
 g1_A1_sv_1 <- readRDS("./data/g1_A1_sv_1.rds")
 file.remove("./data/g1_A1_sv_1.rds")
