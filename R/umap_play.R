@@ -10,7 +10,7 @@ library(gganimate) # required for printing tours
 library(sneezy)
 final_dataset <- readRDS("~/Dropbox/website/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/final_dataset.rds")
 
-final_dataset_t<-final_dataset%>%select(-rt)
+final_dataset_t <- final_dataset |> select(-rt)
 
 row_sample<- sample(2:18048,3000, replace=F)
 col_sample<- sample(1:740,500, replace=F)
