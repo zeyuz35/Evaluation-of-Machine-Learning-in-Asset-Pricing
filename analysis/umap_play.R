@@ -1,13 +1,7 @@
 library(umap)
-library(purrr)
-library(tidyr)
 library(dplyr)
 library(ggplot2)
 library(Rtsne)
-#devtools::install_github("robjhyndman/tsfeatures")
-library(tsfeatures)
-library(gganimate) # required for printing tours
-library(sneezy)
 final_dataset <- readRDS("~/Dropbox/website/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/final_dataset.rds")
 
 final_dataset_t<-final_dataset%>%select(-rt)
