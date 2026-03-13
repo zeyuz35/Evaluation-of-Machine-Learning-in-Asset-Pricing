@@ -30,8 +30,8 @@ PredictorData2017 <- read_excel("PredictorData2017.xlsx",
     sheet = "Monthly", 
     na = "NaN")
 
-PredictorData2017_edit <- PredictorData2017 %>%
-  mutate(yearmon = as.yearmon(as.character(yyyymm), format = "%Y%m")) %>%
+PredictorData2017_edit <- PredictorData2017 |>
+  mutate(yearmon = as.yearmon(as.character(yyyymm), format = "%Y%m")) |>
   select(-yyyymm)
 
 
@@ -39,8 +39,8 @@ PredictorData2017_edit <- PredictorData2017 %>%
 logreturns <- log(PredictorData2017_edit$Index/ lag(PredictorData2017_edit$Index, 1))
 PredictorData2017_edit <- cbind(PredictorData2017_edit, logreturns)
 
-PredictorData2017_edit <- PredictorData2017_edit %>%
-  filter(yearmon >= as.yearmon(as.character(200001), format = "%Y%m")) %>%
+PredictorData2017_edit <- PredictorData2017_edit |>
+  filter(yearmon >= as.yearmon(as.character(200001), format = "%Y%m")) |>
   select(-csp, -Index)
 
 yearmon <- PredictorData2017_edit$yearmon
@@ -48,7 +48,7 @@ logreturns <- PredictorData2017_edit$logreturns
 
 #Build pairwise interactions
 PredictorData2017_pair <- model.matrix(logreturns ~ .^2, 
-                           data = PredictorData2017_edit %>%
+                           data = PredictorData2017_edit |>
                              select(-yearmon))
 
 PredictorData2017_pair <- as.data.frame(PredictorData2017_pair)
