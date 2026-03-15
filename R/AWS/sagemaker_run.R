@@ -272,7 +272,7 @@ estimator$fit(inputs = data_channels,
 ## Obviously, designed with real use business cases in mind
 ## Downside - quite unintuitive for "normal" usage, and may not work with large number of time series
 ## Implemented anyway, as this is the recommended approach
-## DO NOT USE THIS APPROACH, needlessly slow, complicated and expensive for our purposes
+## Do not use this approach; it is needlessly slow, complicated, and expensive.
 
 ## Commented out
 
