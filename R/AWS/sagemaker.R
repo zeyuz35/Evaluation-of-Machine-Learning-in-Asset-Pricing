@@ -106,6 +106,19 @@ s3_bucket <- session$default_bucket()
 s3_data_path <- paste0("s3://", s3_bucket, "/data/")
 s3_output_path <- paste0("s3://", s3_bucket, "/output/")
 
+# Custom Time Slices -----------------------------------------------------------
+#' Create Custom Time Slices
+#'
+#' Generates a list of training, validation, and test indices for time series.
+#' Supports expanding window evaluation over multiple sets.
+#'
+#' @param start Integer indicating the starting index.
+#' @param initialWindow Integer specifying the initial training window size.
+#' @param horizon Integer specifying the step size between sets.
+#' @param validation_size Integer specifying the validation set size.
+#' @param test_size Integer specifying the test set size.
+#' @param set_no Integer specifying the number of time slice sets to create.
+#' @return A list of length \code{set_no} containing lists of indices.
 customTimeSlices <- function(start, initialWindow, horizon, validation_size, test_size, set_no) {
   
   time_slice <- list(train = 0, validation = 0, test = 0)
