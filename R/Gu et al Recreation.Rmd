@@ -85,9 +85,9 @@ gen_C_bar <- function () {
   rho <- runif(P_c, 0.9, 1)
   
   for (t in 1:(Time+1)) {
-    for (j in 1:P_c) {
+    for (jj in 1:P_c) {
       #Gu et al set error term here to be standard normal
-      C_bar[[t+1]][, j] <- (C_bar[[t]][, j]*rho[j] + rnorm(N, 0, 1))
+      C_bar[[t+1]][, jj] <- (C_bar[[t]][, jj]*rho[jj] + rnorm(N, 0, 1))
     }  
   }
   
@@ -147,12 +147,12 @@ gu_gen_xt <- function(){
   xt <- c(0:Time)
   p <- 0.95
   
-  for (i in 1:(Time+1)) {
+  for (ii in 1:(Time+1)) {
     ut <- rnorm(1, 
                 mean = 0, 
                 sd = sqrt((1-p^2))
                 )
-    xt[1+i] <- p*xt[i] + ut
+    xt[1+ii] <- p*xt[ii] + ut
   }
   #Remove Initial
   xt <- xt[-1]
@@ -281,9 +281,9 @@ gu_gen_error <- function(ep_sd){
   )
   
   for (t in 1:Time+1){
-    for (i in 1:N) {
+    for (ii in 1:N) {
       #This is how you build in a specified variance for student t
-      error[[t]][i] <- rt(1, df = 5)*sqrt(ep_sd^2 * (5-2)/5)
+      error[[t]][ii] <- rt(1, df = 5)*sqrt(ep_sd^2 * (5-2)/5)
     }
   }
   
@@ -309,8 +309,8 @@ gu_gen_rt_resid <- function(v_sd, ep_sd){
   ##############################
   
   for (t in 1:(Time)) {
-    for (i in 1:N){
-      resid[[t+1]][i] <- Beta[[t+1]][i, ] %*% v[[t+1]] + error[[t+1]][i]
+    for (ii in 1:N){
+      resid[[t+1]][ii] <- Beta[[t+1]][ii, ] %*% v[[t+1]] + error[[t+1]][ii]
     }
   }
   return(resid)
@@ -326,8 +326,8 @@ gu_gen_rt <- function(g, resid){
   #########################
   
   for (t in 1:(Time)) {
-    for (i in 1:N){
-      rt[[t+1]][i] <- g(C, gu_xt, i, t, theta) + resid[[t+1]][i]
+    for (ii in 1:N){
+      rt[[t+1]][ii] <- g(C, gu_xt, ii, t, theta) + resid[[t+1]][ii]
     }
   }
   
@@ -407,8 +407,8 @@ for (t in 1:(Time+1)) {
 }
 
 #Remove 1st row because returns data only starts from t = 2
-rt_cross_tune_panel <- rt_cross_tune_panel %>%
-  filter(time != 1) %>%
+rt_cross_tune_panel <- rt_cross_tune_panel |>
+  filter(time != 1) |>
   mutate(return = resid + g)
 
 summary(rt_cross_tune_panel$resid_sq + rt_cross_tune_panel$g_sq - rt_cross_tune_panel$return_sq)
@@ -422,10 +422,10 @@ rt_id_tune_df <- data.frame(
   rsquare = c(1:N)
 )
 
-for (i in 1:N) {
-  rt_id_tune_panel <- rt_cross_tune_panel %>%
-    filter(stock == i)
-  rt_id_tune_df$rsquare[i] <- r_squared_proper(rt_id_tune_panel$g, rt_id_tune_panel$return)
+for (ii in 1:N) {
+  rt_id_tune_panel <- rt_cross_tune_panel |>
+    filter(stock == ii)
+  rt_id_tune_df$rsquare[ii] <- r_squared_proper(rt_id_tune_panel$g, rt_id_tune_panel$return)
 }
 
 #Return mean of each individual time series rsquared
@@ -441,10 +441,10 @@ vol_tune_df <- data.frame(
   annual_vol = c(1:N)
 )
 
-for (i in 1:N) {
-  vol_tune_panel <- rt_cross_tune_panel %>%
-    filter(stock == i)
-  vol_tune_df$annual_vol[i] <- sd(vol_tune_panel$return) * sqrt(12)
+for (ii in 1:N) {
+  vol_tune_panel <- rt_cross_tune_panel |>
+    filter(stock == ii)
+  vol_tune_df$annual_vol[ii] <- sd(vol_tune_panel$return) * sqrt(12)
 }
 
 #Return the mean annualized volatility
@@ -464,7 +464,7 @@ rt_cross_section <- data.frame(
 for (t in 2:(Time+1)) {
   rt_cross_section$time <- t
   
-  rt_cross_tune_panel_cross_section <- rt_cross_tune_panel %>% 
+  rt_cross_tune_panel_cross_section <- rt_cross_tune_panel |>
     filter(time == t)
   
   rt_cross_section$rsquare[t-1] <- r_squared_proper(rt_cross_tune_panel_cross_section$g, rt_cross_tune_panel_cross_section$return)
