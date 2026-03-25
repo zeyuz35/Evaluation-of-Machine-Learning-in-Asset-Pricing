@@ -1112,8 +1112,8 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
     
     print_dot_callback <- callback_lambda(
       on_epoch_end = function(epoch, logs) {
-        if (epoch %% 50 == 0) cat("\n")
-        cat(".")
+        if (epoch %% 50 == 0) message("\n", appendLF = FALSE)
+        message(".", appendLF = FALSE)
       }
     ) 
     
