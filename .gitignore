@@ -27,3 +27,24 @@ R/final_dataset.csv
 R/.Rhistory
 R/.RDataTmp2
 R/empirical_robustness/ff_factors/final_dataset.rds
+
+# IDE files
+*.Rproj
+.Rproj.user/
+*.Rhistory
+
+# Build artifacts and compiled binaries
+*.tar.gz
+check/
+..Rcheck/
+00check.log
+*.o
+*.so
+*.dll
+*.exe
+
+# R package installation artifacts
+Meta/
+html/
+help/
+libs/
