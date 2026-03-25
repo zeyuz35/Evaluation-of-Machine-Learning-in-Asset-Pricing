@@ -472,10 +472,9 @@ gen_g_factor_panel <- function(g_function, C, x) {
 #Remmeber to make sure theta and the factor set are conformable
 gen_g_panel <- function(g_factor, theta) {
   g_panel <- array(0, dim = c(N, 1, Time))
-  for (i in 1:N) {
-    for (t in 1:Time) {
-      g_panel[i, 1, t] <- g_factor[i, , t] %*% t(theta)
-    }
+  for (tt in 1:Time) {
+    # Vectorized matrix multiplication: equivalent to g_panel[, 1, tt] <- g_factor[, , tt] %*% t(theta)
+    g_panel[, 1, tt] <- tcrossprod(g_factor[, , tt], theta)
   }
   return(g_panel)
 }
