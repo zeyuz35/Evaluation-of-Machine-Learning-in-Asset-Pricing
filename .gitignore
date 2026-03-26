@@ -27,3 +27,25 @@ R/final_dataset.csv
 R/.Rhistory
 R/.RDataTmp2
 R/empirical_robustness/ff_factors/final_dataset.rds
+
+# IDE files
+*.Rproj
+.Rproj.user/
+.Rhistory
+
+# Build artifacts
+*.tar.gz
+check/
+..Rcheck/
+00check.log
+
+# Compiled binaries
+*.o
+*.so
+*.dll
+
+# XGBoost vendored package build artifacts
+R/xgboost/Meta/
+R/xgboost/html/
+R/xgboost/help/
+R/xgboost/libs/
