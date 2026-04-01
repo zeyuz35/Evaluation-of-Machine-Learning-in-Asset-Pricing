@@ -120,36 +120,48 @@ pooled_panel <- readRDS("data/pooled_panel.rds")
 
 ###########################################################################
 library(jsonlite)
-###########################################################################
-## Function that takes data frame in tidy format, and outputs a dataframe 
-## that is ready to be exported to JSON for use with sagemaker deepar
-
+#' Convert Tidy Data to JSON Format for SageMaker DeepAR
+#'
+#' Transforms a tidy data frame into a structured format ready for JSON export.
+#' The output is formatted specifically for use with AWS SageMaker DeepAR.
+#'
+#' @param data A \code{data.frame} containing the tidy panel data to format.
+#' @param start A character string indicating the start time of the time series.
+#' @return A \code{data.frame} containing formatted start, target, and dynamic feature variables.
+#' @examples
+#' # Create sample data
+#' sample_data <- data.frame(stock = c("A", "A", "B", "B"), time = 1:4, rt = rnorm(4), feat1 = rnorm(4))
+#' # Convert to JSON format
+#' json_ready <- tidy_to_json(sample_data, start = "2000-01-01 00:00:00")
+#' @export
 tidy_to_json <- function(data, start) {
+  # Initialization -------------------------------------------------------------
   stock_id <- data$stock %>%
     unique()
   
-  # Number of cross sectional units
   cross_units <- length(stock_id)
   
-  ## JUst setting the beginning time to something arbitrary for now, change if needed
-  pooled_panel_json <- data.frame(start = rep(start, cross_units), 
-                                  target = c(1:cross_units), 
-                                  dynamic_feat = c(1:cross_units))
+  # Just setting the beginning time to something arbitrary for now, change if needed
+  pooled_panel_json <- data.frame(
+    start = rep(start, cross_units),
+    target = c(1:cross_units),
+    dynamic_feat = c(1:cross_units)
+  )
   
-  for (i in 1:cross_units) {
+  # Formatting Loop ------------------------------------------------------------
+  for (ii in 1:cross_units) {
     pooled_panel_filter <- data %>%
-      filter(stock == stock_id[i])
+      filter(stock == stock_id[ii])
     
-    pooled_panel_json$target[i] <- list(pooled_panel_filter$rt)
+    pooled_panel_json$target[ii] <- list(pooled_panel_filter$rt)
     
     pooled_panel_filter_feature <- pooled_panel_filter %>%
       select(-time, -rt, -stock) %>%
       unname() %>%
       as.matrix() %>%
-      # Transpose it to get the right format of one feature series per row
       t()
     
-    pooled_panel_json[i, ]$dynamic_feat <- pooled_panel_filter_feature %>% list()
+    pooled_panel_json[ii, ]$dynamic_feat <- pooled_panel_filter_feature %>% list()
   }
   pooled_panel_json
 }
