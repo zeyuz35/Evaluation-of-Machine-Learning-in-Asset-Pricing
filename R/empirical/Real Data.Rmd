@@ -420,8 +420,8 @@ write.csv(individual_factor_names, file = "individual_factor_names.csv")
 ## This section builds in the macro dataset and egnerates the interaction terms
 interaction_terms <- rep(list(0), length(macro_factor_names))
 
-for (i in 1:length(macro_factor_names)) {
-  interaction_terms[[i]] <- paste(macro_factor_names[i], individual_factor_names, sep = ":", collapse = " + ")
+for (ii in 1:length(macro_factor_names)) {
+  interaction_terms[[ii]] <- paste(macro_factor_names[ii], individual_factor_names, sep = ":", collapse = " + ")
 }
 
 interaction_formula <- as.formula(c("~ ", paste(interaction_terms, collapse = "+")))
@@ -816,8 +816,8 @@ ELN_model_grid <- function(alpha_grid, train_x, train_y, validation_x, validatio
 
 get_ELN_best_tune <- function(model_grid) {
   ELN_tune_dataframe <- cbind(model_grid[[1]]$ELN_grid, list_index = 1)
-  for (i in 2:length(model_grid)) {
-    ELN_tune_dataframe <- rbind(ELN_tune_dataframe, cbind(model_grid[[i]]$ELN_grid, list_index = i))
+  for (ii in 2:length(model_grid)) {
+    ELN_tune_dataframe <- rbind(ELN_tune_dataframe, cbind(model_grid[[ii]]$ELN_grid, list_index = ii))
   }
   ELN_tune_dataframe <- data.frame(ELN_tune_dataframe)
   return(ELN_tune_dataframe[which.min(ELN_tune_dataframe$validation_loss), ])
@@ -908,22 +908,22 @@ RF_fit_model_grid <- function(f, train, validation, RF_grid, loss_function) {
   #Initialize List
   RF_model_grid <- rep(list(0), nrow(RF_grid))
   
-  for (i in 1:nrow(RF_grid)) {
+  for (ii in 1:nrow(RF_grid)) {
     
-    RF_model_grid[[i]] <- list(RF_grid = 0, model = 0)
+    RF_model_grid[[ii]] <- list(RF_grid = 0, model = 0)
     
     #MSE Case
     if (loss_function == "mse") {
       RF <- rfsrc(f, train, 
                   #Hyperparameters
-                  ntree = RF_grid$ntree[i],
-                  mtry = RF_grid$mtry[i],
-                  nodesize = RF_grid$nodesize[i],
+                  ntree = RF_grid$ntree[ii],
+                  mtry = RF_grid$mtry[ii],
+                  nodesize = RF_grid$nodesize[ii],
                   splitrule = "mse"
                   )
       
-      #RF_model_grid[[i]]$model <- RF
-      RF_model_grid[[i]]$RF_grid <- cbind(RF_grid[i, ],
+      #RF_model_grid[[ii]]$model <- RF
+      RF_model_grid[[ii]]$RF_grid <- cbind(RF_grid[ii, ],
                                           #Train Loss
                                           train_loss = mse(train$rt, predict(RF, newdata = train)$predicted),
                                           #Validation Loss
@@ -934,15 +934,15 @@ RF_fit_model_grid <- function(f, train, validation, RF_grid, loss_function) {
       #MAE Case
       RF <- rfsrc(f, train, 
                   #Hyperparameters
-                  ntree = RF_grid$ntree[i],
-                  mtry = RF_grid$mtry[i],
-                  nodesize = RF_grid$nodesize[i],
+                  ntree = RF_grid$ntree[ii],
+                  mtry = RF_grid$mtry[ii],
+                  nodesize = RF_grid$nodesize[ii],
                   splitrule = "quantile.regr",
                   prob = 0.5
                   )
       
-      #RF_model_grid[[i]]$model <- RF
-      RF_model_grid[[i]]$RF_grid <- cbind(RF_grid[i, ],
+      #RF_model_grid[[ii]]$model <- RF
+      RF_model_grid[[ii]]$RF_grid <- cbind(RF_grid[ii, ],
                                           #Train Loss
                                           train_loss = mae(train$rt, predict(RF)$predicted),
                                           #Validation Loss
@@ -957,8 +957,8 @@ RF_fit_model_grid <- function(f, train, validation, RF_grid, loss_function) {
 
 get_RF_best_tune <- function(RF_model_grid) {
   RF_tune_grid <- RF_model_grid[[1]]$RF_grid
-  for (i in 2:length(RF_model_grid)) {
-    RF_tune_grid <- rbind(RF_tune_grid, RF_model_grid[[i]]$RF_grid)
+  for (ii in 2:length(RF_model_grid)) {
+    RF_tune_grid <- rbind(RF_tune_grid, RF_model_grid[[ii]]$RF_grid)
   }
   return(RF_tune_grid[which.min(RF_tune_grid$validation_loss), ])
 }
