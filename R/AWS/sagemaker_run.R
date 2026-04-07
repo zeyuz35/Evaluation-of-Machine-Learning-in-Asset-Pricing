@@ -125,7 +125,7 @@ library(jsonlite)
 ## that is ready to be exported to JSON for use with sagemaker deepar
 
 tidy_to_json <- function(data, start) {
-  stock_id <- data$stock %>%
+  stock_id <- data$stock |>
     unique()
   
   # Number of cross sectional units
@@ -136,20 +136,20 @@ tidy_to_json <- function(data, start) {
                                   target = c(1:cross_units), 
                                   dynamic_feat = c(1:cross_units))
   
-  for (i in 1:cross_units) {
-    pooled_panel_filter <- data %>%
-      filter(stock == stock_id[i])
+  for (cross_unit_ii in 1:cross_units) {
+    pooled_panel_filter <- data |>
+      filter(stock == stock_id[cross_unit_ii])
     
-    pooled_panel_json$target[i] <- list(pooled_panel_filter$rt)
+    pooled_panel_json$target[cross_unit_ii] <- list(pooled_panel_filter$rt)
     
-    pooled_panel_filter_feature <- pooled_panel_filter %>%
-      select(-time, -rt, -stock) %>%
-      unname() %>%
-      as.matrix() %>%
+    pooled_panel_filter_feature <- pooled_panel_filter |>
+      select(-time, -rt, -stock) |>
+      unname() |>
+      as.matrix() |>
       # Transpose it to get the right format of one feature series per row
       t()
     
-    pooled_panel_json[i, ]$dynamic_feat <- pooled_panel_filter_feature %>% list()
+    pooled_panel_json[cross_unit_ii, ]$dynamic_feat <- pooled_panel_filter_feature |> list()
   }
   pooled_panel_json
 }
