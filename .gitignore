@@ -27,3 +27,22 @@ R/final_dataset.csv
 R/.Rhistory
 R/.RDataTmp2
 R/empirical_robustness/ff_factors/final_dataset.rds
+
+# Artifact hygiene
+*.o
+*.so
+*.dll
+*.tar.gz
+*.Rcheck/
+..Rcheck/
+00check.log
+R_check_bin/
+Meta/
+html/
+help/
+*.rdb
+*.rdx
+libs/
+.Rproj.user/
+*.Rproj
+.Rhistory
