@@ -1,3 +1,5 @@
+source(here::here("R", "utils", "utils_integrity.R"))
+
 ---
 title: "Simulation Models"
 author: "Ze Yu Zhong"
@@ -138,7 +140,7 @@ LM_variable_importance <- function(test, lm_model) {
 # Penalized Linear Model
 
 ELN_variable_importance <- function(test, eln_model, alpha, lambda) {
-  test_x <- as.matrix(test[4:ncol(test)])
+  test_x <- as_matrix_preserve(test[4:ncol(test)])
   
   variable_importance_df <- foreach(i = (1:ncol(test_x)), .combine = "rbind") %dopar% {
     test_x_zero <- test_x
@@ -186,9 +188,9 @@ NNet_variable_importance <- function(test, nnet_model) {
     test_x_zero <- test_x
     test_x_zero[, i] <- 0
 
-    original_R2 <- R2(predict(nnet_model, as.matrix(test_x)), test$rt, form = "traditional")
+    original_R2 <- R2(predict(nnet_model, as_matrix_preserve(test_x)), test$rt, form = "traditional")
 
-    new_R2 <- R2(predict(nnet_model, as.matrix(test_x_zero)), test$rt, form = "traditional")
+    new_R2 <- R2(predict(nnet_model, as_matrix_preserve(test_x_zero)), test$rt, form = "traditional")
 
     variable_importance <- data.frame(variable = colnames(test_x)[i], importance = (original_R2 - new_R2))
 
@@ -235,7 +237,7 @@ eln_ave_forecast_resids <- function(eln_model, test, alpha, lambda) {
     test_cross_section <- test %>%
       filter(time == time_periods[t])
 
-    test_cross_section_x <- as.matrix(test_cross_section[4:ncol(test_cross_section)])
+    test_cross_section_x <- as_matrix_preserve(test_cross_section[4:ncol(test_cross_section)])
     
     residuals <- test_cross_section$rt - predict(eln_model, test_cross_section_x,
                                                  alpha = alpha, lambda = lambda)
@@ -278,7 +280,7 @@ nnet_ave_forecast_resids <- function(nnet_model, test) {
     
     test_cross_section_x <- test_cross_section[4:ncol(test_cross_section)]
     
-    residuals <- test_cross_section$rt - (nnet_model %>% predict(as.matrix(test_cross_section_x)))
+    residuals <- test_cross_section$rt - (nnet_model %>% predict(as_matrix_preserve(test_cross_section_x)))
     
     mean(residuals)
   }
@@ -475,12 +477,12 @@ ELN_fit_stats <- function(ELN_grid, nlambda, timeSlices, pooled_panel, loss_func
     test <- pooled_panel %>%
       filter(time %in% timeSlices[[set]]$test)
     
-    train_x <- as.matrix(train[4:ncol(train)])
-    train_y <- as.matrix(train$rt)
-    validation_x <- as.matrix(validation[4:ncol(validation)])
-    validation_y <- as.matrix(validation$rt)
-    test_x <- as.matrix(test[4:ncol(test)])
-    test_y <- as.matrix(test$rt)
+    train_x <- as_matrix_preserve(train[4:ncol(train)])
+    train_y <- as_matrix_preserve(train$rt)
+    validation_x <- as_matrix_preserve(validation[4:ncol(validation)])
+    validation_y <- as_matrix_preserve(validation$rt)
+    test_x <- as_matrix_preserve(test[4:ncol(test)])
+    test_y <- as_matrix_preserve(test$rt)
       
     #Get models fit over the grid of hyperparameters
     ELN_model_grid <- ELN_model_grid(ELN_grid, train_x, train_y, validation_x, validation_y, loss_function, nlambda = nlambda)
@@ -604,12 +606,12 @@ ELN_fit_stats <- function(alpha_grid, nlamb, timeSlices, pooled_panel, loss_func
     test <- pooled_panel %>%
       filter(time %in% timeSlices[[set]]$test)
     
-    train_x <- as.matrix(train[4:ncol(train)])
-    train_y <- as.matrix(train$rt)
-    validation_x <- as.matrix(validation[4:ncol(validation)])
-    validation_y <- as.matrix(validation$rt)
-    test_x <- as.matrix(test[4:ncol(test)])
-    test_y <- as.matrix(test$rt)
+    train_x <- as_matrix_preserve(train[4:ncol(train)])
+    train_y <- as_matrix_preserve(train$rt)
+    validation_x <- as_matrix_preserve(validation[4:ncol(validation)])
+    validation_y <- as_matrix_preserve(validation$rt)
+    test_x <- as_matrix_preserve(test[4:ncol(test)])
+    test_y <- as_matrix_preserve(test$rt)
       
     #Get models fit over the grid of hyperparameters
     ELN_model_grid <- ELN_model_grid(alpha_grid, train_x, train_y, validation_x, validation_y, loss_function, nlamb = nlamb)
@@ -1155,16 +1157,16 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
     # Namely, batch size
     # In general, larger batch sizes result in faster progress in training, but don't always converge as fast. Smaller batch sizes train slower, but can converge faster.
     # Default batch size is 32
-    neural_network %>% fit(as.matrix(train_x), as.matrix(train_y), 
+    neural_network %>% fit(as_matrix_preserve(train_x), as_matrix_preserve(train_y),
                            batch_size = batch_size, epochs = 500, verbose = 0, 
-                           validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
+                           validation_data = list(as_matrix_preserve(validation_x), as_matrix_preserve(validation_y)),
                            callbacks = list(early_stop, print_dot_callback))
     
     #Model
     #NNet_stats[[set]]$model <- neural_network
     
     #Train
-    train_predict <- neural_network %>% predict(as.matrix(train_x))
+    train_predict <- neural_network %>% predict(as_matrix_preserve(train_x))
     
     NNet_stats[[set]]$loss_stats$train_MAE <- mae(train$rt, train_predict)
     NNet_stats[[set]]$loss_stats$train_MSE <- mse(train$rt, train_predict)
@@ -1172,7 +1174,7 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
     NNet_stats[[set]]$loss_stats$train_RSquare <- R2(train_predict, train$rt, form = "traditional")
           
     #Validation
-    validation_predict <- neural_network %>% predict(as.matrix(validation_x))
+    validation_predict <- neural_network %>% predict(as_matrix_preserve(validation_x))
     
     NNet_stats[[set]]$loss_stats$validation_MAE <- mae(validation$rt, validation_predict)
     NNet_stats[[set]]$loss_stats$validation_MSE <- mse(validation$rt, validation_predict)
@@ -1180,7 +1182,7 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
     NNet_stats[[set]]$loss_stats$validation_RSquare <- R2(validation_predict, validation$rt, form = "traditional")
       
     #Test
-    test_predict <- neural_network %>% predict(as.matrix(test_x))
+    test_predict <- neural_network %>% predict(as_matrix_preserve(test_x))
     
     NNet_stats[[set]]$loss_stats$test_MAE <- mae(test$rt, test_predict)
     NNet_stats[[set]]$loss_stats$test_MSE <- mse(test$rt, test_predict)
@@ -1412,7 +1414,7 @@ LSTM_fit_stats <- function(pooled_panel, timeSlices, loss_function, batch_size, 
       X_array[t, 1, ] <- pooled_panel_trunc %>%
       dplyr::filter(time == t+1) %>%
       dplyr::select(-rt, -time) %>%
-      as.matrix() %>%
+      as_matrix_preserve() %>%
       as.vector()
     }
     
@@ -1420,7 +1422,7 @@ LSTM_fit_stats <- function(pooled_panel, timeSlices, loss_function, batch_size, 
       Y_array[t, ] <- pooled_panel_trunc %>%
         dplyr::filter(time == t+1) %>%
         dplyr::select(rt) %>%
-        as.matrix() %>%
+        as_matrix_preserve() %>%
         as.vector()
     }
     
@@ -1983,7 +1985,7 @@ fforma_fit_stats <- function(pooled_panel, timeSlices, loss_function) {
     #################################################################
     ## XGBOOST
     
-    dtrain <- xgb.DMatrix(data = as.matrix(train_list$data), 
+    dtrain <- xgb.DMatrix(data = as_matrix_preserve(train_list$data),
                           label = train_list$labels[, 1])
     labels <- train_list$labels[, 1]
     errors <- train_list$errors
@@ -2006,7 +2008,7 @@ fforma_fit_stats <- function(pooled_panel, timeSlices, loss_function) {
     ## Validation Predictions
     ## Note that this was originally used for the bayesian optimization of parameters
     ## As we are skipping that due to computational restrictions, this will also be commented out
-    pred <- predict(bst, newdata = xgboost::xgb.DMatrix(as.matrix(validation_list$data)),
+    pred <- predict(bst, newdata = xgboost::xgb.DMatrix(as_matrix_preserve(validation_list$data)),
                     outputmargin = TRUE, reshape=TRUE)
     pred <- t(apply(pred, 1, softmax_transform))
 
@@ -2017,7 +2019,7 @@ fforma_fit_stats <- function(pooled_panel, timeSlices, loss_function) {
     validation_forecasts <- validation_forecasts %>% t %>% c
     
     ## Test Set Predictions
-    pred <- predict(bst, newdata = xgboost::xgb.DMatrix(as.matrix(test_list$data)), 
+    pred <- predict(bst, newdata = xgboost::xgb.DMatrix(as_matrix_preserve(test_list$data)),
                     outputmargin = TRUE, reshape=TRUE)
     pred <- t(apply(pred, 1, softmax_transform))
     test_forecasts <- foreach(i = 1:nrow(pred), .combine = "rbind") %do% {
@@ -2092,14 +2094,14 @@ fforma[[3]]$loss_stats
 #                 subsample = subsample,
 #                 colsample_bytree = colsample_bytree)
 #   
-#   dtrain <- xgb.DMatrix(data = as.matrix(train_list$data), 
+#   dtrain <- xgb.DMatrix(data = as_matrix_preserve(train_list$data),
 #                         label = train_list$labels[, 1])
 #   
 #   attr(dtrain, "errors") <- train_list$errors
 #   
 #   bst <- xgboost::xgb.train(params = param, data = dtrain, nrounds = 400, verbose = 1)
 #   
-#   pred <- predict(bst, newdata = xgboost::xgb.DMatrix(as.matrix(validation_list$data)), 
+#   pred <- predict(bst, newdata = xgboost::xgb.DMatrix(as_matrix_preserve(validation_list$data)),
 #                   outputmargin = TRUE, reshape=TRUE)
 #   pred <- t(apply(pred, 1, softmax_transform))
 #   
