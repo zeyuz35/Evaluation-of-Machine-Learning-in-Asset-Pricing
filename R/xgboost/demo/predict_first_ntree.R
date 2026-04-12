@@ -1,3 +1,4 @@
+# Section Setup ---------------------------------------------------------------
 require(xgboost)
 # load in the agaricus dataset
 data(agaricus.train, package='xgboost')
@@ -11,13 +12,13 @@ nrounds = 2
 
 # training the model for two rounds
 bst = xgb.train(param, dtrain, nrounds, nthread = 2, watchlist)
-cat('start testing prediction from first n trees\n')
-labels <- getinfo(dtest,'label')
+message('start testing prediction from first n trees')
+labels <- getinfo(dtest, 'label')
 
 ### predict using first 1 tree
-ypred1 = predict(bst, dtest, ntreelimit=1)
+ypred1 <- predict(bst, dtest, ntreelimit = 1)
 # by default, we predict using all the trees
-ypred2 = predict(bst, dtest)
+ypred2 <- predict(bst, dtest)
 
-cat('error of ypred1=', mean(as.numeric(ypred1>0.5)!=labels),'\n')
-cat('error of ypred2=', mean(as.numeric(ypred2>0.5)!=labels),'\n')
+message(paste0('error of ypred1=', mean(as.numeric(ypred1 > 0.5) != labels)))
+message(paste0('error of ypred2=', mean(as.numeric(ypred2 > 0.5) != labels)))
