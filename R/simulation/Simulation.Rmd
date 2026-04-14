@@ -104,7 +104,8 @@ gen_W <- function(lambda_degree){
   )
   
   #Use Lambda to create B matrix
-  B <- (Lambda) %*% t(Lambda)
+  # tcrossprod(Lambda) is equivalent to Lambda %*% t(Lambda) but faster
+  B <- tcrossprod(Lambda)
   B <- B + 1/10*diag(nrow = nrow(B))
   
   # B is now a positive semi definite matrix
@@ -474,7 +475,8 @@ gen_g_panel <- function(g_factor, theta) {
   g_panel <- array(0, dim = c(N, 1, Time))
   for (i in 1:N) {
     for (t in 1:Time) {
-      g_panel[i, 1, t] <- g_factor[i, , t] %*% t(theta)
+      # tcrossprod is equivalent to %*% t() but faster
+      g_panel[i, 1, t] <- tcrossprod(g_factor[i, , t], theta)
     }
   }
   return(g_panel)
