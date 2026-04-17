@@ -27,3 +27,18 @@ R/final_dataset.csv
 R/.Rhistory
 R/.RDataTmp2
 R/empirical_robustness/ff_factors/final_dataset.rds
+
+# Binder - Build artifacts and temporary files
+Meta/
+html/
+help/
+libs/
+*.rdb
+*.rdx
+*.so
+*.o
+*.dll
+.Rcheck/
+..Rcheck/
+00check.log
+R_check_bin/
