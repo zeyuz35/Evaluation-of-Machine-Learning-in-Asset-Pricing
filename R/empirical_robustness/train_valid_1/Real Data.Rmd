@@ -608,9 +608,9 @@ NNet_variable_importance <- function(test, nnet_model,
     zero_indices <- which(str_detect(colnames(test_x_zero), all_factor_names[i]) == 1)
     test_x_zero[, zero_indices] <- 0
 
-    original_R2 <- R2(predict(nnet_model, as.matrix(test_x)), test$rt, form = "traditional")
+    original_R2 <- R2(predict(nnet_model, as_matrix_preserve(test_x)), test$rt, form = "traditional")
 
-    new_R2 <- R2(predict(nnet_model, as.matrix(test_x_zero)), test$rt, form = "traditional")
+    new_R2 <- R2(predict(nnet_model, as_matrix_preserve(test_x_zero)), test$rt, form = "traditional")
 
     variable_importance <- data.frame(variable = all_factor_names[i], importance = (original_R2 - new_R2))
 
@@ -698,7 +698,7 @@ nnet_ave_forecast_resids <- function(nnet_model, test) {
     
     test_cross_section_x <- test_cross_section[4:ncol(test_cross_section)]
     
-    residuals <- test_cross_section$rt - (nnet_model %>% predict(as.matrix(test_cross_section_x)))
+    residuals <- test_cross_section$rt - (nnet_model %>% predict(as_matrix_preserve(test_cross_section_x)))
     
     mean(residuals)
   }
@@ -1280,14 +1280,14 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
     # Default batch size is 32
     neural_network %>% fit(as.matrix(train_x), as.matrix(train_y), 
                            batch_size = batch_size, epochs = 500, verbose = 1, 
-                           validation_data = list(as.matrix(validation_x), as.matrix(validation_y)),
+                           validation_data = list(as_matrix_preserve(validation_x), as.matrix(validation_y)),
                            callbacks = list(early_stop, print_dot_callback))
     
     # Model
     # NNet_stats[[set]]$model <- neural_network
     
     #Train
-    train_predict <- neural_network %>% predict(as.matrix(train_x))
+    train_predict <- neural_network %>% predict(as_matrix_preserve(train_x))
     
     NNet_stats[[set]]$loss_stats$train_MAE <- mae(train$rt, train_predict)
     NNet_stats[[set]]$loss_stats$train_MSE <- mse(train$rt, train_predict)
@@ -1295,7 +1295,7 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
     NNet_stats[[set]]$loss_stats$train_RSquare <- R2(train_predict, train$rt, form = "traditional")
           
     #Validation
-    validation_predict <- neural_network %>% predict(as.matrix(validation_x))
+    validation_predict <- neural_network %>% predict(as_matrix_preserve(validation_x))
     
     NNet_stats[[set]]$loss_stats$validation_MAE <- mae(validation$rt, validation_predict)
     NNet_stats[[set]]$loss_stats$validation_MSE <- mse(validation$rt, validation_predict)
@@ -1303,7 +1303,7 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
     NNet_stats[[set]]$loss_stats$validation_RSquare <- R2(validation_predict, validation$rt, form = "traditional")
       
     #Test
-    test_predict <- neural_network %>% predict(as.matrix(test_x))
+    test_predict <- neural_network %>% predict(as_matrix_preserve(test_x))
     
     NNet_stats[[set]]$loss_stats$test_MAE <- mae(test$rt, test_predict)
     NNet_stats[[set]]$loss_stats$test_MSE <- mse(test$rt, test_predict)
