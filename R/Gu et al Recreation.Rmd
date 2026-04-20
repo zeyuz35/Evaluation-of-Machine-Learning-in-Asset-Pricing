@@ -407,8 +407,8 @@ for (t in 1:(Time+1)) {
 }
 
 #Remove 1st row because returns data only starts from t = 2
-rt_cross_tune_panel <- rt_cross_tune_panel %>%
-  filter(time != 1) %>%
+rt_cross_tune_panel <- rt_cross_tune_panel |>
+  filter(time != 1) |>
   mutate(return = resid + g)
 
 summary(rt_cross_tune_panel$resid_sq + rt_cross_tune_panel$g_sq - rt_cross_tune_panel$return_sq)
@@ -423,7 +423,7 @@ rt_id_tune_df <- data.frame(
 )
 
 for (i in 1:N) {
-  rt_id_tune_panel <- rt_cross_tune_panel %>%
+  rt_id_tune_panel <- rt_cross_tune_panel |>
     filter(stock == i)
   rt_id_tune_df$rsquare[i] <- r_squared_proper(rt_id_tune_panel$g, rt_id_tune_panel$return)
 }
@@ -442,7 +442,7 @@ vol_tune_df <- data.frame(
 )
 
 for (i in 1:N) {
-  vol_tune_panel <- rt_cross_tune_panel %>%
+  vol_tune_panel <- rt_cross_tune_panel |>
     filter(stock == i)
   vol_tune_df$annual_vol[i] <- sd(vol_tune_panel$return) * sqrt(12)
 }
@@ -464,7 +464,7 @@ rt_cross_section <- data.frame(
 for (t in 2:(Time+1)) {
   rt_cross_section$time <- t
   
-  rt_cross_tune_panel_cross_section <- rt_cross_tune_panel %>% 
+  rt_cross_tune_panel_cross_section <- rt_cross_tune_panel |>
     filter(time == t)
   
   rt_cross_section$rsquare[t-1] <- r_squared_proper(rt_cross_tune_panel_cross_section$g, rt_cross_tune_panel_cross_section$return)
