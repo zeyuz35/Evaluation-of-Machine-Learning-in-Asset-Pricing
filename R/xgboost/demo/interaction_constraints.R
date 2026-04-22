@@ -10,8 +10,8 @@ treeInteractions <- function(input_tree, input_max_depth){
   if (nrow(input_tree) == 1) return(list())
 
   # Attach parent nodes
-  for (i in 2:input_max_depth){
-    if (i == 2) trees[, ID_merge:=ID] else trees[, ID_merge:=get(paste0('parent_',i-2))]
+  for (ii in 2:input_max_depth){
+    if (ii == 2) trees[, ID_merge:=ID] else trees[, ID_merge:=get(paste0('parent_',ii-2))]
     parents_left <- trees[!is.na(Split), list(i.id=ID, i.feature=Feature, ID_merge=Yes)]
     parents_right <- trees[!is.na(Split), list(i.id=ID, i.feature=Feature, ID_merge=No)]
 
@@ -20,11 +20,11 @@ treeInteractions <- function(input_tree, input_max_depth){
     setorderv(parents_right, 'ID_merge')
 
     trees <- merge(trees, parents_left, by='ID_merge', all.x=T)
-    trees[!is.na(i.id), c(paste0('parent_', i-1), paste0('parent_feat_', i-1)):=list(i.id, i.feature)]
+    trees[!is.na(i.id), c(paste0('parent_', ii-1), paste0('parent_feat_', ii-1)):=list(i.id, i.feature)]
     trees[, c('i.id','i.feature'):=NULL]
 
     trees <- merge(trees, parents_right, by='ID_merge', all.x=T)
-    trees[!is.na(i.id), c(paste0('parent_', i-1), paste0('parent_feat_', i-1)):=list(i.id, i.feature)]
+    trees[!is.na(i.id), c(paste0('parent_', ii-1), paste0('parent_feat_', ii-1)):=list(i.id, i.feature)]
     trees[, c('i.id','i.feature'):=NULL]
   }
 
@@ -47,8 +47,8 @@ treeInteractions <- function(input_tree, input_max_depth){
 
 # Generate sample data
 x <- list()
-for (i in 1:10){
-  x[[i]] = i*rnorm(1000, 10)
+for (ii in 1:10){
+  x[[ii]] <- ii*rnorm(1000, 10)
 }
 x <- as.data.table(x)
 
@@ -93,13 +93,13 @@ bst3_interactions <- treeInteractions(bst3_tree, 4)  # interactions still constr
 
 # Show monotonic constraints still apply by checking scores after incrementing V1
 x1 <- sort(unique(x[['V1']]))
-for (i in 1:length(x1)){
+for (ii in seq_along(x1)){
   testdata <- copy(x[, -c('V1')])
-  testdata[['V1']] <- x1[i]
+  testdata[['V1']] <- x1[ii]
   testdata <- testdata[, paste0('V',1:10), with=F]
   pred <- predict(bst3, as.matrix(testdata))
   
   # Should not print out anything due to monotonic constraints
-  if (i > 1) if (any(pred > prev_pred)) print(i)
+  if (ii > 1) if (any(pred > prev_pred)) message(ii)
   prev_pred <- pred 
 }
