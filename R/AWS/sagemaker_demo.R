@@ -21,24 +21,24 @@ ggplot(abalone, aes(x = height, y = rings, color = sex)) + geom_point() + geom_j
 
 ## Cleaning
 
-abalone <- abalone %>%
+abalone <- abalone |>
   filter(height != 0)
 
-abalone <- abalone %>%
+abalone <- abalone |>
   mutate(female = as.integer(ifelse(sex == 'F', 1, 0)),
          male = as.integer(ifelse(sex == 'M', 1, 0)),
-         infant = as.integer(ifelse(sex == 'I', 1, 0))) %>%
+         infant = as.integer(ifelse(sex == 'I', 1, 0))) |>
   select(-sex)
-abalone <- abalone %>%
+abalone <- abalone |>
   select(rings:infant, length:shell_weight)
 head(abalone)
 
 ## Train/test split
 
-abalone_train <- abalone %>%
+abalone_train <- abalone |>
   sample_frac(size = 0.7)
 abalone <- anti_join(abalone, abalone_train)
-abalone_test <- abalone %>%
+abalone_test <- abalone |>
   sample_frac(size = 0.5)
 abalone_valid <- anti_join(abalone, abalone_test)
 
