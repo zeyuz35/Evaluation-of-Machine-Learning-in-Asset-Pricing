@@ -8,13 +8,13 @@ dtest <- xgb.DMatrix(agaricus.test$data, label = agaricus.test$label)
 nrounds <- 2
 param <- list(max_depth=2, eta=1, silent=1, nthread=2, objective='binary:logistic')
 
-cat('running cross validation\n')
+message('running cross validation')
 # do cross validation, this will print result out as
 # [iteration]  metric_name:mean_value+std_value
 # std_value is standard deviation of the metric
 xgb.cv(param, dtrain, nrounds, nfold=5, metrics={'error'})
 
-cat('running cross validation, disable standard deviation display\n')
+message('running cross validation, disable standard deviation display')
 # do cross validation, this will print result out as
 # [iteration]  metric_name:mean_value+std_value
 # std_value is standard deviation of the metric
