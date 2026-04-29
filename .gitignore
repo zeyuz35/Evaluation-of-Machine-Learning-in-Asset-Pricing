@@ -27,3 +27,9 @@ R/final_dataset.csv
 R/.Rhistory
 R/.RDataTmp2
 R/empirical_robustness/ff_factors/final_dataset.rds
+*.Rhistory
+.Rproj.user/
+R/xgboost/Meta/
+R/xgboost/html/
+R/xgboost/help/
+R/xgboost/libs/
