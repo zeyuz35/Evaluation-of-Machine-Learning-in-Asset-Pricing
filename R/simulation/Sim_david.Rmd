@@ -95,7 +95,7 @@ gen_W <- function(){
   
   #Use Lambda to create B matrix
   
-  B <- (Lambda) %*% t(Lambda)
+  B <- tcrossprod(Lambda) # Equivalent to (Lambda) %*% t(Lambda) but faster
   B <- B + 1/10*diag(nrow = nrow(B))
   
   #Turn B into a correlation matrix
