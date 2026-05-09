@@ -27,3 +27,8 @@ R/final_dataset.csv
 R/.Rhistory
 R/.RDataTmp2
 R/empirical_robustness/ff_factors/final_dataset.rds
+
+# AWS SSH keys and executables
+R/AWS/*.pem
+R/AWS/*.ppk
+R/AWS/*.exe
