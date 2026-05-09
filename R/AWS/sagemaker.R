@@ -157,12 +157,14 @@ tidy_to_json <- function(data, start) {
   cross_units <- length(stock_id)
   
   ## JUst setting the beginning time to something arbitrary for now, change if needed
-  pooled_panel_json <- data.frame(start = rep(start, cross_units), 
-                                  target = c(1:cross_units), 
-                                  dynamic_feat = c(1:cross_units))
+  pooled_panel_json <- data.frame(start = rep(start, cross_units))
+  pooled_panel_json$target <- vector("list", cross_units)
+  pooled_panel_json$dynamic_feat <- vector("list", cross_units)
   
   pooled_panel_json <- foreach(i = 1:cross_units, .combine = "rbind") %dopar% {
-    df <- data.frame(start = 0, target = 0, dynamic_feat = 0)
+    df <- data.frame(start = 0)
+    df$target <- vector("list", 1)
+    df$dynamic_feat <- vector("list", 1)
     pooled_panel_filter <- data %>%
       filter(stock == stock_id[i])
     pooled_panel_filter_rt <- pooled_panel_filter$rt %>% list()
@@ -323,9 +325,9 @@ tidy_to_batch_inf <- function(data, start, timeSlices, set) {
   cross_units <- length(stock_id)
   
   ## Just setting the beginning time to something arbitrary for now, change if needed
-  pooled_panel_json <- data.frame(start = rep(start, cross_units), 
-                                  target = c(1:cross_units), 
-                                  dynamic_feat = c(1:cross_units))
+  pooled_panel_json <- data.frame(start = rep(start, cross_units))
+  pooled_panel_json$target <- vector("list", cross_units)
+  pooled_panel_json$dynamic_feat <- vector("list", cross_units)
   
   for (i in 1:cross_units) {
     pooled_panel_filter <- data %>%
@@ -334,7 +336,7 @@ tidy_to_batch_inf <- function(data, start, timeSlices, set) {
     pooled_panel_filter_rt <- pooled_panel_filter %>%
       filter(time %in% timeSlices[[set]]$train | time %in% timeSlices[[set]]$validation)
     
-    pooled_panel_json$target[i] <- list(pooled_panel_filter_rt$rt)
+    pooled_panel_json$target[[i]] <- pooled_panel_filter_rt$rt
     
     pooled_panel_filter_feature <- pooled_panel_filter %>%
       filter(time %in% timeSlices[[set]]$train | time %in% timeSlices[[set]]$validation | time %in% timeSlices[[set]]$test) %>%
