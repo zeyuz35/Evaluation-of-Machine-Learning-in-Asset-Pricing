@@ -1035,17 +1035,14 @@ gen_predictor_z_twoway <- function(C, x){
 
 bind_rt_predictor <- function(rt_panel, z_panel) {
   
-  df <- cbind(data.frame(rt_panel[, , 1]), time = 2, stock = paste0("stock_", c(1:N)), data.frame(z_panel[, , 1]))
-
-  colnames(df)[1] <- "rt"
-  row.names(df) <- NULL
-  
-  for (t in 2:Time) {
+  df_list <- lapply(1:Time, function(t) {
     df_new <- cbind(data.frame(rt_panel[, , t]), time = 1+t, stock = paste0("stock_", c(1:N)), data.frame(z_panel[, , t]))
     colnames(df_new)[1] <- "rt"
     row.names(df_new) <- NULL
-    df <- rbind(df, df_new)
-  }
+    return(df_new)
+  })
+
+  df <- do.call(rbind, df_list)
   return(df)
 }
 
