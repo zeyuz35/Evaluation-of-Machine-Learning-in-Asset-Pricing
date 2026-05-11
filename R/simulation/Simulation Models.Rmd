@@ -11,6 +11,7 @@ output: html_document
 ################
 
 library(speedglm)
+source("../utils/safe_scale.R")
 library(tidyverse)
 library(keras)
 library(ggplot2)
@@ -969,17 +970,17 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
       filter(time %in% timeSlices[[set]]$test)
       
     train_x <- train[4:ncol(train)]
-    train_x <- scale(train_x)
+    train_x <- safe_scale(train_x)
     col_means_train <- attr(train_x, "scaled:center") 
     col_stddevs_train <- attr(train_x, "scaled:scale")
     train_y <- train$rt
     
     validation_x <- validation[4:ncol(validation)]
-    validation_x <- scale(validation_x, center = col_means_train, scale = col_stddevs_train)
+    validation_x <- safe_scale(validation_x, center = col_means_train, scale = col_stddevs_train)
     validation_y <- validation$rt
       
     test_x <- test[4:ncol(test)]
-    test_x <- scale(test_x, center = col_means_train, scale = col_stddevs_train)
+    test_x <- safe_scale(test_x, center = col_means_train, scale = col_stddevs_train)
     test_y <- test$rt
       
     # Fit the model
@@ -1379,19 +1380,19 @@ LSTM_fit_stats <- function(pooled_panel, timeSlices, loss_function, batch_size, 
       
     train_x <- train %>%
       dplyr::select(-rt, -stock, -time)
-    train_x <- scale(train_x)
+    train_x <- safe_scale(train_x)
     col_means_train <- attr(train_x, "scaled:center") 
     col_stddevs_train <- attr(train_x, "scaled:scale")
     train_y <- train$rt
     
     validation_x <- validation %>%
       dplyr::select(-rt, -stock, -time)
-    validation_x <- scale(validation_x, center = col_means_train, scale = col_stddevs_train)
+    validation_x <- safe_scale(validation_x, center = col_means_train, scale = col_stddevs_train)
     validation_y <- validation$rt
       
     test_x <- test %>%
       dplyr::select(-rt, -stock, -time)
-    test_x <- scale(test_x, center = col_means_train, scale = col_stddevs_train)
+    test_x <- safe_scale(test_x, center = col_means_train, scale = col_stddevs_train)
     test_y <- test$rt
     
     pooled_panel_trunc <- rbind(
