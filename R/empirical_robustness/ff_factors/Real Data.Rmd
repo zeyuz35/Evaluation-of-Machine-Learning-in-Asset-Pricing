@@ -679,7 +679,7 @@ variable_importance_df
 # Given a an lm object and a test dataset, return the cross sectional average forecast errors
 
 ## Change these to be dummy functions that just return 0 for computational feasibility
-## This was originally just implemented so that the stupid diebold mariano tests could be done
+## This was originally just implemented so that the Diebold Mariano tests could be done
 ## DM tests are either unreliable and have numerical issues, or just tell you what you can already decipher from loss stats anyway
 
 lm_ave_forecast_resids <- function(lm_model, test) {
@@ -1129,7 +1129,7 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
                                                       validation_MAE = 0, validation_MSE = 0, validation_RMSE = 0, validation_RSquare = 0, 
                                                       test_MAE = 0, test_MSE = 0, test_RMSE = 0, test_RSquare = 0),
                               #Other useful things
-                              # Keep forecasts here in for nnet objects to make sure they aren't doing something stupid
+                              # Keep forecasts here in for nnet objects to make sure they are producing valid results
                               forecasts = 0,
                               forecast_resids = 0,
                               model = 0,
