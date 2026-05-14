@@ -336,7 +336,7 @@ estimator$fit(inputs = data_channels,
 ## Data Prep
 ## Remember that with DeepAR, the dynamic features (external regressors) are assumed to be pre-known
 ## Therefore, you need to pass it a dataset containing the original time series, and the dynamic features that extend all the way to the test set
-## Quite annoying to set up
+## Requires careful setup
 
 ## Function that takes a tidy dataset, timeSlices, and spits out a dataframe that is ready to be converted to JSON format 
 ## with the correct length of dynamic features for use in predictions
@@ -404,7 +404,7 @@ deepar_fit_stats <- function(pooled_panel, timeSlices) {
                                                       validation_MAE = 0, validation_MSE = 0, validation_RMSE = 0, validation_RSquare = 0, 
                                                       test_MAE = 0, test_MSE = 0, test_RMSE = 0, test_RSquare = 0),
                               #Other useful things
-                              # Keep forecasts here in for nnet objects to make sure they aren't doing something stupid
+                              # Keep forecasts here in for nnet objects to make sure they are producing valid results
                               forecasts = 0,
                               forecast_resids = 0,
                               model = 0,

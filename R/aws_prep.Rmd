@@ -93,7 +93,7 @@ tidy_to_json <- function(data) {
 ```{r}
 ## JSON manipulation for use with AWS inference format
 
-## Unlike the actual training/validation data, inference format is annoyingly different (again)
+## Unlike the actual training/validation data, inference format is substantially different (again)
 
 ## Below is some dummy data, and shows us the format we need for it to work with AWS inference
 

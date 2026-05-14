@@ -754,7 +754,7 @@ combine_DeepAR_results_list <- function(normal_list, deepar_list15, deepar_list6
 }
 
 ## nosv_0
-## Don't bother with this design because it's stupid, and was only done just to replicate Gu's experiments
+## Don't bother with this design due to limited utility, and was only done just to replicate Gu's experiments
 # g1_A1_nosv_0_results_all <- g1_A1_nosv_0_results %>% 
 #   combine_RF_results_list(g1_A1_nosv_0_RF_results) %>%
 #   combine_NN_results_list(g1_A1_nosv_0_NN_results15, g1_A1_nosv_0_NN_results610) %>%

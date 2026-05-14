@@ -954,7 +954,7 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
                                                       validation_MAE = 0, validation_MSE = 0, validation_RMSE = 0, validation_RSquare = 0, 
                                                       test_MAE = 0, test_MSE = 0, test_RMSE = 0, test_RSquare = 0),
                               #Other useful things
-                              # Keep forecasts here in for nnet objects to make sure they aren't doing something stupid
+                              # Keep forecasts here in for nnet objects to make sure they are producing valid results
                               forecasts = 0,
                               forecast_resids = 0,
                               model = 0,
@@ -1306,7 +1306,7 @@ NNet_5_mae_stats[[1]]$variable_importance %>%
 
 # Prepare the data into a format which RNNs and LSTM models from keras recognise and can work with
 # We want a multipl einput (factor set), multiple output (multiple stocks) structure
-# Annoyingly, this means we have to convert our dataset from tidy to array format
+# Consequently, this means we have to convert our dataset from tidy to array format
 
 # Keras needs the X (input) to be an array of (sample no, time steps, no. of features) dimensions
 # In our case, this corresponds to (length of training set, 1 as we are using 1 lag, 400 factors)
@@ -1360,7 +1360,7 @@ LSTM_fit_stats <- function(pooled_panel, timeSlices, loss_function, batch_size, 
                                                       validation_MAE = 0, validation_MSE = 0, validation_RMSE = 0, validation_RSquare = 0, 
                                                       test_MAE = 0, test_MSE = 0, test_RMSE = 0, test_RSquare = 0),
                               #Other useful things
-                              # Keep forecasts here in for nnet objects to make sure they aren't doing something stupid
+                              # Keep forecasts here in for nnet objects to make sure they are producing valid results
                               forecasts = 0,
                               forecast_resids = 0,
                               model = 0,
@@ -2053,7 +2053,7 @@ fforma_fit_stats <- function(pooled_panel, timeSlices, loss_function) {
     fforma_fit_stats_list[[set]]$loss_stats$test_RMSE <- rmse(test_y$rt, test_forecasts)
     fforma_fit_stats_list[[set]]$loss_stats$test_RSquare <- R2(test_forecasts, test_y$rt, 
                                                                form = "traditional")
-    ## Variable importance skipped for now as its really annoying to implement, 
+    ## Variable importance skipped for now as its complex to implement,
     ## and more importantly FFORMA doesn't care too much about external regressors anyway
     
     fforma_fit_stats_list[[set]]$forecasts <- test_forecasts %>% as.vector()
