@@ -93,7 +93,7 @@ bst3_interactions <- treeInteractions(bst3_tree, 4)  # interactions still constr
 
 # Show monotonic constraints still apply by checking scores after incrementing V1
 x1 <- sort(unique(x[['V1']]))
-for (i in 1:length(x1)){
+for (i in seq_along(x1)){
   testdata <- copy(x[, -c('V1')])
   testdata[['V1']] <- x1[i]
   testdata <- testdata[, paste0('V',1:10), with=F]
