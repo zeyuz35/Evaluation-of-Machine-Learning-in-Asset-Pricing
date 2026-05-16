@@ -30,5 +30,5 @@ num_round <- 2
 bst <- xgb.train(param, dtrain, num_round, watchlist)
 ypred <- predict(bst, dtest)
 labels <- getinfo(dtest, 'label')
-cat('error of preds=', mean(as.numeric(ypred>0.5)!=labels),'\n')
+message(paste0('error of preds=', mean(as.numeric(ypred>0.5)!=labels)))
 
