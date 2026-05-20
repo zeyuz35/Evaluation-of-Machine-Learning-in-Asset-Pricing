@@ -1,0 +1,3 @@
+## 2024-03-24 - Optimize R loop accumulations
+**Learning:** Found O(N^2) "growing objects" performance bottleneck caused by iterative `rbind()` inside a `for` loop in `get_ELN_best_tune` and `get_RF_best_tune` functions across multiple `.Rmd` files. This is a classic R performance anti-pattern.
+**Action:** Replaced the loop with `lapply()` list accumulation followed by a final `do.call(rbind, ...)` for both ELN and RF grid tune functions. Validated all scripts with `knitr::purl` after installing `knitr` (except `Simulation Models.Rmd` which fails due to duplicate chunks and requires manual verification).
