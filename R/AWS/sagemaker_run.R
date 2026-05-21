@@ -404,7 +404,7 @@ deepar_fit_stats <- function(pooled_panel, timeSlices) {
                                                       validation_MAE = 0, validation_MSE = 0, validation_RMSE = 0, validation_RSquare = 0, 
                                                       test_MAE = 0, test_MSE = 0, test_RMSE = 0, test_RSquare = 0),
                               #Other useful things
-                              # Keep forecasts here in for nnet objects to make sure they aren't doing something stupid
+                              # Keep forecasts here in for nnet objects to check for unexpected behavior
                               forecasts = 0,
                               forecast_resids = 0,
                               model = 0,
