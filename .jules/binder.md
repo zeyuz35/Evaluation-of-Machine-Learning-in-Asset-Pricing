@@ -1,0 +1,3 @@
+## 2026-05-21 - Remove vendored xgboost binary package
+**Learning:** The repository contains a legacy vendored binary version of XGBoost (v1.0.0.1) in `R/xgboost`. This pollutes the source tree, causes cross-platform errors (due to embedded `.dll` and `Meta/` files), and is a major violation of CRAN standards which require `R/` to only contain `.R` source files.
+**Action:** Always verify if a repository is vendoring full binary packages inside source directories and remove them. Dependencies should be managed via standard configuration mechanisms (e.g., `DESCRIPTION` or package management tools).
