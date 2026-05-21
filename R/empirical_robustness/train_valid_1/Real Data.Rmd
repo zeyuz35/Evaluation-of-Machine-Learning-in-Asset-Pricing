@@ -813,11 +813,11 @@ ELN_model_grid <- function(alpha_grid, train_x, train_y, validation_x, validatio
 # Use in conjunction with previous function
 
 get_ELN_best_tune <- function(model_grid) {
-  ELN_tune_dataframe <- cbind(model_grid[[1]]$ELN_grid, list_index = 1)
-  for (i in 2:length(model_grid)) {
-    ELN_tune_dataframe <- rbind(ELN_tune_dataframe, cbind(model_grid[[i]]$ELN_grid, list_index = i))
-  }
-  ELN_tune_dataframe <- data.frame(ELN_tune_dataframe)
+  # Modernized: Replaced O(N^2) iterative rbind with lapply and do.call for improved performance
+  ELN_tune_list <- lapply(seq_along(model_grid), function(i) {
+    cbind(model_grid[[i]]$ELN_grid, list_index = i)
+  })
+  ELN_tune_dataframe <- data.frame(do.call(rbind, ELN_tune_list))
   return(ELN_tune_dataframe[which.min(ELN_tune_dataframe$validation_loss), ])
 }
 
@@ -954,10 +954,11 @@ RF_fit_model_grid <- function(f, train, validation, RF_grid, loss_function) {
 #Returns the dataframe row containing the "best" hyperparameters
 
 get_RF_best_tune <- function(RF_model_grid) {
-  RF_tune_grid <- RF_model_grid[[1]]$RF_grid
-  for (i in 2:length(RF_model_grid)) {
-    RF_tune_grid <- rbind(RF_tune_grid, RF_model_grid[[i]]$RF_grid)
-  }
+  # Modernized: Replaced O(N^2) iterative rbind with lapply and do.call for improved performance
+  RF_tune_list <- lapply(seq_along(RF_model_grid), function(i) {
+    RF_model_grid[[i]]$RF_grid
+  })
+  RF_tune_grid <- do.call(rbind, RF_tune_list)
   return(RF_tune_grid[which.min(RF_tune_grid$validation_loss), ])
 }
 
