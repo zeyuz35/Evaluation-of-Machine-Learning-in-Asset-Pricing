@@ -132,25 +132,22 @@ tidy_to_json <- function(data, start) {
   cross_units <- length(stock_id)
   
   ## JUst setting the beginning time to something arbitrary for now, change if needed
-  pooled_panel_json <- data.frame(start = rep(start, cross_units), 
-                                  target = c(1:cross_units), 
-                                  dynamic_feat = c(1:cross_units))
-  
-  for (i in 1:cross_units) {
-    pooled_panel_filter <- data %>%
-      filter(stock == stock_id[i])
+  res <- future.apply::future_lapply(seq_len(cross_units), function(ii) {
+    pooled_panel_filter <- data[data$stock == stock_id[ii], ]
     
-    pooled_panel_json$target[i] <- list(pooled_panel_filter$rt)
+    target <- pooled_panel_filter$rt
     
-    pooled_panel_filter_feature <- pooled_panel_filter %>%
-      select(-time, -rt, -stock) %>%
-      unname() %>%
-      as.matrix() %>%
-      # Transpose it to get the right format of one feature series per row
-      t()
+    dynamic_feat <- as.matrix(unname(pooled_panel_filter[, !names(pooled_panel_filter) %in% c("time", "rt", "stock"), drop = FALSE]))
+    dynamic_feat <- t(dynamic_feat)
+    dimnames(dynamic_feat) <- list(NULL, NULL)
     
-    pooled_panel_json[i, ]$dynamic_feat <- pooled_panel_filter_feature %>% list()
-  }
+    list(target = target, dynamic_feat = dynamic_feat)
+  })
+
+  pooled_panel_json <- data.frame(start = rep(start, cross_units))
+  pooled_panel_json$target <- lapply(res, `[[`, "target")
+  pooled_panel_json$dynamic_feat <- lapply(res, `[[`, "dynamic_feat")
+
   pooled_panel_json
 }
 
@@ -349,29 +346,24 @@ tidy_to_batch_inf <- function(data, start, timeSlices, set) {
   cross_units <- length(stock_id)
   
   ## Just setting the beginning time to something arbitrary for now, change if needed
-  pooled_panel_json <- data.frame(start = rep(start, cross_units), 
-                                  target = c(1:cross_units), 
-                                  dynamic_feat = c(1:cross_units))
-  
-  for (i in 1:cross_units) {
-    pooled_panel_filter <- data %>%
-      filter(stock == stock_id[i])
-      
-    pooled_panel_json$target[i] <- pooled_panel_filter %>%
-      filter(time %in% timeSlices[[set]]$train | time %in% timeSlices[[set]]$validation) %>%
-      dplyr::select(rt) %>%
-      list()
+  res <- future.apply::future_lapply(seq_len(cross_units), function(ii) {
+    pooled_panel_filter <- data[data$stock == stock_id[ii], ]
     
-    pooled_panel_filter_feature <- pooled_panel_filter %>%
-      filter(time %in% timeSlices[[set]]$train | time %in% timeSlices[[set]]$validation | time %in% timeSlices[[set]]$test) %>%
-      dplyr::select(-time, -rt, -stock) %>%
-      unname() %>%
-      as.matrix() %>%
-      # Transpose it to get the right format of one feature series per row
-      t()
+    target_filter <- pooled_panel_filter[pooled_panel_filter$time %in% timeSlices[[set]]$train | pooled_panel_filter$time %in% timeSlices[[set]]$validation, ]
+    target <- target_filter$rt
     
-    pooled_panel_json[i, ]$dynamic_feat <- pooled_panel_filter_feature %>% list()
-  }
+    feat_filter <- pooled_panel_filter[pooled_panel_filter$time %in% timeSlices[[set]]$train | pooled_panel_filter$time %in% timeSlices[[set]]$validation | pooled_panel_filter$time %in% timeSlices[[set]]$test, ]
+    dynamic_feat <- as.matrix(unname(feat_filter[, !names(feat_filter) %in% c("time", "rt", "stock"), drop = FALSE]))
+    dynamic_feat <- t(dynamic_feat)
+    dimnames(dynamic_feat) <- list(NULL, NULL)
+
+    list(target = target, dynamic_feat = dynamic_feat)
+  })
+
+  pooled_panel_json <- data.frame(start = rep(start, cross_units))
+  pooled_panel_json$target <- lapply(res, `[[`, "target")
+  pooled_panel_json$dynamic_feat <- lapply(res, `[[`, "dynamic_feat")
+
   pooled_panel_json
 }
 
