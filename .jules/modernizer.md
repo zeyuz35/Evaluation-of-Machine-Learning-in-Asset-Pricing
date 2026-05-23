@@ -1,1 +1,4 @@
 ## Modernizer Journal
+## $(date +'%Y-%m-%d') - Replace base for loops with future.apply
+**Learning:** Initializing data.frame with list columns directly via `I(list(...))` inside `future.apply` or iteratively with base R loops can cause performance bottlenecks and silent type coercion issues. `future_lapply` improves speed and parallelization over the sequential `for` loops that populate JSON structure for DeepAR. Using base subsetting inside `future_lapply` also increases performance by dropping slow `dplyr::filter` calls.
+**Action:** Replace `for` loops in `.R` files that grow lists or dataframes iteratively with `future.apply::future_lapply`. Explicitly capture subsets using base R data.frame subsetting and finally `lapply` over the generated list to populate `data.frame` columns. Use `seq_len()` rather than `1:N` for safer bounds handling.
