@@ -1,1 +1,3 @@
-## Modernizer Journal
+## 2025-05-23 - [Optimize Iterative Data Frame Binding (rbind) Inside For Loops]
+**Learning:** Legacy R code frequently uses O(N^2) iterative object growing (`rbind` inside `for` loops) for building large data frames. This scales poorly when aggregating models (e.g., in `get_ELN_best_tune`, `get_RF_best_tune`, `bind_rt_predictor`, and similar data aggregation pipelines).
+**Action:** Replace iterative `rbind()` inside `for` loops with list accumulation (e.g., via `lapply()`) followed by a single combined binding step like `do.call(rbind, list)`. This reduces dependency on O(N^2) allocations while retaining readable syntax and correct functionality. Also ensure iterators change from single variables (e.g., `i`) to expressive ones (`grid_ii`) following AGENTS.md conventions.

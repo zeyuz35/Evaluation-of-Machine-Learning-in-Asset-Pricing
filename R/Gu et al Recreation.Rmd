@@ -400,11 +400,7 @@ for (t in 1:(Time+1)) {
   rt_cross_tune_list[[t]] <- df
 }
 
-rt_cross_tune_panel <- rt_cross_tune_list[[1]]
-
-for (t in 1:(Time+1)) {
-  rt_cross_tune_panel <- rbind(rt_cross_tune_panel, rt_cross_tune_list[[t]])
-}
+rt_cross_tune_panel <- do.call(rbind, rt_cross_tune_list)
 
 #Remove 1st row because returns data only starts from t = 2
 rt_cross_tune_panel <- rt_cross_tune_panel %>%
