@@ -150,7 +150,7 @@ timeSlices <- customTimeSlices(start = 2, initialWindow = 108, horizon = 12, val
 ## that is ready to be exported to JSON for use with sagemaker deepar
 
 tidy_to_json <- function(data, start) {
-  stock_id <- data$stock %>%
+  stock_id <- data$stock |>
     unique()
   
   # Number of cross sectional units
@@ -163,16 +163,16 @@ tidy_to_json <- function(data, start) {
   
   pooled_panel_json <- foreach(i = 1:cross_units, .combine = "rbind") %dopar% {
     df <- data.frame(start = 0, target = 0, dynamic_feat = 0)
-    pooled_panel_filter <- data %>%
+    pooled_panel_filter <- data |>
       filter(stock == stock_id[i])
-    pooled_panel_filter_rt <- pooled_panel_filter$rt %>% list()
+    pooled_panel_filter_rt <- pooled_panel_filter$rt |> list()
     
-    pooled_panel_filter_feature <- pooled_panel_filter %>%
-      select(-time, -rt, -stock) %>%
-      unname() %>%
-      as.matrix() %>%
+    pooled_panel_filter_feature <- pooled_panel_filter |>
+      select(-time, -rt, -stock) |>
+      unname() |>
+      as.matrix() |>
       # Transpose it to get the right format of one feature series per row
-      t() %>%
+      t() |>
       list()
     df$start <- start
     df$target <- pooled_panel_filter_rt
@@ -183,18 +183,18 @@ tidy_to_json <- function(data, start) {
   pooled_panel_json
 }
 
-pooled_panel_train <- pooled_panel %>%
-  filter(time %in% timeSlices[[1]]$train) %>%
+pooled_panel_train <- pooled_panel |>
+  filter(time %in% timeSlices[[1]]$train) |>
   tidy_to_json(start = "2000-01-01")
 
-pooled_panel_validation <- pooled_panel %>%
-  filter(time %in% timeSlices[[1]]$validation) %>%
+pooled_panel_validation <- pooled_panel |>
+  filter(time %in% timeSlices[[1]]$validation) |>
   tidy_to_json(start = as.Date("2000-01-01") %m+% years(9))
 
-pooled_panel_train %>%
+pooled_panel_train |>
   stream_out(file("./data/pooled_panel_train.json"))
 
-pooled_panel_validation %>%
+pooled_panel_validation |>
   stream_out(file("./data/pooled_panel_validation.json"))
 
 ## Upload to S3, note that this function uploads the entire directory you specify
@@ -278,9 +278,9 @@ session$upload_data("data", s3_bucket, key_prefix = "data")
 # }
 # 
 # tidy_to_inf_json <- function(dataframe, start) {
-#   dataframe_json <- dataframe %>% tidy_to_json(start = start)
+#   dataframe_json <- dataframe |> tidy_to_json(start = start)
 #   
-#   dataframe_json %>% json_to_inference_json()
+#   dataframe_json |> json_to_inference_json()
 # }
 # 
 # ####################################
@@ -294,7 +294,7 @@ session$upload_data("data", s3_bucket, key_prefix = "data")
 # ## Wrapper function that takes a tidy_df and 
 # 
 # deepar_predict <- function(tidy_df) {
-#   model_endpoint$predict(tidy_df %>% tidy_to_inf_json(start = "2000-01-01 00:00:00"))
+#   model_endpoint$predict(tidy_df |> tidy_to_inf_json(start = "2000-01-01 00:00:00"))
 # }
 # 
 # ##################################################
@@ -316,7 +316,7 @@ batch_output <- paste0("s3://", s3_bucket, "/batch/output")
 ## Prep Inference Data (training + validation data)
 
 tidy_to_batch_inf <- function(data, start, timeSlices, set) {
-  stock_id <- data$stock %>%
+  stock_id <- data$stock |>
     unique()
   
   # Number of cross sectional units
@@ -328,19 +328,19 @@ tidy_to_batch_inf <- function(data, start, timeSlices, set) {
                                   dynamic_feat = c(1:cross_units))
   
   for (i in 1:cross_units) {
-    pooled_panel_filter <- data %>%
+    pooled_panel_filter <- data |>
       filter(stock == stock_id[i])
     
-    pooled_panel_filter_rt <- pooled_panel_filter %>%
+    pooled_panel_filter_rt <- pooled_panel_filter |>
       filter(time %in% timeSlices[[set]]$train | time %in% timeSlices[[set]]$validation)
     
     pooled_panel_json$target[i] <- list(pooled_panel_filter_rt$rt)
     
-    pooled_panel_filter_feature <- pooled_panel_filter %>%
-      filter(time %in% timeSlices[[set]]$train | time %in% timeSlices[[set]]$validation | time %in% timeSlices[[set]]$test) %>%
-      dplyr::select(-time, -rt, -stock) %>%
-      unname() %>%
-      as.matrix() %>%
+    pooled_panel_filter_feature <- pooled_panel_filter |>
+      filter(time %in% timeSlices[[set]]$train | time %in% timeSlices[[set]]$validation | time %in% timeSlices[[set]]$test) |>
+      dplyr::select(-time, -rt, -stock) |>
+      unname() |>
+      as.matrix() |>
       # Transpose it to get the right format of one feature series per row
       t()
     
@@ -368,22 +368,22 @@ deepar_fit_stats <- function(pooled_panel, timeSlices) {
                                 variable_importance = 0)
     
     ## Train and validation sets in JSON format
-    pooled_panel_train <- pooled_panel %>%
-      filter(time %in% timeSlices[[set]]$train) %>%
+    pooled_panel_train <- pooled_panel |>
+      filter(time %in% timeSlices[[set]]$train) |>
       tidy_to_json(start = "2000-01-01")
     
-    pooled_panel_validation <- pooled_panel %>%
-      filter(time %in% timeSlices[[set]]$validation) %>%
+    pooled_panel_validation <- pooled_panel |>
+      filter(time %in% timeSlices[[set]]$validation) |>
       tidy_to_json(start = as.Date("2000-01-01") %m+% years(8 + set))
     
-    pooled_panel_test <- pooled_panel %>%
-      filter(time %in% timeSlices[[set]]$test) %>%
+    pooled_panel_test <- pooled_panel |>
+      filter(time %in% timeSlices[[set]]$test) |>
       tidy_to_json(start = as.Date("2000-01-01") %m+% years(14 + set))
     
-    pooled_panel_train %>%
+    pooled_panel_train |>
       stream_out(file("./data/pooled_panel_train.json"))
     
-    pooled_panel_validation %>%
+    pooled_panel_validation |>
       stream_out(file("./data/pooled_panel_validation.json"))
     
     ## Upload to S3, note that this function uploads the entire directory you specify
@@ -446,7 +446,7 @@ deepar_fit_stats <- function(pooled_panel, timeSlices) {
     
     batch_inf_test <- tidy_to_batch_inf(pooled_panel, start = "2000-01-01 00:00:00", timeSlices, set)
     
-    batch_inf_test %>% 
+    batch_inf_test |>
       stream_out(file("./batch/batch-inf-test.json"))
     
     ## Upload to S3, note that this function uploads the entire directory you specify
@@ -468,13 +468,13 @@ deepar_fit_stats <- function(pooled_panel, timeSlices) {
     
     predictions <- stream_in(file("./batch/batch-inf-test.json.out"))
     
-    forecasts <- predictions %>% unnest(cols = c(mean))
+    forecasts <- predictions |> unnest(cols = c(mean))
     
     DEEPAR_stats[[set]]$forecasts <- forecasts
     
     ## Actual Test rt
-    test_rt <- pooled_panel_test %>% 
-      select(target) %>% 
+    test_rt <- pooled_panel_test |>
+      select(target) |>
       unnest(cols = c(target))
     
     ## Train Stats (doesn't really exist for DeepAR)
