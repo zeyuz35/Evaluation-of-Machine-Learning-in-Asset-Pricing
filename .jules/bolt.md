@@ -1,0 +1,3 @@
+## 2025-02-18 - Optimized list accumulators
+**Learning:** In the `get_ELN_best_tune` and `get_RF_best_tune` functions across several `.Rmd` files, a slow and memory-intensive practice was identified: repeatedly appending to a data frame inside a `for` loop using `rbind()`. This forces R to re-allocate memory for the entire data frame upon each iteration, resulting in O(N^2) complexity and significant slowdowns for large grids or nested cross-validations.
+**Action:** Replace `for` loop accumulations with `lapply` creating a list of data frames/matrices, followed by a single `do.call(rbind, list_df)`. This is the standard, optimized R pattern for combining many rows.
