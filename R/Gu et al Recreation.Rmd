@@ -422,9 +422,8 @@ rt_id_tune_df <- data.frame(
   rsquare = c(1:N)
 )
 
-for (i in 1:N) {
-  rt_id_tune_panel <- rt_cross_tune_panel %>%
-    filter(stock == i)
+for (i in seq_len(N)) {
+  rt_id_tune_panel <- rt_cross_tune_panel[rt_cross_tune_panel$stock == i, ]
   rt_id_tune_df$rsquare[i] <- r_squared_proper(rt_id_tune_panel$g, rt_id_tune_panel$return)
 }
 
@@ -441,9 +440,8 @@ vol_tune_df <- data.frame(
   annual_vol = c(1:N)
 )
 
-for (i in 1:N) {
-  vol_tune_panel <- rt_cross_tune_panel %>%
-    filter(stock == i)
+for (i in seq_len(N)) {
+  vol_tune_panel <- rt_cross_tune_panel[rt_cross_tune_panel$stock == i, ]
   vol_tune_df$annual_vol[i] <- sd(vol_tune_panel$return) * sqrt(12)
 }
 
@@ -464,8 +462,7 @@ rt_cross_section <- data.frame(
 for (t in 2:(Time+1)) {
   rt_cross_section$time <- t
   
-  rt_cross_tune_panel_cross_section <- rt_cross_tune_panel %>% 
-    filter(time == t)
+  rt_cross_tune_panel_cross_section <- rt_cross_tune_panel[rt_cross_tune_panel$time == t, ]
   
   rt_cross_section$rsquare[t-1] <- r_squared_proper(rt_cross_tune_panel_cross_section$g, rt_cross_tune_panel_cross_section$return)
 }
