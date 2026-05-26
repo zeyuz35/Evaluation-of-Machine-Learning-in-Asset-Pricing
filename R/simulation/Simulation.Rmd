@@ -66,7 +66,7 @@ gen_C_bar <- function(rho_a, rho_b){
   #provideDimnames doesn't do exactly what I want it to
   #Just do it manually via paste0
   
-  stock_dim <- paste0("stock_", c(1:N))
+  stock_dim <- paste0("stock_", c(seq_len(N)))
   c_dim <- paste0("c_", c(1:P_c))
   time_dim <- paste0("time_", c(0:(Time+1)))
   
@@ -125,7 +125,7 @@ gen_W <- function(lambda_degree){
 gen_C_hat <- function(C_bar, cross_corr_degree){
   W <- gen_W(cross_corr_degree)
   
-  stock_dim <- paste0("stock_", c(1:N))
+  stock_dim <- paste0("stock_", c(seq_len(N)))
   c_dim <- paste0("c_", c(1:P_c))
   time_dim <- paste0("time_", c(1:(Time+1)))
   
@@ -147,7 +147,7 @@ gen_C_hat <- function(C_bar, cross_corr_degree){
 
 gen_C <- function(C_matrix){
   
-  stock_dim <- paste0("stock_", c(1:N))
+  stock_dim <- paste0("stock_", c(seq_len(N)))
   c_dim <- paste0("c_", c(1:P_c))
   time_dim <- paste0("time_", c(1:(Time+1)))
   
@@ -357,13 +357,13 @@ gen_g_factor_panel <- function(g_function, C, x) {
   #G1 case
   if (g_name == "g1") {
         
-    stock_dim <- paste0("stock_", c(1:N))
+    stock_dim <- paste0("stock_", c(seq_len(N)))
     c_dim <- c("c_i1,t", "c_i2,t", "c_i3,t * x_t'")
     time_dim <- paste0("time_", c(1:(Time)))
         
     g_factor_panel <- array(0, dim = c(N, 3, Time), dimnames = list(stock_dim, c_dim, time_dim))
     
-    for (i in 1:N) {
+    for (i in seq_len(N)) {
       for (t in 1:Time) {
         #Univariate xt Case
         if (nrow(x) == 1) {
@@ -380,13 +380,13 @@ gen_g_factor_panel <- function(g_function, C, x) {
   #G2 Case
   else if (g_name == "g2") {
         
-    stock_dim <- paste0("stock_", c(1:N))
+    stock_dim <- paste0("stock_", c(seq_len(N)))
     c_dim <- c("c_i1,t^2", "c_i1,t * c_i2,t", "sgn(c_i3,t * x_t')")
     time_dim <- paste0("time_", c(1:(Time)))
         
     g_factor_panel <- array(0, dim = c(N, 3, Time), dimnames = list(stock_dim, c_dim, time_dim))
     
-    for (i in 1:N) {
+    for (i in seq_len(N)) {
       for (t in 1:Time) {
         #Univariate xt Case
         if (nrow(x) == 1) {
@@ -408,13 +408,13 @@ gen_g_factor_panel <- function(g_function, C, x) {
   #G3 Case
   else if (g_name == "g3") {
         
-    stock_dim <- paste0("stock_", c(1:N))
+    stock_dim <- paste0("stock_", c(seq_len(N)))
     c_dim <- c("I(c_i3,t > 0)", "c_i2,t^3", "c_i1,t * c_12,t * I(c_i3,t > 0)", "logit(c_i3,t)")
     time_dim <- paste0("time_", c(1:(Time)))
         
     g_factor_panel <- array(0, dim = c(N, 4, Time), dimnames = list(stock_dim, c_dim, time_dim))
     
-    for (i in 1:N) {
+    for (i in seq_len(N)) {
       for (t in 1:Time) {
         g_factor_panel[i, , t] <- matrix(c(
           (C[i, 1, t] > 0), 
@@ -429,7 +429,7 @@ gen_g_factor_panel <- function(g_function, C, x) {
   #G4 Case
   else if (g_name == "g4") {
         
-    stock_dim <- paste0("stock_", c(1:N))
+    stock_dim <- paste0("stock_", c(seq_len(N)))
     c_dim <- c("chat_i1,t", "chat_i2,t", "chat_i3,t * x_t'")
     time_dim <- paste0("time_", c(1:(Time)))
         
@@ -437,7 +437,7 @@ gen_g_factor_panel <- function(g_function, C, x) {
     
     #Same as G1 case, but remember to pass c_hat through to this
     
-    for (i in 1:N) {
+    for (i in seq_len(N)) {
       for (t in 1:Time) {
         #Univariate xt Case
         if (nrow(x) == 1) {
@@ -472,7 +472,7 @@ gen_g_factor_panel <- function(g_function, C, x) {
 #Remmeber to make sure theta and the factor set are conformable
 gen_g_panel <- function(g_factor, theta) {
   g_panel <- array(0, dim = c(N, 1, Time))
-  for (i in 1:N) {
+  for (i in seq_len(N)) {
     for (t in 1:Time) {
       g_panel[i, 1, t] <- g_factor[i, , t] %*% t(theta)
     }
@@ -662,7 +662,7 @@ annual_vol <- matrix(0, N, 1)
 #Done for the g1 case for now
 
 #First run individual time series regressions
-for (i in 1:N) {
+for (i in seq_len(N)) {
   #True Returns
   Rs <- rt_panel_g1_A1[i, , ]
   R_bar[i, 1] <- mean(Rs)
@@ -753,7 +753,7 @@ panel_tune_stats <- function(return_panel, signal_panel, true_factor_panel) {
     annual_vol <- matrix(0, N, 1)
     
     #First run individual time series regressions
-    for (i in 1:N) {
+    for (i in seq_len(N)) {
       #True Returns
       Rs <- return_panel[i, , ]
       R_bar[i, 1] <- mean(Rs)
@@ -865,7 +865,7 @@ panel_tune_stats <- function(return_panel, signal_panel, factor_panel) {
     annual_vol <- matrix(0, N, 1)
     
     #First run individual time series regressions
-    for (i in 1:N) {
+    for (i in seq_len(N)) {
       #True Returns
       Rs <- return_panel[i, , ]
       R_bar[i, 1] <- mean(Rs)
@@ -977,13 +977,13 @@ gen_predictor_z <- function(C, x){
   
   dimnames(xt_set)[[1]][1] <- "constant"
   
-  stock_dim <- paste0("stock_", c(1:N))
+  stock_dim <- paste0("stock_", c(seq_len(N)))
   c_dim <- dimnames(kronecker(t(xt_set[, 1]), t(C[1, , 1]), make.dimnames = TRUE))[[2]]
   time_dim <- paste0("time_", c(1:(Time)))
   
   z_panel <- array(0, dim = c(N, (nrow(xt_set)) * P_c, Time), dimnames = list(stock_dim, c_dim, time_dim))
   
-  for (i in 1:N) {
+  for (i in seq_len(N)) {
     for (t in 1:Time) {
       z_panel[i, , t] <- kronecker(t(xt_set[, t]), t(C[i, , t]), make.dimnames = TRUE)
     }
@@ -1001,7 +1001,7 @@ gen_predictor_z <- function(C, x){
 
 gen_predictor_z_twoway <- function(C, x){
   
-  stock_dim <- paste0("stock_", c(1:N))
+  stock_dim <- paste0("stock_", c(seq_len(N)))
   time_dim <- paste0("time_", c(1:(Time)))
   
   z_panel_base <- array(0, dim = c(N, P_c + nrow(x), Time), dimnames = list(stock_dim, append(dimnames(x)[[1]], dimnames(C)[[2]]), time_dim))
@@ -1035,13 +1035,13 @@ gen_predictor_z_twoway <- function(C, x){
 
 bind_rt_predictor <- function(rt_panel, z_panel) {
   
-  df <- cbind(data.frame(rt_panel[, , 1]), time = 2, stock = paste0("stock_", c(1:N)), data.frame(z_panel[, , 1]))
+  df <- cbind(data.frame(rt_panel[, , 1]), time = 2, stock = paste0("stock_", c(seq_len(N))), data.frame(z_panel[, , 1]))
 
   colnames(df)[1] <- "rt"
   row.names(df) <- NULL
   
   for (t in 2:Time) {
-    df_new <- cbind(data.frame(rt_panel[, , t]), time = 1+t, stock = paste0("stock_", c(1:N)), data.frame(z_panel[, , t]))
+    df_new <- cbind(data.frame(rt_panel[, , t]), time = 1+t, stock = paste0("stock_", c(seq_len(N))), data.frame(z_panel[, , t]))
     colnames(df_new)[1] <- "rt"
     row.names(df_new) <- NULL
     df <- rbind(df, df_new)
