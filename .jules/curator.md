@@ -1,0 +1,3 @@
+## 2024-05-24 - Fix silent type coercion in dataframe list-column initialization
+**Learning:** Initializing data frame columns as atomic numeric vectors (e.g., `target = 1:N`) and then attempting to assign lists to individual elements using single brackets (e.g., `df$target[i] <- list(val)`) causes silent type coercion and potential data flattening in R.
+**Action:** Use `I(vector("list", N))` to safely initialize list-columns within a `data.frame()` call. When assigning elements to these columns iteratively, use double brackets (`df$target[[i]] <- val`) and remove the `list()` wrapper around the value to prevent unintended nested list structures.
