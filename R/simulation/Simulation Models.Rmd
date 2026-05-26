@@ -211,7 +211,7 @@ lm_ave_forecast_resids <- function(lm_model, test) {
   time_periods <- unique(test$time)
   
   # Set .combine to "c" to return a vector of results, which is what we want
-  ave_forecast_resids_vector <- foreach(t = 1:length(time_periods), .combine = "c", .packages = c("speedglm", "quantreg")) %do% {
+  ave_forecast_resids_vector <- foreach(t = seq_along(time_periods), .combine = "c", .packages = c("speedglm", "quantreg")) %do% {
     
     test_cross_section <- test %>%
       filter(time == time_periods[t])
@@ -230,7 +230,7 @@ eln_ave_forecast_resids <- function(eln_model, test, alpha, lambda) {
   time_periods <- unique(test$time)
   
   # Set .combine to "c" to return a vector of results, which is what we want
-  ave_forecast_resids_vector <- foreach(t = 1:length(time_periods), .combine = "c") %do% {
+  ave_forecast_resids_vector <- foreach(t = seq_along(time_periods), .combine = "c") %do% {
     
     test_cross_section <- test %>%
       filter(time == time_periods[t])
@@ -252,7 +252,7 @@ rf_ave_forecast_resids <- function(rf_model, test) {
   time_periods <- unique(test$time)
   
   # Set .combine to "c" to return a vector of results, which is what we want
-  ave_forecast_resids_vector <- foreach(t = 1:length(time_periods), .combine = "c") %do% {
+  ave_forecast_resids_vector <- foreach(t = seq_along(time_periods), .combine = "c") %do% {
     
     test_cross_section <- test %>%
       filter(time == time_periods[t])
@@ -271,7 +271,7 @@ nnet_ave_forecast_resids <- function(nnet_model, test) {
   time_periods <- unique(test$time)
   
   # Set .combine to "c" to return a vector of results, which is what we want
-  ave_forecast_resids_vector <- foreach(t = 1:length(time_periods), .combine = "c") %do% {
+  ave_forecast_resids_vector <- foreach(t = seq_along(time_periods), .combine = "c") %do% {
     
     test_cross_section <- test %>%
       filter(time == time_periods[t])
@@ -553,7 +553,7 @@ alpha_grid <- seq(0, 1, 0.01)
 
 ELN_model_grid <- function(alpha_grid, train_x, train_y, validation_x, validation_y, loss_function, nlamb) {
   
-  ELN_model_grid_list <- foreach(i = (1:length(alpha_grid))) %dopar% {
+  ELN_model_grid_list <- foreach(i = (seq_along(alpha_grid))) %dopar% {
     ELN_model_grid <- list(ELN_grid = 0, model = 0)
     
     #MSE Case
