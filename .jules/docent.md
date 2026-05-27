@@ -1,0 +1,3 @@
+## 2024-05-18 - Replacing `cat()` with `message()`
+**Learning:** `agents.md` explicitly instructs to "Replace `cat()` calls used for progress reporting or informational messages with `base::message()`" and "Remove explicit newline characters (`\n`) when converting to `message()` or `warning()`, as these functions append newlines automatically".
+**Action:** Replace `cat` usages in R scripts with `message()`, ensuring `\n` characters at the end of strings are stripped, but do not replace usages writing to files (e.g. `cat(file = ...)`). Use `paste0()` or `paste()` where multiple arguments were passed to `cat()`.
