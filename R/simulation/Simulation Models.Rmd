@@ -213,8 +213,7 @@ lm_ave_forecast_resids <- function(lm_model, test) {
   # Set .combine to "c" to return a vector of results, which is what we want
   ave_forecast_resids_vector <- foreach(t = 1:length(time_periods), .combine = "c", .packages = c("speedglm", "quantreg")) %do% {
     
-    test_cross_section <- test %>%
-      filter(time == time_periods[t])
+    test_cross_section <- test[test$time == time_periods[t], ]
     
     residuals <- test_cross_section$rt - predict(lm_model, newdata = test_cross_section)
     
@@ -232,8 +231,7 @@ eln_ave_forecast_resids <- function(eln_model, test, alpha, lambda) {
   # Set .combine to "c" to return a vector of results, which is what we want
   ave_forecast_resids_vector <- foreach(t = 1:length(time_periods), .combine = "c") %do% {
     
-    test_cross_section <- test %>%
-      filter(time == time_periods[t])
+    test_cross_section <- test[test$time == time_periods[t], ]
 
     test_cross_section_x <- as.matrix(test_cross_section[4:ncol(test_cross_section)])
     
@@ -254,8 +252,7 @@ rf_ave_forecast_resids <- function(rf_model, test) {
   # Set .combine to "c" to return a vector of results, which is what we want
   ave_forecast_resids_vector <- foreach(t = 1:length(time_periods), .combine = "c") %do% {
     
-    test_cross_section <- test %>%
-      filter(time == time_periods[t])
+    test_cross_section <- test[test$time == time_periods[t], ]
     
     residuals <- test_cross_section$rt - predict(rf_model, newdata = test_cross_section)$predicted
     
@@ -273,8 +270,7 @@ nnet_ave_forecast_resids <- function(nnet_model, test) {
   # Set .combine to "c" to return a vector of results, which is what we want
   ave_forecast_resids_vector <- foreach(t = 1:length(time_periods), .combine = "c") %do% {
     
-    test_cross_section <- test %>%
-      filter(time == time_periods[t])
+    test_cross_section <- test[test$time == time_periods[t], ]
     
     test_cross_section_x <- test_cross_section[4:ncol(test_cross_section)]
     
