@@ -1,0 +1,3 @@
+## 2024-05-18 - Fix silent type coercion in dataframe list-columns
+**Learning:** Initializing data.frame list-columns with `c(1:N)` and assigning `list(value)` via `$` or `[i, ]` causes flattening and silent coercion issues in R, specifically data truncation for complex types like numeric vectors and matrices, which results in losing metadata and data structure.
+**Action:** Use `I(vector("list", N))` when initializing data.frame columns intended to hold lists, and assign directly to `[[i]]` (e.g. `df$target[[i]] <- value` and `df$dynamic_feat[[i]] <- value`) rather than `list(value)` to avoid unintended coercion and nested list creation.
