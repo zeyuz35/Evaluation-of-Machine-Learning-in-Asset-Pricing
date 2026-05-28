@@ -816,10 +816,9 @@ ELN_model_grid <- function(alpha_grid, train_x, train_y, validation_x, validatio
 # Use in conjunction with previous function
 
 get_ELN_best_tune <- function(model_grid) {
-  ELN_tune_dataframe <- cbind(model_grid[[1]]$ELN_grid, list_index = 1)
-  for (i in 2:length(model_grid)) {
-    ELN_tune_dataframe <- rbind(ELN_tune_dataframe, cbind(model_grid[[i]]$ELN_grid, list_index = i))
-  }
+  ELN_tune_dataframe <- do.call(rbind, lapply(seq_along(model_grid), function(model_grid_ii) {
+    cbind(model_grid[[model_grid_ii]]$ELN_grid, list_index = model_grid_ii)
+  }))
   ELN_tune_dataframe <- data.frame(ELN_tune_dataframe)
   return(ELN_tune_dataframe[which.min(ELN_tune_dataframe$validation_loss), ])
 }
