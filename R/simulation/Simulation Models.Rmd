@@ -1331,9 +1331,8 @@ LSTM_variable_importance <- function(X_array_test, Y_array_test, test_x, lstm_mo
     index <- seq(1, 200, by = 1) + (i - 1)*200
     
     X_array_test_zero <- X_array_test
-    for (t in 1:dim(X_array_test)[1]) {
-      X_array_test_zero[t, 1, index] <- 0
-    }
+    # Vectorized assignment is faster than explicitly looping over the first dimension
+    X_array_test_zero[, 1, index] <- 0
 
     original_R2 <- R2(predict(lstm_model, X_array_test), Y_array_test %>% as.vector(), form = "traditional")
 
