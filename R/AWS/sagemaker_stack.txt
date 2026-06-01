@@ -2,6 +2,11 @@ Parameters:
   KeyName:
     Description: SSH key pair to use for instance login
     Type: AWS::EC2::KeyPair::KeyName
+  RStudioPassword:
+    NoEcho: true
+    Description: Password for the RStudio user
+    Type: String
+    MinLength: 8
 
 Mappings:
   Region:
@@ -94,7 +99,7 @@ Resources:
           sudo pip install sagemaker boto3
           sudo R -e "install.packages(c('reticulate', 'curl', 'tidyverse'), repos = 'http://cran.rstudio.com')"
           sudo adduser rstudio
-          sudo sh -c "echo rstudio | passwd rstudio --stdin"
+          sudo sh -c "echo ${RStudioPassword} | passwd rstudio --stdin"
           wget https://download2.rstudio.org/rstudio-server-rhel-1.2.5033-x86_64.rpm
           sudo apt install -y rstudio-server-rhel-1.2.5033-x86_64.rpm
           sudo -u rstudio mkdir /home/rstudio/.aws
