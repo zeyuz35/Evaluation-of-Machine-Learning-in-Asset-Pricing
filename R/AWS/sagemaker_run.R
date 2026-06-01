@@ -133,14 +133,14 @@ tidy_to_json <- function(data, start) {
   
   ## JUst setting the beginning time to something arbitrary for now, change if needed
   pooled_panel_json <- data.frame(start = rep(start, cross_units), 
-                                  target = c(1:cross_units), 
-                                  dynamic_feat = c(1:cross_units))
+                                  target = I(vector("list", cross_units)),
+                                  dynamic_feat = I(vector("list", cross_units)))
   
   for (i in 1:cross_units) {
     pooled_panel_filter <- data %>%
       filter(stock == stock_id[i])
     
-    pooled_panel_json$target[i] <- list(pooled_panel_filter$rt)
+    pooled_panel_json$target[[i]] <- pooled_panel_filter$rt
     
     pooled_panel_filter_feature <- pooled_panel_filter %>%
       select(-time, -rt, -stock) %>%
@@ -149,7 +149,7 @@ tidy_to_json <- function(data, start) {
       # Transpose it to get the right format of one feature series per row
       t()
     
-    pooled_panel_json[i, ]$dynamic_feat <- pooled_panel_filter_feature %>% list()
+    pooled_panel_json$dynamic_feat[[i]] <- pooled_panel_filter_feature
   }
   pooled_panel_json
 }
@@ -350,17 +350,17 @@ tidy_to_batch_inf <- function(data, start, timeSlices, set) {
   
   ## Just setting the beginning time to something arbitrary for now, change if needed
   pooled_panel_json <- data.frame(start = rep(start, cross_units), 
-                                  target = c(1:cross_units), 
-                                  dynamic_feat = c(1:cross_units))
+                                  target = I(vector("list", cross_units)),
+                                  dynamic_feat = I(vector("list", cross_units)))
   
   for (i in 1:cross_units) {
     pooled_panel_filter <- data %>%
       filter(stock == stock_id[i])
       
-    pooled_panel_json$target[i] <- pooled_panel_filter %>%
+    pooled_panel_json$target[[i]] <- (pooled_panel_filter %>%
       filter(time %in% timeSlices[[set]]$train | time %in% timeSlices[[set]]$validation) %>%
-      dplyr::select(rt) %>%
-      list()
+      dplyr::select(rt))$rt
+
     
     pooled_panel_filter_feature <- pooled_panel_filter %>%
       filter(time %in% timeSlices[[set]]$train | time %in% timeSlices[[set]]$validation | time %in% timeSlices[[set]]$test) %>%
@@ -370,7 +370,7 @@ tidy_to_batch_inf <- function(data, start, timeSlices, set) {
       # Transpose it to get the right format of one feature series per row
       t()
     
-    pooled_panel_json[i, ]$dynamic_feat <- pooled_panel_filter_feature %>% list()
+    pooled_panel_json$dynamic_feat[[i]] <- pooled_panel_filter_feature
   }
   pooled_panel_json
 }

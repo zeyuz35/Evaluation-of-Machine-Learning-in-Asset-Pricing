@@ -1,0 +1,3 @@
+## 2024-05-13 - Data Integrity: Safe List-Column Initialization
+**Learning:** In R, attempting to assign a `list()` to a single element of an atomic numeric vector (e.g. `df$target[i] <- list(value)` where `target = 1:N`) causes silent type coercion to a generic list, but flattens inner vectors. To properly preserve vector attributes within list-columns of a data frame, they must be explicitly initialized using `I(vector("list", N))` to prevent type coercion and then assigned using double-bracket subsetting `[[i]]`.
+**Action:** When iterating to build list-columns, use `I(vector("list", N))` during data frame creation and `df$target[[i]] <- value` for assignment instead of overwriting a dummy atomic vector.
