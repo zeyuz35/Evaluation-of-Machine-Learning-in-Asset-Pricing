@@ -218,8 +218,8 @@ estimator$set_hyperparameters(
   test_quantiles = array(0.5)
 )
 
-s3_train_input <- "s3://sagemaker-us-west-2-438078873022/data/pooled_panel_train.json"
-s3_valid_input <- "s3://sagemaker-us-west-2-438078873022/data/pooled_panel_test.json"
+s3_train_input <- paste0("s3://", s3_bucket, "/data/pooled_panel_train.json")
+s3_valid_input <- paste0("s3://", s3_bucket, "/data/pooled_panel_test.json")
 
 data_channels <- list('train' = s3_train_input, 'test' = s3_valid_input)
 
@@ -474,8 +474,8 @@ deepar_fit_stats <- function(pooled_panel, timeSlices) {
       test_quantiles = array(0.5)
     )
     
-    s3_train_input <- "s3://sagemaker-us-west-2-438078873022/data/pooled_panel_train.json"
-    s3_valid_input <- "s3://sagemaker-us-west-2-438078873022/data/pooled_panel_test.json"
+    s3_train_input <- paste0("s3://", s3_bucket, "/data/pooled_panel_train.json")
+    s3_valid_input <- paste0("s3://", s3_bucket, "/data/pooled_panel_test.json")
     
     data_channels <- list('train' = s3_train_input, 'test' = s3_valid_input)
     
