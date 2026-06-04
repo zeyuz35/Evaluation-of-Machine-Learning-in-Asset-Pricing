@@ -1,0 +1,3 @@
+## 2024-05-18 - Replacing Unqualified Library Calls
+**Learning:** `agents.md` strictly prohibits `library()` or `require()` within function definitions, and more broadly in the `R/` directory (Stage 2 development) states: "Replace all unqualified external function calls with explicit `pkg::function()` syntax". Using `library()` inside `R/` files litters the global namespace and violates standard R package development practices. Since there's no `DESCRIPTION` file, dependencies aren't being properly managed, but `library()` calls still pollute the workspace.
+**Action:** I will remove the top-level `library()` calls from `R/umap_play.R` and instead namespace the function calls directly (e.g., `umap::umap()`, `dplyr::select()`).
