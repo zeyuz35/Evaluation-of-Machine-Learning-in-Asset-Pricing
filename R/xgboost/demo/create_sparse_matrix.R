@@ -22,11 +22,11 @@ data(Arthritis)
 df <- data.table(Arthritis, keep.rownames = F)
 
 # Let's have a look to the data.table
-cat("Print the dataset\n")
+message("Print the dataset")
 print(df)
 
 # 2 columns have factor type, one has ordinal type (ordinal variable is a categorical variable with values wich can be ordered, here: None > Some > Marked).
-cat("Structure of the dataset\n")
+message("Structure of the dataset")
 str(df)
 
 # Let's add some new categorical features to see if it helps. Of course these feature are highly correlated to the Age feature. Usually it's not a good thing in ML, but Tree algorithms (including boosted trees) are able to select the best features, even in case of highly correlated features.
@@ -41,7 +41,7 @@ df[,AgeCat:= as.factor(ifelse(Age > 30, "Old", "Young"))]
 df[,ID:=NULL]
 
 # List the different values for the column Treatment: Placebo, Treated.
-cat("Values of the categorical feature Treatment\n")
+message("Values of the categorical feature Treatment")
 print(levels(df[,Treatment]))
 
 # Next step, we will transform the categorical data to dummy variables.
@@ -54,7 +54,7 @@ print(levels(df[,Treatment]))
 # Column Improved is excluded because it will be our output column, the one we want to predict.
 sparse_matrix = sparse.model.matrix(Improved~.-1, data = df)
 
-cat("Encoding of the sparse Matrix\n")
+message("Encoding of the sparse Matrix")
 print(sparse_matrix)
 
 # Create the output vector (not sparse)
@@ -64,7 +64,7 @@ print(sparse_matrix)
 output_vector = df[,Y:=0][Improved == "Marked",Y:=1][,Y]
 
 # Following is the same process as other demo
-cat("Learning...\n")
+message("Learning...")
 bst <- xgboost(data = sparse_matrix, label = output_vector, max_depth = 9,
                eta = 1, nthread = 2, nrounds = 10, objective = "binary:logistic")
 
