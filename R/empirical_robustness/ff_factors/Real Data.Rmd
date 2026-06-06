@@ -233,7 +233,7 @@ cross_sectional_values <- function(dataset, impute_type) {
   
   time_periods <- unique(dataset$time)
   
-  cross_sectional_values_df <- foreach(t = 1:length(time_periods), .combine = "rbind") %dopar% {
+  cross_sectional_values_df <- foreach(t = seq_along(time_periods), .combine = "rbind") %dopar% {
     
     dataset_cross_section <- dataset %>%
       filter(time == time_periods[t])
@@ -268,7 +268,7 @@ colnames(test)[colSums(is.na(test)) > 0]
 impute_cross_section <- function(dataset, impute_type) {
   time_periods <- unique(dataset$time)
   
-  imputed_cross_section_df <- foreach(t = 1:length(time_periods), .combine = "rbind") %dopar% {
+  imputed_cross_section_df <- foreach(t = seq_along(time_periods), .combine = "rbind") %dopar% {
     dataset_cross_section <- dataset %>%
       filter(time == time_periods[t])
     
@@ -308,7 +308,7 @@ ncol(datashare_filtered)
 cross_section_normalize <- function(dataset) {
   time_periods <- unique(dataset$time)
   
-  normalize_cross_section_df <- foreach(t = 1:length(time_periods), .combine = "rbind") %dopar% {
+  normalize_cross_section_df <- foreach(t = seq_along(time_periods), .combine = "rbind") %dopar% {
     dataset_cross_section <- dataset %>%
       filter(time == time_periods[t])
     
@@ -469,7 +469,7 @@ write.csv(individual_factor_names, file = "individual_factor_names.csv")
 ## This section builds in the macro dataset and egnerates the interaction terms
 interaction_terms <- rep(list(0), length(macro_factor_names))
 
-for (i in 1:length(macro_factor_names)) {
+for (i in seq_along(macro_factor_names)) {
   interaction_terms[[i]] <- paste(macro_factor_names[i], individual_factor_names, sep = ":", collapse = " + ")
 }
 
@@ -687,7 +687,7 @@ lm_ave_forecast_resids <- function(lm_model, test) {
   time_periods <- unique(test$time)
   
   # Set .combine to "c" to return a vector of results, which is what we want
-  ave_forecast_resids_vector <- foreach(t = 1:length(time_periods), .combine = "c", .packages = c("speedglm", "quantreg")) %do% {
+  ave_forecast_resids_vector <- foreach(t = seq_along(time_periods), .combine = "c", .packages = c("speedglm", "quantreg")) %do% {
     
     test_cross_section <- test %>%
       filter(time == time_periods[t])
@@ -706,7 +706,7 @@ eln_ave_forecast_resids <- function(eln_model, test, alpha, lambda) {
   time_periods <- unique(test$time)
   
   # Set .combine to "c" to return a vector of results, which is what we want
-  ave_forecast_resids_vector <- foreach(t = 1:length(time_periods), .combine = "c") %do% {
+  ave_forecast_resids_vector <- foreach(t = seq_along(time_periods), .combine = "c") %do% {
     
     test_cross_section <- test %>%
       filter(time == time_periods[t])
@@ -728,7 +728,7 @@ rf_ave_forecast_resids <- function(rf_model, test) {
   time_periods <- unique(test$time)
   
   # Set .combine to "c" to return a vector of results, which is what we want
-  ave_forecast_resids_vector <- foreach(t = 1:length(time_periods), .combine = "c") %do% {
+  ave_forecast_resids_vector <- foreach(t = seq_along(time_periods), .combine = "c") %do% {
     
     test_cross_section <- test %>%
       filter(time == time_periods[t])
@@ -747,7 +747,7 @@ nnet_ave_forecast_resids <- function(nnet_model, test) {
   time_periods <- unique(test$time)
   
   # Set .combine to "c" to return a vector of results, which is what we want
-  ave_forecast_resids_vector <- foreach(t = 1:length(time_periods), .combine = "c") %do% {
+  ave_forecast_resids_vector <- foreach(t = seq_along(time_periods), .combine = "c") %do% {
     
     test_cross_section <- test %>%
       filter(time == time_periods[t])
@@ -839,7 +839,7 @@ LM_fit <- function(pooled_panel, timeSlices, loss_function, f,
 
 ELN_model_grid <- function(alpha_grid, train_x, train_y, validation_x, validation_y, loss_function, nlamb) {
   
-  ELN_model_grid_list <- foreach(i = (1:length(alpha_grid))) %dopar% {
+  ELN_model_grid_list <- foreach(i = (seq_along(alpha_grid))) %dopar% {
     ELN_model_grid <- list(ELN_grid = 0, model = 0)
     
     #MSE Case
@@ -961,7 +961,7 @@ RF_fit_model_grid <- function(f, train, validation, RF_grid, loss_function) {
   #Initialize List
   RF_model_grid <- rep(list(0), nrow(RF_grid))
   
-  for (i in 1:nrow(RF_grid)) {
+  for (i in seq_len(nrow(RF_grid))) {
     
     RF_model_grid[[i]] <- list(RF_grid = 0, model = 0)
     
