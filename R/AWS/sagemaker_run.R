@@ -4,7 +4,7 @@
 # This is a lot of work, make set up a cloudformation YAML for ease of reproducibility
 ######################################################################################################
 #
-# Set up an EC2 instance, doesn't matter too much what's included
+# Set up an EC2 instance, does not matter too much what's included
 # At least t2.medium is recommend due to RAM constraints on the free tier (this is still fairly cheap)
 # Note that as most of the actual computation is done via sagemaker, EC2 costs should be quite low
 # Sagemaker fees are quite expensive though unfortunately
@@ -56,7 +56,7 @@
 # echo "[default]" > /home/rstudio/.aws/config
 # echo "region =" $region >> /home/rstudio/.aws/config
 # 
-# Restart Rstudio just to refresh it (doesn't seem to be necessary though)
+# Restart Rstudio just to refresh it (does not seem to be necessary though)
 # 
 ########################################################################################################
 # ACTUAL CODE START
@@ -196,7 +196,7 @@ estimator <- sagemaker$estimator$Estimator(
   output_path = s3_output_path
 )
 
-# Lags are used in the model building procedure anyway, so context_length doesn't have to be very large
+# Lags are used in the model building procedure anyway, so context_length does not have to be very large
 # Amazon recommends to just set this equal to prediction length
 context_length <- 12L
 prediction_length <- 12L
@@ -231,7 +231,7 @@ estimator$fit(inputs = data_channels,
 ## HYPERPARAMETER TUNING
 ############################################################################
 
-## NOT RUN, as it seems fairly robust to hyperparameters (ie they don't help much), 
+## NOT RUN, as it seems fairly robust to hyperparameters (ie they do not help much),
 ## and very costly and time consuming
 
 ## Import some functions from
@@ -452,7 +452,7 @@ deepar_fit_stats <- function(pooled_panel, timeSlices) {
       output_path = s3_output_path
     )
     
-    # Lags are used in the model building procedure anyway, so context_length doesn't have to be very large
+    # Lags are used in the model building procedure anyway, so context_length does not have to be very large
     # Amazon recommends to just set this equal to prediction length
     context_length <- 12L
     prediction_length <- 12L

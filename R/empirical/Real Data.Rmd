@@ -44,9 +44,9 @@ set.seed(27935248)
 # Load RAW data courtesy of Gu et al
 #################################################
 # This is about ~ 3GB in size in total
-# Note that because the honours lab computers don't have their own hard drives (files are stored on some network location), this initial loading processis very slow (bottlenecked by network speed)
+# Note that because the honours lab computers do not have their own hard drives (files are stored on some network location), this initial loading processis very slow (bottlenecked by network speed)
 datashare_RAW <- read_csv("~/GitHub/Evaluation-of-Machine-Learning-in-Asset-Pricing/R/data/datashare/datashare.csv",
-                          # Always make sure to force col_types so that read_csv doesn't assume weird stuff
+                          # Always make sure to force col_types so that read_csv does not assume incorrect structures
                           col_types = cols(.default = "d"))
 
 # Export stock IDs so that we can query WRDS returns
@@ -98,12 +98,12 @@ datashare <- datashare_RAW_join %>%
   # Filter out PRC < 5 to get rid of penny stocks
   filter(PRC >= 5) %>%
   # Filter out so that only shares with share codes of 10 or 11 are included (other codes refer to other instruments such as REITs, etc)
-  # Don't have any idea why Gu et al thought this was originally sensible
+  # Do not have any idea why Gu et al thought this was originally sensible
   filter(SHRCD == 10 | SHRCD == 11) %>%
   dplyr::select(-SHRCD) %>%
   # SIC codes according to WRDS/CRSP are recommended to be used with caution, as they are not strictly enforced
   # Companies can also belong in multiple SIC codes, or change SIC codes over time. This is not adequately captured by CRSP
-  # Also don't make much consistent sense either
+  # Also do not make much consistent sense either
   # Personal decision: drop them entirely
   dplyr::select(-sic2) %>%
   # Adjust lags for monthly data, such that they will correspond to quaterly conversion
@@ -215,7 +215,7 @@ datashare_filtered <- datashare %>%
 # Many of the earlier cross sections are completely missing any sort of data for some characteristics
 # This means that it is impossible to impute a cross sectional mean/median
 # The foreach loop may through some errors if this is the case but will still function correctly, check the output to see which exact factors are missing
-# Don't know how Gu et al did this
+# Do not know how Gu et al did this
 
 # Function to calculate cross sectional medians/means from panel dataset, mainly for checking purposes
 # Assumes that the dataset has a "time" column
@@ -297,7 +297,7 @@ ncol(datashare_filtered)
 # Final imputed dataset is ~100mb in size, quite manageable
 
 ## Function to cross sectionally normalize characteristics
-# Lots of different approaches, we'll stick with the rank transformation of only the individual charcteristics for each cross section and leave the macro economic factors untouched
+# Lots of different approaches, we will stick with the rank transformation of only the individual charcteristics for each cross section and leave the macro economic factors untouched
 # This is consistent with what we did in the simulation exercise
 cross_section_normalize <- function(dataset) {
   time_periods <- unique(dataset$time)
@@ -358,10 +358,10 @@ PredictorData2017 <- PredictorData2017_RAW %>%
   mutate(time = as.yearqtr(as.character(yyyyq), "%Y%q")) %>%
   dplyr::select(-yyyyq) %>%
   # Dividend price ratio is the difference between the log of dividends and the log of prices
-  # Note that log(D12) - log(Index) is negative which doesn't make sense as a ratio
+  # Note that log(D12) - log(Index) is negative which does not make sense as a ratio
   mutate(dp = abs(log(D12) - log(Index))) %>%
   # earnings price ratio is the difference between the log of earnings and the log of prices
-  # Note that log(E12) - log(Index) is negative which doesn't make sense as a ratio
+  # Note that log(E12) - log(Index) is negative which does not make sense as a ratio
   mutate(ep = abs(log(E12) - log(Index))) %>%
   # Term Spread is the difference between long term yield on gov bonds and treasury bills
   mutate(tms = lty - tbl) %>%
@@ -375,7 +375,7 @@ PredictorData2017 <- PredictorData2017_RAW %>%
 # Subset so that we have the predictors we actually care about
 # Note that some of these by default have the same names as those in the individual factor set
 # Therefore, prefix them with macro_ to make it clearer
-# Also filter out all the entries that are not in the datashare dataset as they can't be used (Note that this also takes care of all missing values in this dataset)
+# Also filter out all the entries that are not in the datashare dataset as they cannot be used (Note that this also takes care of all missing values in this dataset)
 # Filter it so that we only have the years we are interested in (same filtering as datashare)
 macro_predictors <- PredictorData2017 %>%
   dplyr::select(time, dp, ep, bm, ntis, tbl, tms, dfy, svar, Rfree) %>%
@@ -738,7 +738,7 @@ LM_fit <- function(pooled_panel, timeSlices, loss_function, f,
     
     #Train Model on training set
     
-    # Set model = FALSE so that it won't save a copy of the training data in the model object
+    # Set model = FALSE so that it will not save a copy of the training data in the model object
     # Doen for memory efficiency
     #MSE case
     if (loss_function == "mse") {
@@ -1108,7 +1108,7 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
       
     # Fit the model
     # The patience parameter is the amount of epochs to check for improvement.
-    # Gu et al don't say what their early stopping parameter p is
+    # Gu et al do not say what their early stopping parameter p is
     early_stop <- callback_early_stopping(monitor = "val_loss", patience = patience, restore_best_weights = TRUE)
     lr_reduce <- callback_reduce_lr_on_plateau(monitor = "val_loss", factor = 0.5,
                                                patience = 5, verbose = 0, mode = c("auto", "min", "max"),
@@ -1116,8 +1116,8 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
     
     print_dot_callback <- callback_lambda(
       on_epoch_end = function(epoch, logs) {
-        if (epoch %% 50 == 0) cat("\n")
-        cat(".")
+        if (epoch %% 50 == 0) message()
+        message(".", appendLF = FALSE)
       }
     ) 
     
@@ -1280,7 +1280,7 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
     
     # Other options used throughout the neural network fitting process are specified here
     # Namely, batch size
-    # In general, larger batch sizes result in faster progress in training, but don't always converge as fast. Smaller batch sizes train slower, but can converge faster.
+    # In general, larger batch sizes result in faster progress in training, but do not always converge as fast. Smaller batch sizes train slower, but can converge faster.
     # Default batch size is 32
     neural_network %>% fit(as.matrix(train_x), as.matrix(train_y), 
                            batch_size = batch_size, epochs = 500, verbose = 1, 

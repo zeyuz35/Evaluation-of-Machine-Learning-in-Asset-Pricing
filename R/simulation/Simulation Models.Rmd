@@ -107,7 +107,7 @@ f <- panel_formula(pooled_panel)
 # Also, the code is noticeably neater
 
 # Variable Importance Metric Functions
-# Given a single model and test set, return a variable importance dataframe (don't bother sorting them now)
+# Given a single model and test set, return a variable importance dataframe (do not bother sorting them now)
 # Note that a training set is NOT needed because this is to be called AFTER the model is fit
 # These functions were originally written after the actul fitting functions were
 # These are used by the fitting functions, so they need to be declared before them
@@ -200,7 +200,7 @@ variable_importance_df
 
 ```{r cross_sectional_average_residuals}
 ## Function to calculate cross sectional average residuals, used for Diebold Mariano Tests later
-## Don't really believe in this, mostly done because its popular in literature
+## Do not really believe in this, mostly done because its popular in literature
 # Similarly, different functions are needed for each type of model object as they all have slightly different predict methods
 
 ## Linear Model
@@ -312,7 +312,7 @@ LM_fit <- function(pooled_panel, timeSlices, loss_function, f) {
     
     #Train Model on training set
     
-    # Set model = FALSE so that it won't save a copy of the training data in the model object
+    # Set model = FALSE so that it will not save a copy of the training data in the model object
     # Doen for memory efficiency
     #MSE case
     if (loss_function == "mse") {
@@ -395,12 +395,12 @@ LM_stats_mae[[3]]$forecast_resids
 
 #Elasticnet WRT MSE
 
-# Can't seem to find anything online that tunes ELN for you with specified validation sets, instead of straight-forward cross validation
+# Cannot seem to find anything online that tunes ELN for you with specified validation sets, instead of straight-forward cross validation
 # nfold and foldid require that ELN be performed with at least 3 fold validation - not possible in our context
 
 # Elasticnet only has alpha and lambda to tune
 
-# ELN is rather finicky and likes to generate its own sequence of lambda values during the actual fitting process. Really doesn't like specifying a singular lambda value
+# ELN is rather sensitive and likes to generate its own sequence of lambda values during the actual fitting process. Really does not like specifying a singular lambda value
 # Solution: follow what the documentation says and let it find its own lambda sequence
 # Then, when supply custom grid values of lambda when actually predicting values. This can be either through exact = TRUE (refits the model with the additional lambda gridpoint), or exact = FALSE, which just uses linear interpolation
 # According to documentation, linear interpolation is very fast and is generally "good enough" anyway
@@ -726,7 +726,7 @@ ELN_stats_mae[[3]]$variable_importance %>% arrange(desc(importance))
 #Random Forest should also be fairly straightforward, only two tuning parameters mtry and ntree (usually)
 
 #Check out randomForestSRC for an implementation of randomForests that allows for quantile regression trees. Quantile regression use a check loss function, which is a superset of absolute error
-#forestr package doesn't seem to want to function on honours lab computers
+#forestr package does not seem to want to function on honours lab computers
 
 #Default ntree = 500
 #Default mtry = count(predictors/3) = 400/3 = 133
@@ -742,11 +742,11 @@ ELN_stats_mae[[3]]$variable_importance %>% arrange(desc(importance))
 ## Extra feature: calculate the variable imporance using the built in vimp method for rfsrc objects
 ## This is primarily done just to contrast the traditional or normal way of doing VI with our new measure that is consistent across all models
 ## There are two vimps available: Breiman Cutler (permutation) and Ishwaran-Kogalur vimp
-## Just do them both, as they don't seem to be too intensive
+## Just do them both, as they do not seem to be too intensive
 ## A newer vimp called holdout vimp involves truly holding out certain variables from the entire forest fitting process and seeing hwat effects this has - this is WAY too computationally intensive (they recommend ntree = 1000 * vtry, and a default of ntree = 1000)
 
 ## Bug with randomForestSRC - default vimp function is IN SAMPLE vimp which is very memory intensive
-## If you don't have enough memory, R will just crash and this is the major bug
+## If you do not have enough memory, R will just crash and this is the major bug
 ## Make sure you specify a test set so that it will do out of sample vimp, which is feasible in terms of memory limits and will prevent crashing
 
 RF_fit_model_grid <- function(f, train, validation, RF_grid, loss_function) {
@@ -984,13 +984,13 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
       
     # Fit the model
     # The patience parameter is the amount of epochs to check for improvement.
-    # Gu et al don't say what their early stopping parameter p is
+    # Gu et al do not say what their early stopping parameter p is
     early_stop <- callback_early_stopping(monitor = "val_loss", patience = patience, restore_best_weights = TRUE)
     
     print_dot_callback <- callback_lambda(
       on_epoch_end = function(epoch, logs) {
-        if (epoch %% 50 == 0) cat("\n")
-        cat(".")
+        if (epoch %% 50 == 0) message()
+        message(".", appendLF = FALSE)
       }
     ) 
     
@@ -1153,7 +1153,7 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
     
     # Other options used throughout the neural network fitting process are specified here
     # Namely, batch size
-    # In general, larger batch sizes result in faster progress in training, but don't always converge as fast. Smaller batch sizes train slower, but can converge faster.
+    # In general, larger batch sizes result in faster progress in training, but do not always converge as fast. Smaller batch sizes train slower, but can converge faster.
     # Default batch size is 32
     neural_network %>% fit(as.matrix(train_x), as.matrix(train_y), 
                            batch_size = batch_size, epochs = 500, verbose = 0, 
@@ -1316,8 +1316,8 @@ NNet_5_mae_stats[[1]]$variable_importance %>%
 
 # Observations when fitting:
 # LSTM parameter count is very explosive, usually having an LSTM unit with 8 units approaches GPU memory limit of 2GB already
-# Stacking LSTM units doesn't seem to help too much
-# Adding more vanilla layers also doesn't seem to help much
+# Stacking LSTM units does not seem to help too much
+# Adding more vanilla layers also does not seem to help much
 # Predictions seem to be well behaved compared to MLPs
 # tanh seems to be better than ReLU, though as least ReLU works here
 # Fitting wrt to MAE seems to be better
@@ -1438,8 +1438,8 @@ LSTM_fit_stats <- function(pooled_panel, timeSlices, loss_function, batch_size, 
     
     print_dot_callback <- callback_lambda(
       on_epoch_end = function(epoch, logs) {
-        if (epoch %% 50 == 0) cat("\n")
-        cat(".")
+        if (epoch %% 50 == 0) message()
+        message(".", appendLF = FALSE)
       }
     ) 
     
@@ -1845,7 +1845,7 @@ fforma_fit_individual <- function(panel, timeSlices, set) {
 # Labels - a numeric vector from 0 to nclass -1, representing the method with the lowest forecast error
 
 ## Function to return a data matrix with features extracted via tsfeatures, one series per row, given panel data
-# Remeber that this function doesn't do train/validation/split, so you'll have to do these outside of it
+# Remeber that this function does not do train/validation/split, so you will have to do these outside of it
 fforma_data_matrix <- function(pooled_panel) {
   data <- foreach(i = 1:length(unique(pooled_panel$stock)), .combine = "rbind") %do% {
   stock_id <- unique(pooled_panel$stock)
@@ -2038,7 +2038,7 @@ fforma_fit_stats <- function(pooled_panel, timeSlices, loss_function) {
       dplyr::filter(time %in% timeSlices[[set]]$test) %>%
       dplyr::select(rt)
     
-    ## Note that these forecasting methods don't really have a "training" error, 
+    ## Note that these forecasting methods do not really have a "training" error,
     ## so no in sample stats will be available
     ## Not a huge issue anyway, as no one cares
     
@@ -2054,7 +2054,7 @@ fforma_fit_stats <- function(pooled_panel, timeSlices, loss_function) {
     fforma_fit_stats_list[[set]]$loss_stats$test_RSquare <- R2(test_forecasts, test_y$rt, 
                                                                form = "traditional")
     ## Variable importance skipped for now as its really annoying to implement, 
-    ## and more importantly FFORMA doesn't care too much about external regressors anyway
+    ## and more importantly FFORMA does not care too much about external regressors anyway
     
     fforma_fit_stats_list[[set]]$forecasts <- test_forecasts %>% as.vector()
     

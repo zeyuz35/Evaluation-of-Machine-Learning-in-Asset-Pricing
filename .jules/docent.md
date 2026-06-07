@@ -1,0 +1,3 @@
+## 2024-06-08 - Replaced Informal Language and Contractions
+**Learning:** Found widespread use of informal language ("crazy", "weird stuff", "absolutely amazing", "finicky") and contractions ("don't", "won't", "can't", "you'll") in code comments and Markdown text, which violates professional communication standards. Additionally, the `cat()` function was used for logging loops.
+**Action:** Used a Python script to comprehensively replace these informal terms and contractions with their professional, terse alternatives (e.g., "do not", "excessive", "incorrect structures", "sensitive"). Converted instances of `cat()` used for loop progress to `message()`. Verified modifications using standard git commands.

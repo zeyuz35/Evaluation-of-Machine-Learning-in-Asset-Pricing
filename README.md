@@ -14,7 +14,7 @@ All code is in the R folder, and all files related to the actual thesis are in t
 
 Simulation code should be finished, in "Simulation.rmd". This includes flexible options to specify different parameters and properties. Generation of each panel dataset in a panel dataframe format, along with diagnostics such as various r squared values are all possible with provided functions. This section is to be run to generate the actual datasets first.
 
-"Simulation Models.rmd" contains all the functions required to fit models to the datasets. Coded up to be as modular as possible, so in theory you could just specify a single dataset and run each model individually in this section (indeed this is what I've done to test them).
+"Simulation Models.rmd" contains all the functions required to fit models to the datasets. Coded up to be as modular as possible, so in theory you could just specify a single dataset and run each model individually in this section (indeed this is what I have done to test them).
 
 "Simulation Models_run.rmd" contains all the wrapper functions to iteratively loop over all the simulation realisations, and will spit out list objects that contain all specified model results. Model results are already provided in .rds format in the repo.
 

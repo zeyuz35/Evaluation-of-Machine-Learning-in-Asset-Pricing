@@ -87,7 +87,7 @@ Test_Assets_RAW <- X17_Industry_Portfolios_RAW %>%
   full_join(X25_Portfolios_OP_INV_5x5_RAW, by = "Time") %>%
   full_join(X25_Portfolios_ME_VAR_5x5_RAW, by = "Time")
 
-# This needs to be joined with our factor set later, so for conevenience we'll convert the Time variable into yearmon format
+# This needs to be joined with our factor set later, so for conevenience we will convert the Time variable into yearmon format
 Test_Assets_RAW$Time <- as.yearmon(as.character(Test_Assets_RAW$Time), "%Y%m")
   
 ```
