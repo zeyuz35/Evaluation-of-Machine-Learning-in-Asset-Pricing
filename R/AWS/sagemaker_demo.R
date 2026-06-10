@@ -1,5 +1,4 @@
-library("reticulate")
-sagemaker <- import('sagemaker')
+sagemaker <- reticulate::import('sagemaker')
 session <- sagemaker$Session()
 bucket <- session$default_bucket()
 
@@ -8,44 +7,40 @@ role_arn <- session$expand_role('sagemaker-service-role')
 
 ## Just playing around with dummy data at the moment to get a feel for how Sagemaker works
 
-library(tidyverse)
 data_file <- 'https://archive.ics.uci.edu/ml/machine-learning-databases/abalone/abalone.data'
-abalone <- read_csv(file = data_file, col_names = FALSE)
+abalone <- readr::read_csv(file = data_file, col_names = FALSE)
 names(abalone) <- c('sex', 'length', 'diameter', 'height', 'whole_weight', 'shucked_weight', 'viscera_weight', 'shell_weight', 'rings')
 head(abalone)
 
 abalone$sex <- as.factor(abalone$sex)
 summary(abalone)
 
-ggplot(abalone, aes(x = height, y = rings, color = sex)) + geom_point() + geom_jitter()
+ggplot2::ggplot(abalone, ggplot2::aes(x = height, y = rings, color = sex)) + ggplot2::geom_point() + ggplot2::geom_jitter()
 
 ## Cleaning
 
-abalone <- abalone %>%
-  filter(height != 0)
+abalone <- dplyr::filter(abalone, height != 0)
 
-abalone <- abalone %>%
-  mutate(female = as.integer(ifelse(sex == 'F', 1, 0)),
+abalone <- dplyr::select(
+  dplyr::mutate(abalone,
+         female = as.integer(ifelse(sex == 'F', 1, 0)),
          male = as.integer(ifelse(sex == 'M', 1, 0)),
-         infant = as.integer(ifelse(sex == 'I', 1, 0))) %>%
-  select(-sex)
-abalone <- abalone %>%
-  select(rings:infant, length:shell_weight)
+         infant = as.integer(ifelse(sex == 'I', 1, 0))),
+  -sex)
+abalone <- dplyr::select(abalone, rings:infant, length:shell_weight)
 head(abalone)
 
 ## Train/test split
 
-abalone_train <- abalone %>%
-  sample_frac(size = 0.7)
-abalone <- anti_join(abalone, abalone_train)
-abalone_test <- abalone %>%
-  sample_frac(size = 0.5)
-abalone_valid <- anti_join(abalone, abalone_test)
+abalone_train <- dplyr::sample_frac(abalone, size = 0.7)
+abalone <- dplyr::anti_join(abalone, abalone_train)
+abalone_test <- dplyr::sample_frac(abalone, size = 0.5)
+abalone_valid <- dplyr::anti_join(abalone, abalone_test)
 
 ## Writing datasets to local machine
 
-write_csv(abalone_train, 'abalone_train.csv', col_names = FALSE)
-write_csv(abalone_valid, 'abalone_valid.csv', col_names = FALSE)
+readr::write_csv(abalone_train, 'abalone_train.csv', col_names = FALSE)
+readr::write_csv(abalone_valid, 'abalone_valid.csv', col_names = FALSE)
 
 ## Upload datasets to S3 Bucket
 
@@ -107,9 +102,8 @@ num_predict_rows <- 500
 test_sample <- as.matrix(abalone_test[1:num_predict_rows, ])
 dimnames(test_sample)[[2]] <- NULL
 
-library(stringr)
 predictions <- model_endpoint$predict(test_sample)
-predictions <- str_split(predictions, pattern = ',', simplify = TRUE)
+predictions <- stringr::str_split(predictions, pattern = ',', simplify = TRUE)
 predictions <- as.numeric(predictions)
 
 abalone_test <- cbind(predicted_rings = predictions, 
