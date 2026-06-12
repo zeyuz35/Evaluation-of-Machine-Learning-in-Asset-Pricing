@@ -211,7 +211,7 @@ lm_ave_forecast_resids <- function(lm_model, test) {
   time_periods <- unique(test$time)
   
   # Set .combine to "c" to return a vector of results, which is what we want
-  ave_forecast_resids_vector <- foreach(t = 1:length(time_periods), .combine = "c", .packages = c("speedglm", "quantreg")) %do% {
+  ave_forecast_resids_vector <- foreach(t = seq_along(time_periods), .combine = "c", .packages = c("speedglm", "quantreg")) %do% {
     
     test_cross_section <- test %>%
       filter(time == time_periods[t])
@@ -230,7 +230,7 @@ eln_ave_forecast_resids <- function(eln_model, test, alpha, lambda) {
   time_periods <- unique(test$time)
   
   # Set .combine to "c" to return a vector of results, which is what we want
-  ave_forecast_resids_vector <- foreach(t = 1:length(time_periods), .combine = "c") %do% {
+  ave_forecast_resids_vector <- foreach(t = seq_along(time_periods), .combine = "c") %do% {
     
     test_cross_section <- test %>%
       filter(time == time_periods[t])
@@ -252,7 +252,7 @@ rf_ave_forecast_resids <- function(rf_model, test) {
   time_periods <- unique(test$time)
   
   # Set .combine to "c" to return a vector of results, which is what we want
-  ave_forecast_resids_vector <- foreach(t = 1:length(time_periods), .combine = "c") %do% {
+  ave_forecast_resids_vector <- foreach(t = seq_along(time_periods), .combine = "c") %do% {
     
     test_cross_section <- test %>%
       filter(time == time_periods[t])
@@ -271,7 +271,7 @@ nnet_ave_forecast_resids <- function(nnet_model, test) {
   time_periods <- unique(test$time)
   
   # Set .combine to "c" to return a vector of results, which is what we want
-  ave_forecast_resids_vector <- foreach(t = 1:length(time_periods), .combine = "c") %do% {
+  ave_forecast_resids_vector <- foreach(t = seq_along(time_periods), .combine = "c") %do% {
     
     test_cross_section <- test %>%
       filter(time == time_periods[t])
@@ -424,7 +424,7 @@ ELN_grid <- expand.grid(
 ELN_model_grid <- function(ELN_grid, train_x, train_y, validation_x, validation_y, loss_function, nlambda) {
   ELN_model_grid <- rep(list(0), nrow(ELN_grid))
   
-  for (i in 1:nrow(ELN_grid)) {
+  for (i in seq_len(nrow(ELN_grid))) {
     
     ELN_model_grid[[i]] <- list(ELN_grid = 0, model = 0)
     
@@ -553,7 +553,7 @@ alpha_grid <- seq(0, 1, 0.01)
 
 ELN_model_grid <- function(alpha_grid, train_x, train_y, validation_x, validation_y, loss_function, nlamb) {
   
-  ELN_model_grid_list <- foreach(i = (1:length(alpha_grid))) %dopar% {
+  ELN_model_grid_list <- foreach(i = (seq_along(alpha_grid))) %dopar% {
     ELN_model_grid <- list(ELN_grid = 0, model = 0)
     
     #MSE Case
@@ -753,7 +753,7 @@ RF_fit_model_grid <- function(f, train, validation, RF_grid, loss_function) {
   #Initialize List
   RF_model_grid <- rep(list(0), nrow(RF_grid))
   
-  for (i in 1:nrow(RF_grid)) {
+  for (i in seq_len(nrow(RF_grid))) {
     
     RF_model_grid[[i]] <- list(RF_grid = 0, model = 0)
     
@@ -1408,7 +1408,7 @@ LSTM_fit_stats <- function(pooled_panel, timeSlices, loss_function, batch_size, 
   
     Y_array <- array(data = 0, dim = c(length, 200))
     
-    for(t in 1:length) {
+    for(t in seq_len(length)) {
       X_array[t, 1, ] <- pooled_panel_trunc %>%
       dplyr::filter(time == t+1) %>%
       dplyr::select(-rt, -time) %>%
@@ -1416,7 +1416,7 @@ LSTM_fit_stats <- function(pooled_panel, timeSlices, loss_function, batch_size, 
       as.vector()
     }
     
-    for(t in 1:length) {
+    for(t in seq_len(length)) {
       Y_array[t, ] <- pooled_panel_trunc %>%
         dplyr::filter(time == t+1) %>%
         dplyr::select(rt) %>%
@@ -1608,7 +1608,7 @@ fforma_fit_individual <- function(panel, timeSlices, set) {
     filter(time %in% timeSlices[[set]]$test)
   
   out.sample_length <- length(timeSlices[[set]]$validation) + length(timeSlices[[set]]$test)
-  valid_index <- 1:length(timeSlices[[set]]$validation)
+  valid_index <- seq_along(timeSlices[[set]]$validation)
   test_index <- (1:out.sample_length)[-valid_index]
   
   ## Dimensional Reduction of dataset regressors
@@ -1624,7 +1624,7 @@ fforma_fit_individual <- function(panel, timeSlices, set) {
                                              dplyr::select(-rt, -stock, -time), model = umap_model)
   
   ## 
-  dataset_list <- foreach(i = 1:length(unique(pooled_panel$stock))) %dopar% {
+  dataset_list <- foreach(i = seq_along(unique(pooled_panel$stock))) %dopar% {
     stock_id <- unique(pooled_panel$stock)
 
     time_series <- pooled_panel_train %>%
@@ -1847,7 +1847,7 @@ fforma_fit_individual <- function(panel, timeSlices, set) {
 ## Function to return a data matrix with features extracted via tsfeatures, one series per row, given panel data
 # Remeber that this function doesn't do train/validation/split, so you'll have to do these outside of it
 fforma_data_matrix <- function(pooled_panel) {
-  data <- foreach(i = 1:length(unique(pooled_panel$stock)), .combine = "rbind") %do% {
+  data <- foreach(i = seq_along(unique(pooled_panel$stock)), .combine = "rbind") %do% {
   stock_id <- unique(pooled_panel$stock)
 
   univariate_time_series <- pooled_panel %>%
@@ -1863,7 +1863,7 @@ fforma_data_matrix <- function(pooled_panel) {
 ## Function to return an errors matrix
 
 fforma_errors <- function(fforma_fit, loss_function) {
-  foreach(i = 1:length(fforma_fit), .combine = "rbind") %do% {
+  foreach(i = seq_along(fforma_fit), .combine = "rbind") %do% {
     # MSE
     if (loss_function == "mse") {
       fforma_fit[[i]]$validation_error_mse
@@ -1876,7 +1876,7 @@ fforma_errors <- function(fforma_fit, loss_function) {
 # Labels matrix (using the erros matrix)
 
 fforma_labels <- function(errors) {
-  foreach(i = 1:nrow(errors), .combine = "rbind") %dopar% {
+  foreach(i = seq_len(nrow(errors)), .combine = "rbind") %dopar% {
     data.frame(label = which.min(errors[i, ]) - 1)
   }
 }
@@ -1953,7 +1953,7 @@ error_softmax_obj <- function(preds, dtrain) {
 fforma_fit_stats <- function(pooled_panel, timeSlices, loss_function) {
   fforma_fit_stats_list <- rep(list(0), length(timeSlices))
   
-  for (set in 1:length(fforma_fit_stats_list)) {
+  for (set in seq_along(fforma_fit_stats_list)) {
     fforma_fit_stats_list[[set]] <- list(loss_stats = data.frame(train_MAE = 0, train_MSE = 0, 
                                                                  train_RMSE = 0, train_RSquare = 0, 
                                                                  validation_MAE = 0, validation_MSE = 0,
@@ -2010,7 +2010,7 @@ fforma_fit_stats <- function(pooled_panel, timeSlices, loss_function) {
                     outputmargin = TRUE, reshape=TRUE)
     pred <- t(apply(pred, 1, softmax_transform))
 
-    validation_forecasts <- foreach(i = 1:nrow(pred), .combine = "rbind") %do% {
+    validation_forecasts <- foreach(i = seq_len(nrow(pred)), .combine = "rbind") %do% {
       pred[i, ] %*% fforma_fit[[i]]$validation_forecasts
     }
     
@@ -2020,7 +2020,7 @@ fforma_fit_stats <- function(pooled_panel, timeSlices, loss_function) {
     pred <- predict(bst, newdata = xgboost::xgb.DMatrix(as.matrix(test_list$data)), 
                     outputmargin = TRUE, reshape=TRUE)
     pred <- t(apply(pred, 1, softmax_transform))
-    test_forecasts <- foreach(i = 1:nrow(pred), .combine = "rbind") %do% {
+    test_forecasts <- foreach(i = seq_len(nrow(pred)), .combine = "rbind") %do% {
       pred[i, ] %*% fforma_fit[[i]]$test_forecasts
     }
     
@@ -2103,11 +2103,11 @@ fforma[[3]]$loss_stats
 #                   outputmargin = TRUE, reshape=TRUE)
 #   pred <- t(apply(pred, 1, softmax_transform))
 #   
-#   validation_forecasts <- foreach(i = 1:nrow(pred), .combine = "rbind") %do% {
+#   validation_forecasts <- foreach(i = seq_len(nrow(pred)), .combine = "rbind") %do% {
 #     pred[i, ] %*% set_1[[i]]$validation_forecasts
 #   }
 #   
-#   validation_error <- foreach(i = 1:nrow(pred), .combine = "rbind") %do% {
+#   validation_error <- foreach(i = seq_len(nrow(pred)), .combine = "rbind") %do% {
 #     t(pred[i, ]) %*% unlist(set_1[[i]]$validation_error_mse)
 #   }
 #   
