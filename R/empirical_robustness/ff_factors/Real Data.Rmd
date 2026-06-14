@@ -469,7 +469,7 @@ write.csv(individual_factor_names, file = "individual_factor_names.csv")
 ## This section builds in the macro dataset and egnerates the interaction terms
 interaction_terms <- rep(list(0), length(macro_factor_names))
 
-for (i in 1:length(macro_factor_names)) {
+for (i in seq_along(macro_factor_names)) {
   interaction_terms[[i]] <- paste(macro_factor_names[i], individual_factor_names, sep = ":", collapse = " + ")
 }
 
@@ -961,7 +961,7 @@ RF_fit_model_grid <- function(f, train, validation, RF_grid, loss_function) {
   #Initialize List
   RF_model_grid <- rep(list(0), nrow(RF_grid))
   
-  for (i in 1:nrow(RF_grid)) {
+  for (i in seq_len(nrow(RF_grid))) {
     
     RF_model_grid[[i]] <- list(RF_grid = 0, model = 0)
     

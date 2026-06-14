@@ -424,7 +424,7 @@ ELN_grid <- expand.grid(
 ELN_model_grid <- function(ELN_grid, train_x, train_y, validation_x, validation_y, loss_function, nlambda) {
   ELN_model_grid <- rep(list(0), nrow(ELN_grid))
   
-  for (i in 1:nrow(ELN_grid)) {
+  for (i in seq_len(nrow(ELN_grid))) {
     
     ELN_model_grid[[i]] <- list(ELN_grid = 0, model = 0)
     
@@ -753,7 +753,7 @@ RF_fit_model_grid <- function(f, train, validation, RF_grid, loss_function) {
   #Initialize List
   RF_model_grid <- rep(list(0), nrow(RF_grid))
   
-  for (i in 1:nrow(RF_grid)) {
+  for (i in seq_len(nrow(RF_grid))) {
     
     RF_model_grid[[i]] <- list(RF_grid = 0, model = 0)
     
@@ -1876,7 +1876,7 @@ fforma_errors <- function(fforma_fit, loss_function) {
 # Labels matrix (using the erros matrix)
 
 fforma_labels <- function(errors) {
-  foreach(i = 1:nrow(errors), .combine = "rbind") %dopar% {
+  foreach(i = seq_len(nrow(errors)), .combine = "rbind") %dopar% {
     data.frame(label = which.min(errors[i, ]) - 1)
   }
 }
@@ -1953,7 +1953,7 @@ error_softmax_obj <- function(preds, dtrain) {
 fforma_fit_stats <- function(pooled_panel, timeSlices, loss_function) {
   fforma_fit_stats_list <- rep(list(0), length(timeSlices))
   
-  for (set in 1:length(fforma_fit_stats_list)) {
+  for (set in seq_along(fforma_fit_stats_list)) {
     fforma_fit_stats_list[[set]] <- list(loss_stats = data.frame(train_MAE = 0, train_MSE = 0, 
                                                                  train_RMSE = 0, train_RSquare = 0, 
                                                                  validation_MAE = 0, validation_MSE = 0,
@@ -2010,7 +2010,7 @@ fforma_fit_stats <- function(pooled_panel, timeSlices, loss_function) {
                     outputmargin = TRUE, reshape=TRUE)
     pred <- t(apply(pred, 1, softmax_transform))
 
-    validation_forecasts <- foreach(i = 1:nrow(pred), .combine = "rbind") %do% {
+    validation_forecasts <- foreach(i = seq_len(nrow(pred)), .combine = "rbind") %do% {
       pred[i, ] %*% fforma_fit[[i]]$validation_forecasts
     }
     
@@ -2020,7 +2020,7 @@ fforma_fit_stats <- function(pooled_panel, timeSlices, loss_function) {
     pred <- predict(bst, newdata = xgboost::xgb.DMatrix(as.matrix(test_list$data)), 
                     outputmargin = TRUE, reshape=TRUE)
     pred <- t(apply(pred, 1, softmax_transform))
-    test_forecasts <- foreach(i = 1:nrow(pred), .combine = "rbind") %do% {
+    test_forecasts <- foreach(i = seq_len(nrow(pred)), .combine = "rbind") %do% {
       pred[i, ] %*% fforma_fit[[i]]$test_forecasts
     }
     
@@ -2103,11 +2103,11 @@ fforma[[3]]$loss_stats
 #                   outputmargin = TRUE, reshape=TRUE)
 #   pred <- t(apply(pred, 1, softmax_transform))
 #   
-#   validation_forecasts <- foreach(i = 1:nrow(pred), .combine = "rbind") %do% {
+#   validation_forecasts <- foreach(i = seq_len(nrow(pred)), .combine = "rbind") %do% {
 #     pred[i, ] %*% set_1[[i]]$validation_forecasts
 #   }
 #   
-#   validation_error <- foreach(i = 1:nrow(pred), .combine = "rbind") %do% {
+#   validation_error <- foreach(i = seq_len(nrow(pred)), .combine = "rbind") %do% {
 #     t(pred[i, ]) %*% unlist(set_1[[i]]$validation_error_mse)
 #   }
 #   
