@@ -56,7 +56,7 @@ batch_process_range <- c(1:10)
 
 fit_all_models <- function(dataset_list, batch_process_range,
                            # Logical arguments specifying which models you want to fit
-                           # This is useful if you don't want to fit some of the most intensive methods such as RF and Neural Networks
+                           # This is useful if you do not want to fit some of the most intensive methods such as RF and Neural Networks
                            LM, ELN, RF, NNet) {
   # Initialize List
   simulation_results_list <- rep(list(0), length(batch_process_range))
@@ -105,7 +105,7 @@ fit_all_models <- function(dataset_list, batch_process_range,
     if (RF == 1) {
       # Random Forests
       RF_grid <- expand.grid(
-      #ntree usually isn't tuned. Just set to max of computationally feasible
+      #ntree usually is not tuned. Just set to max of computationally feasible
       ntree = 50,
       mtry = seq(10, ncol(pooled_panel[4:ncol(pooled_panel)])/4, 10),
       nodesize = seq(9, 15, 3)
@@ -119,7 +119,7 @@ fit_all_models <- function(dataset_list, batch_process_range,
       
     if (NNet == 1) {
       # Neural Networks
-      # Commented for now because honours lab computers don't have keras/tensorflow
+      # Commented for now because honours lab computers do not have keras/tensorflow
       
       batch_size <- 128
       patience <- 40
@@ -754,7 +754,7 @@ combine_DeepAR_results_list <- function(normal_list, deepar_list15, deepar_list6
 }
 
 ## nosv_0
-## Don't bother with this design because it's stupid, and was only done just to replicate Gu's experiments
+## Do not bother with this design because it's stupid, and was only done just to replicate Gu's experiments
 # g1_A1_nosv_0_results_all <- g1_A1_nosv_0_results %>% 
 #   combine_RF_results_list(g1_A1_nosv_0_RF_results) %>%
 #   combine_NN_results_list(g1_A1_nosv_0_NN_results15, g1_A1_nosv_0_NN_results610) %>%

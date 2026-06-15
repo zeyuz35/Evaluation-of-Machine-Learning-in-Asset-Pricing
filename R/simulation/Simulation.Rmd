@@ -63,7 +63,7 @@ Time <- 180
 gen_C_bar <- function(rho_a, rho_b){
   
   #Create some dimnames
-  #provideDimnames doesn't do exactly what I want it to
+  #provideDimnames does not do exactly what I want it to
   #Just do it manually via paste0
   
   stock_dim <- paste0("stock_", c(1:N))
@@ -561,7 +561,7 @@ gen_error <- function(sv,
 # error <- gen_error(sv = 1, ep_sd = 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363), C, v_sd = 0.05)
 
 #Non-SV version check
-#You'll still need to specify values for omega, gamma and w, they just won't be used
+#You'll still need to specify values for omega, gamma and w, they just will not be used
 # error <- gen_error(sv = 0, ep_sd = 0.05, omega = -0.736, gamma = 0.90, w = sqrt(0.363), C, v_sd = 0.05)
 
 #Both Working, yay
@@ -1150,7 +1150,7 @@ sim_tune_statistics <- function(sim_panel_list) {
 
 # You need a reasonably large number of simulations in order to gauge these designs
 # Turning the simulation number from 10 to 100 does yield some changes
-# Gu et al's design doesn't seem to be replicable
+# Gu et al's design does not seem to be replicable
 # True r squared (predictive r squared) is somewhat close to what they specified
 ```
 
@@ -1320,7 +1320,7 @@ Time <- 180
 simN <- 4 
 
 # A matrices
-# These are just kept here for now, not actually used because they don't seem to have much difference
+# These are just kept here for now, not actually used because they do not seem to have much difference
 
 A1 <- matrix(c(
   0.95, 0, 0,
@@ -1378,7 +1378,7 @@ rm(gu_et_al_g2)
 #Our different specifications
 ##################################
 
-# For some reason the SV parameters suggested by JPR 1994 (and in the literature) doesn't give ~20% annualized volatility with this returns simulation design, even when re-specifying everything to be weekly
+# For some reason the SV parameters suggested by JPR 1994 (and in the literature) does not give ~20% annualized volatility with this returns simulation design, even when re-specifying everything to be weekly
 # Note that JPR's values do indeed give ~20% annualized volatility when plugged into their specified version of the lognormal SV process (see later chunk), so the issues seems to be isolated with just our design
 # Below are the parameter values that give ~20% annualized volatility, fixing the persistence parameter to 0.95, which seems to be commonly observed in the literature
 # Note that due to the time period being only 180, the true annualized volatility may be slightly lower than this, as observed with simulating SV error processes
@@ -1399,7 +1399,7 @@ Time <- 180
 simN <- 10
 
 # A matrices
-# These are just kept here for now, not actually used because they don't seem to have much difference
+# These are just kept here for now, not actually used because they do not seem to have much difference
 
 A1 <- matrix(c(
   0.95, 0, 0,

@@ -398,7 +398,7 @@ ordering_1_mae <- all_loss_df_averaged_sam %>%
   dplyr::select(model) %>%
   unique()
 
-## Doesn't seem to be an easy way to choose which "sub method" is the best, just doing it manually from viewing above
+## does not seem to be an easy way to choose which "sub method" is the best, just doing it manually from viewing above
 ordering_0.01 <- c("ELN_MAE", "RF_MAE", "NN2_MAE", "NN1_MAE", "NN3_MAE")
 
 ordering_1 <- c("ELN_MSE", "RF_MAE", "NN5_MAE", "NN4_MSE", "NN3_MAE")
@@ -850,7 +850,7 @@ important_vimps_g3 <- all_vimp_tidy_df_sam %>%
 
 ## Begin plotting
 ## Notes on these plots
-## They don't look incredibly consistent at first, but realise that these are the raw vimps which have no been normalised
+## They do not look incredibly consistent at first, but realise that these are the raw vimps which have no been normalised
 ## If anything, our metric is more lenient
 
 ## BC Type first
