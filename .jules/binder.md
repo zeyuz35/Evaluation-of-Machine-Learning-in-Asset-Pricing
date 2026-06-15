@@ -1,0 +1,3 @@
+## 2024-06-15 - Explicit namespacing and dependency reduction in R scripts
+**Learning:** Found several active exploratory scripts in `R/` that were globally loading multiple packages via `library()` (like `dplyr`, `ggplot2`, etc.) which pollutes the global namespace and violates the project's hygiene standards (as per agents.md).
+**Action:** Removed all `library()` calls in `R/umap_play.R` and replaced them with explicit namespaced calls (e.g. `dplyr::select`, `umap::umap`, `ggplot2::ggplot`, `Rtsne::Rtsne`). Also replaced magrittr pipes with nested functions or base R equivalents where applicable to reduce dependencies.
