@@ -1,0 +1,3 @@
+## 2024-05-24 - Preserving DataFrames During scale()
+**Learning:** In R, the `scale()` function coerces `data.frame` objects into `matrix` objects while returning the scaled values. This causes a silent type instability when subsequent code expects a `data.frame` (e.g., when binding with other dataframes, or when predicting with certain models that require dataframe inputs rather than matrices).
+**Action:** Always wrap the output of `scale()` with `as.data.frame()` if the input was a `data.frame` and the rest of the pipeline expects a `data.frame`. Ensure that any `scale()` attributes, such as `scaled:center` and `scaled:scale`, are extracted directly from the intermediate scaled matrix *before* it is coerced to a dataframe, as coercion drops those specific attributes.
