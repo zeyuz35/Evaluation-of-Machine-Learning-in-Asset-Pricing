@@ -47,8 +47,8 @@ treeInteractions <- function(input_tree, input_max_depth){
 
 # Generate sample data
 x <- list()
-for (i in 1:10){
-  x[[i]] = i*rnorm(1000, 10)
+for (ii in seq_len(10)){
+  x[[ii]] = ii*rnorm(1000, 10)
 }
 x <- as.data.table(x)
 
@@ -93,13 +93,13 @@ bst3_interactions <- treeInteractions(bst3_tree, 4)  # interactions still constr
 
 # Show monotonic constraints still apply by checking scores after incrementing V1
 x1 <- sort(unique(x[['V1']]))
-for (i in 1:length(x1)){
+for (ii in seq_along(x1)){
   testdata <- copy(x[, -c('V1')])
-  testdata[['V1']] <- x1[i]
+  testdata[['V1']] <- x1[ii]
   testdata <- testdata[, paste0('V',1:10), with=F]
   pred <- predict(bst3, as.matrix(testdata))
   
   # Should not print out anything due to monotonic constraints
-  if (i > 1) if (any(pred > prev_pred)) print(i)
+  if (ii > 1) if (any(pred > prev_pred)) print(ii)
   prev_pred <- pred 
 }
