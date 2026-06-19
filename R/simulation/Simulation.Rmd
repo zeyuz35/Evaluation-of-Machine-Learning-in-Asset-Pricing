@@ -363,16 +363,18 @@ gen_g_factor_panel <- function(g_function, C, x) {
         
     g_factor_panel <- array(0, dim = c(N, 3, Time), dimnames = list(stock_dim, c_dim, time_dim))
     
-    for (i in 1:N) {
-      for (t in 1:Time) {
-        #Univariate xt Case
-        if (nrow(x) == 1) {
-          g_factor_panel[i, , t] <- matrix(c(C[i, 1, t], C[i, 2, t], C[i, 3, t] * x[, t]), nrow = 1)
-        }
-        #Multivariate xt Case
-        else {
-          g_factor_panel[i, , t] <- matrix(c(C[i, 1, t], C[i, 2, t], C[i, 3, t] * t(x[3, t])), nrow = 1)
-        }
+    for (t in 1:Time) {
+      #Univariate xt Case
+      if (nrow(x) == 1) {
+        g_factor_panel[, 1, t] <- C[, 1, t]
+        g_factor_panel[, 2, t] <- C[, 2, t]
+        g_factor_panel[, 3, t] <- C[, 3, t] * x[1, t]
+      }
+      #Multivariate xt Case
+      else {
+        g_factor_panel[, 1, t] <- C[, 1, t]
+        g_factor_panel[, 2, t] <- C[, 2, t]
+        g_factor_panel[, 3, t] <- C[, 3, t] * x[3, t]
       }
     }
   }
@@ -386,21 +388,18 @@ gen_g_factor_panel <- function(g_function, C, x) {
         
     g_factor_panel <- array(0, dim = c(N, 3, Time), dimnames = list(stock_dim, c_dim, time_dim))
     
-    for (i in 1:N) {
-      for (t in 1:Time) {
-        #Univariate xt Case
-        if (nrow(x) == 1) {
-          g_factor_panel[i, , t] <- matrix(c(C[i, 1, t]^2, C[i, 1, t]*C[i, 2, t], sign(C[i, 3, t] * x[, t])), nrow = 1)
-        }
-        #Multivariate xt Case
-        else {
-          g_factor_panel[i, , t] <- matrix(c(
-            C[i, 1, t]^2, 
-            C[i, 1, t]*C[i, 2, t],
-            sign(C[i, 3, t] * t(x[3, t]))), 
-            nrow = 1
-            )
-        }
+    for (t in 1:Time) {
+      #Univariate xt Case
+      if (nrow(x) == 1) {
+        g_factor_panel[, 1, t] <- C[, 1, t]^2
+        g_factor_panel[, 2, t] <- C[, 1, t]*C[, 2, t]
+        g_factor_panel[, 3, t] <- sign(C[, 3, t] * x[1, t])
+      }
+      #Multivariate xt Case
+      else {
+        g_factor_panel[, 1, t] <- C[, 1, t]^2
+        g_factor_panel[, 2, t] <- C[, 1, t]*C[, 2, t]
+        g_factor_panel[, 3, t] <- sign(C[, 3, t] * x[3, t])
       }
     }
   }
@@ -414,15 +413,11 @@ gen_g_factor_panel <- function(g_function, C, x) {
         
     g_factor_panel <- array(0, dim = c(N, 4, Time), dimnames = list(stock_dim, c_dim, time_dim))
     
-    for (i in 1:N) {
-      for (t in 1:Time) {
-        g_factor_panel[i, , t] <- matrix(c(
-          (C[i, 1, t] > 0), 
-          C[i, 2, t]^3,
-          C[i, 1, t] * C[i, 2, t] * (C[i, 3, t] > 0),
-          logit(C[i, 3, t])
-          ), nrow = 1)
-      }
+    for (t in 1:Time) {
+      g_factor_panel[, 1, t] <- (C[, 1, t] > 0)
+      g_factor_panel[, 2, t] <- C[, 2, t]^3
+      g_factor_panel[, 3, t] <- C[, 1, t] * C[, 2, t] * (C[, 3, t] > 0)
+      g_factor_panel[, 4, t] <- logit(C[, 3, t])
     }
   }
   
@@ -437,16 +432,18 @@ gen_g_factor_panel <- function(g_function, C, x) {
     
     #Same as G1 case, but remember to pass c_hat through to this
     
-    for (i in 1:N) {
-      for (t in 1:Time) {
-        #Univariate xt Case
-        if (nrow(x) == 1) {
-          g_factor_panel[i, , t] <- matrix(c(C[i, 1, t], C[i, 2, t], C[i, 3, t] * x[, t]), nrow = 1)
-        }
-        #Multivariate xt Case
-        else {
-          g_factor_panel[i, , t] <- matrix(c(C[i, 1, t], C[i, 2, t], C[i, 3, t] * t(x[3, t])), nrow = 1)
-        }
+    for (t in 1:Time) {
+      #Univariate xt Case
+      if (nrow(x) == 1) {
+        g_factor_panel[, 1, t] <- C[, 1, t]
+        g_factor_panel[, 2, t] <- C[, 2, t]
+        g_factor_panel[, 3, t] <- C[, 3, t] * x[1, t]
+      }
+      #Multivariate xt Case
+      else {
+        g_factor_panel[, 1, t] <- C[, 1, t]
+        g_factor_panel[, 2, t] <- C[, 2, t]
+        g_factor_panel[, 3, t] <- C[, 3, t] * x[3, t]
       }
     }
   }
@@ -472,10 +469,8 @@ gen_g_factor_panel <- function(g_function, C, x) {
 #Remmeber to make sure theta and the factor set are conformable
 gen_g_panel <- function(g_factor, theta) {
   g_panel <- array(0, dim = c(N, 1, Time))
-  for (i in 1:N) {
-    for (t in 1:Time) {
-      g_panel[i, 1, t] <- g_factor[i, , t] %*% t(theta)
-    }
+  for (t in 1:Time) {
+    g_panel[, 1, t] <- g_factor[, , t] %*% t(theta)
   }
   return(g_panel)
 }
@@ -983,10 +978,8 @@ gen_predictor_z <- function(C, x){
   
   z_panel <- array(0, dim = c(N, (nrow(xt_set)) * P_c, Time), dimnames = list(stock_dim, c_dim, time_dim))
   
-  for (i in 1:N) {
-    for (t in 1:Time) {
-      z_panel[i, , t] <- kronecker(t(xt_set[, t]), t(C[i, , t]), make.dimnames = TRUE)
-    }
+  for (t in 1:Time) {
+    z_panel[, , t] <- kronecker(t(xt_set[, t]), C[, , t], make.dimnames = FALSE)
   }
   return(z_panel)
 }
@@ -1035,17 +1028,21 @@ gen_predictor_z_twoway <- function(C, x){
 
 bind_rt_predictor <- function(rt_panel, z_panel) {
   
-  df <- cbind(data.frame(rt_panel[, , 1]), time = 2, stock = paste0("stock_", c(1:N)), data.frame(z_panel[, , 1]))
-
-  colnames(df)[1] <- "rt"
-  row.names(df) <- NULL
+  df_list <- vector("list", Time)
+  stock_labels <- paste0("stock_", c(1:N))
   
-  for (t in 2:Time) {
-    df_new <- cbind(data.frame(rt_panel[, , t]), time = 1+t, stock = paste0("stock_", c(1:N)), data.frame(z_panel[, , t]))
-    colnames(df_new)[1] <- "rt"
-    row.names(df_new) <- NULL
-    df <- rbind(df, df_new)
+  for (t in 1:Time) {
+    df_list[[t]] <- data.frame(
+      rt = rt_panel[, , t],
+      time = 1 + t,
+      stock = stock_labels,
+      z_panel[, , t]
+    )
   }
+
+  df <- do.call(rbind, df_list)
+  row.names(df) <- NULL
+
   return(df)
 }
 
