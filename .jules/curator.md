@@ -1,0 +1,3 @@
+## $(date +%Y-%m-%d) - Data Integrity with scale() and attributes
+**Learning:** In R, the `scale()` function converts a `data.frame` to a `matrix` and adds `scaled:center` and `scaled:scale` attributes to it. Previously, the code just extracted the attributes assuming the matrix was fine to keep, but when doing `dataset_cross_section_x_norm <- as.data.frame(dataset_cross_section_x_norm_mat)` or later assigning back into a dataframe structure, the attributes are stripped.
+**Action:** When extracting or keeping `scaled:center` and `scaled:scale` attributes, we must explicitly preserve them when converting the matrix returned by `scale()` back into a `data.frame`.

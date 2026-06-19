@@ -324,8 +324,11 @@ cross_section_normalize <- function(dataset) {
     #            )
     #   )
     
-    dataset_cross_section_x_norm <- scale(dataset_cross_section_x, center = FALSE, 
+    dataset_cross_section_x_norm_mat <- scale(dataset_cross_section_x, center = FALSE,
                                           scale = colSums(dataset_cross_section_x))
+    dataset_cross_section_x_norm <- as.data.frame(dataset_cross_section_x_norm_mat)
+    attr(dataset_cross_section_x_norm, 'scaled:center') <- attr(dataset_cross_section_x_norm_mat, 'scaled:center')
+    attr(dataset_cross_section_x_norm, 'scaled:scale') <- attr(dataset_cross_section_x_norm_mat, 'scaled:scale')
     
     colnames(dataset_cross_section_x_norm) <- colnames(dataset_cross_section_x)
     
@@ -1093,17 +1096,26 @@ NNet_fit_stats <- function(pooled_panel, timeSlices, hidden_layers, loss_functio
       filter(time %in% timeSlices[[set]]$test)
       
     train_x <- train[4:ncol(train)]
-    train_x <- scale(train_x)
+    train_x_mat <- scale(train_x)
+    train_x <- as.data.frame(train_x_mat)
+    attr(train_x, 'scaled:center') <- attr(train_x_mat, 'scaled:center')
+    attr(train_x, 'scaled:scale') <- attr(train_x_mat, 'scaled:scale')
     col_means_train <- attr(train_x, "scaled:center") 
     col_stddevs_train <- attr(train_x, "scaled:scale")
     train_y <- train$rt
     
     validation_x <- validation[4:ncol(validation)]
-    validation_x <- scale(validation_x, center = col_means_train, scale = col_stddevs_train)
+    validation_x_mat <- scale(validation_x, center = col_means_train, scale = col_stddevs_train)
+    validation_x <- as.data.frame(validation_x_mat)
+    attr(validation_x, 'scaled:center') <- attr(validation_x_mat, 'scaled:center')
+    attr(validation_x, 'scaled:scale') <- attr(validation_x_mat, 'scaled:scale')
     validation_y <- validation$rt
       
     test_x <- test[4:ncol(test)]
-    test_x <- scale(test_x, center = col_means_train, scale = col_stddevs_train)
+    test_x_mat <- scale(test_x, center = col_means_train, scale = col_stddevs_train)
+    test_x <- as.data.frame(test_x_mat)
+    attr(test_x, 'scaled:center') <- attr(test_x_mat, 'scaled:center')
+    attr(test_x, 'scaled:scale') <- attr(test_x_mat, 'scaled:scale')
     test_y <- test$rt
       
     # Fit the model
