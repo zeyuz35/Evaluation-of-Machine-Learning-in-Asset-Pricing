@@ -94,7 +94,11 @@ Resources:
           sudo pip install sagemaker boto3
           sudo R -e "install.packages(c('reticulate', 'curl', 'tidyverse'), repos = 'http://cran.rstudio.com')"
           sudo adduser rstudio
-          sudo sh -c "echo rstudio | passwd rstudio --stdin"
+          RSTUDIO_PASSWORD=$(openssl rand -base64 12)
+          sudo sh -c "echo rstudio:$RSTUDIO_PASSWORD | chpasswd"
+          echo "RStudio password: $RSTUDIO_PASSWORD" > /home/ubuntu/rstudio_password.txt
+          chmod 400 /home/ubuntu/rstudio_password.txt
+          chown ubuntu:ubuntu /home/ubuntu/rstudio_password.txt
           wget https://download2.rstudio.org/rstudio-server-rhel-1.2.5033-x86_64.rpm
           sudo apt install -y rstudio-server-rhel-1.2.5033-x86_64.rpm
           sudo -u rstudio mkdir /home/rstudio/.aws
