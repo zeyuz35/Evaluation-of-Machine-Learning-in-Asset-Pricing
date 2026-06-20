@@ -1,0 +1,3 @@
+## 2024-06-20 - Un-namespaced dependencies in standalone exploratory scripts
+**Learning:** Found an exploratory script `R/umap_play.R` sitting inside the package directory `R/`. It loaded multiple libraries globally (`library(...)`) and didn't namespace the calls. As per `agents.md` Stage 1 and Stage 2: standalone scripts shouldn't be in `R/`, and we should explicitly namespace calls instead of using global library imports.
+**Action:** Move standalone/exploratory scripts out of `R/` into `analysis/`, and remove `library()` calls by explicitly namespacing the functions (`umap::umap`, `ggplot2::ggplot`, `dplyr::select`, etc.)
