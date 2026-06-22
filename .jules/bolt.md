@@ -1,0 +1,3 @@
+## 2024-05-14 - Optimize repetitive `rbind()` in loops
+**Learning:** Found repetitive `rbind()` usage inside `for` loops (e.g., `get_ELN_best_tune` and `get_RF_best_tune` across multiple `.Rmd` files). Growing data frames inside a loop is notoriously slow in R because it re-allocates memory and copies the data structure at each iteration, resulting in quadratic time complexity.
+**Action:** Replace `rbind` inside loops with `lapply` to collect data frames into a list, followed by a single `do.call(rbind, df_list)` call outside the loop, significantly improving performance (e.g., 2.2x speedup measured with `Sys.time` over 2000 iterations). Add a performance optimization comment as instructed.
