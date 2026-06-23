@@ -326,7 +326,10 @@ cross_section_normalize <- function(dataset) {
     
     colnames(dataset_cross_section_x_norm) <- colnames(dataset_cross_section_x)
     
-    cbind(dataset_cross_section_y, dataset_cross_section_x_norm)
+    out <- cbind(dataset_cross_section_y, as.data.frame(dataset_cross_section_x_norm))
+    attr(out, "scaled:scale") <- attr(dataset_cross_section_x_norm, "scaled:scale")
+    attr(out, "scaled:center") <- attr(dataset_cross_section_x_norm, "scaled:center")
+    out
   }
   normalize_cross_section_df
 }
